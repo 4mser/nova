@@ -418,3 +418,42 @@ Webcam de Niko, 640x480, 30 fps, ruta 512 px q80, modo VIDEO, sujeto S01, mirand
 - **Los parpadeos por bloque (7 a 15 en 20 s) son más de lo típico**; no se sabe si el detector sobrecuenta.
 - Los mm suponen un iris de 11,7 mm. No hay verdad de referencia: no se puede afirmar precisión en mm.
 - Una persona, luz buena, 640x480; no es el escáner ni microgravedad.
+
+## 18. ¿Alcanza un cambio mínimo de ~1 a 2 mm? Evidencia clínica (14 nov 2026)
+Fuentes: resúmenes vía Europe PMC REST (los textos completos de PubMed, PMC y Wiley estaban bloqueados). Certeza media-baja.
+
+**Valores normales** (adultos, de pie):
+| Dato | Valor | Fuente | Estado |
+|---|---|---|---|
+| MRD1 / MRD2 / fisura palpebral | 2,97 mm (IC95 2,70-3,24) / 5,57 (5,33-5,81) / 8,54 (8,19-8,90) | Wier et al., Ophthalmic Plast Reconstr Surg 2024;40(6):623-6, PMID 38534066 (43 pacientes, 86 ojos) | [V] solo IC, sin DE |
+| MRD2 en 13 astronautas, en Tierra | 4,9 ± 0,7 mm | Ax et al. 2026 (retractado, ver abajo) | [V] con aviso |
+| MRD1 con iPhone vs regla (ptosis) | sesgo -0,04 mm, límites de acuerdo -0,51 a 0,43 mm, ICC 0,968 | Tang et al., Medicine 2026;105(21), PMID 42175441 | [V] población con ptosis |
+| Repetibilidad entre examinadores | ICC 0,913 a 0,980 en 11 rasgos incluidos MRD1, MRD2 y fisura | Chun et al., Acta Ophthalmol 2017;95:e625, PMID 28391655 | [P] |
+Normas con desviación estándar para MRD2 y fisura, Boboridis 2001 y Bodnar: [NV].
+
+**Cambios con la microgravedad y la postura** [V, resúmenes]:
+| Condición | Cambio | Fuente |
+|---|---|---|
+| Vuelo parabólico (microgravedad) | **MRD2 −0,9 mm (p<0,001)**; MRD1 sin cambio (p=0,41); distancia pupila-ceja inferior +2,3 mm | Ax et al., Orbit 2025;44(5):535-543, PMID 40265683 |
+| Hipergravedad (mismo estudio) | MRD1 −0,7 mm | ídem |
+| Astronautas, fotos de la NASA | **MRD1 sin cambio significativo (p=0,21)**; distancia pupila-ceja +3,7 mm | Karlin et al., Ophthalmic Plast Reconstr Surg 2021;37(6):592-4, PMID 33710037 |
+| Acostado vs de pie (no es cabeza abajo) | MRD1 −0,59 mm; MRD2 −0,56 mm; fisura −1,16 mm | Wier 2024 (diferencias calculadas a partir de las medias) |
+- Un mismo cambio de postura mueve MRD1 y MRD2 en sentido distinto: acostado baja el párpado, microgravedad sube el inferior.
+- Fatiga, sueño, ciclo del día y edema palpebral (alérgico o tiroideo) **en mm: sin datos hallados** [NV].
+- **MCID, MDC o umbral clínico validado de MRD1, MRD2 o apertura: no se encontró ninguno** [NV]. En enfermedad ocular tiroidea se usó una respuesta de apertura ≥2 mm (Rymuza et al., Thyroid 2026, PMID 42117357), que es un criterio del estudio y no un MCID. Umbrales de ptosis, retracción y edema en mm: [NV]; verificar en BCSC o StatPearls (NBK539828).
+
+**MRD2 en astronautas y la retractación:**
+- Hay corroboración parcial independiente en vuelo parabólico (Ax 2025, −0,9 mm). En órbita real, para MRD2, solo existe Ax 2026 (4,9 → 3,9 mm).
+- Ax 2026: la página de la revista dice "This article has been retracted" (nota: "updated to reflect reception of statements of disagreement from all authors"), sin fecha ni motivo. **Crossref no muestra retractación** (`relation` vacío, sin `updated-by`). Conflicto sin resolver; hay que abrir el aviso real en un navegador. No citar Ax 2026 como evidencia hasta entonces.
+
+**Qué se podría y no se podría detectar con el MDC medido** [INF, ~1-2 mm]:
+| Cambio | ¿Detectable en una persona? |
+|---|---|
+| Ptosis moderada o severa, retracción tiroidea franca | Sí |
+| Respuesta de apertura ≥2 mm (EOT) | Límite |
+| MRD2 −0,9 a −1,0 mm (microgravedad) | Límite; probablemente solo promediando varias medidas o en grupo |
+| MRD1 en microgravedad | No hay cambio documentado: no hay señal que detectar |
+| Acostado vs de pie (−0,6 mm) | No |
+| Fatiga, ciclo del día, edema leve | Sin datos en mm: no se puede afirmar |
+- **Corrección a lo dicho antes:** MRD1 es la medida más estable (MDC ~0,8-1,0 mm) pero **no cambia en microgravedad**, así que su estabilidad no ayuda a detectar hinchazón. MRD2 sí cambia (~1 mm) pero su MDC (~1,1-1,4 mm) está al límite. La candidata natural es MRD2 con varias medidas por sesión y comparada con la línea base individual.
+- La DE poblacional de MRD2 (~0,7 mm [INF]) es del mismo orden que el MDC: comparar con una norma poblacional no sirve, solo contra la línea base de cada persona.
