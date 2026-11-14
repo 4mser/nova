@@ -1,0 +1,11 @@
+# datos y pesos: nunca al repositorio (van en Kaggle y Hugging Face)
+datos/
+salida/
+pesos/
+*.parquet
+*.csv
+*.pt
+*.safetensors
+*.onnx
+__pycache__/
+.pytest_cache/
