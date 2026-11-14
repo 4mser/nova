@@ -583,6 +583,8 @@ def main() -> None:
     v2.add_argument("--save-landmarks", action="store_true",
                     help="guarda landmarks crudos (dato biometrico) en data/vision/; imagenes nunca")
     v2.add_argument("--session-id", type=int, default=None, help="id de sesion de --noise-floor")
+    v2.add_argument("--exclude-sessions", default="", dest="exclude_sessions",
+                    help="ids de sesion a excluir del informe, separados por coma (p. ej. 1)")
     v2.add_argument("--blocks", type=int, default=3)
     v2.add_argument("--block-seconds", type=float, default=20.0)
     v2.add_argument("--countdown", type=int, default=5)

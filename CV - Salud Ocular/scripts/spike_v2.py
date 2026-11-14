@@ -965,6 +965,10 @@ def table2(agg: dict[str, dict[str, float]]) -> list[str]:
 
 def run_noise_floor_report(a: Any) -> None:
     recs = load_sessions()
+    excl = {int(x) for x in str(getattr(a, 'exclude_sessions', '') or '').replace(' ', '').split(',') if x}
+    if excl:
+        print(f"Sesiones excluidas por el usuario: {sorted(excl)}")
+        recs = [r for r in recs if r['session_id'] not in excl]
     if len(recs) < 3:
         sys.exit(f"Hay {len(recs)} sesion(es) en {NOISE_FILE}; se necesitan >= 3 con reposicionamiento.")
     shapes = {tuple(r["registro"]["resolucion_obtenida"]) for r in recs}
