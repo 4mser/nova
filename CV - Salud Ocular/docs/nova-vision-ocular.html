@@ -1,0 +1,597 @@
+<title>Salud ocular en NOVA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: una sola columna, bloques grandes con una ilustración cada uno y poco texto.
+   Color: teal = lo nuevo de visión, verde = verificado, ámbar = parcial, gris = no se sabe. */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#101c2c; --muted:#56667c; --line:#d6dde7;
+  --cv:#0b7f7a; --cv-soft:#d8f0ee; --ok:#1d8a4a; --ok-soft:#d9f1e3;
+  --warn:#a85a08; --warn-soft:#fbebd0; --no:#8a3b3b; --no-soft:#f6dede; --grey:#e9edf3; --stroke:#5d6e84;
+  --f-head:'Space Grotesk',system-ui,sans-serif; --f-body:'Inter',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b131c; --surface:#121d29; --ink:#e8eef6; --muted:#9aaabd; --line:#293a4b;
+    --cv:#4fd1c5; --cv-soft:#10332f; --ok:#52c98a; --ok-soft:#10301f;
+    --warn:#f6ad55; --warn-soft:#3a2a12; --no:#f08a8a; --no-soft:#3b1a1a; --grey:#1b2836; --stroke:#8a9db3; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b131c; --surface:#121d29; --ink:#e8eef6; --muted:#9aaabd; --line:#293a4b;
+  --cv:#4fd1c5; --cv-soft:#10332f; --ok:#52c98a; --ok-soft:#10301f;
+  --warn:#f6ad55; --warn-soft:#3a2a12; --no:#f08a8a; --no-soft:#3b1a1a; --grey:#1b2836; --stroke:#8a9db3; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:48px}
+h1,h2,h3{font-family:var(--f-head);line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:26px;font-weight:600}
+h3{font-size:18px;font-weight:600}
+p{margin:0}
+.sub{color:var(--muted);font-size:17px;max-width:60ch}
+.sec{display:flex;flex-direction:column;gap:16px}
+.q{font-family:var(--f-head);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.chip{display:inline-block;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.c-ok{background:var(--ok-soft);color:var(--ok)}
+.c-warn{background:var(--warn-soft);color:var(--warn)}
+.c-no{background:var(--no-soft);color:var(--no)}
+.c-grey{background:var(--grey);color:var(--muted)}
+.c-cv{background:var(--cv-soft);color:var(--cv)}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.card p{color:var(--muted);font-size:15px}
+.card .big{font-family:var(--f-head);font-size:34px;font-weight:700;line-height:1}
+.step .n{font-family:var(--f-head);font-weight:700;font-size:14px;color:var(--cv)}
+.ill{width:100%;max-width:150px;height:auto;align-self:center}
+.s{fill:none;stroke:var(--stroke);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sc{fill:none;stroke:var(--cv);stroke-width:2.5;stroke-linecap:round}
+.f{fill:var(--ink)} .fc{fill:var(--cv)} .fw{fill:var(--warn)} .fo{fill:var(--ok)} .fg{fill:var(--stroke)}
+.band{fill:var(--cv-soft)}
+.scroll{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px}
+.scroll svg{display:block;min-width:760px;width:100%;height:auto}
+.bx{fill:var(--grey);stroke:var(--stroke);stroke-width:1.5}
+.bx.cv{fill:var(--cv-soft);stroke:var(--cv);stroke-width:2.5}
+.t{fill:var(--ink);font-family:var(--f-body);font-size:15px;font-weight:600}
+.t.s2{font-size:12.5px;font-weight:400;fill:var(--muted)}
+.t.cv{fill:var(--cv)}
+.ar{fill:none;stroke:var(--stroke);stroke-width:2}
+.ar.cv{stroke:var(--cv);stroke-width:2.5}
+.ah{fill:var(--stroke)} .ahc{fill:var(--cv)}
+.check{display:grid;grid-template-columns:auto 1fr;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:22px;font-family:var(--f-head)}
+.check .body{display:flex;flex-direction:column;gap:8px;min-width:0}
+.check h3{font-size:17px}
+.check p{font-size:15px;color:var(--muted)}
+.check b{color:var(--ink)}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--grey);color:var(--ink)}
+.pill.cand{background:transparent;border:1.5px dashed var(--warn);color:var(--warn);font-weight:600}
+.pill.new{background:var(--cv-soft);color:var(--cv);font-weight:600}
+.pix{display:flex;gap:18px;flex-wrap:wrap;align-items:center;background:var(--grey);border-radius:8px;padding:12px 14px;font-size:14px}
+.pix svg{width:120px;height:auto;flex:none}
+.pix p{flex:1;min-width:200px;color:var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.st{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.st.now{border:2px solid var(--cv)}
+.st .n{font-family:var(--f-head);font-weight:700;color:var(--cv);font-size:14px}
+.st p{font-size:14px;color:var(--muted)}
+dl{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+dl div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+dt{font-weight:600;font-family:var(--f-head)}
+dd{margin:4px 0 0;color:var(--muted);font-size:15px}
+footer{color:var(--muted);font-size:14px}
+.prog{height:10px;border-radius:999px;background:var(--grey);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--ok)}
+.ph{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.ph.cur{border:2px solid var(--cv)}
+.phh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.tasks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.tasks li{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:15px;align-items:start}
+.m{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;border:2px solid var(--line);color:var(--muted)}
+.m.d{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.m.w{border-color:var(--cv);color:var(--cv);background:var(--cv-soft)}
+.tasks .dn{color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;font-size:13px}
+.tag{background:var(--grey);color:var(--muted);padding:2px 10px;border-radius:999px}
+.tag b{color:var(--ink);font-weight:600}
+.note{background:var(--cv-soft);border-left:4px solid var(--cv);border-radius:0 8px 8px 0;padding:14px 16px;font-size:15px}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
+
+@media print{
+  :root{color-scheme:light}
+  body{padding:0;background:#fff;font-size:13px}
+  main{max-width:none;gap:26px}
+  .scroll{overflow:visible}
+  .scroll svg{min-width:0}
+  .card,.ph,.check,.st,.sec>.grid2>*,.grid4>*,dl div{break-inside:avoid}
+  h2,.q{break-after:avoid}
+  .sec{break-inside:auto}
+}
+@page{size:A4;margin:12mm}
+</style>
+
+<main>
+<header class="sec">
+  <div class="q">NOVA · NASA Space Apps 2026</div>
+  <h1>Salud ocular en NOVA</h1>
+  <p class="sub">El teléfono mira tu cara, mide cuatro cosas de tus ojos, las compara con lo normal para ti y te avisa si algo cambió. Todo dentro de la nave, sin internet.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px">
+    <span class="chip c-warn">Solo diseño, aún sin código de NOVA</span>
+    <span class="chip c-grey">No diagnostica</span>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="q">Cómo funciona</div>
+  <h2>De la cámara a la alerta, en 4 pasos</h2>
+  <div class="grid4">
+    <div class="card step">
+      <span class="n">PASO 1</span>
+      <svg class="ill" viewBox="0 0 120 80" role="img" aria-label="Teléfono mirando una cara">
+        <rect class="s" x="38" y="5" width="44" height="70" rx="8"/>
+        <circle class="s" cx="60" cy="40" r="15"/>
+        <circle class="f" cx="55" cy="37" r="2"/><circle class="f" cx="65" cy="37" r="2"/>
+        <path class="s" d="M54 46 Q60 50 66 46"/>
+        <circle class="fc" cx="60" cy="13" r="2.5"/>
+      </svg>
+      <h3>La cámara mira</h3>
+      <p>Una sesión corta frente al teléfono, con guía de voz.</p>
+    </div>
+    <div class="card step">
+      <span class="n">PASO 2</span>
+      <svg class="ill" viewBox="0 0 120 80" role="img" aria-label="Un ojo con marcas de medición">
+        <path class="s" d="M14 40 Q60 8 106 40 Q60 72 14 40Z"/>
+        <circle class="s" cx="60" cy="40" r="15"/>
+        <circle class="fc" cx="60" cy="40" r="7"/>
+        <path class="sc" d="M60 12 V22"/><path class="sc" d="M60 58 V68"/>
+        <path class="sc" d="M16 40 H8"/><path class="sc" d="M104 40 H112"/>
+      </svg>
+      <h3>Mide el ojo</h3>
+      <p>Parpadeo, pupila, párpado inferior y distancia a la pantalla.</p>
+    </div>
+    <div class="card step">
+      <span class="n">PASO 3</span>
+      <svg class="ill" viewBox="0 0 120 80" role="img" aria-label="Gráfico con una banda normal y un punto fuera de ella">
+        <rect class="band" x="8" y="28" width="104" height="26" rx="4"/>
+        <polyline class="s" points="12,42 28,38 44,44 60,40 76,43 92,40"/>
+        <path class="s" d="M92 40 L108 14" stroke-dasharray="3 4"/>
+        <circle class="fw" cx="108" cy="14" r="5"/>
+      </svg>
+      <h3>Compara con tu normal</h3>
+      <p>Tu valor de hoy contra tus días anteriores, no contra un promedio ajeno.</p>
+    </div>
+    <div class="card step">
+      <span class="n">PASO 4</span>
+      <svg class="ill" viewBox="0 0 120 80" role="img" aria-label="Semáforo con tres estados">
+        <rect class="s" x="42" y="4" width="36" height="72" rx="10"/>
+        <circle class="fo" cx="60" cy="20" r="8"/>
+        <circle class="fw" cx="60" cy="40" r="8"/>
+        <circle class="fg" cx="60" cy="60" r="8"/>
+      </svg>
+      <h3>Te avisa</h3>
+      <p>Verde: normal. Ámbar: <b>alerta de seguimiento</b>. Gris: no se pudo medir.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="q">Dónde se conecta</div>
+  <h2>Un módulo nuevo dentro de NOVA</h2>
+  <div class="scroll">
+  <svg viewBox="0 0 900 190" role="img" aria-label="Flujo: teléfono, NOVA PC, puente de visión, módulo ocular y resultado que vuelve al teléfono">
+    <defs>
+      <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" class="ah"/></marker>
+      <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" class="ahc"/></marker>
+    </defs>
+    <rect class="bx" x="10" y="30" width="150" height="86" rx="10"/>
+    <text class="t" x="24" y="62">Teléfono</text>
+    <text class="t s2" x="24" y="82">manda fotos de</text>
+    <text class="t s2" x="24" y="98">512 px por HTTPS</text>
+
+    <rect class="bx" x="190" y="30" width="150" height="86" rx="10"/>
+    <text class="t" x="204" y="62">NOVA PC</text>
+    <text class="t s2" x="204" y="82">el computador</text>
+    <text class="t s2" x="204" y="98">de la nave</text>
+
+    <rect class="bx" x="370" y="30" width="150" height="86" rx="10"/>
+    <text class="t" x="384" y="62">Puente de visión</text>
+    <text class="t s2" x="384" y="82">GPU, puerto 8792</text>
+    <text class="t s2" x="384" y="98">hoy: cuerpo y manos</text>
+
+    <rect class="bx cv" x="550" y="30" width="150" height="86" rx="10"/>
+    <text class="t cv" x="564" y="62">Módulo ocular</text>
+    <text class="t s2" x="564" y="82">NUEVO: cara, ojos</text>
+    <text class="t s2" x="564" y="98">y tu línea base</text>
+
+    <rect class="bx" x="730" y="30" width="150" height="86" rx="10"/>
+    <text class="t" x="744" y="62">Resultado</text>
+    <text class="t s2" x="744" y="82">alertas y pantallas</text>
+    <text class="t s2" x="744" y="98">de NOVA</text>
+
+    <path class="ar" d="M160 73 H190" marker-end="url(#a1)"/>
+    <path class="ar" d="M340 73 H370" marker-end="url(#a1)"/>
+    <path class="ar cv" d="M520 73 H550" marker-end="url(#a2)"/>
+    <path class="ar cv" d="M700 73 H730" marker-end="url(#a2)"/>
+    <path class="ar cv" d="M805 116 V160 H85 V116" marker-end="url(#a2)"/>
+    <text class="t s2" x="330" y="154">el resultado vuelve al teléfono y se dibuja sobre tu cara</text>
+  </svg>
+  </div>
+  <p class="sub">El puente de visión y el escáner AR los mantiene otra persona del equipo. Nuestra parte es el módulo ocular; la conexión se entrega como una especificación.</p>
+</section>
+
+<section class="sec">
+  <div class="q">La cámara</div>
+  <h2>Frontal o trasera: las dos sirven</h2>
+  <div class="grid2">
+    <div class="card">
+      <svg class="ill" viewBox="0 0 120 80" role="img" aria-label="Teléfono con cámara frontal y una persona mirándose">
+        <rect class="s" x="38" y="5" width="44" height="70" rx="8"/>
+        <circle class="fc" cx="60" cy="13" r="2.5"/>
+        <circle class="s" cx="60" cy="40" r="13"/>
+        <circle class="f" cx="55" cy="37" r="2"/><circle class="f" cx="65" cy="37" r="2"/>
+        <path class="s" d="M55 45 Q60 49 65 45"/>
+        <path class="sc" d="M20 40 H34" marker-end="none"/><path class="sc" d="M86 40 H100"/>
+      </svg>
+      <h3>Frontal: la persona se mide sola</h3>
+      <p>Se ve en la pantalla mientras la cámara la mira. Es el modo autónomo, con guía de voz.</p>
+    </div>
+    <div class="card">
+      <svg class="ill" viewBox="0 0 120 80" role="img" aria-label="Teléfono con cámara trasera apuntando a otra persona">
+        <rect class="s" x="12" y="14" width="40" height="52" rx="8"/>
+        <circle class="fc" cx="22" cy="24" r="3.5"/>
+        <path class="sc" d="M54 40 H70"/>
+        <circle class="s" cx="92" cy="40" r="14"/>
+        <circle class="f" cx="87" cy="37" r="2"/><circle class="f" cx="97" cy="37" r="2"/>
+        <path class="s" d="M87 46 Q92 50 97 46"/>
+      </svg>
+      <h3>Trasera: otra persona escanea</h3>
+      <p>Un compañero o el médico apunta el teléfono a la cara. Es el modo supervisado.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Qué cambia al voltear la cámara</h3>
+    <p><b>Espejo.</b> La vista de la frontal suele mostrarse como espejo. El módulo debe saber si la imagen viene espejada para no confundir el ojo izquierdo con el derecho.</p>
+    <p><b>Línea base por cámara.</b> Cada cámara tiene su propia resolución y lente. Los valores normales de una persona se guardan por separado para la frontal y la trasera.</p>
+    <p><b>Distancia.</b> La estimación por tamaño del iris se calibra por cámara.</p>
+    <p><b>Un botón.</b> Un solo botón para voltear, y cada medida guarda qué cámara se usó. Esto es diseño mío: en el PDF aún no se ve qué cámara usa hoy el escáner.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="q">Qué mide</div>
+  <h2>Cuatro mediciones y qué tan sólidas son</h2>
+  <div class="grid2">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>Parpadeo</h3><span class="chip c-warn">Parcial</span></div>
+      <p>Cuánto y cuánto tiempo cierras los ojos. Sirve para detectar cansancio, no SANS.</p>
+      <p>El método de puntos de la cara (Soukupová y Čech, 2016) está verificado. La versión de "tiempo con ojos cerrados" se validó con personas mirando video, no con una webcam.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>Pupila</h3><span class="chip c-warn">Parcial</span></div>
+      <p>Su tamaño relativo al iris. Con luz normal falla más en ojos marrones.</p>
+      <p>Las cifras buenas de la literatura usan cámara infrarroja (diferencia de 0,03 mm en 12 pacientes). Con cámara visible hay sesgo de 0,07 a 0,27 mm.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>Párpado inferior</h3><span class="chip c-warn">Parcial</span></div>
+      <p>Cuánto se sube el párpado de abajo. Es una pista de hinchazón alrededor del ojo.</p>
+      <p>Con teléfono y foto de buena calidad el error medio es de 0,37 mm (822 ojos). El único estudio en astronautas figura <b>retractado</b>, así que no lo usamos.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>Distancia y mirada</h3><span class="chip c-warn">Parcial</span></div>
+      <p>A qué distancia estás de la pantalla y si miras donde debes. Apoya las pruebas de agudeza y de rejilla.</p>
+      <p>El tamaño del iris da la distancia con 4,3 % de error, según un blog de Google (no es un paper).</p>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>Prueba de agudeza</h3><span class="chip c-ok">Verificado</span></div>
+      <p>Letras en pantalla. Peek Acuity: 300 adultos, diferencia de 0,07 con el examen estándar. Lo medido es la respuesta de la persona; la cámara solo ayuda.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>Rejilla de Amsler</h3><span class="chip c-no">Sin validar</span></div>
+      <p>Prueba de líneas para detectar distorsión. No encontramos un estudio que la valide en versión digital. Va como exploratoria.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="q">Lo que verificamos hoy</div>
+  <h2>Cuatro dudas, cuatro respuestas</h2>
+
+  <div class="check">
+    <div class="icon c-warn">?</div>
+    <div class="body">
+      <h3>¿Las 689 estructuras del escáner incluyen el ojo?</h3>
+      <span class="chip c-warn" style="align-self:flex-start">Falta confirmar</span>
+      <p>El PDF no menciona el ojo en ninguna parte. La base que usa (BodyParts3D v4.0) <b>sí trae</b> globo ocular, iris, córnea, cristalino, esclera, coroides, cuerpo vítreo, párpados, órbita y los músculos del ojo. <b>No trae retina ni nervio óptico</b> en su lista.</p>
+      <p>No se puede saber cuáles entraron a las 689 sin ver los datos de <code>nova-pc</code>. Además, el PDF dice licencia CC BY 4.0 y el README de BodyParts3D dice CC BY-SA 2.1 Japón: conviene revisarlo.</p>
+    </div>
+  </div>
+
+  <div class="check">
+    <div class="icon c-warn">?</div>
+    <div class="body">
+      <h3>¿Cámara trasera o frontal? ¿Alcanza la foto?</h3>
+      <span class="chip c-warn" style="align-self:flex-start">El PDF no lo dice</span>
+      <p>El PDF dice que el teléfono manda <b>fotos JPEG de 512 px</b> y que el sistema busca "el torso más horizontal" del paciente. No dice qué cámara usa: lo de "trasera" era un supuesto mío.</p>
+      <div class="pix">
+        <svg viewBox="0 0 120 90" role="img" aria-label="Iris de unos 17 píxeles medido a 512 px">
+          <circle class="s" cx="60" cy="45" r="36"/>
+          <circle class="fc" cx="60" cy="45" r="12"/>
+          <path class="sc" d="M24 82 H96"/>
+          <text class="t s2" x="60" y="80" text-anchor="middle" style="font-size:11px">iris ≈ 17 px</text>
+        </svg>
+        <p><b>Medido en tu webcam:</b> a 512 px el iris mide 17 px (21 px a resolución completa) y se detecta en 90 de 90 cuadros. Mi estimación de 26 px era alta, porque tu cara ocupaba menos del cuadro. Con un iris de 17 px, la pupila queda en unos 3 a 6 px (cuenta mía): no se puede medir con puntos a ese tamaño. Para la pupila hará falta una imagen más grande o procesarla en el teléfono.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="check">
+    <div class="icon c-warn">?</div>
+    <div class="body">
+      <h3>¿Cuánta latencia hay?</h3>
+      <span class="chip c-warn" style="align-self:flex-start">Parcial</span>
+      <p>El PDF da <b>unos 15 ms por cuadro</b> para cuerpo y manos en GPU. El teléfono predice el movimiento con el giroscopio (máximo 60 ms) y, si no hay respuesta en 2,5 s, usa su propia visión.</p>
+      <p>El canal <code>/v1/vision/ws</code> es local dentro del computador, no la conexión del teléfono. En tu webcam, Face Landmarker tardó 7,8 ms por cuadro en CPU (mediana; 9 ms en el peor 5 %). La latencia de punta a punta solo se mide con <code>nova-pc</code> corriendo.</p>
+    </div>
+  </div>
+
+  <div class="check">
+    <div class="icon c-ok">✔</div>
+    <div class="body">
+      <h3>¿Hay un protocolo de lesión ocular?</h3>
+      <span class="chip c-ok" style="align-self:flex-start">Verificado: no hay</span>
+      <p>Los 12 protocolos del PDF son estos. Diez de ellos tienen pasos en AR. Ninguno de los 5 PDFs menciona el ojo, salvo una nota sobre un LED de la placa.</p>
+      <div class="pills">
+        <span class="pill">Paro cardíaco</span><span class="pill">Desmayo</span><span class="pill">Hipoglucemia</span>
+        <span class="pill">Oxígeno bajo</span><span class="pill">CO2 alto</span><span class="pill">Anafilaxia</span>
+        <span class="pill">Atragantamiento</span><span class="pill">Fiebre</span><span class="pill">Convulsión</span>
+        <span class="pill">Descompresión</span><span class="pill">Sueño y ánimo</span><span class="pill">Hemorragia</span>
+        <span class="pill cand">+ Lesión ocular (propuesto)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="q">El modelo</div>
+  <h2>Qué modelo usamos</h2>
+  <p class="sub">MediaPipe Face Landmarker, de Google. Son tres modelos pequeños dentro de un solo archivo de 3,76 MB que corre en CPU.</p>
+  <div class="grid4">
+    <div class="card step">
+      <span class="n">1 · DETECTOR</span>
+      <h3>BlazeFace</h3>
+      <p>Encuentra dónde hay una cara. Pesa 230 KB.</p>
+    </div>
+    <div class="card step">
+      <span class="n">2 · PUNTOS</span>
+      <h3>FaceLandmarker-V2</h3>
+      <p>Recorta la cara a 256×256 y entrega <b>478 puntos 3D</b>, entre ellos 10 del iris (confirmado en tu webcam). Pesa 2,55 MB.</p>
+    </div>
+    <div class="card step">
+      <span class="n">3 · EXPRESIONES</span>
+      <h3>Blendshapes</h3>
+      <p>52 puntajes de expresión. No los usamos en las mediciones. Pesa 0,96 MB.</p>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Lo que dice su ficha</h3>
+      <p>Red convolucional tipo MobileNetV2, licencia Apache 2.0, de septiembre de 2022.</p>
+      <p>Pensada para <b>realidad aumentada de entretenimiento</b>, con cámara frontal en modo selfie. Entre los usos que excluye están las <b>decisiones críticas para la vida humana</b>. Por eso NOVA solo emite "alerta de seguimiento".</p>
+      <p>Se entrenó con fotos de muchos teléfonos, con cámaras frontal y trasera, y con luz y movimiento variados.</p>
+    </div>
+    <div class="card">
+      <h3>Sus límites declarados</h3>
+      <p>Falla si la cara está girada más de 80°, inclinada más de 8° de la vertical, visible menos del 50 % o muy lejos.</p>
+      <p>Con poca luz, ruido o movimiento, los puntos "tiemblan" más.</p>
+      <p>La ficha pide modo selfie: usar la cámara trasera sobre otra persona está menos cubierto, y habrá que probarlo.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>Qué tan precisos son los puntos</h3><span class="chip c-warn">Parcial</span></div>
+    <p>Error medio de <b>2,06 % a 3,27 %</b> de la distancia entre los ojos, según la región del mundo (1.700 fotos, 17 regiones), y de 2,49 % a 2,90 % según el tono de piel. Los anotadores humanos difieren entre sí en 2,56 %.</p>
+    <p>La ficha no evalúa color de ojos ni párpados. <b>Cuenta mía:</b> con los ~81 px entre ojos que medimos a 512 px, 2,6 % son unos 2,1 px, cerca de 1,6 mm. Es más que el 0,37 mm que buscamos en el párpado. Por eso conviene medir cambios de cada persona contra su propia línea base y no milímetros absolutos.</p>
+  </div>
+  <div class="card">
+    <h3>Tu instalación</h3>
+    <p>mediapipe 1.2.3, Python 3.13.12, OpenCV 5.0.0, NumPy 2.5.4. Corre en CPU con XNNPACK, en modo video y una cara. Medido en tu webcam: 7,76 ms por cuadro.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="q">Qué sigue</div>
+  <h2>El camino, en resumen</h2>
+  <div class="steps">
+    <div class="st"><span class="n">HECHO</span><h3>Probar tu webcam</h3><p>El iris aparece. 478 puntos, cara detectada en 90 de 90 cuadros, 7,8 ms por cuadro en CPU.</p></div>
+    <div class="st now"><span class="n">AHORA</span><h3>Suelo de ruido</h3><p>3 sesiones con la vista en vivo, levantándote entre una y otra. Ver la guía.</p></div>
+    <div class="st"><span class="n">SIGUE</span><h3>Base</h3><p>Puntos de la cara, control de calidad y formato de salida.</p></div>
+    <div class="st"><span class="n">DESPUÉS</span><h3>Mediciones</h3><p>Parpadeo, párpado, pupila y distancia, en paralelo.</p></div>
+    <div class="st"><span class="n">LUEGO</span><h3>Pruebas reales</h3><p>Luz, lentes y ojos marrones, con tu webcam.</p></div>
+    <div class="st"><span class="n">FINAL</span><h3>Entrega a nova-pc</h3><p>Especificación para conectar el módulo al escáner.</p></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="q">Guía de las pruebas</div>
+  <h2>Qué hacer tú en cada prueba</h2>
+  <p class="sub">Todas se lanzan pegando un comando en Claude Code (con el <code>!</code> al inicio). Se abre una ventana con tu cámara. Con <b>q</b> o ESC abortas sin guardar nada.</p>
+  <div class="card">
+    <div class="phh"><h3>Suelo de ruido (3 sesiones)</h3><span class="chip c-cv">La que toca ahora</span></div>
+    <p>Mide cuánto "tiembla" cada medida aunque nada cambie. Cada sesión son 3 bloques de 20 segundos.</p>
+    <ul class="tasks">
+      <li><span class="m">1</span><span><b>Prepárate:</b> luz de escritorio, sin lentes, a unos 50 cm de la pantalla. Siéntate con la cabeza apoyada (en el respaldo o una mano en la sien).</span></li>
+      <li><span class="m">2</span><span><b>Pega el comando</b> de la sesión 1. Cuenta regresiva de 15 s: acomódate.</span></li>
+      <li><span class="m">3</span><span><b>Espera el semáforo verde.</b> "ESPERANDO QUIETUD" significa que aún te mueves. La grabación empieza sola.</span></li>
+      <li><span class="m">4</span><span><b>Escucha el pitido:</b> 1 pitido = empieza a grabar; 2 pitidos = terminó el bloque; 3 pitidos = "TE MOVISTE", se repite el bloque.</span></li>
+      <li><span class="m">5</span><span><b>Durante los 20 s:</b> mira fijo un punto a la altura de tus ojos (por ejemplo un punto en la pantalla, a la altura de la cámara). No hables, no muevas la cabeza. <b>Parpadea normal.</b></span></li>
+      <li><span class="m">6</span><span><b>Repite 3 bloques</b>; entre bloques hay una pausa corta con cuenta regresiva.</span></li>
+      <li><span class="m">7</span><span><b>Entre sesiones: levántate, camina y vuelve a sentarte.</b> Eso es lo que mide la variación al reposicionarte. Luego lanza el comando con <code>--session-id 2</code>, y después con <code>--session-id 3</code>.</span></li>
+      <li><span class="m">8</span><span><b>Al final</b> lanza <code>--noise-floor-report --json</code>. Entrega el cambio mínimo detectable con reposicionamiento.</span></li>
+    </ul>
+    <p><b>Qué vas a ver en la ventana:</b> tu cámara con los puntos de la cara y el iris, cinco indicadores de quietud en verde o rojo (velocidad, inclinación, distancia entre ojos, giro y cabeceo), el parpadeo con su gráfico, y el avance de la grabación.</p>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <h3>Si algo sale raro</h3>
+      <ul class="tasks">
+        <li><span class="m">·</span><span><b>Nunca se pone verde:</b> muévete menos y apoya la cabeza; después de 30 s empieza igual y deja la captura marcada.</span></li>
+        <li><span class="m">·</span><span><b>"TE MOVISTE" dos veces:</b> la sesión queda marcada "con movimiento". Repítela con el mismo número de sesión antes del informe.</span></li>
+        <li><span class="m">·</span><span><b>La ventana no abre:</b> añade <code>--no-view</code> al comando.</span></li>
+        <li><span class="m">·</span><span><b>No suenan pitidos:</b> mira la consola, también imprime cada paso.</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Qué NO se guarda</h3>
+      <ul class="tasks">
+        <li><span class="m">·</span><span>Nunca se guardan imágenes ni video.</span></li>
+        <li><span class="m">·</span><span>Los puntos de tu cara (dato biométrico) solo se guardan si agregas <code>--save-landmarks</code>.</span></li>
+        <li><span class="m">·</span><span>Se guardan solo números resumen en <code>docs/spike-resultados.md</code> y en <code>data/vision/</code> (esta carpeta no se sube a GitHub).</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Las otras pruebas, para cuando haga falta repetirlas</h3>
+    <ul class="tasks">
+      <li><span class="m">·</span><span><b>Barrido de condiciones:</b> ~8 s quieto mirando al frente; luego procesa varios minutos y la ventana muestra el avance. No tienes que hacer nada más.</span></li>
+      <li><span class="m">·</span><span><b>Diagnóstico de quietud:</b> ~5 s quieto mirando al frente; dice qué criterio de quietud falla si algo falla.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="q">Resultados del barrido</div>
+  <h2>Primeros números medidos en tu webcam</h2>
+  <p class="sub">Una persona, luz buena, 640×480, quieta durante 8 segundos. Los milímetros son cuenta mía suponiendo un iris de 11,7 mm.</p>
+  <div class="grid4">
+    <div class="card"><span class="big">100 %</span><p>de detección de cara e iris, en las 31 condiciones (hasta 256 px, poca luz, ruido, desenfoque y cámara rotada 45°)</p></div>
+    <div class="card"><span class="big">~0,33 mm</span><p>cambio mínimo detectable de la apertura del párpado, en fotos sueltas y dentro de una sesión</p></div>
+    <div class="card"><span class="big">~10 ms</span><p>por foto a 512 px, con reducir, comprimir y detectar. Unos 20 ms si se corrige la rotación</p></div>
+    <div class="card"><span class="big">84,6 %</span><p>de cuadros quietos en la referencia (la meta era 80 %). Solo la poca luz simulada baja a 70 %</p></div>
+  </div>
+  <div class="note"><b>Falta:</b> los 0,33 mm no incluyen levantarte y volver a sentarte. Eso lo mide el suelo de ruido con las 3 sesiones. Además, cambiar la resolución, el desenfoque o la rotación desplaza la medida: la línea base debe tomarse con la misma ruta de imagen que las mediciones.</div>
+</section>
+
+<section class="sec">
+  <div class="q">Plan de trabajo</div>
+  <h2>Qué se hace, en qué orden y quién lo hace</h2>
+  <p class="sub">✔ hecho · ● en curso · círculo vacío: pendiente. Cada fase tiene una rama de git, un agente a cargo y un criterio para darla por terminada.</p>
+  <div class="card">
+    <div class="phh"><h3>Avance general</h3><span class="chip c-cv">11 de 23 tareas hechas</span></div>
+    <div class="prog" role="img" aria-label="11 de 23 tareas hechas"><i style="width:48%"></i></div>
+    <p>La fase 0 está casi cerrada. Después se construye la base y las mediciones, y al final se prueba y se entrega a quien mantiene <code>nova-pc</code>. Pupila y pitch no cuentan: la pupila queda diferida y el pitch no se toca por ahora.</p>
+  </div>
+
+  <div class="ph cur">
+    <div class="phh"><h3>Fase 0 · Spike: ¿se puede medir bien?</h3><span class="chip c-cv">En curso · 11 de 13</span></div>
+    <div class="tags"><span class="tag">Rama <b>nico/vision-spike</b></span><span class="tag">Diseño: <b>agente de visión (modelo más capaz)</b></span><span class="tag">Código: <b>agente de Python</b></span></div>
+    <div class="prog"><i style="width:85%"></i></div>
+    <ul class="tasks">
+      <li><span class="m d">✔</span><span class="dn">Investigación y antecedentes verificados contra fuentes primarias</span></li>
+      <li><span class="m d">✔</span><span class="dn">Repositorio <code>hackaton-vision</code> en GitHub (privado) y página de diseño</span></li>
+      <li><span class="m d">✔</span><span class="dn">Prueba con tu webcam: 478 puntos, iris presente, 90 de 90 detecciones, 7,76 ms</span></li>
+      <li><span class="m d">✔</span><span class="dn">Prueba a 512 px con JPEG: detección 100 %, iris de 17 px</span></li>
+      <li><span class="m d">✔</span><span class="dn">Documentación del modelo (contenido del archivo, ficha, límites y precisión)</span></li>
+      <li><span class="m d">✔</span><span class="dn"><b>Spike v2 programado:</b> métricas que no se contaminan con el movimiento, barrido de condiciones y suelo de ruido. 22 pruebas automáticas pasan; falta correrlo con tu webcam</span></li>
+      <li><span class="m d">✔</span><span class="dn"><b>Barrido de condiciones con tu webcam:</b> la cara y el iris se detectaron al 100 % en las 31 condiciones (hasta 256 px, JPEG de baja calidad, poca luz y cámara rotada 45°)</span></li>
+      <li><span class="m d">✔</span><span class="dn"><b>Puerta de quietud corregida:</b> se arreglaron dos errores de cálculo y, con la persona quieta, ahora pasa el 100 % de las ventanas. El 0 % anterior probablemente se debió a que el barrido empezaba a grabar sin darte tiempo de acomodarte</span></li>
+      <li><span class="m d">✔</span><span class="dn"><b>Vista en vivo:</b> ventana con tu cámara, los puntos, la quietud y las métricas en tiempo real, que espera a que estés quieto antes de grabar. Probada en tu webcam: 100 % de quietud cuando estás quieto y 37 % cuando te mueves, así que el filtro distingue</span></li>
+      <li><span class="m d">✔</span><span class="dn"><b>Reintento automático</b> si te mueves durante la grabación (probado con simulaciones)</span></li>
+      <li><span class="m d">✔</span><span class="dn"><b>Barrido repetido con el filtro corregido:</b> aceptación cumplida (cara e iris 100 %, quietud 84,6 %)</span></li>
+      <li><span class="m w">●</span><span><b>Medir el suelo de ruido</b> en 3 sesiones, levantándote entre una y otra (ver la guía de arriba)</span></li>
+      <li><span class="m"></span><span>Medir el suelo de ruido: 3 bloques de 20 s, repetido en 3 sesiones levantándote y sentándote de nuevo</span></li>
+      <li><span class="m"></span><span>Anotar los resultados y el <b>cambio mínimo detectable</b> en los documentos</span></li>
+    </ul>
+    <p><b>Se da por terminada cuando:</b> se sabe qué cambio mínimo del párpado y del parpadeo se puede detectar en tu webcam, con la resolución registrada y los resultados escritos en los documentos.</p>
+  </div>
+
+  <div class="ph">
+    <div class="phh"><h3>Fase 1 · Base</h3><span class="chip c-grey">Pendiente · 0 de 5</span></div>
+    <div class="tags"><span class="tag">Rama <b>nico/vision-base</b></span><span class="tag">Agente: <b>Python</b></span></div>
+    <ul class="tasks">
+      <li><span class="m"></span><span>Módulo de puntos de la cara, que registra cámara, espejo y resolución</span></li>
+      <li><span class="m"></span><span>Puerta de calidad: mide luz, nitidez, pose y oclusión, y se abstiene si la imagen es mala</span></li>
+      <li><span class="m"></span><span>Línea base por persona y por cámara (mediana y MAD, mínimo 7 días válidos)</span></li>
+      <li><span class="m"></span><span>Formato de salida: valor, calidad, incertidumbre, estado, fuente y versión del modelo</span></li>
+      <li><span class="m"></span><span>Demo con webcam y botón para voltear la cámara</span></li>
+    </ul>
+    <p><b>Se da por terminada cuando:</b> la demo se abstiene al empeorar la imagen y cada resultado indica qué cámara se usó.</p>
+  </div>
+
+  <div class="ph">
+    <div class="phh"><h3>Fase 2 · Mediciones, en paralelo</h3><span class="chip c-grey">Pendiente · 0 de 2</span></div>
+    <div class="tags"><span class="tag">Ramas <b>nico/vision-parpadeo-periocular</b> y <b>nico/vision-distancia</b></span><span class="tag">Agentes: <b>Python, uno por rama</b></span></div>
+    <ul class="tasks">
+      <li><span class="m"></span><span><b>2a:</b> parpadeo, PERCLOS, apertura del párpado y MRD2, siempre como cambio contra la línea base de la persona</span></li>
+      <li><span class="m"></span><span><b>2b:</b> distancia a la pantalla por el tamaño del iris y control de mirada para las pruebas de agudeza y Amsler</span></li>
+    </ul>
+    <p><b>Diferida:</b> la pupila. A 512 px mide de 3 a 6 px y no se puede medir con puntos; hace falta una imagen mayor o procesar en el teléfono.</p>
+    <p><b>Se da por terminada cuando:</b> cada medida entrega valor, calidad, incertidumbre y estado, y su cambio mínimo detectable es conocido.</p>
+  </div>
+
+  <div class="ph">
+    <div class="phh"><h3>Fase 3 · Cierre</h3><span class="chip c-grey">Pendiente · 0 de 3</span></div>
+    <div class="tags"><span class="tag">Agentes: <b>QA y yo</b></span></div>
+    <ul class="tasks">
+      <li><span class="m"></span><span>Pruebas reales con webcam: lentes, poca luz, ojos marrones, cabeza inclinada y otra persona</span></li>
+      <li><span class="m"></span><span>Especificación de entrega para quien mantiene <code>nova-pc</code>: puente de visión, dibujo sobre la cara y el ojo como sistema del holograma</span></li>
+      <li><span class="m"></span><span>Revisión por oftalmología y por cirujano de vuelo</span></li>
+    </ul>
+    <p><b>Se da por terminada cuando:</b> hay resultados de pruebas reales y la especificación fue entregada.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>Depende de otras personas o de datos</h3>
+      <ul class="tasks">
+        <li><span class="m"></span><span><b>FPS real del escáner.</b> Con menos de unos 15 cuadros por segundo, parpadeo y PERCLOS no son viables por esa ruta.</span></li>
+        <li><span class="m"></span><span><b>Calidad JPEG real</b> y si el teléfono recorta la imagen antes de enviarla.</span></li>
+        <li><span class="m"></span><span><b>Qué cámara usa el escáner hoy.</b></span></li>
+        <li><span class="m"></span><span><b>Si las 689 estructuras incluyen el ojo.</b> La fuente lo trae, salvo retina y nervio óptico.</span></li>
+        <li><span class="m"></span><span><b>Cambio mínimo clínicamente relevante:</b> literatura o cirujano de vuelo.</span></li>
+        <li><span class="m"></span><span><b>Tu umbral de alerta de agudeza.</b></span></li>
+        <li><span class="m"></span><span><b>Protocolo de lesión ocular:</b> no existe entre los 12; candidato a sumar.</span></li>
+        <li><span class="m"></span><span><b>Licencia de BodyParts3D:</b> el PDF dice CC BY 4.0 y su README dice CC BY-SA 2.1 Japón.</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Pendientes de orden</h3>
+      <ul class="tasks">
+        <li><span class="m"></span><span>Borrar el repo de GitHub <code>aura-modelos</code>. Falta el permiso del token, o se hace desde Settings en la web.</span></li>
+        <li><span class="m"></span><span>Borrar las copias duplicadas de <code>Antecedentes/</code> y editar solo en <code>hackaton-vision/docs/</code>.</span></li>
+        <li><span class="m"></span><span>Revisar la carpeta <code>NASA-datos-salud/</code> que apareció en el proyecto.</span></li>
+        <li><span class="m"></span><span>Integrar la rama del spike a <code>main</code> cuando esté cerrada.</span></li>
+      </ul>
+      <h3 style="margin-top:6px">Quién hace qué</h3>
+      <ul class="tasks">
+        <li><span class="m d">·</span><span><b>Decisiones de visión y metodología:</b> agente de visión, con el modelo más capaz.</span></li>
+        <li><span class="m d">·</span><span><b>Código:</b> agente de Python, modelo de gama media.</span></li>
+        <li><span class="m d">·</span><span><b>Investigación y pruebas:</b> investigador y QA. Si un modelo falla dos veces, se sube de nivel.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note"><b>El paso inmediato:</b> medir el suelo de ruido (3 sesiones) con la vista en vivo, que espera a que estés quieto y repite la captura si te mueves. Con esos números se cierra la fase 0 y arranca la fase 1.</div>
+</section>
+
+<section class="sec">
+  <div class="q">Glosario</div>
+  <h2>Palabras raras</h2>
+  <dl>
+    <div><dt>SANS</dt><dd>Síndrome que afecta los ojos de astronautas tras meses en el espacio. NOVA nunca lo diagnostica: solo avisa un cambio.</dd></div>
+    <div><dt>Alerta de seguimiento</dt><dd>Aviso de que algo cambió respecto a tu normal. No es un diagnóstico.</dd></div>
+    <div><dt>Línea base</dt><dd>Tus valores habituales, medidos antes del vuelo. Con menos de 7 días válidos, NOVA se abstiene de avisar.</dd></div>
+    <div><dt>Abstenerse</dt><dd>Decir "no sé" cuando la imagen es mala, en vez de inventar un número.</dd></div>
+    <div><dt>MRD2</dt><dd>Distancia del centro de la córnea al borde del párpado inferior.</dd></div>
+    <div><dt>PERCLOS</dt><dd>Porcentaje de tiempo con los ojos casi cerrados en un minuto.</dd></div>
+  </dl>
+</section>
+
+<footer>Detalle, links de cada paper y marcas de verificación: <code>docs/soft-sensors-antecedentes.md</code> en el repo hackaton-vision. Las cifras vienen de abstracts y páginas oficiales; varios textos completos estaban bloqueados.</footer>
+</main>
