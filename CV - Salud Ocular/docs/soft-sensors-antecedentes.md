@@ -457,3 +457,43 @@ Normas con desviación estándar para MRD2 y fisura, Boboridis 2001 y Bodnar: [N
 | Fatiga, ciclo del día, edema leve | Sin datos en mm: no se puede afirmar |
 - **Corrección a lo dicho antes:** MRD1 es la medida más estable (MDC ~0,8-1,0 mm) pero **no cambia en microgravedad**, así que su estabilidad no ayuda a detectar hinchazón. MRD2 sí cambia (~1 mm) pero su MDC (~1,1-1,4 mm) está al límite. La candidata natural es MRD2 con varias medidas por sesión y comparada con la línea base individual.
 - La DE poblacional de MRD2 (~0,7 mm [INF]) es del mismo orden que el MDC: comparar con una norma poblacional no sirve, solo contra la línea base de cada persona.
+
+## 19. Síntesis: qué detectores se pueden sostener (14 nov 2026)
+Fuentes: tres revisiones con Europe PMC (resúmenes; textos completos bloqueados). Certeza media-baja. Los números de la tabla de detectores combinan lo medido en nuestro spike con esas revisiones.
+
+### 19.1 Somnolencia (PERCLOS y parpadeo)
+- [V, abstract] PERCLOS P80 (% de tiempo con el ojo más de 80 % cerrado) se asocia con somnolencia por privación de sueño y por ritmo circadiano en laboratorio con equipos dedicados (Abe, Sleep Advances 2023, PMID 37193281; Ftouni, J Biol Rhythms 2013 y J Clin Sleep Med 2015). La definición varía entre estudios (80 %, 70 %, 25-30 % de apertura).
+- [V, abstract] Metaanálisis de 61 estudios (1.441 participantes): pendiente de PERCLOS-80 frente al deterioro de conducción 0,02 (IC 0,01-0,04), certeza GRADE baja (Davin, Sleep Med Rev 2026, DOI 10.1016/j.smrv.2026.102380). "No single index is currently available as an optimal marker" (Abe 2023).
+- [V, abstract] A 30 fps se pierde la dinámica del parpadeo: velocidades máximas subestimadas por debajo de 250 fps; amplitud y duración total, aceptables (Navascues-Cornago, Ocul Surf 2026, DOI 10.1016/j.jtos.2026.01.003).
+- [NV] Sensibilidad y especificidad de PERCLOS con webcam/EAR; correlaciones de Dinges 1998 (el PDF original no se pudo leer; el r = 0,875 de secciones anteriores sale de un resumen); cualquier dato de parpadeo o PERCLOS en espacio o aislamiento.
+- Formulación defendible: "indicador de apoyo, comparado con la línea base individual", no "detector de somnolencia".
+
+### 19.2 Fatiga visual y ojo seco (parpadeo)
+- [V] Parpadeo con pantalla: 11,6/min (DE 7,8; n=21; Portello 2013, DOI 10.1111/opo.12013 [NV el DOI exacto]) y 14,9/min en pantalla frente a 13,6/min en papel (Chu 2014, DOI 10.1097/opx.0000000000000157). Reposo ~17/min, lectura 4-5/min, conversación ~26/min [P, cita secundaria vía Brych 2021, DOI 10.1371/journal.pone.0258322].
+- [V] Parpadeos incompletos en pantalla: 16,1 % (Portello 2013) y 7,0 % (Chu 2014). Los dos estudios discrepan sobre si se relacionan con síntomas (n=21 y n=25).
+- [V] La tasa baja por carga cognitiva y no solo por pantallas (Chu 2014; Bend, J Eye Mov Res 2026, DOI 10.3390/jemr19020028).
+- [P] Con webcam, un estudio exploratorio (n=13, 4 a 30 fps) halló que el puntaje de síntomas bajaba 1,26 por cada parpadeo adicional (Lapa, IJERPH 2023, DOI 10.3390/ijerph20054569). BlinkNet-Q (Xu, Transl Vis Sci Technol 2026, DOI 10.1167/tvst.15.9.4): ICC 0,973 para la tasa, ICC 0,937 y AUC 0,884 para parpadeos incompletos; prueba de concepto en condiciones estandarizadas.
+- [V] TFOS DEWS II: el diagnóstico de ojo seco exige cuestionario (OSDI/DEQ-5) más pruebas de superficie ocular; el parpadeo no es una prueba diagnóstica. Una revisión de 2026 (Ong, Eye) concluye que las métricas de parpadeo con apps o webcam tienen "insufficient validation".
+- [V] Astronautas: síntomas oculares post-vuelo en 257 astronautas: irritación 34 %, cuerpo extraño 21 %, ojo seco 14 % (autorreporte; Ong, Life Sci Space Res 2025, DOI 10.1016/j.lssr.2025.05.005). El parpadeo en vuelo no se había estudiado hasta 2023 (Ax, Front Physiol 2023, DOI 10.3389/fphys.2023.1281327).
+- [INF] A 30 fps una fase de cierre de ~100 ms son ~3 cuadros: la amplitud parcial queda muy submuestreada. Mejor reportar un índice de apertura mínima con incertidumbre que un "% de incompletos" diagnóstico.
+- Formulación defendible: "señal de riesgo de sequedad o fatiga visual, comparada con la línea base individual; no diagnostica".
+
+### 19.3 Hinchazón de párpados como tendencia
+- [V] Distancia pupila-ceja (PTB): +3,7 mm en 18 astronautas, 112 fotos (Karlin 2021, PMID 33710037) y +2,3 mm en vuelo parabólico (Ax, Orbit 2025, PMID 40265683). MRD1 no cambia en ninguno. En parabólico MRD2 baja (−0,9 mm [P: el abstract obtenido estaba truncado]).
+- [V] Acostado frente a de pie: MRD1 2,97 a 2,38 mm, MRD2 5,57 a 5,01 mm, fisura 8,54 a 7,38 mm (Wier 2024, PMID 38534066).
+- [V] Landmarks automáticos: diferencia media absoluta de 0,5 mm en MRD1 y MRD2 frente a humanos y 1,5 a 2 mm en la altura de la ceja (Van Brummen, PeriorbitAI, Am J Ophthalmol 2021, PMID 34010596); ICC > 0,90 (Rana 2025, PMID 38710195).
+- [V] Asimetría de fisura ≥ 1 mm en ~6 % de sanos (Lam 1995, PMID 7573311) y en ~25 % (Song 2007, PMID 17293281): 1 mm de asimetría es frecuente, no sirve como alarma absoluta.
+- [NV] mm de cambio por edema alérgico, tiroideo o por sueño; repetibilidad entre días de MRD; efecto de sal o alcohol; norma de la diferencia derecha-izquierda de MRD; aplicación de CUSUM o EWMA a medidas palpebrales.
+- [INF] Número de medidas para detectar 1 mm contra una línea base conocida, con α=0,05 y potencia 80 %: ~8 con ruido de 1 mm y ~31 con 2 mm; el doble si la base también se estima. Deben ser de sesiones separadas, no cuadros seguidos.
+- Formulación defendible: "NOVA mide y sigue la tendencia de la posición de párpados y ceja; no detecta edema".
+
+### 19.4 Tabla de detectores
+| Detector | Métrica que lo sostiene | Evidencia | ¿Alcanza nuestro ruido (~1 a 2 mm)? | Qué falta |
+|---|---|---|---|---|
+| Somnolencia (apoyo) | PERCLOS aprox., duración total del parpadeo | Laboratorio, equipos dedicados; certeza baja en conducción | Sí (es proporción de tiempo, no mm) | Umbral por persona; piloto contra KSS y PVT |
+| Fatiga visual y ojo seco (riesgo) | Tasa de parpadeo, índice de apertura mínima | Asociaciones pequeñas y contradictorias | Sí (es conteo) | Validar el conteo; 30 fps limita incompletos |
+| Distancia pupila-ceja | PTB | La señal más grande en microgravedad (+2 a +4 mm) | Sí, mayor que el ruido, pero la ceja tiene 1,5 a 2 mm de error | Medir ceja en el spike |
+| Párpado inferior (MRD2) | MRD2 | −0,9 mm parabólico, −0,56 mm acostado | Límite (MDC 1,1-1,4 mm) | Varias medidas por sesión; línea base |
+| Párpado superior (MRD1) | MRD1 | Sin cambio en microgravedad; −0,6 mm acostado, −0,7 mm en hipergravedad | MDC 0,8-1,0 mm | Sirve para ptosis o retracción, no para hinchazón en órbita |
+| Asimetría entre ojos | A, MRD1, MRD2 (derecho menos izquierdo) | Asimetría de 1 mm frecuente en sanos | Solo cambios vs la propia base | Norma de asimetría |
+| Estrés y emoción | Parpadeo, 52 puntajes de expresión | Débil con solo cámara; modelo entrenado para AR de entretenimiento | n/a | Solo opt-in, visible solo para la persona (decisión del 14 nov) |
