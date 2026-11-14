@@ -900,7 +900,7 @@ def _run_noise_floor(a: Any, gp: sm.GateParams, view: sv.LiveView | None, mon: s
     print(f"""
 ==================== PROTOCOLO (sesion {a.session_id}) ====================
 ANTES DE EMPEZAR
-  1. Monitor a ~50 cm. Cabeza APOYADA (respaldo o una mano en la sien), mismo lugar y luz.
+  1. Monitor a ~50 cm. Cabeza APOYADA (contra el respaldo alto o la pared; NUNCA con la mano en la cara), mismo lugar y luz.
   2. Cuando abra la ventana, subela al borde superior de la pantalla, pegada a la camara.
 EN CADA BLOQUE ({a.blocks} bloques de {a.block_seconds:.0f} s)
   - Mira el PUNTO ROJO de arriba todo el tiempo (no tu cara ni el texto).

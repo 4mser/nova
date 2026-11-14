@@ -773,3 +773,97 @@ Sesiones agregadas: 3 (ids [2, 3, 4]). Cada sesion: 3 bloques de ~20 s, mirada f
 
 **NO se puede afirmar:** precision en mm (no hay verdad de referencia; los mm son [INF] suponiendo iris de 11,7 mm); generalizacion a otras personas; validez clinica; edema; SANS; desempeno del escaner real; camara trasera; microgravedad; ni que la poca luz simulada equivalga a poca luz real. MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal.
 
+
+## Suelo de ruido y MDC (2026-11-14 19:32)
+
+**Registro**
+
+- Fecha: 2026-11-14T19:32:32; commit: `d3df026`
+- frame.shape real: (480, 640, 3)
+- Resolucion pedida vs obtenida: [None, None] vs [640, 480]
+- FPS medido con timestamps: 29.69 (mediana instantanea 29.69); CAP_PROP_FPS: 30.0
+- Backend: MSMF (solicitado: default); indice de camara: 0; facing: front
+- Espejo: no aplicado (cuadro tal como lo entrega la camara)
+- Notas: luz de escritorio, sin lentes, 50 cm, mirando punto rojo; sujeto: S01
+- Python 3.13.12, mediapipe 1.2.3, opencv 5.0.0, numpy 2.5.4
+- Modelo sha256: `64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff`
+- Running mode: VIDEO
+- Iris asignado por cercania a las comisuras: {'R': 468, 'L': 473}
+- Espera de quietud antes de grabar: ['quietud lograda tras 1.6 s de espera', 'quietud lograda tras 2.7 s de espera', 'quietud lograda tras 2.9 s de espera']
+- Quietud durante la captura (reintento si < 80.0 %, hasta 2 reintentos): bloque 1: 1 intento(s), quietud 99.8 % (minimo 80 %); bloque 2: 1 intento(s), quietud 92.2 % (minimo 80 %); bloque 3: 1 intento(s), quietud 93.1 % (minimo 80 %)
+- Umbrales del gate (PROPUESTA): ventana 1.0 s, velocidad < 0.5 % IOD/cuadro (cuantil 0.5), roll < 2.0 grados, IOD < 2.0 %, yaw/pitch < 3.0 grados
+- Parpadeo: EAR < 0,6 x mediana abierta durante >= 2 cuadros. Suelo de ruido: excluye EAR < 0,75 x mediana y +-3 cuadros. Euler: Y-X-Z intrinseco, R normalizada por columnas; solo se usan rangos de yaw/pitch
+
+Sesiones agregadas: 3 (ids [5, 6, 7]). Cada sesion: 3 bloques de ~20 s, mirada fija, cabeza apoyada; solo cuadros que pasan el gate, sin parpadeos (EAR < 0,75 x mediana) ni +-3 cuadros. sigma_w = 1,4826 x MAD de las medias de bloques de 1 s dentro de la sesion (mancomunada entre sesiones, RMS). sigma_b = desv. estandar (ddof=1) de las medias de sesion. MDC95 = 1,96 x raiz(2) x sigma sobre medias de 1 s (no sigma/raiz(N): el modo VIDEO autocorrelaciona los cuadros); el valor con reposicionamiento usa raiz(sigma_w^2 + sigma_b^2). Los mm son [INF] (iris 11,7 mm). El reposicionamiento entre sesiones no se puede verificar desde el codigo.
+
+### Tabla 2: suelo de ruido y MDC
+
+| Metrica | Ojo | media | sigma_w | sigma_b | MDC95 intra-sesion | MDC95 con reposicionamiento | MDC95 repos. (mm) [INF] | MDC95 repos. SIN filtro ceja (mm) [INF] | % cuadros excl. por ceja | pendiente PTB-pitch (mm/grado) [INF] |
+|---|---|---|---|---|---|---|---|---|---|---|
+| EAR | R | 0.2602 | 0.01743 | 0.01536 | 0.04832 | 0.06441 | - | - | - | - |
+| EAR | L | 0.2748 | 0.01800 | 0.01192 | 0.04990 | 0.05985 | - | - | - | - |
+| A (diam. iris) | R | 0.6801 | 0.04094 | 0.03813 | 0.11347 | 0.15506 | 1.814 | - | - | - |
+| A (diam. iris) | L | 0.6523 | 0.04147 | 0.01563 | 0.11495 | 0.12284 | 1.437 | - | - | - |
+| MRD2n proxy (diam. iris) | R | 0.3925 | 0.02405 | 0.01045 | 0.06665 | 0.07268 | 0.850 | - | - | - |
+| MRD2n proxy (diam. iris) | L | 0.3774 | 0.02072 | 0.00810 | 0.05744 | 0.06167 | 0.721 | - | - | - |
+| MRD1n proxy (diam. iris) | R | 0.2876 | 0.02059 | 0.02991 | 0.05708 | 0.10067 | 1.178 | - | - | - |
+| MRD1n proxy (diam. iris) | L | 0.2749 | 0.02503 | 0.01419 | 0.06937 | 0.07975 | 0.933 | - | - | - |
+| u (ancho de ojo) | R | -0.0299 | 0.00893 | 0.00908 | 0.02475 | 0.03530 | - | - | - | - |
+| u (ancho de ojo) | L | 0.0480 | 0.01229 | 0.00895 | 0.03406 | 0.04214 | - | - | - | - |
+| v (ancho de ojo) | R | -0.0451 | 0.00668 | 0.01179 | 0.01850 | 0.03756 | - | - | - | - |
+| v (ancho de ojo) | L | -0.0541 | 0.00496 | 0.00869 | 0.01375 | 0.02774 | - | - | - | - |
+| PTB_inf = pupila a ceja INF (diam. iris) PRINCIPAL | R | 1.6350 | 0.09883 | 0.02449 | 0.27393 | 0.28222 | 3.302 | 3.298 | 0.8 | -0.383 bloques / -0.156 sesiones |
+| PTB_inf = pupila a ceja INF (diam. iris) PRINCIPAL | L | 1.5177 | 0.08659 | 0.05265 | 0.24003 | 0.28091 | 3.287 | 3.302 | 0.8 | -0.383 bloques / -0.156 sesiones |
+| PTB_sup = pupila a ceja SUP (diam. iris) | R | 2.1407 | 0.09692 | 0.04414 | 0.26864 | 0.29519 | 3.454 | 3.445 | 0.8 | - |
+| PTB_sup = pupila a ceja SUP (diam. iris) | L | 2.0078 | 0.08680 | 0.06510 | 0.24059 | 0.30074 | 3.519 | 3.512 | 0.8 | - |
+| brow_fis = parpado a ceja INF (diam. iris) | R | 1.3476 | 0.09642 | 0.04149 | 0.26726 | 0.29095 | 3.404 | 3.477 | 0.8 | - |
+| brow_fis = parpado a ceja INF (diam. iris) | L | 1.2430 | 0.09677 | 0.06120 | 0.26824 | 0.31738 | 3.713 | 3.714 | 0.8 | - |
+| brow_th = SUP - INF, grosor (diam. iris) | R | 0.5056 | 0.00937 | 0.02062 | 0.02596 | 0.06278 | 0.735 | 0.731 | 0.8 | - |
+| brow_th = SUP - INF, grosor (diam. iris) | L | 0.4901 | 0.01202 | 0.01982 | 0.03332 | 0.06425 | 0.752 | 0.749 | 0.8 | - |
+| PTB_inf landmark unico 52/282 (control) | R | 1.6677 | 0.09573 | 0.01700 | 0.26536 | 0.26951 | 3.153 | 3.151 | 0.8 | - |
+| PTB_inf landmark unico 52/282 (control) | L | 1.5458 | 0.08537 | 0.04844 | 0.23662 | 0.27206 | 3.183 | 3.170 | 0.8 | - |
+| PTB_sup landmark unico 105/334 (control) | R | 2.1591 | 0.09549 | 0.03507 | 0.26469 | 0.28197 | 3.299 | 3.298 | 0.8 | - |
+| PTB_sup landmark unico 105/334 (control) | L | 2.0117 | 0.08417 | 0.05795 | 0.23330 | 0.28325 | 3.314 | 3.309 | 0.8 | - |
+| PTB_inf lateral 46/276 (opcional) | R | 1.0768 | 0.05995 | 0.03651 | 0.16618 | 0.19458 | 2.277 | 2.273 | 0.8 | - |
+| PTB_inf lateral 46/276 (opcional) | L | 1.0024 | 0.04974 | 0.03667 | 0.13786 | 0.17129 | 2.004 | 1.993 | 0.8 | - |
+| PTB_inf medial 55/285 (opcional) | R | 1.2418 | 0.06873 | 0.05207 | 0.19052 | 0.23901 | 2.796 | 2.811 | 0.8 | - |
+| PTB_inf medial 55/285 (opcional) | L | 1.1913 | 0.05949 | 0.06064 | 0.16490 | 0.23547 | 2.755 | 2.750 | 0.8 | - |
+| D/IOD | - | 0.1926 | 0.00337 | 0.00458 | 0.00934 | 0.01577 | - | - | - | - |
+
+### Que se puede afirmar / que NO
+
+**Se puede afirmar:** el cambio minimo detectable (MDC) de ESTA persona, ESTA camara y ESTA luz, y la caida de deteccion con roll sin compensar.
+
+**NO se puede afirmar:** precision en mm (no hay verdad de referencia; los mm son [INF] suponiendo iris de 11,7 mm); generalizacion a otras personas; validez clinica; edema; SANS; desempeno del escaner real; camara trasera; microgravedad; ni que la poca luz simulada equivalga a poca luz real. MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal.
+
+
+### Criterios de aceptacion de PTB_inf (umbrales PROVISORIOS; mm [INF], iris 11,7 mm)
+
+- MDC95 con reposicionamiento de PTB_inf (peor ojo): **NO CUMPLE**: R 3.30, L 3.29 mm [INF] -> 3.30 mm > 2.3 mm: NO USABLE para detectar +2,3 mm; SIN filtro de ceja: R 3.30, L 3.30 mm
+- sigma_w de brow_th comparable a MRD1n: **CUMPLE**: sigma_w brow_th 0.01078 vs MRD1n 0.02292 diam. iris (cociente 0.47; 'comparable' = <= 2, [SUPUESTO])
+- pendiente PTB_inf-pitch < 0.1 mm/grado [SUPUESTO]: **NO CUMPLE**: entre bloques -0.383 mm/grado (9 bloques), entre sesiones -0.156 mm/grado (3 sesiones); n/a = pitch casi constante (< 0,05 grados) o < 3 puntos
+- exclusion por ceja activa < 30 %: **CUMPLE**: por sesion: 1.1 %, 0.8 %, 0.3 %
+- control positivo detectado: **SIN DATOS**: no hay --brow-control registrado
+
+### Ceja (PTB): que se puede afirmar / que NO
+
+**Se puede afirmar:** el cambio minimo detectable de la distancia pupila-ceja (PTB, pupila a borde INFERIOR de la ceja segun Karlin 2021) de ESTA persona, ESTA camara y ESTA luz, en diametros de iris, con y sin el filtro de expresion, y si un gesto de ceja grande (control positivo) se detecta.
+
+**NO se puede afirmar:** precision en mm (los mm son [INF], iris 11,7 mm, sin verdad de referencia); edema ni SANS; validez en astronautas ni en otras personas; poca luz; microgravedad. La ceja esta ~10 mm [SUPUESTO] por delante del iris: hay paralaje con el pitch. Los indices de ceja son SUPUESTOS hasta confirmarlos con --brow-check. Los umbrales de ceja activa son PROVISORIOS.
+
+
+## Control positivo de ceja (2026-11-14 19:36)
+
+Referencia: MDC95 con reposicionamiento de 3 sesiones; MDC95 PTB_inf R 0.2822, L 0.2809 diam. iris (3.30 / 3.29 mm [INF])
+Neutral: PTB_inf R 1.838, L 1.723 diam. iris, 212 cuadros utiles
+CEJAS ALZADAS: cambio PTB_inf R 0.283, L 0.165 diam. iris (3.31 / 1.92 mm [INF]) = 1.0 / 0.6 x MDC -> NO detectado (> 3 x MDC en ambos ojos); signo esperado; blendshapes: ceja activa en 94 % de los cuadros -> marcado; cambio de pitch -0.8 grados
+CENO FRUNCIDO: cambio PTB_inf R -0.767, L -0.814 diam. iris (-8.97 / -9.52 mm [INF]) = 2.7 / 2.9 x MDC -> NO detectado (> 3 x MDC en ambos ojos); signo esperado; blendshapes: ceja activa en 100 % de los cuadros -> marcado; cambio de pitch 7.7 grados
+  ! el pitch cambio > 1 grado: parte del cambio puede ser paralaje, no la ceja
+CONTROL POSITIVO: NO DETECTADO
+
+### Ceja (PTB): que se puede afirmar / que NO
+
+**Se puede afirmar:** el cambio minimo detectable de la distancia pupila-ceja (PTB, pupila a borde INFERIOR de la ceja segun Karlin 2021) de ESTA persona, ESTA camara y ESTA luz, en diametros de iris, con y sin el filtro de expresion, y si un gesto de ceja grande (control positivo) se detecta.
+
+**NO se puede afirmar:** precision en mm (los mm son [INF], iris 11,7 mm, sin verdad de referencia); edema ni SANS; validez en astronautas ni en otras personas; poca luz; microgravedad. La ceja esta ~10 mm [SUPUESTO] por delante del iris: hay paralaje con el pitch. Los indices de ceja son SUPUESTOS hasta confirmarlos con --brow-check. Los umbrales de ceja activa son PROVISORIOS.
+

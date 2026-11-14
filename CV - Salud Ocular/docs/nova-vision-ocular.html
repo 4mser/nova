@@ -426,7 +426,7 @@ code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
     <div class="phh"><h3>Suelo de ruido (3 sesiones)</h3><span class="chip c-cv">La que toca ahora</span></div>
     <p>Mide cuánto "tiembla" cada medida aunque nada cambie. Cada sesión son 3 bloques de 20 segundos.</p>
     <ul class="tasks">
-      <li><span class="m">1</span><span><b>Prepárate:</b> luz de escritorio, sin lentes, monitor a ~50 cm, cabeza apoyada y <b>cejas relajadas</b>. Sube la ventana al borde superior de la pantalla, pegada a la cámara.</span></li>
+      <li><span class="m">1</span><span><b>Prepárate:</b> luz de escritorio, sin lentes, monitor a ~50 cm, cabeza apoyada contra el respaldo alto o la pared (<b>nunca con la mano en la cara</b>, porque tapa las cejas) y <b>cejas relajadas</b>. Sube la ventana al borde superior de la pantalla, pegada a la cámara.</span></li>
       <li><span class="m">2</span><span><b>Paso 1, comprobar las cejas:</b> corre <code>--brow-check</code>. Ceja superior en verde, inferior en rojo: deben seguir tus cejas. Si no, avisa antes de seguir.</span></li>
       <li><span class="m">3</span><span><b>Paso 2, tres sesiones (5, 6 y 7):</b> cada una son 3 bloques de 20 s. Mira el <b>punto rojo</b>, quieto, sin hablar, <b>parpadeando normal</b>. 1 pitido empieza, 2 terminan el bloque, 3 significan que te moviste y se repite.</span></li>
       <li><span class="m">4</span><span><b>Entre sesiones: levántate, camina 20 a 30 s y vuelve a sentarte como lo harías normalmente.</b> No busques quedar igual ni distinto: esa variación natural es lo que se mide. Si te quedas sentado, el cambio mínimo detectable sale demasiado optimista.</span></li>
@@ -691,7 +691,7 @@ code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
     <tbody>
       <tr><td>Somnolencia (apoyo)</td><td>PERCLOS aprox. y duración del parpadeo</td><td>Laboratorio con equipos dedicados; certeza baja en conducción; sin datos con webcam</td><td>Sí (es proporción de tiempo)</td><td>Umbral por persona y un piloto contra una escala de sueño</td></tr>
       <tr><td>Fatiga visual y ojo seco (riesgo)</td><td>Tasa de parpadeo e índice de apertura mínima</td><td>Asociaciones pequeñas y contradictorias; el parpadeo no diagnostica</td><td>Sí (es un conteo)</td><td>Validar el conteo; 30 fps limita los incompletos</td></tr>
-      <tr><td>Distancia pupila a ceja</td><td>PTB</td><td>+2 a +4 mm en microgravedad: la señal más grande</td><td>Sí, pero la ceja tiene 1,5 a 2 mm de error</td><td>Medir la ceja en el spike</td></tr>
+      <tr><td>Distancia pupila a ceja</td><td>PTB</td><td>+2 a +4 mm en microgravedad</td><td>No: el ruido medido es ~3,3 mm</td><td>Solo sirve para cambios grandes y gestos</td></tr>
       <tr><td>Párpado inferior</td><td>MRD2</td><td>−0,9 mm en parabólico; −0,6 mm acostado</td><td>Al límite (1,1 a 1,4 mm)</td><td>Varias medidas por sesión</td></tr>
       <tr><td>Párpado superior</td><td>MRD1</td><td>No cambia en microgravedad</td><td>Sí (0,8 a 1,0 mm)</td><td>Sirve para ptosis o retracción, no para hinchazón</td></tr>
       <tr><td>Asimetría entre ojos</td><td>Derecho menos izquierdo</td><td>1 mm de asimetría es frecuente en sanos</td><td>Solo contra la base propia</td><td>Norma de asimetría</td></tr>
@@ -700,6 +700,26 @@ code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
   </table>
   </div>
   <div class="note"><b>Lo que se puede decir y lo que no:</b> NOVA <b>mide y sigue la tendencia</b> de parpadeo, párpados y ceja contra la línea base de cada persona. <b>No diagnostica</b> somnolencia, ojo seco ni edema: la cadena "cambio de medida, luego alarma" no está validada con cifras en ninguno de los tres casos. La señal más fuerte en microgravedad es la distancia pupila a ceja, que hoy no medimos.</div>
+</section>
+
+<section class="sec">
+  <div class="q">Resultado de la ceja</div>
+  <h2>Cuánto tiembla cada medida con reposicionamiento (sesiones 5 a 7)</h2>
+  <p class="sub">Una persona, tu webcam, tres sesiones. Cambio mínimo detectable al 95 %, en mm suponiendo un iris de 11,7 mm.</p>
+  <div class="tbl">
+  <table>
+    <thead><tr><th>Medida</th><th>Cambio mínimo detectable</th><th>Lectura</th></tr></thead>
+    <tbody>
+      <tr><td>Párpado inferior (MRD2)</td><td>0,7 a 0,9 mm</td><td>La más estable de todas</td></tr>
+      <tr><td>Párpado superior (MRD1)</td><td>0,9 a 1,2 mm</td><td>Sirve para ptosis; no cambia en microgravedad</td></tr>
+      <tr><td>Apertura palpebral</td><td>1,4 a 1,8 mm</td><td>Más ruidosa que MRD2</td></tr>
+      <tr><td>Distancia pupila a ceja, punto lateral</td><td>2,0 a 2,3 mm</td><td>La mejor de las medidas de ceja</td></tr>
+      <tr><td>Distancia pupila a ceja, principal (PTB_inf)</td><td>3,3 mm</td><td>No cumple el criterio (≤ 2,3 mm)</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note"><b>Control de cejas (cejas alzadas y ceño fruncido): no detectado.</b> Un gesto grande de cejas alzadas movió la medida solo 1,9 a 3,3 mm (0,6 a 1,0 veces el ruido), y el ceño fruncido 9 mm pero con 7,7° de cabeceo. La distancia pupila a ceja no sirve para cambios sutiles (2 a 4 mm) con esta webcam, pero la ceja sí se detecta: los puntos caen en las cejas y los gestos grandes se reconocen. Sirve para gestos, ceja caída, asimetría y como filtro de calidad (por investigar).</div>
+  <div class="note"><b>Lo esperado no se cumplió:</b> la distancia pupila a ceja, que cambia 2 a 4 mm en microgravedad, tiene un ruido de ~3,3 mm, así que casi no se vería. Parte del ruido viene del cabeceo (−0,38 mm por grado). El punto lateral de la ceja es el menos ruidoso (2,0 a 2,3 mm). Falta probar corregir el cabeceo, correr el control de cejas, y las tres sesiones son pocas para estimar la variación entre sesiones.</div>
 </section>
 
 <footer>Detalle, links de cada paper y marcas de verificación: <code>docs/soft-sensors-antecedentes.md</code> en el repo hackaton-vision. Las cifras vienen de abstracts y páginas oficiales; varios textos completos estaban bloqueados.</footer>

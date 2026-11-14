@@ -497,3 +497,52 @@ Fuentes: tres revisiones con Europe PMC (resúmenes; textos completos bloqueados
 | Párpado superior (MRD1) | MRD1 | Sin cambio en microgravedad; −0,6 mm acostado, −0,7 mm en hipergravedad | MDC 0,8-1,0 mm | Sirve para ptosis o retracción, no para hinchazón en órbita |
 | Asimetría entre ojos | A, MRD1, MRD2 (derecho menos izquierdo) | Asimetría de 1 mm frecuente en sanos | Solo cambios vs la propia base | Norma de asimetría |
 | Estrés y emoción | Parpadeo, 52 puntajes de expresión | Débil con solo cámara; modelo entrenado para AR de entretenimiento | n/a | Solo opt-in, visible solo para la persona (decisión del 14 nov) |
+
+## 20. Comprobación visual de los puntos de la ceja (14 nov 2026)
+`--brow-check` con la webcam de Niko (sujeto S01). **Confirmado visualmente por el usuario:** la línea verde (borde superior) y la roja (borde inferior) caen sobre las dos cejas, cada una en la suya. Esto confirma [V, una persona] los índices de ceja usados (supuestos de memoria hasta ahora): R superior 70, 63, 105, 66, 107 e inferior 46, 53, 52, 65, 55; L superior 300, 293, 334, 296, 336 e inferior 276, 283, 282, 295, 285.
+
+Valores en reposo (diámetros de iris; mm [INF] con iris de 11,7 mm): PTB_inf 1,5-1,7 (~18-20 mm), PTB_sup 2,0-2,2 (~23-26 mm), grosor de ceja 0,44-0,50 (~5-6 mm). Puntaje de ceja activa en reposo 0,06-0,11 y hasta 0,97 al mover las cejas: el filtro de expresión reacciona (umbral provisorio 0,30). PTB_inf varió ~0,2 diámetros (~2,3 mm) en unos segundos, en parte por cabeceo (hasta −13,7°). No es una medición del ruido: eso lo da el suelo de ruido.
+
+## 21. Suelo de ruido con ceja: sesiones 5, 6 y 7 (14 nov 2026, 19:32)
+Webcam de Niko, 640x480, ruta 512 px q80, modo VIDEO, sujeto S01, cejas relajadas, mirando el punto rojo. Tres sesiones con reposicionamiento (bloques con quietud de 92 a 100 %). Informe `--noise-floor-report --exclude-sessions 1,2,3,4`; tabla completa en `docs/spike-resultados.md`. Los mm son [INF] (iris 11,7 mm).
+
+| Medida | σ_w | σ_b | MDC95 con reposicionamiento (R / L) | en mm [INF] |
+|---|---|---|---|---|
+| Apertura A | 0,041 / 0,041 | 0,038 / 0,016 | 0,155 / 0,123 | 1,8 / 1,4 |
+| MRD2n | 0,024 / 0,021 | 0,010 / 0,008 | 0,073 / 0,062 | **0,85 / 0,72** |
+| MRD1n | 0,021 / 0,025 | 0,030 / 0,014 | 0,101 / 0,080 | 1,2 / 0,9 |
+| **PTB_inf (principal)** | 0,099 / 0,087 | 0,024 / 0,053 | 0,282 / 0,281 | **3,3 / 3,3** |
+| PTB_sup | 0,097 / 0,087 | 0,044 / 0,065 | 0,295 / 0,301 | 3,5 / 3,5 |
+| PTB_inf, punto lateral (46/276) | 0,060 / 0,050 | 0,037 / 0,037 | 0,195 / 0,171 | 2,3 / 2,0 |
+| PTB_inf, punto medial (55/285) | 0,069 / 0,059 | 0,052 / 0,061 | 0,239 / 0,235 | 2,8 / 2,8 |
+| Grosor de la ceja | 0,009 / 0,012 | 0,021 / 0,020 | 0,063 / 0,064 | 0,7 / 0,8 |
+
+**Criterios de aceptación de PTB_inf** (umbrales provisorios del arquitecto):
+- MDC95 con reposicionamiento ≤ 2,3 mm: **NO CUMPLE** (3,3 mm). Con 3,3 mm no se detectaría el +2,3 mm del vuelo parabólico (Ax 2025) y el +3,7 mm de astronautas (Karlin 2021) quedaría apenas por encima del límite.
+- σ_w del grosor de la ceja comparable a MRD1n: **CUMPLE** (cociente 0,47).
+- Pendiente de PTB con el cabeceo < 0,1 mm/°: **NO CUMPLE**: −0,38 mm/° entre bloques y −0,16 mm/° entre sesiones.
+- Cuadros excluidos por ceja activa < 30 %: **CUMPLE** (0,3 a 1,1 %).
+- Control positivo: **SIN DATOS** (no se ha corrido `--brow-control`).
+
+**Lectura** [V medido, una persona, tres sesiones]:
+- **PTB_inf es ~4 veces más ruidosa que MRD2n**, con σ_w de 0,09 contra 0,02 diámetros de iris. El grosor de la ceja casi no varía (σ 0,01): las dos líneas de la ceja se mueven juntas. **La ceja entera se desplaza respecto al ojo.**
+- **Parte de esa variación depende del cabeceo** (pendiente −0,38 mm/° entre bloques), lo que coincide con el efecto de paralaje esperado: la ceja está por delante del iris. [INF] Con 1 a 2° de variación de cabeceo, eso son ~0,4 a 0,8 mm.
+- **El filtro de expresión casi no interviene** (0,8 % de cuadros): las cejas estaban relajadas, y con y sin filtro los resultados coinciden.
+- **El punto lateral de la ceja es el menos ruidoso** (MDC ~2,0 a 2,3 mm), pero sigue al límite.
+- **MRD2n mejoró respecto a las sesiones 2 a 4** (0,72 a 0,85 mm frente a 1,1 a 1,4 mm): la medida del párpado inferior es la más estable de todas. [INF] La diferencia puede deberse a la mejor quietud con el filtro corregido y a cómo estabas ese día, no a una mejora del método.
+- **σ_b se estima con tres números** y las sesiones 5 y 6 diferían mucho entre sí (PTB_inf σ_w 0,15 y 0,055): el cambio mínimo con reposicionamiento es impreciso.
+- **Posibles mejoras sin medir aún:** corregir PTB por el cabeceo (regresión con la pendiente medida) y usar el punto lateral. Ninguna está probada.
+
+## 22. Control positivo de ceja (14 nov 2026, 19:35)
+`--brow-control` con la webcam de Niko: 10 s neutral, 10 s cejas alzadas, 4 s de descanso, 10 s ceño fruncido. Referencia: MDC95 de PTB_inf con reposicionamiento de las sesiones 5 a 7 (3,3 mm [INF]). Una persona, una corrida.
+
+| Fase | Cambio de PTB_inf (R / L) | En mm [INF] | Veces el MDC | ¿Detectado (> 3 veces el MDC en ambos ojos)? |
+|---|---|---|---|---|
+| Cejas alzadas | +0,283 / +0,165 diám. de iris | +3,3 / +1,9 mm | 1,0 / 0,6 | **No** |
+| Ceño fruncido | −0,767 / −0,814 | −9,0 / −9,5 mm | 2,7 / 2,9 | **No** (por poco) |
+
+- El signo es el esperado en ambas fases, y los puntajes de expresión marcaron ceja activa en el 94 % (alzadas) y el 100 % (fruncido) de los cuadros: el filtro de expresión funciona.
+- **Resultado: CONTROL POSITIVO NO DETECTADO.** Con el ruido medido (3,3 mm), ni un gesto grande de cejas alzadas supera el umbral. [INF] La malla de MediaPipe probablemente sigue poco el movimiento de la ceja hacia arriba (tiende a la forma media de la cara): un gesto voluntario grande movió el PTB solo 2 a 3 mm.
+- **Aviso:** al fruncir el cabeceo cambió 7,7°, así que parte de los −9 mm es paralaje y no la ceja. Con las cejas alzadas el cabeceo cambió −0,8°.
+- **Consecuencia:** con esta webcam y este modelo, PTB_inf no es una señal usable para detectar cambios **sutiles** como los +2 a +4 mm de la microgravedad: quedan dentro del ruido. **Eso no significa que la ceja no se detecte:** los puntos caen sobre las cejas (confirmado a ojo), los gestos grandes (alzar, fruncer) se detectan con los puntajes de expresión (94 % y 100 % de los cuadros) y el ceño fruncido movió la medida ~9 mm. La ceja sigue siendo útil para cambios grandes, gestos y como filtro de calidad. Usos posibles a investigar [NV]: ceja caída, asimetría, conteo de gestos (solo con permiso de la persona).
+- No se corrigió PTB por el cabeceo: las sesiones no guardaron los puntos por cuadro (privacidad), así que no se puede recalcular sin repetir con `--save-landmarks`.

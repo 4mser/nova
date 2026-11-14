@@ -78,3 +78,7 @@ Integrar salud ocular al escáner AR de NOVA usando **solo computer vision** (si
 - Sin evidencia no hay afirmación. NOVA no es dispositivo médico ni diagnostica.
 - Imágenes nunca se guardan. Los landmarks crudos son datos biométricos y solo se guardan con una bandera explícita.
 - Commits sin atribución de IA. Ramas `nico/<tema>`.
+
+- [x] Suelo de ruido con ceja (sesiones 5-7): PTB_inf MDC 3,3 mm [INF], no cumple ≤ 2,3 mm; MRD2n 0,7-0,9 mm
+- [x] Control de cejas (--brow-control): NO detectado (alzadas 1,0/0,6 veces el MDC; fruncido 2,7/2,9). PTB_inf no es usable para cambios sutiles con esta webcam (los gestos grandes sí se detectan)
+- [ ] Decidir qué detectores se quedan (MRD2 y apertura como tendencia, parpadeo/PERCLOS; PTB no usable para cambios sutiles; la ceja sí sirve para gestos grandes, ceja caída y asimetría [por investigar])

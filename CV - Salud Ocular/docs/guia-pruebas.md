@@ -5,9 +5,15 @@ Pega cada comando en Claude Code (con el `!` al inicio). Se abre una ventana con
 
 ## Antes de empezar (una sola vez)
 - Luz de escritorio, sin lentes, monitor a unos 50 cm.
-- Cabeza apoyada (respaldo o una mano en la sien).
+- Cabeza apoyada (contra el respaldo alto o la pared; NUNCA con la mano en la cara).
 - **Cejas relajadas** durante todas las grabaciones (sin fruncir ni alzar), salvo en la prueba de control.
 - Cuando abra la ventana, **súbela al borde superior de la pantalla, pegada a la cámara**. Así el punto rojo queda a la altura de tus ojos.
+
+## Dónde apoyar la cabeza
+- **Mejor:** contra el respaldo alto de la silla, un reposacabezas o la pared (sentándote cerca).
+- **Alternativa:** espalda apoyada, codos sobre la mesa y cabeza erguida, sin apoyarla en nada.
+- **No pongas la mano en la cara, la sien ni la frente:** puede tapar las cejas o el borde de los ojos, que es justo lo que medimos. Tampoco la barbilla en la mano (mueve las mejillas, que el filtro usa de referencia).
+- No es obligatorio: el objetivo es quedarte quieto. Si el semáforo está verde y no te mueves, está bien.
 
 ## Paso 1. Comprobar los puntos de la ceja (1 minuto, no graba nada)
 Comando: `--brow-check`
