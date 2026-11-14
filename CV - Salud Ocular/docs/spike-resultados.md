@@ -726,3 +726,50 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 
 **NO se puede afirmar:** precision en mm (no hay verdad de referencia; los mm son [INF] suponiendo iris de 11,7 mm); generalizacion a otras personas; validez clinica; edema; SANS; desempeno del escaner real; camara trasera; microgravedad; ni que la poca luz simulada equivalga a poca luz real. MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal.
 
+
+## Suelo de ruido y MDC (2026-11-14 17:39)
+
+**Registro**
+
+- Fecha: 2026-11-14T17:38:51; commit: `5367e19`
+- frame.shape real: (480, 640, 3)
+- Resolucion pedida vs obtenida: [None, None] vs [640, 480]
+- FPS medido con timestamps: 30.0 (mediana instantanea 30.0); CAP_PROP_FPS: 30.0
+- Backend: MSMF (solicitado: default); indice de camara: 0; facing: front
+- Espejo: no aplicado (cuadro tal como lo entrega la camara)
+- Notas: luz de escritorio, sin lentes, 50 cm, mirando punto rojo; sujeto: S01
+- Python 3.13.12, mediapipe 1.2.3, opencv 5.0.0, numpy 2.5.4
+- Modelo sha256: `64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff`
+- Running mode: VIDEO
+- Iris asignado por cercania a las comisuras: {'R': 468, 'L': 473}
+- Espera de quietud antes de grabar: ['quietud lograda tras 1.5 s de espera', 'quietud lograda tras 19.7 s de espera', 'quietud lograda tras 5.1 s de espera', 'quietud lograda tras 12.3 s de espera', 'quietud lograda tras 9.5 s de espera']
+- Quietud durante la captura (reintento si < 80.0 %, hasta 2 reintentos): bloque 1: 1 intento(s), quietud 90.2 % (minimo 80 %); bloque 2: 1 intento(s), quietud 85.0 % (minimo 80 %); bloque 3: 3 intento(s), quietud 95.3 % (minimo 80 %)
+- Umbrales del gate (PROPUESTA): ventana 1.0 s, velocidad < 0.5 % IOD/cuadro (cuantil 0.5), roll < 2.0 grados, IOD < 2.0 %, yaw/pitch < 3.0 grados
+- Parpadeo: EAR < 0,6 x mediana abierta durante >= 2 cuadros. Suelo de ruido: excluye EAR < 0,75 x mediana y +-3 cuadros. Euler: Y-X-Z intrinseco, R normalizada por columnas; solo se usan rangos de yaw/pitch
+
+Sesiones agregadas: 3 (ids [2, 3, 4]). Cada sesion: 3 bloques de ~20 s, mirada fija, cabeza apoyada; solo cuadros que pasan el gate, sin parpadeos (EAR < 0,75 x mediana) ni +-3 cuadros. sigma_w = 1,4826 x MAD de las medias de bloques de 1 s dentro de la sesion (mancomunada entre sesiones, RMS). sigma_b = desv. estandar (ddof=1) de las medias de sesion. MDC95 = 1,96 x raiz(2) x sigma sobre medias de 1 s (no sigma/raiz(N): el modo VIDEO autocorrelaciona los cuadros); el valor con reposicionamiento usa raiz(sigma_w^2 + sigma_b^2). Los mm son [INF] (iris 11,7 mm). El reposicionamiento entre sesiones no se puede verificar desde el codigo.
+
+### Tabla 2: suelo de ruido y MDC
+
+| Metrica | Ojo | media | sigma_w | sigma_b | MDC95 intra-sesion | MDC95 con reposicionamiento | MDC95 repos. (mm) [INF] |
+|---|---|---|---|---|---|---|---|
+| EAR | R | 0.2758 | 0.02341 | 0.01218 | 0.06489 | 0.07315 | - |
+| EAR | L | 0.2936 | 0.02357 | 0.00962 | 0.06532 | 0.07055 | - |
+| A (diam. iris) | R | 0.7031 | 0.06148 | 0.02881 | 0.17041 | 0.18820 | 2.202 |
+| A (diam. iris) | L | 0.6987 | 0.05193 | 0.01995 | 0.14394 | 0.15419 | 1.804 |
+| MRD2n proxy (diam. iris) | R | 0.4108 | 0.03536 | 0.02578 | 0.09802 | 0.12130 | 1.419 |
+| MRD2n proxy (diam. iris) | L | 0.4035 | 0.02573 | 0.02269 | 0.07131 | 0.09509 | 1.113 |
+| MRD1n proxy (diam. iris) | R | 0.2923 | 0.02935 | 0.00987 | 0.08134 | 0.08582 | 1.004 |
+| MRD1n proxy (diam. iris) | L | 0.2953 | 0.02486 | 0.00432 | 0.06892 | 0.06995 | 0.818 |
+| u (ancho de ojo) | R | -0.0085 | 0.02287 | 0.02945 | 0.06338 | 0.10335 | - |
+| u (ancho de ojo) | L | 0.0547 | 0.01970 | 0.02331 | 0.05460 | 0.08459 | - |
+| v (ancho de ojo) | R | -0.0498 | 0.00757 | 0.00323 | 0.02098 | 0.02281 | - |
+| v (ancho de ojo) | L | -0.0511 | 0.00645 | 0.00435 | 0.01788 | 0.02156 | - |
+| D/IOD | - | 0.1905 | 0.00315 | 0.00310 | 0.00872 | 0.01225 | - |
+
+### Que se puede afirmar / que NO
+
+**Se puede afirmar:** el cambio minimo detectable (MDC) de ESTA persona, ESTA camara y ESTA luz, y la caida de deteccion con roll sin compensar.
+
+**NO se puede afirmar:** precision en mm (no hay verdad de referencia; los mm son [INF] suponiendo iris de 11,7 mm); generalizacion a otras personas; validez clinica; edema; SANS; desempeno del escaner real; camara trasera; microgravedad; ni que la poca luz simulada equivalga a poca luz real. MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal.
+

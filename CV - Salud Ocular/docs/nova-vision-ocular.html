@@ -410,7 +410,7 @@ code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
   <h2>El camino, en resumen</h2>
   <div class="steps">
     <div class="st"><span class="n">HECHO</span><h3>Probar tu webcam</h3><p>El iris aparece. 478 puntos, cara detectada en 90 de 90 cuadros, 7,8 ms por cuadro en CPU.</p></div>
-    <div class="st now"><span class="n">AHORA</span><h3>Suelo de ruido</h3><p>3 sesiones con la vista en vivo, levantándote entre una y otra. Ver la guía.</p></div>
+    <div class="st now"><span class="n">AHORA</span><h3>Cerrar la fase 0</h3><p>Decidir si el cambio mínimo medido alcanza y arrancar la fase 1.</p></div>
     <div class="st"><span class="n">SIGUE</span><h3>Base</h3><p>Puntos de la cara, control de calidad y formato de salida.</p></div>
     <div class="st"><span class="n">DESPUÉS</span><h3>Mediciones</h3><p>Parpadeo, párpado, pupila y distancia, en paralelo.</p></div>
     <div class="st"><span class="n">LUEGO</span><h3>Pruebas reales</h3><p>Luz, lentes y ojos marrones, con tu webcam.</p></div>
@@ -471,11 +471,11 @@ code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
   <p class="sub">Una persona, luz buena, 640×480, quieta durante 8 segundos. Los milímetros son cuenta mía suponiendo un iris de 11,7 mm.</p>
   <div class="grid4">
     <div class="card"><span class="big">100 %</span><p>de detección de cara e iris, en las 31 condiciones (hasta 256 px, poca luz, ruido, desenfoque y cámara rotada 45°)</p></div>
-    <div class="card"><span class="big">~0,33 mm</span><p>cambio mínimo detectable de la apertura del párpado, en fotos sueltas y dentro de una sesión</p></div>
+    <div class="card"><span class="big">~1,8 a 2,2 mm</span><p>cambio mínimo detectable de la apertura del párpado con parpadeos normales y reposicionándote (3 sesiones). Cuenta mía, iris de 11,7 mm</p></div>
     <div class="card"><span class="big">~10 ms</span><p>por foto a 512 px, con reducir, comprimir y detectar. Unos 20 ms si se corrige la rotación</p></div>
     <div class="card"><span class="big">84,6 %</span><p>de cuadros quietos en la referencia (la meta era 80 %). Solo la poca luz simulada baja a 70 %</p></div>
   </div>
-  <div class="note"><b>Falta:</b> los 0,33 mm no incluyen levantarte y volver a sentarte. Eso lo mide el suelo de ruido con las 3 sesiones. Además, cambiar la resolución, el desenfoque o la rotación desplaza la medida: la línea base debe tomarse con la misma ruta de imagen que las mediciones.</div>
+  <div class="note"><b>Corrección:</b> el valor de ~0,33 mm salió de 8 s quietos y era demasiado optimista. Con el suelo de ruido (3 sesiones de 60 s, con parpadeos y reposicionamiento) el cambio mínimo es de unos 1,8 a 2,2 mm en la apertura y de 0,8 a 1,4 mm en el borde del párpado (MRD). Reposicionarte suma poco: lo que domina es el ruido dentro de la sesión. Una persona, 3 sesiones. Además, cambiar la resolución, el desenfoque o la rotación desplaza la medida: la línea base debe tomarse con la misma ruta de imagen que las mediciones.</div>
 </section>
 
 <section class="sec">
@@ -483,15 +483,15 @@ code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
   <h2>Qué se hace, en qué orden y quién lo hace</h2>
   <p class="sub">✔ hecho · ● en curso · círculo vacío: pendiente. Cada fase tiene una rama de git, un agente a cargo y un criterio para darla por terminada.</p>
   <div class="card">
-    <div class="phh"><h3>Avance general</h3><span class="chip c-cv">11 de 23 tareas hechas</span></div>
-    <div class="prog" role="img" aria-label="11 de 23 tareas hechas"><i style="width:48%"></i></div>
+    <div class="phh"><h3>Avance general</h3><span class="chip c-cv">13 de 22 tareas hechas</span></div>
+    <div class="prog" role="img" aria-label="13 de 22 tareas hechas"><i style="width:59%"></i></div>
     <p>La fase 0 está casi cerrada. Después se construye la base y las mediciones, y al final se prueba y se entrega a quien mantiene <code>nova-pc</code>. Pupila y pitch no cuentan: la pupila queda diferida y el pitch no se toca por ahora.</p>
   </div>
 
   <div class="ph cur">
-    <div class="phh"><h3>Fase 0 · Spike: ¿se puede medir bien?</h3><span class="chip c-cv">En curso · 11 de 13</span></div>
+    <div class="phh"><h3>Fase 0 · Spike: ¿se puede medir bien?</h3><span class="chip c-ok">Casi cerrada · 12 de 12</span></div>
     <div class="tags"><span class="tag">Rama <b>nico/vision-spike</b></span><span class="tag">Diseño: <b>agente de visión (modelo más capaz)</b></span><span class="tag">Código: <b>agente de Python</b></span></div>
-    <div class="prog"><i style="width:85%"></i></div>
+    <div class="prog"><i style="width:100%"></i></div>
     <ul class="tasks">
       <li><span class="m d">✔</span><span class="dn">Investigación y antecedentes verificados contra fuentes primarias</span></li>
       <li><span class="m d">✔</span><span class="dn">Repositorio <code>hackaton-vision</code> en GitHub (privado) y página de diseño</span></li>
@@ -504,9 +504,9 @@ code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
       <li><span class="m d">✔</span><span class="dn"><b>Vista en vivo:</b> ventana con tu cámara, los puntos, la quietud y las métricas en tiempo real, que espera a que estés quieto antes de grabar. Probada en tu webcam: 100 % de quietud cuando estás quieto y 37 % cuando te mueves, así que el filtro distingue</span></li>
       <li><span class="m d">✔</span><span class="dn"><b>Reintento automático</b> si te mueves durante la grabación (probado con simulaciones)</span></li>
       <li><span class="m d">✔</span><span class="dn"><b>Barrido repetido con el filtro corregido:</b> aceptación cumplida (cara e iris 100 %, quietud 84,6 %)</span></li>
-      <li><span class="m w">●</span><span><b>Medir el suelo de ruido</b> en 3 sesiones, levantándote entre una y otra (ver la guía de arriba)</span></li>
-      <li><span class="m"></span><span>Medir el suelo de ruido: 3 bloques de 20 s, repetido en 3 sesiones levantándote y sentándote de nuevo</span></li>
-      <li><span class="m"></span><span>Anotar los resultados y el <b>cambio mínimo detectable</b> en los documentos</span></li>
+      <li><span class="m d">✔</span><span class="dn"><b>Suelo de ruido, 3 sesiones</b> (2, 3 y 4): cambio mínimo detectable de la apertura del párpado ~1,8 a 2,2 mm y del borde del párpado ~0,8 a 1,4 mm [cuenta mía, iris de 11,7 mm]. Reposicionarte suma poco</span></li>
+      <li><span class="m d">✔</span><span class="dn">Gate de quietud inmune al parpadeo, instrucciones con punto rojo y glosario de métricas</span></li>
+      <li><span class="m d">✔</span><span class="dn">Resultados y cambio mínimo detectable anotados en los documentos</span></li>
     </ul>
     <p><b>Se da por terminada cuando:</b> se sabe qué cambio mínimo del párpado y del parpadeo se puede detectar en tu webcam, con la resolución registrada y los resultados escritos en los documentos.</p>
   </div>
@@ -577,7 +577,7 @@ code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
     </div>
   </div>
 
-  <div class="note"><b>El paso inmediato:</b> medir el suelo de ruido (3 sesiones) con la vista en vivo, que espera a que estés quieto y repite la captura si te mueves. Con esos números se cierra la fase 0 y arranca la fase 1.</div>
+  <div class="note"><b>El paso inmediato:</b> decidir si ese cambio mínimo (~2 mm en la apertura) sirve para lo que queremos detectar, y arrancar la fase 1 (base) con lo que sí es medible.</div>
 </section>
 
 <section class="sec">

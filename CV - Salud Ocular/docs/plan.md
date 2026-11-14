@@ -30,9 +30,8 @@ Integrar salud ocular al escáner AR de NOVA usando **solo computer vision** (si
 - [x] Interfaz en vivo con espera de quietud: probada en la webcam (100 % de quietud quieto, 37 % moviéndose)
 - [x] Reintento automático si te mueves (probado con simulaciones)
 - [x] Barrido repetido con el gate corregido: aceptación cumplida (quietud 84,6 %, MDC de A ~0,33 mm [INF])
-- [~] Suelo de ruido, 3 sesiones
-- [ ] Correr el suelo de ruido: 3 bloques de 20 s, en 3 sesiones con reposicionamiento
-- [ ] Anotar resultados y el cambio mínimo detectable en los docs
+- [x] Suelo de ruido, 3 sesiones (2, 3 y 4): MDC de la apertura ~1,8 a 2,2 mm [INF]; reposicionarse suma poco
+- [x] Anotar resultados y el cambio mínimo detectable en los docs (sección 17)
 
 ### Fase 1 · Base (`nico/vision-base`) · agente `impl-python`
 - [ ] Módulo de landmarks con registro de cámara, espejo y resolución

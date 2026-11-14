@@ -393,3 +393,28 @@ Webcam de Niko, 640x480, 30 fps, 240 cuadros, quietud durante la captura 100 % (
 - La degradación es moderada: a 256 px el MDC de A en IMAGE baja de 28 a ~10 (variación de muestreo, 8 bloques de 1 s: cota gruesa); con roll de 45° sin compensar el sesgo de A es +83e-3 frente a +32e-3 compensado, así que la contrarrotación mejora el sesgo a costa de doble latencia (~20 ms).
 - Los sesgos pareados entre condiciones (hasta ±47e-3 en A) muestran que cambiar resolución, desenfoque o rotación **desplaza** la medida: la línea base debe tomarse con la misma ruta de imagen que la medición posterior.
 - Límite: una persona, luz buena, 8 bloques de 1 s por condición.
+
+## 17. Suelo de ruido con reposicionamiento (14 nov 2026, 17:39)
+Webcam de Niko, 640x480, 30 fps, ruta 512 px q80, modo VIDEO, sujeto S01, mirando un punto rojo cerca de la cámara. **Sesiones 2, 3 y 4** (3 bloques de 20 s cada una; la sesión 1 se excluyó porque no parpadeó). Informe: `--noise-floor-report --exclude-sessions 1`. Tabla completa en `docs/spike-resultados.md`.
+
+| Métrica | Ojo | σ_w | σ_b | MDC95 intra-sesión | MDC95 con reposicionamiento | en mm [INF] |
+|---|---|---|---|---|---|---|
+| EAR | R / L | 0,023 / 0,024 | 0,012 / 0,010 | 0,065 / 0,065 | 0,073 / 0,071 | - |
+| Apertura A (diám. de iris) | R / L | 0,061 / 0,052 | 0,029 / 0,020 | 0,170 / 0,144 | 0,188 / 0,154 | 2,2 / 1,8 |
+| MRD2n proxy | R / L | 0,035 / 0,026 | 0,026 / 0,023 | 0,098 / 0,071 | 0,121 / 0,095 | 1,4 / 1,1 |
+| MRD1n proxy | R / L | 0,029 / 0,025 | 0,010 / 0,004 | 0,081 / 0,069 | 0,086 / 0,070 | 1,0 / 0,8 |
+| D/IOD | - | 0,0032 | 0,0031 | 0,0087 | 0,0123 | - |
+
+**Lectura** [V medido, una persona, 3 sesiones]:
+- **El cambio mínimo detectable realista de la apertura del párpado es de ~1,8 a 2,2 mm [INF]**, no ~0,33 mm. El valor de la sección 16 salió de 8 s quietos en una sola sesión, sin parpadeos ni deriva de la mirada, y era demasiado optimista. Este incluye 60 s por sesión con parpadeos normales.
+- **Reposicionarse suma poco:** σ_b es menor que σ_w en casi todas las métricas, y el MDC sube ~10 % (por ejemplo A derecho de 0,170 a 0,188). Lo que domina es el ruido dentro de la sesión.
+- **MRD1n y MRD2n son más estables que A** (MDC con reposicionamiento ~0,8 a 1,4 mm [INF]).
+- **Ojo derecho e izquierdo difieren** (A: 2,2 vs 1,8 mm), cosa esperable con una sola persona y una cámara no centrada.
+
+**Límites** (importantes):
+- **Solo 3 sesiones:** σ_b se estima con ddof=1 sobre 3 medias; es muy imprecisa.
+- **La sesión 2 se grabó con el filtro de quietud anterior** (más estricto con el parpadeo); las 3 y 4, con el nuevo.
+- **Es el MDC de un promedio de 1 s.** Promediar más tiempo lo baja, pero el modo VIDEO autocorrelaciona los cuadros: no se puede dividir por raíz de N.
+- **Los parpadeos por bloque (7 a 15 en 20 s) son más de lo típico**; no se sabe si el detector sobrecuenta.
+- Los mm suponen un iris de 11,7 mm. No hay verdad de referencia: no se puede afirmar precisión en mm.
+- Una persona, luz buena, 640x480; no es el escáner ni microgravedad.
