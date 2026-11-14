@@ -562,6 +562,12 @@ def main() -> None:
     mode.add_argument("--noise-floor-report", action="store_true", dest="noise_floor_report")
     mode.add_argument("--gate-diagnose", action="store_true", dest="gate_diagnose",
                       help="captura --frames (150) cuadros quieto y diagnostica cada criterio del gate")
+    mode.add_argument("--brow-check", action="store_true", dest="brow_check",
+                      help="vista en vivo SIN grabar: cejas (verde sup., rojo inf.), numeracion con n y valores "
+                           "actuales de PTB_inf/PTB_sup/brow_th/pitch, para confirmar los indices de ceja")
+    mode.add_argument("--brow-control", action="store_true", dest="brow_control",
+                      help="control positivo: 10 s neutral, 10 s cejas alzadas, 10 s ceno fruncido; "
+                           "cambio de PTB_inf frente al neutral y si supera 3 x MDC conocido")
     p.add_argument("--cam", type=int, default=0, help="indice de camara (default 0)")
     p.add_argument("--frames", type=int, default=None,
                    help="cuadros para --check (default 90; con --sweep 240)")
@@ -599,6 +605,19 @@ def main() -> None:
                     help="gate con los criterios antiguos (puntos medios y IOD de las comisuras, sin "
                          "mascara de parpadeo) para comparar; por defecto: puntos rigidos de nariz/frente/"
                          "mejillas y cuadros de parpadeo excluidos")
+    br = p.add_argument_group("ceja (PTB) y expresion")
+    br.add_argument("--brow-abs", type=float, default=0.30, dest="brow_abs",
+                    help="PROVISORIO: puntaje de blendshape de ceja > este valor = ceja activa (default 0.30)")
+    br.add_argument("--brow-rel", type=float, default=0.15, dest="brow_rel",
+                    help="PROVISORIO: o > mediana de la sesion + este margen (default 0.15)")
+    br.add_argument("--no-brow-filter", action="store_true", dest="no_brow_filter",
+                    help="no excluir cuadros de ceja activa de las series de ceja (se guardan ambas versiones)")
+    br.add_argument("--blendshapes", action=argparse.BooleanOptionalAction, default=True,
+                    help="blendshapes de ceja (default: si; --no-blendshapes = sin filtro y latencia base)")
+    br.add_argument("--control-seconds", type=float, default=10.0, dest="control_seconds",
+                    help="segundos de cada fase de --brow-control (default 10)")
+    br.add_argument("--brow-numbers", action="store_true", dest="brow_numbers",
+                    help="empieza con el numero de cada landmark de ceja dibujado (n lo activa/desactiva)")
     vw = p.add_argument_group("vista en vivo (--check --sweep, --noise-floor, --gate-diagnose)")
     vw.add_argument("--view", action=argparse.BooleanOptionalAction, default=True,
                     help="ventana en vivo con landmarks, quietud y progreso (default: si; "
@@ -629,7 +648,9 @@ def main() -> None:
         p.error("--jpeg-quality debe estar entre 1 y 100")
     if a.compare and not a.live:
         p.error("--compare solo se usa con --live")
-    if a.noise_floor or a.noise_floor_report or a.sweep or a.gate_diagnose:
+    if a.brow_abs < 0 or a.brow_rel < 0 or a.control_seconds < 3:
+        p.error("--brow-abs y --brow-rel deben ser >= 0 y --control-seconds >= 3")
+    if a.noise_floor or a.noise_floor_report or a.sweep or a.gate_diagnose or a.brow_check or a.brow_control:
         import spike_metrics
         import spike_v2
         gp = spike_metrics.GateParams(window_s=a.gate_window, speed_pct=a.gate_speed,
@@ -640,6 +661,10 @@ def main() -> None:
             spike_v2.run_sweep(a, gp)
         elif a.gate_diagnose:
             spike_v2.run_gate_diagnose(a, gp)
+        elif a.brow_check:
+            spike_v2.run_brow_check(a, gp)
+        elif a.brow_control:
+            spike_v2.run_brow_control(a, gp)
         elif a.noise_floor:
             spike_v2.run_noise_floor(a, gp)
         else:

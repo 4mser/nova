@@ -84,6 +84,14 @@ def phase_color(phase: str) -> Color:
         return RED
     if phase.startswith("PROCES"):
         return CYAN
+    if phase.startswith("NEUTRAL"):
+        return GREEN
+    if phase.startswith(("CEJAS", "CENO")):
+        return RED
+    if phase.startswith("RELAJA"):
+        return YELLOW
+    if phase.startswith("REVISION"):
+        return CYAN
     return WHITE
 
 
@@ -98,7 +106,7 @@ def line_color(text: str) -> Color:
 
 
 def key_action(code: int) -> str | None:
-    """Tecla de cv2.waitKey -> accion: quit (q/ESC), mirror (m), pause (p)."""
+    """Tecla de cv2.waitKey -> accion: quit (q/ESC), mirror (m), pause (p), numbers (n)."""
     if code < 0:
         return None
     c = code & 0xFF
@@ -108,6 +116,8 @@ def key_action(code: int) -> str | None:
         return "mirror"
     if c in (ord("p"), ord("P")):
         return "pause"
+    if c in (ord("n"), ord("N")):
+        return "numbers"
     return None
 
 
@@ -297,6 +307,64 @@ def live_metrics(p: np.ndarray | None) -> LiveMetrics | None:
                        float(np.linalg.norm(mids["R"] - mids["L"])), d)
 
 
+@dataclass(frozen=True)
+class BrowLive:
+    """PTB en vivo (diametros de iris del CUADRO), pitch y puntaje de ceja de un cuadro."""
+    ptb_inf_r: float
+    ptb_inf_l: float
+    ptb_sup_r: float
+    ptb_sup_l: float
+    th_r: float
+    th_l: float
+    pitch: float
+    blend_max: float | None = None
+    active: bool | None = None
+
+
+def live_brow(p: np.ndarray | None, mat: np.ndarray | None, blend: np.ndarray | None = None,
+              bp: sm.BrowParams = sm.BrowParams()) -> BrowLive | None:
+    """Mismas formulas que sm.brow_series con el diametro del iris del cuadro como escala.
+    None si no hay cara, el iris no se asigna o las cejas quedan cruzadas. blend (5,) opcional."""
+    if p is None or p.shape[0] < sm.N_LANDMARKS or not np.isfinite(p).all():
+        return None
+    P = p[None]
+    try:
+        assign = sm.assign_iris(P)
+        sm.check_brow_assignment(P)
+    except ValueError:
+        return None
+    d = float(sm.iris_diameter(P)[0])
+    if d <= 0:
+        return None
+    s_t = np.array([d])
+    v: dict[str, dict[str, float]] = {}
+    for k, eye in sm.EYES.items():
+        g = sm.eye_geometry(P, eye, assign[k])
+        v[k] = {n: float(a[0]) for n, a in sm.brow_series(P, k, g, s_t).items()}
+    pitch = sm.euler_yxz(mat)[1] if mat is not None else math.nan
+    bmax = act = None
+    if blend is not None and np.isfinite(blend).any():
+        bmax = float(np.nanmax(blend))
+        act = bool(bmax > bp.abs_thr)  # en vivo solo el umbral absoluto (no hay mediana de sesion)
+    return BrowLive(v["R"]["ptb_inf"], v["L"]["ptb_inf"], v["R"]["ptb_sup"], v["L"]["ptb_sup"],
+                    v["R"]["brow_th"], v["L"]["brow_th"], pitch, bmax, act)
+
+
+def draw_brows(img: np.ndarray, P: np.ndarray | None, numbers: bool = False) -> None:
+    """Polilinea de ceja superior (verde) e inferior (roja) de ambas cejas; con numbers, el
+    indice de landmark junto a cada punto (para confirmar a ojo los indices de ceja)."""
+    if P is None or P.shape[0] < sm.N_LANDMARKS or not np.isfinite(P).all():
+        return
+    pts = np.rint(P).astype(np.int32)
+    for brow in sm.BROWS.values():
+        for idxs, col in ((brow.upper, GREEN), (brow.lower, RED)):
+            cv2.polylines(img, [pts[list(idxs)]], False, col, 2, cv2.LINE_AA)
+            for i in idxs:
+                cv2.circle(img, (int(pts[i][0]), int(pts[i][1])), 3, col, -1, cv2.LINE_AA)
+                if numbers:
+                    put(img, str(i), (int(pts[i][0]) + 4, int(pts[i][1]) - 5), col, 0.38)
+
+
 class EarTrace:
     """EAR medio de los ultimos 5 s y deteccion de parpadeo en vivo (misma regla que sm.detect_blinks:
     EAR < 0,6 x mediana abierta durante >= 2 cuadros)."""
@@ -404,6 +472,9 @@ class CaptureHud:
     infer_ms: float = 0.0
     slow: bool = False
     paused: bool = False
+    brow_view: bool = False          # dibuja cejas y muestra el bloque CEJA (--brow-check, control, ruido)
+    brow: BrowLive | None = None
+    brow_numbers: bool = False
 
 
 def fit_video(frame: np.ndarray, P: np.ndarray | None) -> tuple[np.ndarray, np.ndarray | None]:
@@ -480,7 +551,26 @@ def _draw_capture_panel(canvas: np.ndarray, hud: CaptureHud) -> None:
         put(canvas, v, (x + 150, 426 + 22 * i), WHITE, 0.45)
     put(canvas, f"Parpadeos: {hud.blinks}   inferencia vista: {hud.infer_ms:.0f} ms", (x, 426 + 22 * 5 + 8),
         GRAY, 0.42)
-    put(canvas, "q/ESC aborta   m espejo   p pausa de vista", (x, canvas.shape[0] - 10), GRAY, 0.42)
+    if hud.brow_view:
+        _draw_brow_panel(canvas, hud, x)
+    put(canvas, "q/ESC aborta   m espejo   p pausa de vista" + ("   n numeros" if hud.brow_view else ""),
+        (x, canvas.shape[0] - 10), GRAY, 0.42)
+
+
+def _draw_brow_panel(canvas: np.ndarray, hud: CaptureHud, x: int) -> None:
+    b = hud.brow
+    put(canvas, "CEJA (PTB, diam. iris del cuadro)", (x, 578), WHITE, 0.5)
+    rows = [("PTB_inf R / L", f"{fmt_num(b and b.ptb_inf_r)} / {fmt_num(b and b.ptb_inf_l)}"),
+            ("PTB_sup R / L", f"{fmt_num(b and b.ptb_sup_r)} / {fmt_num(b and b.ptb_sup_l)}"),
+            ("brow_th R / L", f"{fmt_num(b and b.th_r)} / {fmt_num(b and b.th_l)}"),
+            ("Pitch (grados)", fmt_num(b and b.pitch, 1)),
+            ("Puntaje ceja max", fmt_num(b and b.blend_max))]
+    for i, (k, v) in enumerate(rows):
+        put(canvas, k, (x, 602 + 22 * i), GRAY, 0.45)
+        put(canvas, v, (x + 150, 602 + 22 * i), WHITE, 0.45)
+    if b is not None and b.active is not None:
+        put(canvas, "CEJA ACTIVA" if b.active else "ceja en reposo", (x, 602 + 22 * 5 + 6),
+            ORANGE if b.active else GREEN, 0.5, 2)
 
 
 
@@ -500,10 +590,24 @@ def instruction_for(phase: str, mode: str) -> tuple[list[str], Color]:
                 "PARPADEA NORMAL (no te aguantes). Sin mover la cabeza"], GREEN
     if ph.startswith("PROCESANDO"):
         return ["PROCESANDO", "Ya puedes relajarte"], WHITE
+    if ph.startswith("NEUTRAL"):
+        return ["LINEA NEUTRAL: CARA RELAJADA", "Mira el PUNTO ROJO de arriba, sin gesto ni hablar",
+                "Cejas en reposo, cabeza quieta"], GREEN
+    if ph.startswith("CEJAS ALZADAS"):
+        return ["ALZA LAS CEJAS Y MANTEN", "Como sorpresa moderada, sostenida los 10 s",
+                "Mira el PUNTO ROJO, cabeza quieta"], ORANGE
+    if ph.startswith("CENO FRUNCIDO"):
+        return ["FRUNCE EL CENO Y MANTEN", "Cejas hacia abajo y juntas, sostenido los 10 s",
+                "Mira el PUNTO ROJO, cabeza quieta"], ORANGE
+    if ph.startswith("RELAJA"):
+        return ["RELAJA LA CARA", "La siguiente fase empieza en breve"], YELLOW
+    if ph.startswith("REVISION"):
+        return ["REVISION DE CEJAS (no se graba nada)", "Verde = borde superior, rojo = inferior",
+                "n numera los puntos, q/ESC sale"], CYAN
     return [], WHITE
 
 
-FIXATION_PHASES = ("CUENTA", "ESPERANDO", "TE MOVISTE", "GRABANDO")
+FIXATION_PHASES = ("CUENTA", "ESPERANDO", "TE MOVISTE", "GRABANDO", "NEUTRAL", "CEJAS", "CENO", "RELAJA")
 
 
 def draw_fixation(img: np.ndarray, phase: str) -> None:
@@ -528,6 +632,8 @@ def render_capture(frame: np.ndarray, P: np.ndarray | None, hud: CaptureHud, mir
     vh = v.shape[0]
     if draw_lm:
         draw_landmarks(v, Ps)
+        if hud.brow_view:
+            draw_brows(v, Ps, hud.brow_numbers)
         if Ps is None:
             put(v, "SIN CARA", (12, 28), RED, 0.8, 2)
     elif hud.slow:
@@ -546,7 +652,7 @@ def render_capture(frame: np.ndarray, P: np.ndarray | None, hud: CaptureHud, mir
     if hud.blink_flash:
         cv2.rectangle(v, (0, 0), (VIDEO_W - 1, vh - 1), RED, 8)
         put(v, "PARPADEO", (VIDEO_W // 2 - 70, 34), RED, 0.9, 2)
-    h = max(vh + SPARK_H, MIN_H)
+    h = max(vh + SPARK_H, MIN_H + (150 if hud.brow_view else 0))
     canvas = np.full((h, VIDEO_W + PANEL_W, 3), BG, np.uint8)
     canvas[:vh, :VIDEO_W] = v
     _draw_sparkline(canvas, hud, (10, vh + 30, VIDEO_W - 20, SPARK_H - 45))
@@ -648,6 +754,7 @@ class LiveView:
         self.scale = scale
         self.hold_s = hold_s
         self.mirror = False
+        self.numbers = False
         self.paused = False
         self.dead = False
         self._last: np.ndarray | None = None
@@ -712,6 +819,8 @@ class LiveView:
             raise ViewAbort("tecla q/ESC")
         if act == "mirror":
             self.mirror = not self.mirror
+        elif act == "numbers":
+            self.numbers = not self.numbers
         elif act == "pause":
             self.paused = not self.paused
             if self.paused and self._last is not None:
@@ -750,7 +859,8 @@ class LiveView:
 
 
 # ---------------------------------------------------------------- monitor de captura
-InferFn = Callable[[np.ndarray, int], "tuple[np.ndarray | None, np.ndarray | None]"]
+# (P, matriz) o (P, matriz, puntajes de ceja (5,) | None)
+InferFn = Callable[[np.ndarray, int], "tuple[object, ...]"]
 
 
 class LiveMonitor:
@@ -760,7 +870,10 @@ class LiveMonitor:
 
     def __init__(self, view: LiveView | None, infer: InferFn, gp: sm.GateParams, mode: str,
                  capture_mirror: bool = False, slow_ms: float = SLOW_INFER_MS,
-                 close_fn: Callable[[], None] | None = None) -> None:
+                 close_fn: Callable[[], None] | None = None, brow_view: bool = False,
+                 brow_numbers: bool = False, bp: sm.BrowParams = sm.BrowParams()) -> None:
+        self.brow_view, self.brow_numbers, self.bp = brow_view, brow_numbers, bp
+        self.brow: BrowLive | None = None
         self.view, self.infer, self.mode = view, infer, mode
         self.capture_mirror, self.slow_ms, self.close_fn = capture_mirror, slow_ms, close_fn
         self.gate = LiveGate(gp)
@@ -821,7 +934,9 @@ class LiveMonitor:
         ts_ms = max(self._last_ts + 1, int((now - self.t0) * 1000))
         self._last_ts = ts_ms
         t1 = time.perf_counter()
-        P, mat = self.infer(frame, ts_ms)
+        res = self.infer(frame, ts_ms)
+        P, mat = res[0], res[1]
+        blend = res[2] if len(res) > 2 else None   # (5,) puntajes de ceja o None
         self.infer_ms = (time.perf_counter() - t1) * 1000.0
         slow = self.infer_ms > self.slow_ms
         self.gate.push(P, mat, now)
@@ -833,10 +948,12 @@ class LiveMonitor:
         self.metrics = live_metrics(P)
         m = self.metrics
         self.trace.push(now, None if m is None else (m.ear_r + m.ear_l) / 2)
+        self.brow = live_brow(P, mat, blend, self.bp) if self.brow_view else None
+        numbers = self.brow_numbers or (self.view.numbers if self.view else False)
         hud = CaptureHud(self.mode, phase, progress, remaining_s, (frame.shape[1], frame.shape[0]),
                          self.fps(), self.block, self.status, m, list(self.trace.samples),
                          self.trace.threshold, now, self.trace.flashing(now), self.trace.blinks, note,
-                         self.infer_ms, slow)
+                         self.infer_ms, slow, False, self.brow_view, self.brow, numbers)
         self.last_hud = hud
         canvas = render_capture(frame, P, hud, self.view.mirror if self.view else False, not slow)
         if self.view is not None:
@@ -913,6 +1030,13 @@ def smoke_viewer() -> None:
     assert mon_r.stop_recording() == 100.0 and mon_r.stop_recording() is None
     assert quiet_pct([True, False, True, True]) == 75.0 and quiet_pct([]) is None
     out["final"] = render_final("RESUMEN", ["REF VIDEO: CUMPLE", "REF IMAGE: NO CUMPLE", "! aviso"], "tecla")
+    # revision de cejas: polilineas, numeracion y bloque CEJA (infer con 3 elementos: P, matriz, puntajes)
+    brow_infer: InferFn = lambda f, ts: (P + 0.0, np.eye(4), np.array([0.0, 0.0, 0.6, 0.0, 0.0]))  # noqa: E731
+    mon_b = LiveMonitor(None, brow_infer, sm.GateParams(), "SMOKE", brow_view=True, brow_numbers=True)
+    cb = mon_b.feed(frame, "REVISION CEJA", now=0.0)
+    assert cb is not None and cb.shape[0] > out["captura con cara"].shape[0] and mon_b.brow is not None
+    assert mon_b.brow.active and abs(mon_b.brow.ptb_inf_r - 40.0 / 22.0) < 1e-6, mon_b.brow
+    out["revision de cejas"] = cb
     assert np.array_equal(frame, before), "la vista modifico el cuadro de captura"
     assert not np.array_equal(out["captura con cara"], out["captura sin cara"])
     print("Smoke vista OK: " + ", ".join(f"{k} {v.shape[1]}x{v.shape[0]}" for k, v in out.items()))

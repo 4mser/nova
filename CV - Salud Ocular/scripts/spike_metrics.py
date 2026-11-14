@@ -69,8 +69,46 @@ EYES: dict[str, Eye] = {
 }
 LID_IDX = tuple(sorted({i for e in EYES.values() for i in (*e.upper, *e.lower)}))
 MESH_IDX = tuple(i for i in range(N_LANDMARKS) if i not in IRIS_IDX and i not in LID_IDX)
-SERIES_EYE = ("ear", "A", "mrd2n", "mrd1n", "u", "v")  # una serie por ojo (sufijo _R/_L)
+
+
+# ---------------------------------------------------------------- ceja (PTB: pupila a ceja)
+@dataclass(frozen=True)
+class Brow:
+    """Polilineas de ceja (lateral a medial). Indices de FACEMESH_*_EYEBROW TOMADOS DE MEMORIA:
+    SUPUESTO que se confirma con --brow-check (verde = borde superior, rojo = inferior)."""
+    upper: tuple[int, ...]
+    lower: tuple[int, ...]
+    center_upper: int
+    center_lower: int
+    lateral_lower: int
+    medial_lower: int
+
+
+BROWS: dict[str, Brow] = {
+    "R": Brow((70, 63, 105, 66, 107), (46, 53, 52, 65, 55), 105, 52, 46, 55),
+    "L": Brow((300, 293, 334, 296, 336), (276, 283, 282, 295, 285), 334, 282, 276, 285),
+}
+BROW_IDX = tuple(sorted({i for b in BROWS.values() for i in (*b.upper, *b.lower)}))
+assert max(BROW_IDX) < N_LANDMARKS - len(IRIS_IDX)
+# series de ceja por ojo (sufijo _R/_L); todas en diametros de iris (los mm son [INF])
+BROW_SERIES_EYE = ("ptb_inf", "ptb_sup", "brow_fis", "brow_th", "ptb_inf1", "ptb_sup1",
+                   "ptb_inf_lat", "ptb_inf_med")
+BROW_SERIES = tuple(f"{b}_{e}" for b in BROW_SERIES_EYE for e in ("R", "L"))
+SERIES_EYE = ("ear", "A", "mrd2n", "mrd1n", "u", "v") + BROW_SERIES_EYE  # una serie por ojo (sufijo _R/_L)
 SERIES_SINGLE = ("d_iod",)
+# blendshapes de ceja que guarda el spike (nombres de MediaPipe)
+BROW_BLEND = ("browDownLeft", "browDownRight", "browInnerUp", "browOuterUpLeft", "browOuterUpRight")
+BROW_ABS_DEFAULT = 0.30   # PROVISORIO: puntaje absoluto que marca ceja activa
+BROW_REL_DEFAULT = 0.15   # PROVISORIO: margen sobre la mediana de la sesion
+BROW_PAD = 3              # +- cuadros excluidos, como en parpadeo
+PARALLAX_MM = 10.0        # [SUPUESTO] la ceja esta ~10 mm por delante del iris (paralaje con el pitch)
+# criterios de aceptacion de PTB_inf (mm [INF], iris 11,7 mm); detecta +2,3 mm con margen si MDC <= 1,15
+MDC_OK_MM = 1.15
+MDC_LIMIT_MM = 2.3
+SLOPE_MAX_MM_DEG = 0.1    # [SUPUESTO]
+BROW_EXCL_MAX_PCT = 30.0
+BROW_TH_FACTOR = 2.0      # [SUPUESTO] "comparable" a MRD1n: sigma_w(brow_th) <= 2 x sigma_w(mrd1n)
+CONTROL_FACTOR = 3.0      # el control positivo debe superar 3 x MDC conocido
 
 
 # ---------------------------------------------------------------- geometria basica
@@ -122,6 +160,127 @@ def roll_deg(m_r: np.ndarray, m_l: np.ndarray) -> np.ndarray:
 
 def wrap180(a: np.ndarray) -> np.ndarray:
     return ((a + 90.0) % 180.0) - 90.0
+
+
+# ---------------------------------------------------------------- geometria de la ceja
+def check_brow_assignment(P: np.ndarray) -> dict[str, float]:
+    """Cada ceja debe quedar mas cerca del punto medio de las comisuras de SU ojo que del otro
+    (mediana de la sesion, centroide de los 10 puntos de la ceja). Si no, los indices de ceja
+    estan mal o la imagen esta cruzada: ValueError con mensaje claro (como assign_iris).
+    Devuelve la distancia propia/ajena (< 1 en un caso sano) por ojo."""
+    ok = finite_mask(P)
+    if ok.sum() == 0:
+        raise ValueError("sin cuadros validos para comprobar la asignacion de cejas")
+    mids = {n: (P[ok, e.corner_a] + P[ok, e.corner_b]) / 2 for n, e in EYES.items()}
+    ratios: dict[str, float] = {}
+    for name, brow in BROWS.items():
+        other = "L" if name == "R" else "R"
+        cen = P[ok][:, list((*brow.upper, *brow.lower))].mean(axis=1)
+        own = float(np.median(np.linalg.norm(cen - mids[name], axis=1)))
+        alien = float(np.median(np.linalg.norm(cen - mids[other], axis=1)))
+        ratios[name] = own / alien if alien > 0 else math.inf
+        if not own < alien:
+            raise ValueError(
+                f"asignacion de cejas incorrecta: la ceja {name} (indices {brow.upper + brow.lower}) "
+                f"queda a {own:.1f} px del ojo {name} y a {alien:.1f} px del otro. Los indices de ceja "
+                f"son SUPUESTOS (tomados de memoria): confirmalos con --brow-check antes de medir.")
+    return ratios
+
+
+def polyline_y_at_x0(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """Interpola cada polilinea (x (T,k), y (T,k); en el eje e_x / e_y del ojo, origen en el punto
+    medio de las comisuras) en x = 0. NaN si el 0 queda fuera del tramo cubierto por la ceja o hay
+    NaN (no se extrapola)."""
+    t, n = x.shape
+    order = np.argsort(x, axis=1)
+    xs, ys = np.take_along_axis(x, order, 1), np.take_along_axis(y, order, 1)
+    idx = np.clip((xs < 0).sum(axis=1), 1, n - 1)
+    rows = np.arange(t)
+    x0, x1, y0, y1 = xs[rows, idx - 1], xs[rows, idx], ys[rows, idx - 1], ys[rows, idx]
+    with np.errstate(invalid="ignore", divide="ignore"):
+        out = y0 + (-x0 / (x1 - x0)) * (y1 - y0)
+    inside = (xs[:, 0] <= 0) & (xs[:, -1] >= 0) & np.isfinite(xs).all(1) & np.isfinite(ys).all(1)
+    return np.where(inside, out, np.nan)
+
+
+def brow_series(P: np.ndarray, eye_name: str, g: dict[str, np.ndarray], s_t: np.ndarray
+                ) -> dict[str, np.ndarray]:
+    """Series de ceja de un ojo (diametros de iris), P (T,478,2), g = eye_geometry, s_t escala.
+
+    Valor principal: cada polilinea de ceja se proyecta sobre e_x (origen en el punto medio m de
+    las comisuras) y se interpola su coordenada e_y en la posicion de m (aproxima la linea
+    medio-pupilar y no depende de la mirada horizontal). e_y apunta hacia abajo: PTB > 0 = ceja por
+    encima de la pupila.
+      ptb_inf  = (c - ceja_inf).e_y / s_t   PRINCIPAL (Karlin 2021: pupila a borde INFERIOR)
+      ptb_sup  = (c - ceja_sup).e_y / s_t
+      brow_fis = (parpado_sup - ceja_inf).e_y / s_t   (distancia ceja-parpado; SIGNO invertido frente
+                 a la formula literal para que sea positiva, igual que PTB)
+      brow_th  = ptb_sup - ptb_inf (grosor, casi constante: mide el jitter puro de la ceja)
+    Controles: landmark unico (105/52 y 334/282) y PTB_inf lateral y medial (46/276 y 55/285)."""
+    brow, eye = BROWS[eye_name], EYES[eye_name]
+    m, ex, ey, c = g["m"], g["ex"], g["ey"], g["c"]
+
+    def y_of(i: int) -> np.ndarray:
+        return np.einsum("ij,ij->i", P[:, i] - m, ey)
+
+    def poly_y(idx: Sequence[int]) -> np.ndarray:
+        rel = P[:, list(idx)] - m[:, None, :]
+        return polyline_y_at_x0(np.einsum("tkj,tj->tk", rel, ex), np.einsum("tkj,tj->tk", rel, ey))
+
+    cy = np.einsum("ij,ij->i", c - m, ey)
+    inf_y, sup_y = poly_y(brow.lower), poly_y(brow.upper)
+    ptb_inf, ptb_sup = (cy - inf_y) / s_t, (cy - sup_y) / s_t
+    return {"ptb_inf": ptb_inf, "ptb_sup": ptb_sup,
+            "brow_fis": (y_of(eye.mid_upper) - inf_y) / s_t, "brow_th": ptb_sup - ptb_inf,
+            "ptb_inf1": (cy - y_of(brow.center_lower)) / s_t,
+            "ptb_sup1": (cy - y_of(brow.center_upper)) / s_t,
+            "ptb_inf_lat": (cy - y_of(brow.lateral_lower)) / s_t,
+            "ptb_inf_med": (cy - y_of(brow.medial_lower)) / s_t}
+
+
+# ---------------------------------------------------------------- expresion de ceja (blendshapes)
+@dataclass(frozen=True)
+class BrowParams:
+    """Umbrales PROVISORIOS de 'ceja activa' (configurables por --brow-abs y --brow-rel):
+    algun puntaje de BROW_BLEND > abs, o > mediana de la sesion de ESE puntaje + rel. Se excluyen
+    +-pad cuadros. enabled=False (--no-brow-filter): se calcula y se guarda la mascara, pero no
+    se aplica a las series."""
+    abs_thr: float = BROW_ABS_DEFAULT
+    rel_thr: float = BROW_REL_DEFAULT
+    pad: int = BROW_PAD
+    enabled: bool = True
+
+
+def blend_median(blend: np.ndarray | None) -> np.ndarray:
+    """Mediana por puntaje (5,) sobre los cuadros con puntajes finitos; NaN si no hay."""
+    if blend is None or not np.isfinite(blend).any():
+        return np.full(len(BROW_BLEND), np.nan)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        return np.nanmedian(blend, axis=0)
+
+
+def brow_active_mask(blend: np.ndarray | None, bp: BrowParams, ref_median: np.ndarray | None = None,
+                     n: int | None = None) -> np.ndarray:
+    """Cuadros con ceja activa (sin padding). blend (T,5), NaN = sin dato (no activo)."""
+    if blend is None:
+        return np.zeros(0 if n is None else n, dtype=bool)
+    med = blend_median(blend) if ref_median is None else np.asarray(ref_median, dtype=float)
+    with np.errstate(invalid="ignore"):
+        hit = (blend > bp.abs_thr) | (blend > (med + bp.rel_thr)[None, :])
+    return hit.any(axis=1) & np.isfinite(blend).any(axis=1)
+
+
+def pad_mask(mask: np.ndarray, pad: int) -> np.ndarray:
+    if not mask.any() or pad <= 0:
+        return mask.copy()
+    return np.convolve(mask.astype(float), np.ones(2 * pad + 1), mode="same") > 0
+
+
+def mask_runs(mask: np.ndarray) -> list[list[int]]:
+    """Tramos [inicio, fin) de True (para guardar la mascara como numeros)."""
+    d = np.diff(np.concatenate([[0], mask.astype(int), [0]]))
+    return [[int(s), int(e)] for s, e in zip(np.flatnonzero(d == 1), np.flatnonzero(d == -1))]
 
 
 # ---------------------------------------------------------------- Procrustes
@@ -570,6 +729,10 @@ class Analysis:
     ear_open: float
     gate_vals: dict[str, np.ndarray] | None = None
     mat_pct: float = math.nan
+    blend: np.ndarray | None = None        # (T,5) puntajes BROW_BLEND (NaN sin dato) o None
+    pitch: np.ndarray | None = None        # (T,) grados de la matriz, NaN sin matriz
+    brow_active: np.ndarray | None = None  # ceja activa por cuadro (mediana del bloque)
+    brow_excl: np.ndarray | None = None    # idem con +-pad cuadros
 
     @property
     def usable(self) -> bool:
@@ -585,8 +748,11 @@ MIN_VALID = 10
 
 def analyze_recording(P: np.ndarray, face: np.ndarray, iris_ok: np.ndarray,
                       mats: Sequence[np.ndarray | None] | None, fs: float,
-                      gp: GateParams = GateParams()) -> Analysis:
-    """Calcula todas las series por cuadro. P (T,478,2) con NaN donde no hay iris valido."""
+                      gp: GateParams = GateParams(), blend: np.ndarray | None = None,
+                      bp: BrowParams = BrowParams(), brow: bool = True) -> Analysis:
+    """Calcula todas las series por cuadro. P (T,478,2) con NaN donde no hay iris valido.
+    blend (T,5): puntajes de BROW_BLEND por cuadro (NaN sin dato). brow=False omite las series de
+    ceja (barrido). Con brow=True, ValueError si las cejas quedan cruzadas (ver check_brow_assignment)."""
     n = len(P)
     valid = finite_mask(P) & iris_ok
     nan_t = np.full(n, np.nan)
@@ -615,6 +781,11 @@ def analyze_recording(P: np.ndarray, face: np.ndarray, iris_ok: np.ndarray,
         series[f"u_{k}"] = np.einsum("ij,ij->i", rel, g["ex"]) / g["w"]
         series[f"v_{k}"] = np.einsum("ij,ij->i", rel, g["ey"]) / g["w"]
     series["d_iod"] = d / iod
+    if brow:
+        check_brow_assignment(Pv)
+        for k in EYES:
+            for bname, arr in brow_series(Pv, k, geo[k], s_t).items():
+                series[f"{bname}_{k}"] = arr
     proc = procrustes_residuals(Pv[valid])
     for grp in ("iris", "lids", "mesh"):
         full = np.full(n, np.nan)
@@ -623,6 +794,11 @@ def analyze_recording(P: np.ndarray, face: np.ndarray, iris_ok: np.ndarray,
     roll = roll_deg(geo["R"]["m"], geo["L"]["m"])
     yaw = pitch = None
     mat_pct = 0.0
+    if blend is not None and len(blend) != n:
+        raise ValueError(f"blend tiene {len(blend)} filas y la grabacion {n} cuadros")
+    b_arr = None if blend is None else np.asarray(blend, dtype=float)
+    b_act = brow_active_mask(b_arr, bp, n=n)
+    b_excl = pad_mask(b_act, bp.pad)
     if mats is not None and len(mats) == n and any(M is not None for M in mats):
         ang = np.full((n, 2), np.nan)
         for i, M in enumerate(mats):
@@ -639,7 +815,8 @@ def analyze_recording(P: np.ndarray, face: np.ndarray, iris_ok: np.ndarray,
     return Analysis(n, fs, valid, empty.face_pct, empty.iris_ok_pct, assign,
                     float(np.nanmedian(iod)), float(np.nanmedian(d)), ratio, series, roll, gate,
                     {"rms_iris": float(proc["rms_iris"]), "rms_lids": float(proc["rms_lids"]),
-                     "rms_mesh": float(proc["rms_mesh"])}, n_blinks, ear_open, gate_vals, mat_pct)
+                     "rms_mesh": float(proc["rms_mesh"])}, n_blinks, ear_open, gate_vals, mat_pct,
+                    b_arr, pitch if pitch is not None else nan_t, b_act, b_excl)
 
 
 def usable_mask(an: Analysis, exclude_blinks: bool = True, min_gate_blocks: int = 3
@@ -673,61 +850,348 @@ def series_noise(an: Analysis, mask: np.ndarray) -> dict[str, dict[str, float]]:
 
 
 # ---------------------------------------------------------------- suelo de ruido
-def session_summary(analyses: Sequence[Analysis]) -> dict[str, object]:
+def _series_stats(bm: np.ndarray, fr: np.ndarray) -> dict[str, float]:
+    return {"mean": float(bm.mean()) if bm.size else float("nan"),
+            "sigma_w": sigma_robust(bm) if bm.size >= 3 else float("nan"),
+            "sigma_frame": sigma_robust(fr) if fr.size else float("nan"),
+            "n_blocks": int(bm.size)}
+
+
+def _score_stats(blend: np.ndarray | None) -> dict[str, dict[str, float]]:
+    """Mediana, p95 y maximo por puntaje de ceja (solo numeros)."""
+    out: dict[str, dict[str, float]] = {}
+    for j, name in enumerate(BROW_BLEND):
+        v = np.array([]) if blend is None else blend[:, j][np.isfinite(blend[:, j])]
+        out[name] = ({"median": float(np.median(v)), "p95": float(np.quantile(v, 0.95)),
+                      "max": float(v.max())} if v.size else {"median": math.nan, "p95": math.nan,
+                                                             "max": math.nan})
+    return out
+
+
+def session_summary(analyses: Sequence[Analysis], bp: BrowParams = BrowParams()) -> dict[str, object]:
     """Resumen por sesion (varios bloques): por serie, media y sigma_w = 1,4826*MAD de las
-    medias de bloques de 1 s (cuadros que pasan el gate, sin parpadeos +-3 cuadros)."""
+    medias de bloques de 1 s (cuadros que pasan el gate, sin parpadeos +-3 cuadros).
+
+    Series de ceja: ademas se excluyen los cuadros de ceja activa (+-bp.pad; mediana de la SESION
+    de cada puntaje) si bp.enabled. Se guarda tambien la version SIN filtro (mean_nf, sigma_w_nf):
+    una ceja alzada persistente (la senal buscada) puede quedar excluida, nunca se borran datos.
+    La mascara y los puntajes quedan solo como numeros en 'brow' (tramos y percentiles)."""
     good = [a for a in analyses if a.usable]
     if not good:
         raise ValueError("ningun bloque con cara e iris suficientes")
     names = list(good[0].series)
+    blends = [a.blend for a in good if a.blend is not None]
+    sess_med = blend_median(np.concatenate(blends)) if blends else np.full(len(BROW_BLEND), math.nan)
+    bases, excls, acts = [], [], []
+    for a in good:
+        ear = (a.series["ear_R"] + a.series["ear_L"]) / 2
+        bases.append(a.valid & ~blink_exclusion(ear) & a.gate)
+        act = (brow_active_mask(a.blend, bp, sess_med) if a.blend is not None
+               else np.zeros(a.n, dtype=bool))
+        acts.append(act)
+        excls.append(pad_mask(act, bp.pad))
     summary: dict[str, dict[str, float]] = {}
     for name in names:
+        is_brow = name in BROW_SERIES
         means: list[np.ndarray] = []
         frames: list[np.ndarray] = []
-        for a in good:
-            ear = (a.series["ear_R"] + a.series["ear_L"]) / 2
-            m = a.valid & ~blink_exclusion(ear) & a.gate
+        means_nf: list[np.ndarray] = []
+        frames_nf: list[np.ndarray] = []
+        for a, base, ex in zip(good, bases, excls):
+            m = base & ~ex if (is_brow and bp.enabled) else base
             w = max(3, int(round(a.fs)))
             means.append(block_means(a.series[name], m, w))
             frames.append(a.series[name][m])
-        bm, fr = np.concatenate(means), np.concatenate(frames)
-        summary[name] = {
-            "mean": float(bm.mean()) if bm.size else float("nan"),
-            "sigma_w": sigma_robust(bm) if bm.size >= 3 else float("nan"),
-            "sigma_frame": sigma_robust(fr) if fr.size else float("nan"),
-            "n_blocks": int(bm.size),
-        }
-    return {"metrics": summary,
-            "n_frames": int(sum(a.n for a in good)),
-            "gate_pct": float(np.mean([a.gate_pct for a in good])),
-            "n_blocks_recorded": len(analyses), "n_blocks_usable": len(good)}
+            if is_brow:
+                means_nf.append(block_means(a.series[name], base, w))
+                frames_nf.append(a.series[name][base])
+        summary[name] = _series_stats(np.concatenate(means), np.concatenate(frames))
+        if is_brow:
+            nf = _series_stats(np.concatenate(means_nf), np.concatenate(frames_nf))
+            summary[name].update({"mean_nf": nf["mean"], "sigma_w_nf": nf["sigma_w"],
+                                  "n_blocks_nf": nf["n_blocks"]})
+    out: dict[str, object] = {
+        "metrics": summary, "n_frames": int(sum(a.n for a in good)),
+        "gate_pct": float(np.mean([a.gate_pct for a in good])),
+        "n_blocks_recorded": len(analyses), "n_blocks_usable": len(good)}
+    if "ptb_inf_R" in names:
+        n_base = int(sum(b.sum() for b in bases))
+        n_excl = int(sum((b & e).sum() for b, e in zip(bases, excls)))
+        n_act = int(sum((b & x).sum() for b, x in zip(bases, acts)))
+        blocks = []
+        for a, base, ex, act in zip(good, bases, excls, acts):
+            m = base & ~ex if bp.enabled else base
+            ptb = (a.series["ptb_inf_R"] + a.series["ptb_inf_L"]) / 2
+            pit = a.pitch if a.pitch is not None else np.full(a.n, np.nan)
+            ok = m & np.isfinite(ptb) & np.isfinite(pit)
+            blocks.append({
+                "pitch_mean": float(pit[ok].mean()) if ok.any() else math.nan,
+                "ptb_inf_mean": float(ptb[ok].mean()) if ok.any() else math.nan,
+                "n_frames_pitch": int(ok.sum()),
+                "excl_pct": 100.0 * float((base & ex).sum()) / max(1, int(base.sum())),
+                "scores": _score_stats(a.blend), "mask_runs": mask_runs(ex)})
+        out["brow"] = {
+            "has_blend": bool(blends), "filter": bool(bp.enabled), "abs": bp.abs_thr, "rel": bp.rel_thr,
+            "pad": bp.pad, "session_median": [float(v) for v in sess_med],
+            "excl_pct": 100.0 * n_excl / n_base if n_base else math.nan,
+            "active_pct": 100.0 * n_act / n_base if n_base else math.nan,
+            "blocks": blocks}
+    return out
+
+
+def series_union(records: Sequence[Mapping[str, object]]) -> list[str]:
+    names: list[str] = []
+    for r in records:
+        for n in r["metrics"]:  # type: ignore[attr-defined]
+            if n not in names:
+                names.append(n)
+    return names
 
 
 def aggregate_sessions(records: Sequence[Mapping[str, object]]) -> dict[str, dict[str, float]]:
     """Agrega sesiones con reposicionamiento. Por serie: sigma_w (mancomunada, RMS de las
     sigma_w), sigma_b (desv. estandar entre medias de sesion, ddof=1), MDC95 intra-sesion
-    (1,96*sqrt2*sigma_w) y MDC95 con reposicionamiento (usa sqrt(sigma_w^2+sigma_b^2))."""
+    (1,96*sqrt2*sigma_w) y MDC95 con reposicionamiento (usa sqrt(sigma_w^2+sigma_b^2)).
+
+    Sesiones viejas sin una serie (p. ej. sin PTB) se ignoran SOLO para esa serie; una serie con
+    menos de 3 sesiones que la tengan se omite del resultado (ver missing_series). Las series de
+    ceja con version sin filtro agregan sigma_w_nf, sigma_b_nf y mdc95_repos_nf."""
     if len(records) < 3:
         raise ValueError(f"se necesitan >= 3 sesiones, hay {len(records)}")
-    names = list(records[0]["metrics"])  # type: ignore[index]
     out: dict[str, dict[str, float]] = {}
-    for name in names:
-        means = np.array([r["metrics"][name]["mean"] for r in records], dtype=float)  # type: ignore[index]
-        sw = np.array([r["metrics"][name]["sigma_w"] for r in records], dtype=float)  # type: ignore[index]
+
+    def pool(rs: Sequence[Mapping[str, object]], name: str, mk: str, sk: str) -> tuple[float, float]:
+        means = np.array([r["metrics"][name].get(mk, math.nan) for r in rs], dtype=float)  # type: ignore[index]
+        sw = np.array([r["metrics"][name].get(sk, math.nan) for r in rs], dtype=float)  # type: ignore[index]
         sw = sw[np.isfinite(sw)]
         sigma_w = float(np.sqrt(np.mean(sw ** 2))) if sw.size else float("nan")
         sigma_b = float(np.std(means[np.isfinite(means)], ddof=1)) if np.isfinite(means).sum() > 1 \
             else float("nan")
+        return sigma_w, sigma_b
+
+    for name in series_union(records):
+        rs = [r for r in records if name in r["metrics"]]  # type: ignore[operator]
+        if len(rs) < 3:
+            continue
+        means = np.array([r["metrics"][name]["mean"] for r in rs], dtype=float)  # type: ignore[index]
+        sigma_w, sigma_b = pool(rs, name, "mean", "sigma_w")
         out[name] = {"mean": float(np.nanmean(means)), "sigma_w": sigma_w, "sigma_b": sigma_b,
                      "mdc95_within": mdc95(sigma_w),
                      "mdc95_repos": mdc95(math.sqrt(sigma_w ** 2 + sigma_b ** 2)),
-                     "n_sessions": len(records)}
+                     "n_sessions": len(rs)}
+        if all("sigma_w_nf" in r["metrics"][name] for r in rs):  # type: ignore[index]
+            sw_nf, sb_nf = pool(rs, name, "mean_nf", "sigma_w_nf")
+            out[name].update({"sigma_w_nf": sw_nf, "sigma_b_nf": sb_nf,
+                              "mdc95_within_nf": mdc95(sw_nf),
+                              "mdc95_repos_nf": mdc95(math.sqrt(sw_nf ** 2 + sb_nf ** 2))})
     return out
+
+
+def missing_series(records: Sequence[Mapping[str, object]], agg: Mapping[str, object]
+                   ) -> dict[str, int]:
+    """Series que existen en alguna sesion pero NO llegaron al agregado (< 3 sesiones las tienen):
+    nombre -> sesiones que si la tienen. Sirve para avisar de sesiones viejas sin PTB."""
+    return {n: sum(1 for r in records if n in r["metrics"])  # type: ignore[operator]
+            for n in series_union(records) if n not in agg}
+
+
+def sessions_without(records: Sequence[Mapping[str, object]], name: str) -> list[object]:
+    """Ids de las sesiones que no tienen la serie `name` (p. ej. 'ptb_inf_R')."""
+    return sorted(r.get("session_id", "?") for r in records if name not in r["metrics"])  # type: ignore[operator]
+
+
+def _slope(x: np.ndarray, y: np.ndarray, min_n: int = 3, min_span: float = 0.05) -> float:
+    ok = np.isfinite(x) & np.isfinite(y)
+    if ok.sum() < min_n or np.ptp(x[ok]) < min_span:
+        return math.nan
+    return float(np.polyfit(x[ok], y[ok], 1)[0])
+
+
+def pitch_slopes(records: Sequence[Mapping[str, object]]) -> dict[str, float]:
+    """Pendiente de PTB_inf contra el pitch (mm [INF] por grado; iris 11,7 mm). 'blocks': todos los
+    bloques con la media de su sesion restada (solo variacion de pitch dentro de la sesion);
+    'sessions': medias de sesion (variacion entre reposicionamientos). NaN si hay < 3 puntos o el
+    pitch varia < 0,05 grados. Solo usa sesiones con datos de ceja."""
+    bx: list[float] = []
+    by: list[float] = []
+    sx: list[float] = []
+    sy: list[float] = []
+    for r in records:
+        br = r.get("brow")
+        if not isinstance(br, Mapping):
+            continue
+        pts = [(b["pitch_mean"], b["ptb_inf_mean"]) for b in br["blocks"]  # type: ignore[index]
+               if b["pitch_mean"] is not None and b["ptb_inf_mean"] is not None
+               and math.isfinite(b["pitch_mean"]) and math.isfinite(b["ptb_inf_mean"])]
+        if not pts:
+            continue
+        px, py = np.array(pts, dtype=float).T
+        sx.append(float(px.mean()))
+        sy.append(float(py.mean()))
+        bx += list(px - px.mean())
+        by += list(py - py.mean())
+    return {"blocks_mm_deg": to_mm(_slope(np.array(bx), np.array(by))),
+            "sessions_mm_deg": to_mm(_slope(np.array(sx), np.array(sy))),
+            "n_blocks": float(len(bx)), "n_sessions": float(len(sx))}
+
+
+def brow_excl_pcts(records: Sequence[Mapping[str, object]]) -> list[float]:
+    """% de cuadros excluidos por ceja activa de cada sesion que tiene datos de ceja."""
+    vals = []
+    for r in records:
+        br = r.get("brow")
+        if isinstance(br, Mapping) and br.get("excl_pct") is not None:
+            vals.append(float(br["excl_pct"]))  # type: ignore[arg-type]
+    return vals
 
 
 def to_mm(value_iris_diameters: float) -> float:
     """[INF] Convierte unidades de diametro de iris a mm suponiendo iris de 11,7 mm."""
     return value_iris_diameters * IRIS_DIAMETER_MM
+
+
+# ---------------------------------------------------------------- criterios de aceptacion de la ceja
+OK, NOT_OK, NO_DATA = "CUMPLE", "NO CUMPLE", "SIN DATOS"
+
+
+def _finite(v: object) -> bool:
+    return isinstance(v, (int, float)) and math.isfinite(float(v))
+
+
+def _fmt3(x: float) -> str:
+    return f"{x:.3f}" if _finite(x) else "n/a"
+
+
+def mdc_class(mm: float) -> tuple[str, str]:
+    """(veredicto, texto) del MDC95 con reposicionamiento de PTB_inf en mm [INF]."""
+    if not _finite(mm):
+        return NO_DATA, "sin dato"
+    if mm <= MDC_OK_MM:
+        return OK, f"{mm:.2f} mm <= {MDC_OK_MM} mm: detecta +2,3 mm con margen"
+    if mm <= MDC_LIMIT_MM:
+        return NOT_OK, f"{mm:.2f} mm en ({MDC_OK_MM}; {MDC_LIMIT_MM}] mm: LIMITE (detecta +2,3 mm sin margen)"
+    return NOT_OK, f"{mm:.2f} mm > {MDC_LIMIT_MM} mm: NO USABLE para detectar +2,3 mm"
+
+
+def brow_acceptance(agg: Mapping[str, Mapping[str, float]], records: Sequence[Mapping[str, object]],
+                    control: Mapping[str, object] | None = None) -> list[tuple[str, str, str]]:
+    """Criterios de aceptacion de PTB_inf como (criterio, veredicto, detalle). Todo PROVISORIO
+    ([SUPUESTO]); sin datos el veredicto es SIN DATOS, nunca CUMPLE."""
+    items: list[tuple[str, str, str]] = []
+    r, l_ = agg.get("ptb_inf_R"), agg.get("ptb_inf_L")
+    # 1) MDC95 con reposicionamiento (el peor ojo decide)
+    if r is None or l_ is None:
+        items.append(("MDC95 con reposicionamiento de PTB_inf", NO_DATA,
+                      "faltan >= 3 sesiones con PTB (las sesiones viejas no lo tienen)"))
+    else:
+        mm = {"R": to_mm(r["mdc95_repos"]), "L": to_mm(l_["mdc95_repos"])}
+        worst = max(mm.values()) if all(_finite(v) for v in mm.values()) else math.nan
+        v, txt = mdc_class(worst)
+        extra = ""
+        if "mdc95_repos_nf" in r and "mdc95_repos_nf" in l_:
+            extra = (f"; SIN filtro de ceja: R {to_mm(r['mdc95_repos_nf']):.2f}, "
+                     f"L {to_mm(l_['mdc95_repos_nf']):.2f} mm")
+        items.append(("MDC95 con reposicionamiento de PTB_inf (peor ojo)", v,
+                      f"R {mm['R']:.2f}, L {mm['L']:.2f} mm [INF] -> {txt}{extra}"))
+    # 2) sigma_w de brow_th comparable a MRD1n
+    th = [agg.get(f"brow_th_{e}") for e in "RL"]
+    m1 = [agg.get(f"mrd1n_{e}") for e in "RL"]
+    if any(x is None for x in th + m1):
+        items.append(("sigma_w de brow_th comparable a MRD1n", NO_DATA, "faltan series"))
+    else:
+        s_th = float(np.sqrt(np.mean([x["sigma_w"] ** 2 for x in th])))  # type: ignore[index]
+        s_m1 = float(np.sqrt(np.mean([x["sigma_w"] ** 2 for x in m1])))  # type: ignore[index]
+        ratio = s_th / s_m1 if s_m1 > 0 else math.nan
+        ok = _finite(ratio) and ratio <= BROW_TH_FACTOR
+        items.append(("sigma_w de brow_th comparable a MRD1n", OK if ok else (NOT_OK if _finite(ratio) else NO_DATA),
+                      f"sigma_w brow_th {s_th:.5f} vs MRD1n {s_m1:.5f} diam. iris (cociente {ratio:.2f}; "
+                      f"'comparable' = <= {BROW_TH_FACTOR:g}, [SUPUESTO])"))
+    # 3) pendiente con el pitch (paralaje)
+    sl = pitch_slopes(records)
+    vals = [abs(sl[k]) for k in ("blocks_mm_deg", "sessions_mm_deg") if _finite(sl[k])]
+    items.append((f"pendiente PTB_inf-pitch < {SLOPE_MAX_MM_DEG} mm/grado [SUPUESTO]",
+                  (OK if max(vals) < SLOPE_MAX_MM_DEG else NOT_OK) if vals else NO_DATA,
+                  f"entre bloques {_fmt3(sl['blocks_mm_deg'])} mm/grado ({sl['n_blocks']:.0f} bloques), "
+                  f"entre sesiones {_fmt3(sl['sessions_mm_deg'])} mm/grado ({sl['n_sessions']:.0f} sesiones); "
+                  f"n/a = pitch casi constante (< 0,05 grados) o < 3 puntos"))
+    # 4) exclusion por ceja activa
+    ex = brow_excl_pcts(records)
+    items.append((f"exclusion por ceja activa < {BROW_EXCL_MAX_PCT:g} %",
+                  (OK if max(ex) < BROW_EXCL_MAX_PCT else NOT_OK) if ex else NO_DATA,
+                  (f"por sesion: {', '.join(f'{v:.1f} %' for v in ex)}" if ex
+                   else "sin sesiones con datos de ceja o sin blendshapes")))
+    # 5) control positivo
+    if control is None:
+        items.append(("control positivo detectado", NO_DATA, "no hay --brow-control registrado"))
+    else:
+        items.append(("control positivo detectado", OK if control.get("detected") else NOT_OK,
+                      str(control.get("summary", ""))))
+    return items
+
+
+# ---------------------------------------------------------------- control positivo (--brow-control)
+CONTROL_PHASES = ("neutral", "raised", "frown")
+
+
+def control_phase_stats(an: Analysis, settle_frames: int, bp: BrowParams = BrowParams(),
+                        ref_median: np.ndarray | None = None) -> dict[str, float]:
+    """Estadisticos de una fase del control positivo. Cuadros validos sin parpadeo, saltando los
+    primeros settle_frames (transicion de expresion). SIN gate ni filtro de ceja (la expresion
+    ES la senal). active_pct: % de esos cuadros con ceja activa segun los blendshapes (NaN sin
+    ellos), con la mediana de referencia (la de la fase neutral)."""
+    out: dict[str, float] = {k: math.nan for k in
+                             ("ptb_inf_R", "ptb_inf_L", "brow_th_R", "brow_th_L", "sigma_w_R", "sigma_w_L",
+                              "pitch", "active_pct")}
+    out["n_frames"] = 0.0
+    if not an.usable:
+        return out
+    ear = (an.series["ear_R"] + an.series["ear_L"]) / 2
+    m = an.valid & ~blink_exclusion(ear)
+    m[:settle_frames] = False
+    out["n_frames"] = float(m.sum())
+    w = max(3, int(round(an.fs)))
+    for e in "RL":
+        for s in ("ptb_inf", "brow_th"):
+            x = an.series[f"{s}_{e}"]
+            ok = m & np.isfinite(x)
+            out[f"{s}_{e}"] = float(x[ok].mean()) if ok.any() else math.nan
+        bm = block_means(an.series[f"ptb_inf_{e}"], m, w)
+        out[f"sigma_w_{e}"] = sigma_robust(bm) if len(bm) >= 3 else math.nan
+    if an.pitch is not None and np.isfinite(an.pitch[m]).any():
+        out["pitch"] = float(np.nanmean(an.pitch[m]))
+    if an.blend is not None and m.any():
+        act = brow_active_mask(an.blend, bp, ref_median)
+        out["active_pct"] = 100.0 * float(act[m].mean())
+    return out
+
+
+def control_result(phases: Mapping[str, Mapping[str, float]], mdc: Mapping[str, float], mdc_source: str
+                   ) -> dict[str, object]:
+    """Cambio de PTB_inf de 'raised' (cejas alzadas) y 'frown' (ceno fruncido) frente a 'neutral',
+    por ojo, en diametros de iris y mm [INF]; detectado = en AMBOS ojos |cambio| > CONTROL_FACTOR x
+    MDC conocido (mdc: ojo -> MDC95 en diametros de iris). Tambien: signo esperado (alzadas +,
+    fruncido -), cambio de pitch (paralaje) y si los blendshapes marcan ceja activa (>= 50 %)."""
+    res: dict[str, object] = {"mdc": dict(mdc), "mdc_source": mdc_source, "factor": CONTROL_FACTOR}
+    parts = []
+    all_det = True
+    for ph, sign in (("raised", 1), ("frown", -1)):
+        d = {e: phases[ph][f"ptb_inf_{e}"] - phases["neutral"][f"ptb_inf_{e}"] for e in "RL"}
+        ratio = {e: (abs(d[e]) / mdc[e] if _finite(d[e]) and _finite(mdc.get(e)) and mdc[e] > 0
+                     else math.nan) for e in "RL"}
+        det = all(_finite(ratio[e]) and ratio[e] > CONTROL_FACTOR for e in "RL")
+        sign_ok = all(_finite(d[e]) and d[e] * sign > 0 for e in "RL")
+        act = phases[ph]["active_pct"]
+        dp = phases[ph]["pitch"] - phases["neutral"]["pitch"]
+        res[ph] = {"delta_diam": d, "delta_mm": {e: to_mm(d[e]) for e in "RL"}, "ratio_mdc": ratio,
+                   "detected": det, "sign_ok": sign_ok, "active_pct": act,
+                   "blend_flag": bool(_finite(act) and act >= 50.0), "delta_pitch_deg": dp}
+        all_det &= det
+        parts.append(f"{'cejas alzadas' if ph == 'raised' else 'ceno fruncido'}: "
+                     f"{to_mm(d['R']):+.2f}/{to_mm(d['L']):+.2f} mm (R/L) [INF], "
+                     f"{ratio['R']:.1f}/{ratio['L']:.1f} x MDC -> {'detectado' if det else 'NO detectado'}")
+    res["detected"] = bool(all_det)
+    res["summary"] = "; ".join(parts) + f" (umbral {CONTROL_FACTOR:g} x MDC; {mdc_source})"
+    return res
 
 
 # ---------------------------------------------------------------- autoprueba de invariancia
@@ -753,13 +1217,15 @@ def invariance_metrics(P: np.ndarray) -> np.ndarray:
 # ---------------------------------------------------------------- datos sinteticos (pruebas y --smoke)
 def make_synthetic_landmarks(t: int = 120, noise_px: float = 0.3, seed: int = 0,
                              blinks: Sequence[tuple[int, int]] = (), open_px: float = 14.0,
-                             drift_px: float = 0.0, blink_shift_px: float = 0.0) -> np.ndarray:
+                             drift_px: float = 0.0, blink_shift_px: float = 0.0,
+                             brow_gap_px: float = 40.0, brow_thick_px: float = 10.0) -> np.ndarray:
     """Secuencia (t,478,2) de una cara sintetica: IOD 140 px, ojos de 60 px de ancho, iris de
     22 px de diametro, malla aleatoria fija. Ruido gaussiano independiente por cuadro y
     deriva opcional de traslacion. blinks: lista de (inicio, fin) de cuadros con ojo casi cerrado.
     blink_shift_px: durante cada parpadeo, comisuras, parpados e iris se desplazan (hacia la nariz
     y hacia abajo, algo distinto por ojo) hasta ese numero de pixeles, como un parpadeo real
-    arrastra la piel del ojo; los puntos rigidos (nariz, frente, mejillas) NO se mueven."""
+    arrastra la piel del ojo; los puntos rigidos (nariz, frente, mejillas) NO se mueven.
+    Cejas: borde inferior a brow_gap_px sobre el iris y grosor brow_thick_px (PTB_inf = gap/22)."""
     rng = np.random.default_rng(seed)
     base = rng.uniform((150.0, 150.0), (450.0, 380.0), size=(N_LANDMARKS, 2))
     centers = {"R": np.array([230.0, 240.0]), "L": np.array([370.0, 240.0])}
@@ -785,6 +1251,12 @@ def make_synthetic_landmarks(t: int = 120, noise_px: float = 0.3, seed: int = 0,
         for idx, dx in zip(eye.lower, (-12.0, 0.0, 12.0)):
             frames[:, idx, 0] = c[0] + dx
             frames[:, idx, 1] = c[1] + opening / 2
+        # ceja: recta horizontal, borde inferior a brow_gap_px sobre el centro del iris, grosor
+        # brow_thick_px; de lateral a medial (R: de izquierda a derecha; L: al reves)
+        sgn = 1.0 if k == "R" else -1.0
+        for idxs, y_off in ((BROWS[k].lower, brow_gap_px), (BROWS[k].upper, brow_gap_px + brow_thick_px)):
+            for idx, dx in zip(idxs, (-36.0, -18.0, 0.0, 18.0, 36.0)):
+                frames[:, idx] = (c[0] + sgn * dx, c[1] - y_off)
         ic = 468 if k == "R" else 473
         frames[:, ic] = c
         for j, (dx, dy) in enumerate(((-11, 0), (0, -11), (11, 0), (0, 11))):

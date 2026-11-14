@@ -584,3 +584,85 @@ def test_capture_panel_renders_red_summary_and_two_line_note():
     hud = sv.CaptureHud(mode="T", phase="TE MOVISTE", gate=g.status(), note="63 % quieto\nFallaron: IOD 70 %")
     canvas = sv.render_capture(np.zeros((480, 640, 3), np.uint8), None, hud)
     assert canvas.ndim == 3
+
+
+# ------------------------------------------------------------ ceja: vista, numeracion, PTB en vivo
+def test_key_numbers_and_new_phases_are_ascii_with_fixation():
+    assert sv.key_action(ord("n")) == "numbers" and sv.key_action(ord("N")) == "numbers"
+    for ph, color in (("NEUTRAL EN 3", sv.GREEN), ("CEJAS ALZADAS", sv.RED), ("CENO FRUNCIDO", sv.RED),
+                      ("RELAJA", sv.YELLOW), ("REVISION CEJA", sv.CYAN)):
+        lines, _ = sv.instruction_for(ph, "brow-control")
+        assert lines and all(s == sv.ascii_text(s) for s in lines), ph
+        assert sv.phase_color(ph) == color
+    for ph in ("NEUTRAL EN 3", "CEJAS ALZADAS", "CENO FRUNCIDO"):
+        assert any("PUNTO ROJO" in s for s in sv.instruction_for(ph, "x")[0])
+        img = np.zeros((200, 640, 3), np.uint8)
+        sv.draw_fixation(img, ph)
+        assert img.any(), ph
+
+
+def test_live_brow_values_pitch_and_failure_modes():
+    b = sv.live_brow(face(), rot_x_for_pitch(4.0), np.array([0.0, 0.0, 0.5, 0.0, 0.0]))
+    assert b is not None
+    assert math.isclose(b.ptb_inf_r, 40.0 / 22.0) and math.isclose(b.ptb_sup_l, 50.0 / 22.0)
+    assert math.isclose(b.th_r, 10.0 / 22.0) and math.isclose(b.pitch, 4.0, abs_tol=1e-9)
+    assert b.active is True and b.blend_max == 0.5
+    assert sv.live_brow(face(), None, np.zeros(5)).active is False
+    assert math.isnan(sv.live_brow(face(), None).pitch)
+    assert sv.live_brow(None, None) is None
+    crossed = face().copy()
+    r, l_ = list(sm.BROWS["R"].lower + sm.BROWS["R"].upper), list(sm.BROWS["L"].lower + sm.BROWS["L"].upper)
+    crossed[r], crossed[l_] = face()[l_], face()[r]
+    assert sv.live_brow(crossed, None) is None            # cejas cruzadas: sin valores, no inventa
+    # invariante a escala y rotacion como el offline
+    moved = sm.apply_known_similarity(face()[None], 1.8, 20.0, (10.0, 5.0))[0]
+    assert math.isclose(sv.live_brow(moved, None).ptb_inf_r, 40.0 / 22.0)
+
+
+def rot_x_for_pitch(deg: float) -> np.ndarray:
+    r = math.radians(deg)
+    M = np.eye(4)
+    M[1, 1], M[1, 2], M[2, 1], M[2, 2] = math.cos(r), -math.sin(r), math.sin(r), math.cos(r)
+    return M
+
+
+def test_draw_brows_colors_numbers_and_leaves_input_without_face():
+    img = np.zeros((480, 640, 3), np.uint8)
+    sv.draw_brows(img, None)
+    assert not img.any()
+    sv.draw_brows(img, face())
+    green = (img == np.array(sv.GREEN)).all(axis=2)
+    red = (img == np.array(sv.RED)).all(axis=2)
+    assert green.any() and red.any()
+    ys_g, ys_r = np.nonzero(green)[0], np.nonzero(red)[0]
+    assert ys_g.mean() < ys_r.mean()                      # verde (superior) por encima del rojo (inferior)
+    numbered = np.zeros_like(img)
+    sv.draw_brows(numbered, face(), numbers=True)
+    assert (numbered != 0).sum() > (img != 0).sum()
+
+
+def test_render_capture_with_brow_view_is_taller_and_shows_values():
+    f = make_frame()
+    base = sv.render_capture(f, face(), hud())
+    b = sv.live_brow(face(), None, np.zeros(5))
+    with_b = sv.render_capture(f, face(), hud(brow_view=True, brow=b, brow_numbers=True))
+    assert with_b.shape[0] > base.shape[0] and with_b.shape[1] == base.shape[1]
+    assert not np.array_equal(with_b[:480, :640], base[:480, :640])     # cejas dibujadas
+    none_b = sv.render_capture(f, None, hud(brow_view=True, brow=None))  # sin cara: no falla
+    assert none_b.shape == with_b.shape
+    assert np.array_equal(base, sv.render_capture(f, face(), hud()))     # sin brow_view nada cambia
+
+
+def test_monitor_accepts_two_and_three_element_infer_and_exposes_brow():
+    P = face()
+    f = make_frame()
+    m2 = monitor(lambda fr, ts: (P, None), brow_view=True)
+    m2.feed(f, "REVISION CEJA", now=0.0)
+    assert m2.brow is not None and m2.brow.blend_max is None
+    m3 = monitor(lambda fr, ts: (P, rot_x_for_pitch(2.0), np.array([0.6, 0, 0, 0, 0])), brow_view=True,
+                 bp=sm.BrowParams())
+    c = m3.feed(f, "REVISION CEJA", now=0.0)
+    assert m3.brow.active and math.isclose(m3.brow.pitch, 2.0, abs_tol=1e-9) and c.shape[0] > 630
+    off = monitor(lambda fr, ts: (P, None, np.zeros(5)))
+    off.feed(f, "GRABANDO", now=0.0)
+    assert off.brow is None and off.last_hud.brow_view is False

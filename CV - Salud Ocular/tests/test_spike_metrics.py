@@ -419,3 +419,273 @@ def test_gate_legacy_matches_old_definition():
     assert np.allclose(scale, 140.0) and np.allclose(roll, 0.0) and np.allclose(pos[0], (300.0, 240.0))
     pos, scale, roll = sm.gate_inputs(P)
     assert np.allclose(scale, 140.0) and np.allclose(roll, 0.0)   # 0,4 x 350
+
+
+# ============================================================ ceja: PTB, expresion, sesiones, control
+def _an(P, **kw):
+    n = len(P)
+    return sm.analyze_recording(P, np.ones(n, bool), np.ones(n, bool), None, 30.0, **kw)
+
+
+def _move_brow(P, eye, dy, which=("upper", "lower")):
+    """Desplaza (en y de imagen, + = abajo) la polilinea de ceja de un ojo."""
+    P = P.copy()
+    for w in which:
+        P[:, list(getattr(sm.BROWS[eye], w)), 1] += dy
+    return P
+
+
+def test_brow_indices_are_in_mesh_and_unique_per_eye():
+    assert len(sm.BROW_IDX) == 20 and max(sm.BROW_IDX) < 468
+    assert not set(sm.BROW_IDX) & set(sm.LID_IDX)
+    for b in sm.BROWS.values():
+        assert b.center_upper == b.upper[2] and b.center_lower == b.lower[2]
+        assert b.lateral_lower == b.lower[0] and b.medial_lower == b.lower[-1]
+
+
+def test_ptb_values_on_clean_synthetic():
+    s = _an(synth(t=30, noise_px=0.0)).series
+    for e in "RL":
+        assert np.allclose(s[f"ptb_inf_{e}"], 40.0 / 22.0) and np.allclose(s[f"ptb_sup_{e}"], 50.0 / 22.0)
+        assert np.allclose(s[f"brow_th_{e}"], 10.0 / 22.0)
+        assert np.allclose(s[f"brow_fis_{e}"], (40.0 - 7.0) / 22.0)   # parpado sup. a 7 px del iris
+        for k in ("ptb_inf1", "ptb_inf_lat", "ptb_inf_med"):
+            assert np.allclose(s[f"{k}_{e}"], 40.0 / 22.0)
+        assert np.allclose(s[f"ptb_sup1_{e}"], 50.0 / 22.0)
+
+
+def test_displaced_brow_gives_known_ptb_only_for_that_eye():
+    base = _an(synth(t=30, noise_px=0.0)).series
+    s = _an(_move_brow(synth(t=30, noise_px=0.0), "R", -5.0)).series   # ceja R sube 5 px
+    assert np.allclose(s["ptb_inf_R"] - base["ptb_inf_R"], 5.0 / 22.0)
+    assert np.allclose(s["ptb_sup_R"] - base["ptb_sup_R"], 5.0 / 22.0)
+    assert np.allclose(s["brow_th_R"], base["brow_th_R"])             # el grosor no cambia
+    assert np.allclose(s["ptb_inf_L"], base["ptb_inf_L"])
+    s2 = _an(_move_brow(synth(t=30, noise_px=0.0), "L", -3.0, ("lower",))).series  # solo el borde inferior
+    assert np.allclose(s2["brow_th_L"] - base["brow_th_L"], -3.0 / 22.0)   # el borde inferior sube: grosor menor
+
+
+def test_ptb_invariant_to_translation_rotation_and_scale():
+    P = synth(t=40, noise_px=0.3, seed=2)
+    P = _move_brow(P, "R", -2.5)
+    base = _an(P).series
+    for scale, ang, sh in ((1.0, 0.0, (80.0, -40.0)), (1.9, 0.0, (0.0, 0.0)), (1.0, 27.0, (0.0, 0.0)),
+                           (0.6, -33.0, (12.0, 90.0))):
+        s = _an(sm.apply_known_similarity(P, scale, ang, sh)).series
+        for e in "RL":
+            for b in sm.BROW_SERIES_EYE:
+                assert np.allclose(s[f"{b}_{e}"], base[f"{b}_{e}"], atol=1e-9), (b, e, scale, ang)
+
+
+def test_ptb_ignores_horizontal_gaze_and_interpolates_sloped_brow_at_eye_midpoint():
+    P = synth(t=20, noise_px=0.0)
+    gaze = P.copy()
+    gaze[:, 468:473, 0] += 7.0            # el iris R mira de lado: c_y no cambia, la ceja se lee en m
+    assert np.allclose(_an(gaze).series["ptb_inf_R"], _an(P).series["ptb_inf_R"])
+    # ceja inferior R inclinada: y = c_y - 40 + 0,5 dx; en x = m (dx = 0) debe leerse 40
+    sl = P.copy()
+    for idx, dx in zip(sm.BROWS["R"].lower, (-36, -18, 0, 18, 36)):
+        sl[:, idx, 1] = 240.0 - 40.0 + 0.5 * dx
+    assert np.allclose(_an(sl).series["ptb_inf_R"], 40.0 / 22.0)
+    # el control de landmark unico (centro 52) tambien cae en dx = 0
+    assert np.allclose(_an(sl).series["ptb_inf1_R"], 40.0 / 22.0)
+    # mover solo el punto lateral cambia ptb_inf_lat pero no el valor principal en m
+    lat = P.copy()
+    lat[:, sm.BROWS["R"].lateral_lower, 1] -= 6.0
+    s = _an(lat).series
+    assert np.allclose(s["ptb_inf_lat_R"] - 40.0 / 22.0, 6.0 / 22.0) and np.allclose(s["ptb_inf_R"], 40.0 / 22.0)
+
+
+def test_polyline_interpolation_edge_cases():
+    x = np.array([[-20.0, -10.0, 0.0, 10.0, 20.0], [20.0, 10.0, 0.0, -10.0, -20.0],
+                  [5.0, 10.0, 15.0, 20.0, 25.0], [np.nan, -10.0, 0.0, 10.0, 20.0]])
+    y = np.array([[-1.0, -1.0, -1.0, -1.0, -1.0], [-1.0, -2.0, -3.0, -4.0, -5.0], [0.0] * 5, [0.0] * 5])
+    out = sm.polyline_y_at_x0(x, y)
+    assert out[0] == -1.0 and out[1] == -3.0       # orden decreciente (ojo L): se ordena
+    assert np.isnan(out[2]) and np.isnan(out[3])   # el 0 queda fuera de la ceja / hay NaN: no se extrapola
+
+
+def test_brow_assignment_aborts_when_eyebrows_cross():
+    P = synth(t=20, noise_px=0.0)
+    assert set(sm.check_brow_assignment(P)) == {"R", "L"} and all(v < 1 for v in sm.check_brow_assignment(P).values())
+    crossed = P.copy()
+    crossed[:, list(sm.BROWS["R"].lower + sm.BROWS["R"].upper)], crossed[:, list(sm.BROWS["L"].lower + sm.BROWS["L"].upper)] = \
+        P[:, list(sm.BROWS["L"].lower + sm.BROWS["L"].upper)], P[:, list(sm.BROWS["R"].lower + sm.BROWS["R"].upper)]
+    with pytest.raises(ValueError, match="asignacion de cejas incorrecta"):
+        sm.check_brow_assignment(crossed)
+    with pytest.raises(ValueError, match="brow-check"):
+        _an(crossed)
+    assert "ptb_inf_R" not in _an(crossed, brow=False).series       # el barrido no mide ceja
+
+
+def test_brow_active_mask_thresholds_padding_and_persistent_raise():
+    b = np.full((100, 5), 0.02)
+    b[40, 2] = 0.31
+    bp = sm.BrowParams()
+    act = sm.brow_active_mask(b, bp)
+    assert act.sum() == 1 and act[40]
+    assert sm.pad_mask(act, 3).sum() == 7 and sm.pad_mask(act, 3)[37] and not sm.pad_mask(act, 3)[36]
+    b2 = np.full((100, 5), 0.02)
+    b2[10, 0] = 0.30                              # el limite exacto no activa (estrictamente mayor)
+    only_abs = sm.BrowParams(rel_thr=1.0)         # sin regla relativa efectiva
+    assert not sm.brow_active_mask(b2, only_abs).any()
+    b2[10, 0] = 0.3001
+    assert sm.brow_active_mask(b2, only_abs)[10]
+    b3 = np.full((100, 5), 0.02)
+    b3[10, 3] = 0.19                              # relativo: mediana 0,02 + 0,15 = 0,17 < 0,19
+    assert sm.brow_active_mask(b3, bp)[10] and not sm.brow_active_mask(b3, sm.BrowParams(rel_thr=0.2))[10]
+    persistent = np.full((100, 5), 0.0)
+    persistent[:, 2] = 0.25                       # ceja alzada TODA la sesion, bajo el umbral absoluto
+    assert not sm.brow_active_mask(persistent, bp).any()   # la regla relativa no la excluye: es la senal
+    persistent[:, 2] = 0.5
+    assert sm.brow_active_mask(persistent, bp).all()       # la absoluta SI: por eso se reporta CON y SIN filtro
+    nan = np.full((10, 5), np.nan)
+    assert not sm.brow_active_mask(nan, bp).any() and not sm.brow_active_mask(None, bp, n=7).any()
+    assert sm.mask_runs(np.array([0, 1, 1, 0, 0, 1], bool)) == [[1, 3], [5, 6]]
+
+
+def _raised_burst(t=300, lo=100, hi=110, dy=-6.0):
+    P = synth(t=t, noise_px=0.2, seed=4)
+    for e in "RL":
+        P[lo:hi, list(sm.BROWS[e].lower + sm.BROWS[e].upper), 1] += dy
+    blend = np.full((t, 5), 0.02)
+    blend[lo:hi, 2] = 0.6
+    return P, blend
+
+
+def test_session_summary_with_and_without_brow_filter_keeps_both_versions():
+    P, blend = _raised_burst()
+    an = _an(P, blend=blend)
+    assert an.brow_active.sum() == 10 and an.brow_excl.sum() == 16
+    on = sm.session_summary([an, an], sm.BrowParams(enabled=True))
+    off = sm.session_summary([an, an], sm.BrowParams(enabled=False))
+    m_on, m_off = on["metrics"]["ptb_inf_R"], off["metrics"]["ptb_inf_R"]
+    assert math.isclose(m_on["mean"], 40.0 / 22.0, abs_tol=3e-3)          # el filtro quita el pico
+    assert m_on["mean_nf"] > m_on["mean"] + 5e-3                           # sin filtro el pico se ve
+    assert m_off["mean"] == m_off["mean_nf"] and m_on["mean_nf"] == m_off["mean_nf"]   # nunca se borran datos
+    assert "sigma_w_nf" not in on["metrics"]["ear_R"]                      # solo las series de ceja
+    br = on["brow"]
+    assert br["has_blend"] and br["filter"] and 0 < br["excl_pct"] < 30 and br["active_pct"] < br["excl_pct"]
+    assert br["blocks"][0]["mask_runs"] == [[97, 113]] and br["blocks"][0]["scores"]["browInnerUp"]["max"] == 0.6
+    assert not off["brow"]["filter"]
+    import json
+    json.dumps(off)  # solo numeros/listas: serializable
+
+
+def test_session_summary_without_blendshapes_does_not_filter():
+    an = _an(synth(t=300, noise_px=0.2, seed=4))
+    s = sm.session_summary([an])
+    assert s["brow"]["has_blend"] is False and s["brow"]["excl_pct"] == 0.0
+    assert s["metrics"]["ptb_inf_R"]["mean"] == s["metrics"]["ptb_inf_R"]["mean_nf"]
+
+
+def _new_session(sid, gap, pitch_per_block=(0.0, 0.0, 0.0)):
+    P = synth(t=300, noise_px=0.3, seed=sid, brow_gap_px=gap)
+    s = sm.session_summary([_an(P)])
+    s["session_id"] = sid
+    s["brow"]["blocks"] = [{"pitch_mean": p, "ptb_inf_mean": 1.0 + 0.01 * p + 0.2 * (gap - 40) / 22,
+                            "excl_pct": 0.0} for p in pitch_per_block]
+    return s
+
+
+def test_aggregate_ignores_old_sessions_only_for_missing_series():
+    new = [_new_session(i, 40.0 + 0.4 * i) for i in range(3)]
+    old = [{"session_id": 90 + i, "metrics": {k: v for k, v in _new_session(7 + i, 40.0)["metrics"].items()
+                                                 if k not in sm.BROW_SERIES}} for i in range(2)]
+    recs = old + new
+    agg = sm.aggregate_sessions(recs)
+    assert agg["ear_R"]["n_sessions"] == 5 and agg["ptb_inf_R"]["n_sessions"] == 3
+    assert agg["ptb_inf_R"]["mdc95_repos_nf"] > 0 and "mdc95_repos_nf" not in agg["ear_R"]
+    assert sm.missing_series(recs, agg) == {} and sm.sessions_without(recs, "ptb_inf_R") == [90, 91]
+    few = old + new[:2]                    # solo 2 sesiones con PTB: la serie se omite, no falla
+    agg2 = sm.aggregate_sessions(few)
+    assert "ptb_inf_R" not in agg2 and "ear_R" in agg2
+    assert sm.missing_series(few, agg2)["ptb_inf_R"] == 2 and "ptb_inf_R" in sm.missing_series(few, agg2)
+    items = dict((n.split(" (")[0], v) for n, v, _ in sm.brow_acceptance(agg2, few))
+    assert items["MDC95 con reposicionamiento de PTB_inf"] == sm.NO_DATA
+    assert sm.brow_excl_pcts(old) == []        # sesiones viejas: sin datos de ceja, sin error
+
+
+def test_mdc_class_boundaries():
+    assert sm.mdc_class(1.15)[0] == sm.OK and sm.mdc_class(1.16)[0] == sm.NOT_OK and "LIMITE" in sm.mdc_class(1.16)[1]
+    assert sm.mdc_class(2.3)[0] == sm.NOT_OK and "LIMITE" in sm.mdc_class(2.3)[1]
+    assert "NO USABLE" in sm.mdc_class(2.31)[1] and sm.mdc_class(math.nan)[0] == sm.NO_DATA
+
+
+def test_pitch_slope_recovers_known_mm_per_degree():
+    recs = [{"brow": {"blocks": [{"pitch_mean": p0 + d, "ptb_inf_mean": 1.0 + 0.01 * (p0 + d)}
+                                 for d in (-1.0, 0.0, 1.0)]}} for p0 in (-2.0, 0.5, 3.0)]
+    sl = sm.pitch_slopes(recs)
+    assert math.isclose(sl["blocks_mm_deg"], 0.01 * sm.IRIS_DIAMETER_MM, rel_tol=1e-6)
+    assert math.isclose(sl["sessions_mm_deg"], 0.01 * sm.IRIS_DIAMETER_MM, rel_tol=1e-6)
+    flat = [{"brow": {"blocks": [{"pitch_mean": 1.0, "ptb_inf_mean": 1.0}] * 3}}] * 3
+    assert math.isnan(sm.pitch_slopes(flat)["blocks_mm_deg"])     # pitch constante: sin dato, no pendiente falsa
+    assert math.isnan(sm.pitch_slopes([{"metrics": {}}])["sessions_mm_deg"])
+
+
+def test_brow_acceptance_full_verdicts():
+    recs = [_new_session(i, 40.0 + 2.0 * i, (0.0, 1.0, 2.0)) for i in range(3)]
+    agg = sm.aggregate_sessions(recs)
+    items = {n.split(" (")[0].split(" <")[0]: (v, d) for n, v, d in sm.brow_acceptance(agg, recs, {"detected": True, "summary": "x"})}
+    assert len(items) == 5
+    assert items["MDC95 con reposicionamiento de PTB_inf"][0] in (sm.OK, sm.NOT_OK)
+    assert items["control positivo detectado"][0] == sm.OK
+    assert sm.brow_acceptance(agg, recs, None)[-1][1] == sm.NO_DATA
+    assert sm.brow_acceptance(agg, recs, {"detected": False})[-1][1] == sm.NOT_OK
+
+
+def test_control_phase_stats_and_result():
+    def phase(gap, blend_val):
+        P = synth(t=240, noise_px=0.3, seed=1, brow_gap_px=gap)
+        b = np.full((240, 5), 0.02)
+        b[:, 2] = blend_val
+        return _an(P, blend=b, bp=sm.BrowParams(enabled=False))
+
+    ans = {"neutral": phase(40.0, 0.02), "raised": phase(52.0, 0.6), "frown": phase(30.0, 0.02)}
+    med = sm.blend_median(ans["neutral"].blend)
+    ph = {k: sm.control_phase_stats(a, 45, sm.BrowParams(), med) for k, a in ans.items()}
+    assert math.isclose(ph["raised"]["ptb_inf_R"] - ph["neutral"]["ptb_inf_R"], 12.0 / 22.0, abs_tol=0.01)
+    assert ph["raised"]["active_pct"] == 100.0 and ph["neutral"]["active_pct"] == 0.0
+    assert ph["neutral"]["n_frames"] <= 240 - 45
+    mdc = {"R": 0.05, "L": 0.05}
+    res = sm.control_result(ph, mdc, "test")
+    assert res["detected"] and res["raised"]["sign_ok"] and res["frown"]["sign_ok"]
+    assert res["raised"]["blend_flag"] and not res["frown"]["blend_flag"]    # el ceno no activo browInnerUp
+    assert math.isclose(res["raised"]["delta_mm"]["R"], sm.to_mm(res["raised"]["delta_diam"]["R"]))
+    # mismo cambio pero MDC grande (> delta / 3): no detectado
+    assert not sm.control_result(ph, {"R": 0.2, "L": 0.2}, "test")["detected"]
+    assert not sm.control_result(ph, {"R": math.nan, "L": math.nan}, "test")["detected"]
+
+
+# ------------------------------------------------------------ spike_v2 (necesita mediapipe)
+def test_v2_table2_handles_old_sessions_and_brow_columns():
+    pytest.importorskip("mediapipe")
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    import spike_v2 as v2
+
+    new = [_new_session(i, 40.0 + 0.4 * i, (0.0, 1.0, 2.0)) for i in range(3)]
+    old = [{"session_id": 90, "metrics": {k: x for k, x in new[0]["metrics"].items() if k not in sm.BROW_SERIES}}]
+    recs = old + new
+    agg = sm.aggregate_sessions(recs)
+    txt = "\n".join(v2.table2(agg, recs))
+    assert "PTB_inf = pupila a ceja INF" in txt and "% cuadros excl. por ceja" in txt and "bloques /" in txt
+    rep = "\n".join(v2.brow_report_lines(agg, recs, None))
+    assert "AVISO: las sesiones [90] NO tienen series de ceja" in rep and "Criterios de aceptacion" in rep
+    assert "NO se puede afirmar" in rep and "edema" in rep and "astronautas" in rep and "microgravedad" in rep
+    only_old = "\n".join(v2.table2(sm.aggregate_sessions(old * 3), old * 3))      # sin ceja alguna: no falla
+    assert "EAR" in only_old and "PTB_inf" not in only_old
+
+
+def test_v2_blendshape_reading_and_smoke_path_without_camera():
+    pytest.importorskip("mediapipe")
+    import types
+
+    import spike_v2 as v2
+
+    cat = lambda n, s: types.SimpleNamespace(category_name=n, score=s)  # noqa: E731
+    got = v2.brow_blend_scores(types.SimpleNamespace(face_blendshapes=[[cat("browInnerUp", 0.4), cat("x", 1.0)]]))
+    assert got[2] == 0.4 and np.isnan(got[0]) and len(got) == len(sm.BROW_BLEND)
+    assert v2.brow_blend_scores(types.SimpleNamespace(face_blendshapes=None)) is None
+    v2.smoke_brow()      # noise floor x3 + sesion vieja + informe + control positivo con camara y MediaPipe falsos
+    p = v2.brow_params(types.SimpleNamespace(brow_abs=0.5, brow_rel=0.1, no_brow_filter=True))
+    assert (p.abs_thr, p.rel_thr, p.enabled) == (0.5, 0.1, False)
