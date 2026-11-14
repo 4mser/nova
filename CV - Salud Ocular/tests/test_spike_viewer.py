@@ -518,3 +518,69 @@ def test_instruction_for_cubre_fases():
     sv.draw_fixation(img2, "PROCESANDO")
     assert not img2.any()
     assert sv.instruction_for("otra", "x")[0] == []
+
+
+# ------------------------------------------------------------ gate en vivo: parpadeo y diagnostico
+def blink_frames(n: int = 120, shift: float = 2.0) -> list[np.ndarray]:
+    P = sm.make_synthetic_landmarks(n, noise_px=0.2, seed=2, blinks=[(40, 45), (90, 95)], blink_shift_px=shift)
+    return list(P)
+
+
+def run_gate(gp: sm.GateParams, frames: list[np.ndarray]) -> list[sv.GateStatus]:
+    g = sv.LiveGate(gp)
+    out = []
+    for i, p in enumerate(frames):
+        g.push(p, np.eye(4), i / FS)
+        st = g.status()
+        if st is not None:
+            out.append(st)
+    return out
+
+
+def test_live_gate_immune_to_blink_and_legacy_is_not():
+    new = run_gate(sm.GateParams(), blink_frames())
+    old = run_gate(sm.GateParams(legacy=True), blink_frames())
+    assert all(s.quiet for s in new)
+    assert sum(not s.quiet for s in old) > 0
+
+
+def test_live_gate_reports_failed_criteria():
+    frames = [face(dx=(6.0 if i % 2 else 0.0)) for i in range(40)]
+    st = run_gate(sm.GateParams(), frames)[-1]
+    assert not st.quiet and "speed" in st.failed
+    ind = {i.key: i for i in st.indicators}
+    assert ind["speed"].ok is False and ind["roll"].ok is True
+
+
+def test_fail_tally_and_monitor_breakdown():
+    t = sv.FailTally()
+    for f in (("iod", "roll"), ("iod",), (), ("iod",)):
+        t.add(f)
+    assert t.pct()["iod"] == 75.0 and t.pct()["roll"] == 25.0
+    assert t.summary() == "criterios que fallaron: IOD 75 %, roll 25 %"
+    P = face()
+    state = {"i": 0}
+
+    def infer(_f, _ts):
+        state["i"] += 1
+        return P + ((6.0 if state["i"] % 2 else 0.0), 0.0), np.eye(4)
+
+    mon = sv.LiveMonitor(None, infer, sm.GateParams(), "T")
+    img = np.zeros((48, 64, 3), np.uint8)
+    for i in range(40):
+        mon.feed(img, "ESPERANDO", now=i / FS)
+    mon.start_recording()
+    for i in range(40, 80):
+        mon.feed(img, "GRABANDO", now=i / FS)
+    pct = mon.stop_recording()
+    assert pct == 0.0 and mon.last_fail.pct()["speed"] == 100.0
+    assert "velocidad 100 %" in mon.last_fail.summary()
+
+
+def test_capture_panel_renders_red_summary_and_two_line_note():
+    frames = [face(dx=(6.0 if i % 2 else 0.0)) for i in range(40)]
+    g = sv.LiveGate(sm.GateParams())
+    fill(g, [(f, np.eye(4)) for f in frames])
+    hud = sv.CaptureHud(mode="T", phase="TE MOVISTE", gate=g.status(), note="63 % quieto\nFallaron: IOD 70 %")
+    canvas = sv.render_capture(np.zeros((480, 640, 3), np.uint8), None, hud)
+    assert canvas.ndim == 3

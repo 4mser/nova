@@ -140,6 +140,7 @@ class GateStatus:
     indicators: tuple[Indicator, ...]
     quiet: bool
     face_loss_pct: float
+    failed: tuple[str, ...] = ()   # claves de sm.CRITERIA que NO pasan en la ventana actual
 
 
 GATE_ROWS = (("speed", "Velocidad", "%IOD/cuad"), ("roll", "Roll", "gr"), ("iod", "IOD", "%"),
@@ -153,25 +154,24 @@ def indicator_text(ind: Indicator) -> str:
 
 
 class LiveGate:
-    """Gate de quietud incremental: guarda por cuadro lo ya derivado (puntos medios de ojos, IOD,
-    roll, yaw, pitch) y evalua solo la ventana de ~gp.window_s s mas reciente (~30 cuadros).
-    Reutiliza sm.gate_window_values / sm.window_pass, asi que coincide con el gate offline."""
+    """Gate de quietud incremental: guarda por cuadro lo ya derivado (posicion y escala del gate,
+    roll, yaw, pitch, EAR) y evalua solo la ventana de ~gp.window_s s mas reciente (~30 cuadros).
+    Reutiliza sm.gate_inputs / gate_window_values / window_pass, asi que coincide con el gate
+    offline. El parpadeo se detecta con el EAR del buffer (mismas reglas que sm.gate_blink_mask)."""
 
     def __init__(self, gp: sm.GateParams, maxlen: int = 120) -> None:
         self.gp = gp
-        self.buf: deque[tuple[np.ndarray, np.ndarray, float, float, float, float, bool, float]] = \
-            deque(maxlen=maxlen)
+        self.buf: deque[tuple[np.ndarray, float, float, float, float, float, bool, float]] =             deque(maxlen=maxlen)
 
     def push(self, p: np.ndarray | None, mat: np.ndarray | None, t: float) -> None:
         nan = float("nan")
         if p is None or not np.isfinite(p).all():
-            self.buf.append((np.full(2, nan), np.full(2, nan), nan, nan, nan, nan, False, t))
+            self.buf.append((np.full(2, nan), nan, nan, nan, nan, nan, False, t))
             return
-        m_r, m_l = (p[33] + p[133]) / 2, (p[362] + p[263]) / 2
-        iod = float(np.linalg.norm(m_r - m_l))
-        roll = float(sm.roll_deg(m_r[None], m_l[None])[0])
+        pos, scale, roll = sm.gate_inputs(p[None], self.gp.legacy)
+        ear = float(sm.ear_frames(p[None])[0])
         yaw, pitch = sm.euler_yxz(mat)[:2] if mat is not None else (nan, nan)
-        self.buf.append((m_r, m_l, iod, roll, yaw, pitch, True, t))
+        self.buf.append((pos[0], float(scale[0]), float(roll[0]), yaw, pitch, ear, True, t))
 
     def status(self) -> GateStatus | None:
         """None mientras no haya una ventana completa (calentando)."""
@@ -185,11 +185,13 @@ class LiveGate:
         w = max(3, int(round(self.gp.window_s * fs)))
         if n < w:
             return None
-        rows = list(self.buf)[-w:]
+        rows = list(self.buf)
         col = lambda i: np.array([r[i] for r in rows], dtype=float)  # noqa: E731
-        vals = sm.gate_window_values(np.stack([r[0] for r in rows]), np.stack([r[1] for r in rows]),
-                                     col(2), col(3), col(4), col(5), np.array([r[6] for r in rows]),
-                                     fs, self.gp)
+        blink = None if self.gp.legacy else sm.gate_blink_mask(col(5))[-w:]
+        rows = rows[-w:]
+        col = lambda i: np.array([r[i] for r in rows], dtype=float)  # noqa: E731
+        vals = sm.gate_window_values(np.stack([r[0] for r in rows]), col(1), col(2), col(3), col(4),
+                                     np.array([r[6] for r in rows]), fs, self.gp, blink)
         passes = sm.window_pass(vals, self.gp)
         thr = {"speed": self.gp.speed_pct, "roll": self.gp.roll_deg, "iod": self.gp.iod_pct,
                "yaw": self.gp.angle_deg, "pitch": self.gp.angle_deg}
@@ -200,8 +202,27 @@ class LiveGate:
                 inds.append(Indicator(key, label, None, thr[key], None if ok else False, unit))
             else:
                 inds.append(Indicator(key, label, v, thr[key], ok, unit))
-        quiet = all(bool(passes[k][0]) for k in sm.CRITERIA)
-        return GateStatus(tuple(inds), quiet, float(vals["face_loss"][0]))
+        failed = tuple(k for k in sm.CRITERIA if not bool(passes[k][0]))
+        return GateStatus(tuple(inds), not failed, float(vals["face_loss"][0]), failed)
+
+
+class FailTally:
+    """Cuenta, por muestra del gate, que criterios fallaron (solo claves, nunca imagenes)."""
+
+    def __init__(self) -> None:
+        self.n = 0
+        self.counts: dict[str, int] = {k: 0 for k in sm.CRITERIA}
+
+    def add(self, failed: Sequence[str]) -> None:
+        self.n += 1
+        for k in failed:
+            self.counts[k] = self.counts.get(k, 0) + 1
+
+    def pct(self) -> dict[str, float]:
+        return {k: (100.0 * c / self.n if self.n else 0.0) for k, c in self.counts.items()}
+
+    def summary(self, prefix: str = "criterios que fallaron") -> str:
+        return sm.fail_summary(self.pct(), prefix)
 
 
 @dataclass
@@ -422,8 +443,8 @@ def _draw_capture_panel(canvas: np.ndarray, hud: CaptureHud) -> None:
     put(canvas, f"Resolucion {hud.size[0]}x{hud.size[1]}   FPS {hud.fps:.1f}", (x, 118), WHITE, 0.5)
     if hud.block is not None:
         put(canvas, f"Bloque {hud.block[0]}/{hud.block[1]}", (x, 140), YELLOW, 0.55)
-    if hud.note:
-        put(canvas, hud.note, (x, 160), ORANGE, 0.45)
+    for i, line in enumerate(hud.note.split("\n")[:2] if hud.note else []):
+        put(canvas, line, (x, 158 + 14 * i), ORANGE, 0.42 if i == 0 else 0.4)
     # quietud
     put(canvas, "QUIETUD EN VIVO (ventana 1 s)", (x, 188), WHITE, 0.5)
     g = hud.gate
@@ -441,8 +462,11 @@ def _draw_capture_panel(canvas: np.ndarray, hud: CaptureHud) -> None:
         cv2.rectangle(canvas, (x, yy - 11), (x + 10, yy - 1), col, -1)
         put(canvas, name, (x + 18, yy), WHITE, 0.45)
         put(canvas, indicator_text(ind) if ind else "...", (x + 100, yy), col, 0.45)
+    if g is not None and g.failed:
+        names = [sm.CRITERION_LABELS[k] for k in g.failed]
+        put(canvas, "EN ROJO: " + ", ".join(names), (x, 250 + 24 * 5 - 4), RED, 0.42)
     if g is not None and g.face_loss_pct > 0:
-        put(canvas, f"Cara perdida en {g.face_loss_pct:.0f} % de la ventana", (x, 250 + 24 * 5), RED, 0.42)
+        put(canvas, f"Cara perdida en {g.face_loss_pct:.0f} % de la ventana", (x, 250 + 24 * 5 + 12), RED, 0.4)
     # metricas
     put(canvas, "METRICAS EN VIVO", (x, 400), WHITE, 0.5)
     m = hud.metrics
@@ -750,15 +774,21 @@ class LiveMonitor:
         self.infer_ms = 0.0
         self.last_hud = CaptureHud()
         self._rec: list[bool] | None = None
+        self._tally: FailTally | None = None
+        self.last_fail = FailTally()
 
     def start_recording(self) -> None:
         """Empieza a contar el gate en verde/rojo por cuadro (ventanas de 1 s deslizantes)."""
         self._rec = []
+        self._tally = FailTally()
 
     def stop_recording(self) -> float | None:
         """% de muestras del gate en verde desde start_recording; None si no hubo ventanas
         completas (calentando). Descarta la lista (solo booleanos, nunca imagenes)."""
         rec, self._rec = self._rec, None
+        if self._tally is not None:
+            self.last_fail = self._tally
+        self._tally = None
         return quiet_pct(rec or [])
 
     def set_block(self, k: int, n: int) -> None:
@@ -798,6 +828,8 @@ class LiveMonitor:
         self.status = self.gate.status()
         if self._rec is not None and self.status is not None:
             self._rec.append(self.status.quiet)
+            if self._tally is not None:
+                self._tally.add(self.status.failed)
         self.metrics = live_metrics(P)
         m = self.metrics
         self.trace.push(now, None if m is None else (m.ear_r + m.ear_l) / 2)

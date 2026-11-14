@@ -11,6 +11,7 @@ Convenciones:
 from __future__ import annotations
 
 import math
+import warnings
 from dataclasses import dataclass
 from typing import Mapping, Sequence
 
@@ -22,6 +23,27 @@ IRIS_IDX = tuple(range(468, 478))
 IRIS_CENTER_CANDIDATES = (468, 473)
 IRIS_DIAMETER_PAIRS = ((469, 471), (470, 472), (474, 476), (475, 477))
 RIGID_IDX = (33, 133, 362, 263, 168, 6, 197, 195, 5, 4, 1, 10, 151, 9, 8)
+# --- puntos RIGIDOS del gate de quietud (MediaPipe Face Mesh, malla canonica de 468 + 10 de iris).
+# Ninguno pertenece a parpados ni comisuras: el parpadeo no los mueve. Solo la geometria.
+#  1, 4, 5   punta y base de la nariz (cartilago/tejido sobre hueso, casi sin expresion)
+#  6, 168    puente nasal alto, entre los ojos (hueso nasal)
+#  197, 195  puente nasal bajo (hueso/cartilago)
+#  10, 151   frente alta y media (hueso frontal)
+#  9, 8      entrecejo (sube un poco con las cejas: peso 2 de 11, supuesto aceptable)
+# 234, 454 son los extremos de las mejillas (borde del ovalo facial, ver FACE_OVAL en el visor):
+# dan el ANCHO de cara (escala) y la linea para el roll. Todos < 468: existen en la malla de
+# 478 puntos como puntos de cara, no de iris (se verifica al importar, abajo).
+FACE_MIDLINE_IDX = (1, 4, 5, 6, 168, 197, 195, 10, 151, 9, 8)
+FACE_CHEEK_IDX = (234, 454)
+# [SUPUESTO] distancia entre los puntos medios de las comisuras (IOD) ~ 0,4 x ancho de cara
+# (234-454). Se usa para que los umbrales del gate (hoy en % de IOD) conserven su significado:
+# escala_gate = 0,4 x ancho(234-454), expresada en "IOD equivalente". Sin medir en esta camara.
+IOD_PER_FACE_WIDTH = 0.4
+GATE_BLINK_FRAC = 0.75   # parpadeo para el gate: EAR < 0,75 x mediana abierta
+GATE_BLINK_PAD = 3       # +- cuadros alrededor
+GATE_BLINK_MAX_GAP = 8   # cuadros sin cara pegados a un parpadeo que tampoco cuentan como perdida
+assert max(FACE_MIDLINE_IDX + FACE_CHEEK_IDX) < N_LANDMARKS - len(IRIS_IDX)
+assert len(set(FACE_MIDLINE_IDX + FACE_CHEEK_IDX)) == len(FACE_MIDLINE_IDX) + 2
 IRIS_DIAMETER_MM = 11.7  # [INF] valor del blog de Google, sin paper de origen
 MAD_TO_SIGMA = 1.4826
 # sigma(x - mediana_movil_7) / sigma(x) para ruido blanco gaussiano (simulacion, 4e5 muestras)
@@ -304,46 +326,151 @@ def circular_ptp(w: np.ndarray) -> np.ndarray:
 # ---------------------------------------------------------------- gate de quietud
 @dataclass(frozen=True)
 class GateParams:
-    """Umbrales PROPUESTOS (configurables por flags)."""
+    """Umbrales PROPUESTOS (configurables por flags). legacy=True usa los criterios antiguos
+    (puntos medios de las comisuras, IOD de comisuras, sin mascara de parpadeo)."""
     window_s: float = 1.0
-    speed_pct: float = 0.5      # % de IOD por cuadro, sobre |delta| del punto medio entre ojos
+    speed_pct: float = 0.5      # % de IOD(-equivalente) por cuadro, sobre |delta| de la posicion
     speed_quantile: float = 0.5  # estadistico de la ventana (mediana: robusta al jitter del modelo)
     roll_deg: float = 2.0
     iod_pct: float = 2.0
     angle_deg: float = 3.0      # yaw y pitch
+    legacy: bool = False
 
 
 CRITERIA = ("speed", "roll", "iod", "yaw", "pitch", "face_loss")
+CRITERION_LABELS = {"speed": "velocidad", "roll": "roll", "iod": "IOD", "yaw": "yaw",
+                    "pitch": "pitch", "face_loss": "perdida de cara"}
 
 
-def gate_window_values(m_r: np.ndarray, m_l: np.ndarray, iod: np.ndarray, roll: np.ndarray,
+def fail_summary(fail_pct: Mapping[str, float], prefix: str = "criterios que fallaron",
+                 min_pct: float = 0.5) -> str:
+    """'criterios que fallaron: IOD 70 %, roll 35 %' (mayor primero). Vacio si ninguno falla."""
+    items = sorted(((k, v) for k, v in fail_pct.items() if k in CRITERION_LABELS
+                    and v is not None and math.isfinite(v) and v >= min_pct),
+                   key=lambda kv: -kv[1])
+    if not items:
+        return ""
+    return f"{prefix}: " + ", ".join(f"{CRITERION_LABELS[k]} {v:.0f} %" for k, v in items)
+
+
+def ear_frames(P: np.ndarray) -> np.ndarray:
+    """EAR medio de los dos ojos por cuadro, (T,478,2) -> (T,). NaN si el cuadro no es finito."""
+    out = []
+    for eye in EYES.values():
+        w = np.linalg.norm(P[:, eye.corner_b] - P[:, eye.corner_a], axis=1)
+        num = sum(np.linalg.norm(P[:, a] - P[:, b], axis=1) for a, b in eye.ear_pairs)
+        with np.errstate(invalid="ignore", divide="ignore"):
+            out.append(num / (2 * w))
+    return (out[0] + out[1]) / 2
+
+
+def gate_inputs(P: np.ndarray, legacy: bool = False) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """(posicion (T,2), escala (T,), roll (T,) en grados) que consume el gate, de P (T,478,2).
+    Nuevo: posicion = media de los puntos rigidos de la linea media, escala = 0,4 x ancho
+    234-454 (IOD equivalente), roll = angulo de la linea 234->454. legacy: punto medio entre los
+    puntos medios de las comisuras, IOD de comisuras y roll de la linea de los ojos."""
+    if legacy:
+        m_r = (P[:, 33] + P[:, 133]) / 2
+        m_l = (P[:, 362] + P[:, 263]) / 2
+        return (m_r + m_l) / 2, np.linalg.norm(m_r - m_l, axis=1), roll_deg(m_r, m_l)
+    d = P[:, FACE_CHEEK_IDX[1]] - P[:, FACE_CHEEK_IDX[0]]
+    ang = wrap180(np.degrees(np.arctan2(d[:, 1], d[:, 0])))
+    return P[:, list(FACE_MIDLINE_IDX)].mean(axis=1), IOD_PER_FACE_WIDTH * np.linalg.norm(d, axis=1), ang
+
+
+def gate_blink_mask(ear: np.ndarray, frac: float = GATE_BLINK_FRAC, pad: int = GATE_BLINK_PAD,
+                    max_gap: int = GATE_BLINK_MAX_GAP) -> np.ndarray:
+    """Cuadros de parpadeo para el gate: EAR < frac x mediana de abiertos, +- pad cuadros. Los
+    tramos cortos (<= max_gap) sin EAR (ojo cerrado: iris no valido) pegados a un cuadro bajo
+    tambien cuentan como parpadeo, para no confundirlos con perdida de cara."""
+    n = len(ear)
+    fin = np.isfinite(ear)
+    if fin.sum() < MIN_BLINK_BASE:
+        return np.zeros(n, dtype=bool)
+    base = open_baseline(ear)
+    low = fin & (ear < frac * base)
+    core = low.copy()
+    i = 0
+    while i < n:
+        if fin[i]:
+            i += 1
+            continue
+        j = i
+        while j < n and not fin[j]:
+            j += 1
+        if j - i <= max_gap and ((i > 0 and low[i - 1]) or (j < n and low[j])):
+            core[i:j] = True
+        i = j
+    return np.convolve(core.astype(float), np.ones(2 * pad + 1), mode="same") > 0
+
+
+MIN_BLINK_BASE = 10
+
+
+def _first_finite(x: np.ndarray) -> np.ndarray:
+    return x[np.arange(len(x)), np.argmax(np.isfinite(x), axis=1)]
+
+
+def _nan_ptp(x: np.ndarray) -> np.ndarray:
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        return np.nanmax(x, axis=1) - np.nanmin(x, axis=1)
+
+
+def _angle_ptp(win_angles: np.ndarray, period: float) -> np.ndarray:
+    """Rango por fila de angulos con periodo `period`, relativo al primer valor finito de la fila."""
+    rel = ((win_angles - _first_finite(win_angles)[:, None] + period / 2) % period) - period / 2
+    return _nan_ptp(rel)
+
+
+def gate_window_values(pos: np.ndarray, scale: np.ndarray, roll: np.ndarray,
                        yaw: np.ndarray | None, pitch: np.ndarray | None, valid: np.ndarray,
-                       fs: float, gp: GateParams) -> dict[str, np.ndarray]:
+                       fs: float, gp: GateParams, blink: np.ndarray | None = None
+                       ) -> dict[str, np.ndarray]:
     """Valor de cada criterio en cada ventana deslizante (una por cuadro de inicio):
-    speed (% de IOD por cuadro, cuantil gp.speed_quantile de la ventana; velocidad del PUNTO
-    MEDIO entre ojos), roll/yaw/pitch (rango, grados), iod (rango, % de la media),
-    face_loss (% de cuadros de la ventana sin cara/iris valido). yaw/pitch = NaN sin matriz.
-    Arreglo vacio si hay menos cuadros que la ventana."""
+    speed (% de la escala por cuadro, cuantil gp.speed_quantile de la ventana; velocidad de pos),
+    roll/yaw/pitch (rango, grados), iod (rango de la escala, % de la media),
+    face_loss (% de cuadros de la ventana sin cara/iris valido).
+
+    blink (bool por cuadro): cuadros de parpadeo. Se EXCLUYEN de velocidad y rangos y no cuentan
+    como perdida de cara. Una ventana con menos de 1/3 de cuadros utilizables da NaN (falla).
+    yaw/pitch = NaN sin matriz. Arreglo vacio si hay menos cuadros que la ventana."""
     t = len(valid)
     w = max(3, int(round(gp.window_s * fs)))
     n_win = max(0, t - w + 1)
     out = {k: np.full(n_win, np.nan) for k in CRITERIA}
     if n_win == 0:
         return out
+    blink = np.zeros(t, dtype=bool) if blink is None else np.asarray(blink, dtype=bool)
+    lost = ~valid & ~blink          # perdida de cara real
+    keep = valid & ~blink           # cuadros que alimentan velocidad y rangos
+    win = lambda x: sliding_window_view(x, w)  # noqa: E731
+    enough = win(keep).sum(axis=1) >= max(3, w // 3)
     with np.errstate(invalid="ignore", divide="ignore"):
+        step = np.full(t, np.nan)
+        step[1:] = 100.0 * np.linalg.norm(np.diff(pos, axis=0), axis=1) / scale[1:]
+        pair_lost = lost[1:] | lost[:-1]
+        pair_skip = (blink[1:] | blink[:-1]) & ~pair_lost
         speed = np.full(t, np.nan)
-        speed[1:] = 100.0 * np.linalg.norm(np.diff((m_r + m_l) / 2.0, axis=0), axis=1) / iod[1:]
-        win = lambda x: sliding_window_view(x, w)  # noqa: E731
+        speed[1:] = np.where(pair_lost, 1e9, np.where(pair_skip, np.nan, step[1:]))
+        speed[1:] = np.where(np.isnan(speed[1:]) & ~pair_skip, 1e9, speed[1:])
         sw = win(speed)[:, 1:]  # w-1 diferencias dentro de la ventana
-        out["speed"] = np.quantile(np.where(np.isfinite(sw), sw, 1e9), gp.speed_quantile, axis=1)
-        out["roll"] = np.ptp(wrap180(win(roll) - win(roll)[:, :1]), axis=1)
-        iod_w = win(iod)
-        out["iod"] = 100.0 * np.ptp(iod_w, axis=1) / np.mean(iod_w, axis=1)
-        if yaw is not None:
-            out["yaw"] = circular_ptp(win(yaw))
-        if pitch is not None:
-            out["pitch"] = circular_ptp(win(pitch))
-        out["face_loss"] = 100.0 * (1.0 - win(valid.astype(float)).mean(axis=1))
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)
+            out["speed"] = np.nanquantile(sw, gp.speed_quantile, axis=1)
+        out["roll"] = _angle_ptp(win(np.where(keep, roll, np.nan)), 180.0)
+        sc = win(np.where(keep, scale, np.nan))
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)
+            out["iod"] = 100.0 * _nan_ptp(sc) / np.nanmean(sc, axis=1)
+        for name, ang in (("yaw", yaw), ("pitch", pitch)):
+            if ang is not None:
+                res = _angle_ptp(win(np.where(keep, ang, np.nan)), 360.0)
+                res[win(keep & ~np.isfinite(ang)).any(axis=1)] = np.nan  # matriz parcial: falla
+                out[name] = res
+        out["face_loss"] = 100.0 * win(lost.astype(float)).mean(axis=1)
+    for k in ("speed", "roll", "iod", "yaw", "pitch"):
+        out[k] = np.where(enough, out[k], np.nan)
     return out
 
 
@@ -365,19 +492,20 @@ def window_pass(vals: dict[str, np.ndarray], gp: GateParams) -> dict[str, np.nda
     return res
 
 
-def quiet_gate(m_r: np.ndarray, m_l: np.ndarray, iod: np.ndarray, roll: np.ndarray,
+def quiet_gate(pos: np.ndarray, scale: np.ndarray, roll: np.ndarray,
                yaw: np.ndarray | None, pitch: np.ndarray | None, valid: np.ndarray,
-               fs: float, gp: GateParams) -> np.ndarray:
+               fs: float, gp: GateParams, blink: np.ndarray | None = None) -> np.ndarray:
     """Un cuadro pasa si pertenece a alguna ventana de ~1 s que cumple todo: sin perdida de
-    cara, velocidad del punto medio entre ojos (cuantil gp.speed_quantile de la ventana) <
-    speed_pct de IOD por cuadro, rango de roll < roll_deg, rango de IOD < iod_pct, rango de
-    yaw/pitch < angle_deg. Sin matriz (yaw/pitch None) esas dos condiciones se omiten."""
+    cara, velocidad de la posicion (cuantil gp.speed_quantile de la ventana) < speed_pct de la
+    escala por cuadro, rango de roll < roll_deg, rango de escala < iod_pct, rango de yaw/pitch
+    < angle_deg. Sin matriz (yaw/pitch None) esas dos condiciones se omiten. Los cuadros en
+    `blink` no cuentan (ver gate_window_values)."""
     t = len(valid)
     w = max(3, int(round(gp.window_s * fs)))
     gate = np.zeros(t, dtype=bool)
     if t < w:
         return gate
-    vals = gate_window_values(m_r, m_l, iod, roll, yaw, pitch, valid, fs, gp)
+    vals = gate_window_values(pos, scale, roll, yaw, pitch, valid, fs, gp, blink)
     passed = np.logical_and.reduce(list(window_pass(vals, gp).values()))
     cover = np.zeros(t + 1)
     starts = np.flatnonzero(passed)
@@ -502,9 +630,11 @@ def analyze_recording(P: np.ndarray, face: np.ndarray, iris_ok: np.ndarray,
                 ang[i] = euler_yxz(M)[:2]
         yaw, pitch = ang[:, 0], ang[:, 1]
         mat_pct = 100.0 * float(np.isfinite(ang[:, 0]).sum()) / max(1, int(np.sum(face)))
-    gate = quiet_gate(geo["R"]["m"], geo["L"]["m"], iod, roll, yaw, pitch, valid, fs, gp)
-    gate_vals = gate_window_values(geo["R"]["m"], geo["L"]["m"], iod, roll, yaw, pitch, valid, fs, gp)
     ear_mean = (series["ear_R"] + series["ear_L"]) / 2
+    g_pos, g_scale, g_roll = gate_inputs(Pv, gp.legacy)
+    g_blink = None if gp.legacy else gate_blink_mask(ear_mean)
+    gate = quiet_gate(g_pos, g_scale, g_roll, yaw, pitch, valid, fs, gp, g_blink)
+    gate_vals = gate_window_values(g_pos, g_scale, g_roll, yaw, pitch, valid, fs, gp, g_blink)
     _, n_blinks, ear_open = detect_blinks(ear_mean)
     return Analysis(n, fs, valid, empty.face_pct, empty.iris_ok_pct, assign,
                     float(np.nanmedian(iod)), float(np.nanmedian(d)), ratio, series, roll, gate,
@@ -623,10 +753,13 @@ def invariance_metrics(P: np.ndarray) -> np.ndarray:
 # ---------------------------------------------------------------- datos sinteticos (pruebas y --smoke)
 def make_synthetic_landmarks(t: int = 120, noise_px: float = 0.3, seed: int = 0,
                              blinks: Sequence[tuple[int, int]] = (), open_px: float = 14.0,
-                             drift_px: float = 0.0) -> np.ndarray:
+                             drift_px: float = 0.0, blink_shift_px: float = 0.0) -> np.ndarray:
     """Secuencia (t,478,2) de una cara sintetica: IOD 140 px, ojos de 60 px de ancho, iris de
     22 px de diametro, malla aleatoria fija. Ruido gaussiano independiente por cuadro y
-    deriva opcional de traslacion. blinks: lista de (inicio, fin) de cuadros con ojo casi cerrado."""
+    deriva opcional de traslacion. blinks: lista de (inicio, fin) de cuadros con ojo casi cerrado.
+    blink_shift_px: durante cada parpadeo, comisuras, parpados e iris se desplazan (hacia la nariz
+    y hacia abajo, algo distinto por ojo) hasta ese numero de pixeles, como un parpadeo real
+    arrastra la piel del ojo; los puntos rigidos (nariz, frente, mejillas) NO se mueven."""
     rng = np.random.default_rng(seed)
     base = rng.uniform((150.0, 150.0), (450.0, 380.0), size=(N_LANDMARKS, 2))
     centers = {"R": np.array([230.0, 240.0]), "L": np.array([370.0, 240.0])}
@@ -634,6 +767,7 @@ def make_synthetic_landmarks(t: int = 120, noise_px: float = 0.3, seed: int = 0,
                     ((300, 200), (300, 230), (300, 280), (300, 300), (300, 320), (300, 335),
                      (300, 345), (300, 120), (300, 150), (300, 180), (300, 190))):
         base[i] = p
+    base[234], base[454] = (125.0, 240.0), (475.0, 240.0)  # ancho de cara 350 = IOD 140 / 0,4
     frames = np.repeat(base[None], t, axis=0)
     opening = np.full(t, open_px)
     for s, e in blinks:
@@ -655,6 +789,13 @@ def make_synthetic_landmarks(t: int = 120, noise_px: float = 0.3, seed: int = 0,
         frames[:, ic] = c
         for j, (dx, dy) in enumerate(((-11, 0), (0, -11), (11, 0), (0, 11))):
             frames[:, ic + 1 + j] = (c[0] + dx, c[1] + dy)
+    if blink_shift_px:
+        eye_pts = {"R": (*EYES["R"].upper, *EYES["R"].lower, 33, 133, 468, 469, 470, 471, 472),
+                   "L": (*EYES["L"].upper, *EYES["L"].lower, 362, 263, 473, 474, 475, 476, 477)}
+        shift = {"R": (blink_shift_px, blink_shift_px), "L": (-blink_shift_px, 0.6 * blink_shift_px)}
+        for s0, e0 in blinks:
+            for k, idxs in eye_pts.items():
+                frames[s0:e0][:, list(idxs)] += shift[k]
     frames = frames + rng.normal(0.0, noise_px, frames.shape)
     if drift_px:
         frames = frames + np.cumsum(rng.normal(0.0, drift_px, (t, 1, 2)), axis=0)

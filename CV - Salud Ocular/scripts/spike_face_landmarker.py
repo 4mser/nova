@@ -593,6 +593,10 @@ def main() -> None:
     v2.add_argument("--gate-roll", type=float, default=2.0, help="rango de roll, grados")
     v2.add_argument("--gate-iod", type=float, default=2.0, help="rango de IOD, %%")
     v2.add_argument("--gate-angle", type=float, default=3.0, help="rango de yaw/pitch, grados")
+    v2.add_argument("--gate-legacy", action="store_true", dest="gate_legacy",
+                    help="gate con los criterios antiguos (puntos medios y IOD de las comisuras, sin "
+                         "mascara de parpadeo) para comparar; por defecto: puntos rigidos de nariz/frente/"
+                         "mejillas y cuadros de parpadeo excluidos")
     vw = p.add_argument_group("vista en vivo (--check --sweep, --noise-floor, --gate-diagnose)")
     vw.add_argument("--view", action=argparse.BooleanOptionalAction, default=True,
                     help="ventana en vivo con landmarks, quietud y progreso (default: si; "
@@ -628,7 +632,7 @@ def main() -> None:
         import spike_v2
         gp = spike_metrics.GateParams(window_s=a.gate_window, speed_pct=a.gate_speed,
                                       roll_deg=a.gate_roll, iod_pct=a.gate_iod,
-                                      angle_deg=a.gate_angle)
+                                      angle_deg=a.gate_angle, legacy=a.gate_legacy)
         if a.sweep:
             a.frames = a.frames or 240
             spike_v2.run_sweep(a, gp)

@@ -329,3 +329,93 @@ def test_retry_decision_exact_limit_and_edges():
     assert sm.retry_decision(10.0, 1, 0, 80.0) == sm.FLAG         # sin reintentos
     assert sm.retry_decision(None, 1, 2, 80.0) == sm.ACCEPT       # sin dato no se reintenta
     assert sm.retry_decision(0.0, 1, 2, 0.0) == sm.ACCEPT
+
+
+# ------------------------------------------------------------ gate inmune al parpadeo
+BLINKS = [(40, 45), (130, 135), (220, 226), (310, 315)]   # ~cada 3 s a 30 fps, 5-6 cuadros
+LEGACY = sm.GateParams(legacy=True)
+
+
+def _blinky(**kw):
+    return synth(t=360, noise_px=0.2, seed=5, blinks=BLINKS, blink_shift_px=2.0, **kw)
+
+
+def _window_pass_pct(an):
+    from spike_metrics import window_pass
+    gp = sm.GateParams()
+    return 100.0 * float(np.logical_and.reduce(list(window_pass(an.gate_vals, gp).values())).mean())
+
+
+def test_gate_rigid_indices_exist_in_mesh():
+    idx = sm.FACE_MIDLINE_IDX + sm.FACE_CHEEK_IDX
+    assert all(0 <= i < sm.N_LANDMARKS - len(sm.IRIS_IDX) for i in idx) and len(set(idx)) == len(idx)
+    assert not set(idx) & (set(sm.LID_IDX) | {33, 133, 362, 263})
+
+
+def test_blinking_still_head_passes_new_gate_and_fails_legacy():
+    P = _blinky()
+    ok = np.ones(len(P), bool)
+    new = sm.analyze_recording(P, ok, ok, None, 30.0)
+    old = sm.analyze_recording(P, ok, ok, None, 30.0, LEGACY)
+    assert new.n_blinks == len(BLINKS)
+    assert new.gate_pct == 100.0 and _window_pass_pct(new) == 100.0
+    assert _window_pass_pct(old) < 80.0              # el parpadeo se confunde con movimiento
+
+
+def test_blink_mask_excludes_frames_from_ranges():
+    """Un salto de escala solo en cuadros de parpadeo no reprueba con la mascara y si sin ella."""
+    t, fs, gp = 60, 30.0, sm.GateParams()
+    pos, valid = np.tile([300.0, 240.0], (t, 1)), np.ones(t, bool)
+    scale, roll = np.full(t, 140.0), np.zeros(t)
+    scale[20:26] = 154.0                              # +10 % durante el parpadeo
+    blink = np.zeros(t, bool)
+    blink[17:29] = True
+    masked = sm.window_pass(sm.gate_window_values(pos, scale, roll, None, None, valid, fs, gp, blink), gp)
+    plain = sm.window_pass(sm.gate_window_values(pos, scale, roll, None, None, valid, fs, gp), gp)
+    assert masked["iod"].all() and masked["face_loss"].all()
+    assert not plain["iod"].all()
+    # ventana casi toda en parpadeo: sin cuadros utiles no hay veredicto -> falla, no pasa por defecto
+    allb = sm.gate_window_values(pos, scale, roll, None, None, valid, fs, gp, np.ones(t, bool))
+    assert not sm.window_pass(allb, gp)["iod"].any()
+
+
+def test_blink_frames_do_not_count_as_face_loss():
+    t = 90
+    P = synth(t=t, noise_px=0.0, blinks=[(40, 46)])
+    valid = np.ones(t, bool)
+    valid[41:45] = False                              # sin iris con el ojo cerrado
+    P[~valid] = np.nan
+    an = sm.analyze_recording(P, valid, valid, None, 30.0)
+    assert an.gate_pct == 100.0
+    # cara perdida de verdad (sin parpadeo) sigue fallando
+    P2 = synth(t=t, noise_px=0.0)
+    v2 = np.ones(t, bool)
+    v2[41:45] = False
+    P2[~v2] = np.nan
+    assert sm.analyze_recording(P2, v2, v2, None, 30.0).gate_pct < 100.0
+
+
+def test_gate_still_fails_on_real_head_motion_with_blinks():
+    ok = np.ones(360, bool)
+    P = _blinky(drift_px=1.5)                        # traslacion
+    assert sm.analyze_recording(P, ok, ok, None, 30.0).gate_pct < 20.0
+    P = _blinky()
+    ramp = np.linspace(0, 20, 360)                   # rotacion (roll) de ~1 grado por ventana... x2
+    R = np.stack([sm.apply_known_similarity(P[i:i + 1], 1.0, float(ramp[i] * 2), (0, 0))[0]
+                  for i in range(360)])
+    assert sm.analyze_recording(R, ok, ok, None, 30.0).gate_pct == 0.0
+
+
+def test_fail_summary_orders_and_formats():
+    s = sm.fail_summary({"roll": 35.0, "iod": 70.2, "speed": 0.0, "face_loss": 0.0})
+    assert s == "criterios que fallaron: IOD 70 %, roll 35 %"
+    assert sm.fail_summary({"roll": 0.0}) == ""
+
+
+def test_gate_legacy_matches_old_definition():
+    """legacy: posicion = medio de los puntos medios de los ojos, escala = IOD de comisuras."""
+    P = synth(t=5, noise_px=0.0)
+    pos, scale, roll = sm.gate_inputs(P, legacy=True)
+    assert np.allclose(scale, 140.0) and np.allclose(roll, 0.0) and np.allclose(pos[0], (300.0, 240.0))
+    pos, scale, roll = sm.gate_inputs(P)
+    assert np.allclose(scale, 140.0) and np.allclose(roll, 0.0)   # 0,4 x 350

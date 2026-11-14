@@ -683,6 +683,7 @@ def wait_still(cap: cv2.VideoCapture, mon: sv.LiveMonitor | None, a: Any) -> str
     waiter = sv.StillWaiter(sv.STILL_HOLD_S, a.wait_still_timeout)
     print("Esperando quietud (el gate debe estar en verde 1,5 s seguidos)...", flush=True)
     t_start = time.perf_counter()
+    tally = sv.FailTally()
     while True:
         ok, f = cap.read()
         if not ok:
@@ -692,6 +693,8 @@ def wait_still(cap: cv2.VideoCapture, mon: sv.LiveMonitor | None, a: Any) -> str
         mon.feed(f, "ESPERANDO QUIETUD", waiter.green_s(now) / sv.STILL_HOLD_S,
                  max(0.0, a.wait_still_timeout - waiter.elapsed(now)), raw=True,
                  note="Quieto, mirada al frente", now=now)
+        if mon.status is not None:
+            tally.add(mon.status.failed)
         state = waiter.update(mon.quiet(), time.perf_counter())
         if state != "waiting":
             res = state
@@ -701,11 +704,14 @@ def wait_still(cap: cv2.VideoCapture, mon: sv.LiveMonitor | None, a: Any) -> str
         msg = f"quietud lograda tras {waited:.1f} s de espera"
     elif res == "timeout":
         msg = f"VENCIO el tiempo ({a.wait_still_timeout:g} s) sin quietud sostenida: se graba igual"
+        why = tally.summary("ventanas en rojo durante la espera")
+        msg += f" ({why})" if why else ""
         print(f"AVISO: {msg}.", flush=True)
     else:
         msg = "la camara dejo de entregar cuadros durante la espera"
     if res == "ready":
-        print(f"  {msg}.", flush=True)
+        why = tally.summary("ventanas en rojo durante la espera")
+        print(f"  {msg}" + (f" ({why})" if why and waited > 3.0 else "") + ".", flush=True)
     if not hasattr(a, "wait_results"):
         a.wait_results = []
     a.wait_results.append(msg)
@@ -722,9 +728,14 @@ class CaptureOutcome:
 
 
 def quiet_notice(cap: cv2.VideoCapture, mon: sv.LiveMonitor, pct: float | None, nxt: int, total: int,
-                 secs: float = 2.5) -> None:
-    """3 pitidos y aviso en consola y ventana (siguen entrando cuadros: drena el buffer)."""
-    print(f"TE MOVISTE: {sv.fmt_num(pct, 0)} % quieto, repito: intento {nxt} de {total}", flush=True)
+                 secs: float = 2.5, fail: sv.FailTally | None = None) -> None:
+    """3 pitidos y aviso en consola y ventana (siguen entrando cuadros: drena el buffer). Si hay
+    `fail`, dice QUE criterios rechazaron mas ventanas (p. ej. 'IOD 70 %, roll 35 %')."""
+    head = f"{sv.fmt_num(pct, 0)} % quieto, repito: intento {nxt} de {total}"
+    why = fail.summary("criterios que fallaron") if fail is not None else ""
+    print(f"TE MOVISTE: {head}" + (f" | {why}" if why else " | sin ventanas medidas"), flush=True)
+    short = fail.summary("Fallaron") if fail is not None else ""
+    note = head + (f"\n{short}" if short else "")
     beep(3)
     end = time.perf_counter() + secs
     while time.perf_counter() < end:
@@ -732,7 +743,7 @@ def quiet_notice(cap: cv2.VideoCapture, mon: sv.LiveMonitor, pct: float | None, 
         if not ok:
             break
         mon.feed(f, "TE MOVISTE", None, max(0.0, end - time.perf_counter()), raw=True,
-                 note=f"{sv.fmt_num(pct, 0)} % quieto, repito: intento {nxt} de {total}")
+                 note=note)
 
 
 def capture_with_retry(a: Any, cap: cv2.VideoCapture, mon: sv.LiveMonitor | None, label: str,
@@ -758,16 +769,17 @@ def capture_with_retry(a: Any, cap: cv2.VideoCapture, mon: sv.LiveMonitor | None
             results.append(text)
             return result, CaptureOutcome(label, 1, None, False, text)
         pct = mon.stop_recording()
+        why = mon.last_fail.summary("criterios que fallaron")
         dec = sm.retry_decision(pct, attempt, max_retries, min_quiet)
         if dec != sm.RETRY:
             break
         result = None  # descarta lo capturado en el intento fallido
         attempt += 1
-        quiet_notice(cap, mon, pct, attempt, max_retries + 1)
+        quiet_notice(cap, mon, pct, attempt, max_retries + 1, fail=mon.last_fail)
     shown = "sin dato" if pct is None else f"{pct:.1f} %"
     if dec == sm.FLAG:
         text = (f"{label}: CAPTURA CON MOVIMIENTO: el MDC no es confiable ({shown} quieto < {min_quiet:g} % "
-                f"tras {attempt} intento(s))")
+                f"tras {attempt} intento(s)" + (f"; {why}" if why else "") + ")")
         a.capture_flagged = True
     else:
         text = f"{label}: {attempt} intento(s), quietud {shown} (minimo {min_quiet:g} %)"
@@ -1181,6 +1193,21 @@ def smoke_v2() -> None:
     assert an.usable and an.n_blinks == 1 and an.gate_pct > 50
     print(f"Smoke v2 metricas OK: invariancia max dif {inv:.1e}; cara sintetica: EAR "
           f"{np.nanmedian(an.series['ear_R']):.3f}, gate {an.gate_pct:.0f} %, parpadeos {an.n_blinks}")
+    # cabeza quieta con parpadeos que arrastran comisuras/parpados 2 px: el gate nuevo no los toma
+    # por movimiento (puntos rigidos + mascara de parpadeo); el legacy si (falla IOD)
+    pb = sm.make_synthetic_landmarks(360, noise_px=0.2, seed=5, blink_shift_px=2.0,
+                                     blinks=[(40, 45), (130, 135), (220, 226), (310, 315)])
+    okb = np.ones(360, bool)
+    res_b = {}
+    for lg in (False, True):
+        gpb = sm.GateParams(legacy=lg)
+        anb = sm.analyze_recording(pb, okb, okb, None, 30.0, gpb)
+        pas = sm.window_pass(anb.gate_vals, gpb)
+        res_b[lg] = (100.0 * float(np.logical_and.reduce(list(pas.values())).mean()),
+                     sm.fail_summary({k: 100.0 - 100.0 * float(v.mean()) for k, v in pas.items()}))
+    assert res_b[False][0] == 100.0 and res_b[True][0] < 80.0 and "IOD" in res_b[True][1], res_b
+    print(f"Smoke v2 gate con parpadeos OK: nuevo {res_b[False][0]:.0f} % de ventanas quietas, "
+          f"legacy {res_b[True][0]:.0f} % ({res_b[True][1]})")
     assert len(gate_summary(ans, sm.GateParams())) > 8 and len(sweep_summary(*_fake_sweep_stats())) > 8
     sv.smoke_viewer()
     smoke_retry()
