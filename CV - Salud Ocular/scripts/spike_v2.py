@@ -799,9 +799,23 @@ def run_noise_floor(a: Any, gp: sm.GateParams) -> None:
 def _run_noise_floor(a: Any, gp: sm.GateParams, view: sv.LiveView | None, mon: sv.LiveMonitor | None) -> None:
     cap, cam = open_camera_info(a.cam, a.req_width, a.req_height)
     print_cam(cam)
-    print(f"\nPROTOCOLO (sesion {a.session_id}): {a.blocks} bloques de {a.block_seconds:.0f} s. "
-          "Mira fijo un punto a la altura de los ojos, cabeza apoyada, sin hablar. Parpadea normal. "
-          "Entre sesiones REPOSICIONA (levanta la cabeza, vuelve a sentarte): sirve para sigma_b.")
+    print(f"""
+==================== PROTOCOLO (sesion {a.session_id}) ====================
+ANTES DE EMPEZAR
+  1. Monitor a ~50 cm. Cabeza APOYADA (respaldo o una mano en la sien), mismo lugar y luz.
+  2. Cuando abra la ventana, subela al borde superior de la pantalla, pegada a la camara.
+EN CADA BLOQUE ({a.blocks} bloques de {a.block_seconds:.0f} s)
+  - Mira el PUNTO ROJO de arriba todo el tiempo (no tu cara ni el texto).
+  - Quieto: sin mover la cabeza, sin hablar.
+  - PARPADEA NORMAL, no te aguantes.
+  - 1 pitido = empieza a grabar. 2 pitidos = termino el bloque. 3 pitidos = te moviste, se repite.
+  - En los 5 s entre bloques puedes relajar el cuello.
+ENTRE SESIONES (importante)
+  - Levantate, camina un poco y vuelve a sentarte COMO LO HARIAS NORMALMENTE.
+  - No busques quedar distinto ni identico: esa variacion natural es lo que se mide (sigma_b).
+  - Si te quedas sentado sin moverte, el cambio minimo detectable sale demasiado optimista.
+  - Usa un --session-id distinto cada vez. q o ESC aborta sin guardar nada.
+====================================================================""")
     blocks: list[tuple[list[bytes], list[float]]] = []
     try:
         # Nunca se usa input(): bajo `!` no hay teclado aunque stdin parezca una terminal.
