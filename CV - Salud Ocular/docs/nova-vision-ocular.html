@@ -593,5 +593,39 @@ code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
   </dl>
 </section>
 
+<section class="sec">
+  <div class="q">Glosario de métricas</div>
+  <h2>Qué estamos midiendo en las pruebas</h2>
+  <p class="sub">Todas son números que calcula el spike con tu webcam. Los milímetros son siempre cuenta aproximada, suponiendo un iris de 11,7 mm.</p>
+  <dl>
+    <div><dt>Landmarks (puntos de la cara)</dt><dd>Los 478 puntos 3D que el modelo ubica sobre la cara. Los 10 últimos (468 a 477) son los del iris.</dd></div>
+    <div><dt>Distancia entre ojos (IOD)</dt><dd>Distancia en píxeles entre el centro de un ojo y el del otro. Sirve como regla para normalizar: si te acercas a la cámara todo crece, pero las proporciones no.</dd></div>
+    <div><dt>Diámetro del iris (D)</dt><dd>Ancho del iris en píxeles, medido con 4 puntos del borde. A 512 px mide unos 16 px. Se usa como regla de tamaño: el iris adulto mide unos 11,7 mm.</dd></div>
+    <div><dt>EAR (apertura del ojo)</dt><dd>Eye Aspect Ratio. Cociente entre el alto del ojo y su ancho. Abierto es más alto, cerrado cae cerca de 0. Sin unidades.</dd></div>
+    <div><dt>Apertura A</dt><dd>Separación entre el párpado superior e inferior, medida en diámetros de iris. Si vale 1, el ojo está abierto tanto como mide un iris. Es la métrica principal de párpado.</dd></div>
+    <div><dt>MRD2n (proxy)</dt><dd>Distancia del centro del iris al borde del párpado inferior, en diámetros de iris. Es un sustituto del MRD2 clínico, que usa el reflejo de una luz sobre la córnea.</dd></div>
+    <div><dt>MRD1n (proxy)</dt><dd>Igual que MRD2n, pero hacia el párpado superior.</dd></div>
+    <div><dt>u y v</dt><dd>Posición del centro del iris dentro del ojo, en horizontal (u) y vertical (v), en anchos de ojo. Indica hacia dónde mira.</dd></div>
+    <div><dt>D/IOD</dt><dd>Cociente entre el diámetro del iris y la distancia entre ojos. Debería ser casi constante; si varía, la medida del iris es inestable.</dd></div>
+    <div><dt>Parpadeo</dt><dd>Cuando el EAR cae por debajo del 60 % de su valor con el ojo abierto durante 2 cuadros o más. Se cuentan para ver si el detector funciona y se excluyen del cálculo del ruido.</dd></div>
+    <div><dt>PERCLOS</dt><dd>Porcentaje del tiempo, en un minuto, con el ojo casi cerrado (apertura menor al 20 % de la normal). Señal de fatiga.</dd></div>
+    <div><dt>Gate (puerta de quietud)</dt><dd>Filtro que decide si un cuadro vale. Exige que la cabeza esté quieta durante 1 s: velocidad, inclinación, distancia entre ojos, giro y cabeceo bajo un umbral, y sin perder la cara.</dd></div>
+    <div><dt>% gate / % quieto</dt><dd>Porcentaje de cuadros o ventanas que pasan el filtro de quietud. La meta es al menos 80 %.</dd></div>
+    <div><dt>Yaw, pitch y roll</dt><dd>Giro de la cabeza a los lados (yaw), arriba y abajo (pitch) y ladeada hacia el hombro (roll), en grados.</dd></div>
+    <div><dt>Residuo de Procrustes</dt><dd>Cuánto se mueve cada punto de la cara después de quitar el movimiento rígido de toda la cabeza. Mide el ruido del modelo y no tu movimiento. Se da en % de la distancia entre ojos.</dd></div>
+    <div><dt>σ_hf (ruido de alta frecuencia)</dt><dd>Cuánto cambia una medida de un cuadro al siguiente aunque nada cambie de verdad. Se calcula con la mediana de las diferencias, para que un movimiento lento no cuente.</dd></div>
+    <div><dt>σ_w (ruido dentro de la sesión)</dt><dd>Cuánto varía el promedio de cada segundo durante una misma sesión, con la persona quieta.</dd></div>
+    <div><dt>σ_b (ruido entre sesiones)</dt><dd>Cuánto cambia el promedio de una sesión a otra por levantarte y volver a sentarte. Es lo que enfrentará la línea base de un día a otro.</dd></div>
+    <div><dt>MDC95 (cambio mínimo detectable)</dt><dd>El cambio más pequeño que se distingue del ruido con 95 % de confianza. Si un valor cambia menos que esto, no se puede afirmar que cambió.</dd></div>
+    <div><dt>Modo IMAGE y modo VIDEO</dt><dd>IMAGE procesa cada foto por separado, como hará el escáner. VIDEO usa el cuadro anterior para suavizar y da menos ruido, pero no representa fotos sueltas.</dd></div>
+    <div><dt>JPEG q80 y 512 px</dt><dd>Ruta de imagen que simulamos: reducir a 512 px de ancho y comprimir con calidad 80. La calidad real del escáner no se conoce.</dd></div>
+    <div><dt>Sesgo pareado</dt><dd>Diferencia entre la medida de una condición (poca luz, otro tamaño) y la de referencia, sobre los mismos cuadros. Muestra cuánto desplaza la medida cada degradación.</dd></div>
+    <div><dt>Roll bruto y compensado</dt><dd>Con la cámara rotada, 'bruto' mide la imagen tal cual y 'compensado' la endereza antes de medir. Compensar mejora la medida y duplica la latencia.</dd></div>
+    <div><dt>Latencia</dt><dd>Tiempo que tarda una foto en convertirse en medidas, incluyendo reducir, comprimir y detectar. Se da en milisegundos.</dd></div>
+    <div><dt>Abstención</dt><dd>Cuando la imagen es mala, el sistema responde 'no sé' en lugar de inventar un número.</dd></div>
+    <div><dt>Alerta de seguimiento</dt><dd>Aviso de que una medida cambió respecto a la línea base de la persona. No es un diagnóstico.</dd></div>
+  </dl>
+</section>
+
 <footer>Detalle, links de cada paper y marcas de verificación: <code>docs/soft-sensors-antecedentes.md</code> en el repo hackaton-vision. Las cifras vienen de abstracts y páginas oficiales; varios textos completos estaban bloqueados.</footer>
 </main>
