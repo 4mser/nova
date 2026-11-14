@@ -426,14 +426,12 @@ code{font-size:13px;background:var(--grey);padding:1px 6px;border-radius:4px}
     <div class="phh"><h3>Suelo de ruido (3 sesiones)</h3><span class="chip c-cv">La que toca ahora</span></div>
     <p>Mide cuánto "tiembla" cada medida aunque nada cambie. Cada sesión son 3 bloques de 20 segundos.</p>
     <ul class="tasks">
-      <li><span class="m">1</span><span><b>Prepárate:</b> luz de escritorio, sin lentes, a unos 50 cm de la pantalla. Siéntate con la cabeza apoyada (en el respaldo o una mano en la sien).</span></li>
-      <li><span class="m">2</span><span><b>Pega el comando</b> de la sesión 1. Cuenta regresiva de 15 s: acomódate.</span></li>
-      <li><span class="m">3</span><span><b>Espera el semáforo verde.</b> "ESPERANDO QUIETUD" significa que aún te mueves. La grabación empieza sola.</span></li>
-      <li><span class="m">4</span><span><b>Escucha el pitido:</b> 1 pitido = empieza a grabar; 2 pitidos = terminó el bloque; 3 pitidos = "TE MOVISTE", se repite el bloque.</span></li>
-      <li><span class="m">5</span><span><b>Durante los 20 s:</b> mira el <b>PUNTO ROJO</b> arriba al centro de la ventana todo el tiempo (no tu cara ni el texto). Sin hablar ni mover la cabeza. <b>Parpadea normal</b>, no te aguantes. Antes de empezar, sube la ventana al borde superior de la pantalla, pegada a la cámara, para que el punto quede a la altura de tus ojos.</span></li>
-      <li><span class="m">6</span><span><b>Repite 3 bloques</b>; en los 5 s entre bloques puedes relajar el cuello.</span></li>
-      <li><span class="m">7</span><span><b>Entre sesiones: levántate, camina un poco y vuelve a sentarte como lo harías normalmente.</b> No busques quedar distinto ni idéntico: esa variación natural es lo que se mide. Si te quedas sentado sin moverte, el cambio mínimo detectable sale demasiado optimista. Lanza el siguiente comando con otro <code>--session-id</code>.</span></li>
-      <li><span class="m">8</span><span><b>Al final</b> lanza <code>--noise-floor-report --json</code>. Entrega el cambio mínimo detectable con reposicionamiento.</span></li>
+      <li><span class="m">1</span><span><b>Prepárate:</b> luz de escritorio, sin lentes, monitor a ~50 cm, cabeza apoyada y <b>cejas relajadas</b>. Sube la ventana al borde superior de la pantalla, pegada a la cámara.</span></li>
+      <li><span class="m">2</span><span><b>Paso 1, comprobar las cejas:</b> corre <code>--brow-check</code>. Ceja superior en verde, inferior en rojo: deben seguir tus cejas. Si no, avisa antes de seguir.</span></li>
+      <li><span class="m">3</span><span><b>Paso 2, tres sesiones (5, 6 y 7):</b> cada una son 3 bloques de 20 s. Mira el <b>punto rojo</b>, quieto, sin hablar, <b>parpadeando normal</b>. 1 pitido empieza, 2 terminan el bloque, 3 significan que te moviste y se repite.</span></li>
+      <li><span class="m">4</span><span><b>Entre sesiones: levántate, camina 20 a 30 s y vuelve a sentarte como lo harías normalmente.</b> No busques quedar igual ni distinto: esa variación natural es lo que se mide. Si te quedas sentado, el cambio mínimo detectable sale demasiado optimista.</span></li>
+      <li><span class="m">5</span><span><b>Paso 3, prueba de control:</b> <code>--brow-control</code>, con la cara neutra, las cejas alzadas y el ceño fruncido (10 s cada una).</span></li>
+      <li><span class="m">6</span><span><b>Paso 4, informe:</b> <code>--noise-floor-report --exclude-sessions 1,2,3,4</code>. No pide nada de ti.</span></li>
     </ul>
     <p><b>Qué vas a ver en la ventana:</b> tu cámara con los puntos de la cara y el iris, cinco indicadores de quietud en verde o rojo (velocidad, inclinación, distancia entre ojos, giro y cabeceo), el parpadeo con su gráfico, y el avance de la grabación.</p>
   </div>

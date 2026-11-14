@@ -1006,7 +1006,17 @@ ENTRE SESIONES (importante)
     if all_lats:
         print(f"  latencia de inferencia (blendshapes {'ON' if use_bs else 'OFF'}): mediana "
               f"{lat_stats['lat_median_ms']:.1f} ms, p95 {lat_stats['lat_p95_ms']:.1f} ms")
-    print("Repite con otro --session-id tras reposicionarte; con >= 3 sesiones usa --noise-floor-report.")
+    sid = int(a.session_id)
+    print(f"""
+================ SESION {sid} TERMINADA ================
+AHORA, ANTES DE LA SIGUIENTE SESION:
+  1. LEVANTATE de la silla y camina un poco (unos 20 a 30 segundos).
+  2. VUELVE A SENTARTE como lo harias normalmente. No busques quedar igual ni distinto.
+  3. Apoya la cabeza de nuevo y deja las cejas relajadas.
+  4. Lanza la siguiente sesion con --session-id {sid + 1}.
+Con 3 sesiones nuevas, corre --noise-floor-report (con --exclude-sessions para las viejas).
+=====================================================""", flush=True)
+    beep(3)
     if a.save_landmarks:
         p = DATA_DIR / f"landmarks_noise_s{a.session_id}_{stamp()}.npz"
         np.savez_compressed(p, **saved)
@@ -1024,8 +1034,9 @@ ENTRE SESIONES (importante)
         lines += ["", f"Ceja activa excluida: {fmt(br['excl_pct'], 1)} % (filtro "
                   f"{'ACTIVO' if br['filter'] else 'DESACTIVADO'}; umbrales PROVISORIOS)", ""]
         lines += ["", *capture_summary(a), "", f"Resumen agregado a data/vision/{NOISE_FILE.name} (solo metricas).",
-                  "Repite con otro --session-id tras reposicionarte; con >= 3 usa --noise-floor-report.",
-                  "El MDC con reposicionamiento (sigma_b) solo sale con >= 3 sesiones."]
+                  f"AHORA: 1) LEVANTATE y camina 20-30 s.  2) VUELVE A SENTARTE como siempre (sin buscar quedar igual).",
+                  f"3) Apoya la cabeza, cejas relajadas.  4) Lanza la siguiente con --session-id {int(a.session_id) + 1}.",
+                  "Con 3 sesiones nuevas corre --noise-floor-report. El MDC con reposicionamiento (sigma_b) lo exige."]
         view.show_final("SUELO DE RUIDO: RESUMEN", lines)
 
 
