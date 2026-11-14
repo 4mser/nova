@@ -274,7 +274,7 @@ def test_render_capture_mirror_flips_video_only():
     a = sv.render_capture(f, None, hud(), mirror=False, draw_lm=False)
     b = sv.render_capture(f, None, hud(), mirror=True, draw_lm=False)
     # el cartel de instrucciones (abajo) no se voltea: se compara solo la zona de video sin cartel
-    assert np.array_equal(a[:360, :640][:, ::-1], b[:360, :640])
+    assert np.array_equal(a[70:360, :640][:, ::-1], b[70:360, :640])
 
 
 def test_render_capture_other_resolutions_and_no_draw_banner():
@@ -510,4 +510,11 @@ def test_instruction_for_cubre_fases():
         lines, _ = sv.instruction_for(ph, "noise-floor")
         assert lines and all(s.isascii() for s in lines)
     assert any("PARPADEA" in s for s in sv.instruction_for("GRABANDO", "noise-floor")[0])
+    assert any("PUNTO ROJO" in s for s in sv.instruction_for("GRABANDO", "noise-floor")[0])
+    img = np.zeros((200, 300, 3), np.uint8)
+    sv.draw_fixation(img, "GRABANDO")
+    assert img.any()
+    img2 = np.zeros((200, 300, 3), np.uint8)
+    sv.draw_fixation(img2, "PROCESANDO")
+    assert not img2.any()
     assert sv.instruction_for("otra", "x")[0] == []

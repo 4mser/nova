@@ -463,22 +463,34 @@ def _draw_capture_panel(canvas: np.ndarray, hud: CaptureHud) -> None:
 def instruction_for(phase: str, mode: str) -> tuple[list[str], Color]:
     """Cartel de instrucciones segun fase y modo (ASCII, la fuente Hershey no dibuja tildes)."""
     ph = phase.upper()
-    nf = "noise" in mode.lower() or "ruido" in mode.lower()
     if ph.startswith("CUENTA"):
-        lines = ["ACOMODATE", "Cabeza apoyada, a 50 cm de la pantalla", "Mira un punto fijo a la altura de los ojos"]
-        return lines, YELLOW
+        return ["ACOMODATE", "1) Sube esta ventana al borde superior, pegada a la camara",
+                "2) Cabeza apoyada, a 50 cm. 3) Mira el PUNTO ROJO de arriba"], YELLOW
     if ph.startswith("ESPERANDO"):
-        return ["QUEDATE QUIETO", "No muevas la cabeza ni hables", "Empieza solo cuando todo este en verde"], ORANGE
+        return ["QUEDATE QUIETO", "Mira el PUNTO ROJO de arriba, sin moverte ni hablar",
+                "Empieza solo cuando los indicadores esten en verde"], ORANGE
     if ph.startswith("TE MOVISTE"):
-        return ["TE MOVISTE - SE REPITE", "Cabeza apoyada y quieta", "Mira el punto fijo"], RED
+        return ["TE MOVISTE - SE REPITE", "Cabeza apoyada y quieta", "Mira el PUNTO ROJO de arriba"], RED
     if ph.startswith("GRABANDO"):
-        lines = ["GRABANDO: QUIETO", "Mira el punto fijo. Sin hablar", "PARPADEA NORMAL (no te aguantes)"]
-        if not nf:
-            lines = ["GRABANDO: QUIETO", "Mira al frente, sin mover la cabeza", "Parpadea normal"]
-        return lines, GREEN
+        return ["GRABANDO: QUIETO", "Mira el PUNTO ROJO de arriba todo el tiempo. Sin hablar",
+                "PARPADEA NORMAL (no te aguantes). Sin mover la cabeza"], GREEN
     if ph.startswith("PROCESANDO"):
         return ["PROCESANDO", "Ya puedes relajarte"], WHITE
     return [], WHITE
+
+
+FIXATION_PHASES = ("CUENTA", "ESPERANDO", "TE MOVISTE", "GRABANDO")
+
+
+def draw_fixation(img: np.ndarray, phase: str) -> None:
+    """Punto rojo de fijacion arriba al centro del video (cerca de la camara) en las fases de captura."""
+    if not phase.upper().startswith(FIXATION_PHASES):
+        return
+    cx, cy = img.shape[1] // 2, 34
+    cv2.circle(img, (cx, cy), 16, (255, 255, 255), 2)
+    cv2.circle(img, (cx, cy), 10, RED, -1)
+    cv2.circle(img, (cx, cy), 2, (255, 255, 255), -1)
+
 
 def render_capture(frame: np.ndarray, P: np.ndarray | None, hud: CaptureHud, mirror: bool = False,
                    draw_lm: bool = True) -> np.ndarray:
@@ -497,6 +509,7 @@ def render_capture(frame: np.ndarray, P: np.ndarray | None, hud: CaptureHud, mir
     elif hud.slow:
         put(v, f"SIN DIBUJO: inferencia lenta ({hud.infer_ms:.0f} ms > {SLOW_INFER_MS:.0f})", (12, vh - 12),
             ORANGE, 0.5)
+    draw_fixation(v, hud.phase)
     lines, col = instruction_for(hud.phase, hud.mode)
     if lines:
         bh = 26 * len(lines) + 14
