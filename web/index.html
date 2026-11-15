@@ -2,10 +2,10 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>NOVA · Health that travels with you</title>
-<meta name="description" content="NOVA watches over every astronaut on the way to Mars: body, mind and radiation, on board and offline. A Team B&N project for the NASA Space Apps Challenge 2026.">
-<meta property="og:title" content="NOVA · Health that travels with you">
-<meta property="og:description" content="The health copilot for the crew going to Mars. Body, mind and radiation, on board and offline.">
+<title>NOVA · The doctor that travels with astronauts</title>
+<meta name="description" content="NOVA is the doctor that travels with astronauts: it looks after body and mind, guides any emergency and protects the crew from radiation, on board and offline. A Team B&N project for the NASA Space Apps Challenge 2026.">
+<meta property="og:title" content="NOVA · The doctor that travels with astronauts">
+<meta property="og:description" content="The doctor that travels with astronauts. Body, mind, emergencies and radiation, on board and offline.">
 <meta property="og:image" content="https://nova-spaceapps.vercel.app/og.jpg">
 <meta property="og:url" content="https://nova-spaceapps.vercel.app/">
 <meta name="twitter:card" content="summary_large_image">
@@ -15,19 +15,19 @@
 <link rel="alternate" hreflang="x-default" href="https://nova-spaceapps.vercel.app/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="motor/fonts/space-grotesk-500-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="nova.css?v=1791100000">
+<link rel="stylesheet" href="nova.css?v=1791180000">
 </head><body>
 
 <nav id="nav"><div class="wrap">
   <a class="marca" href="#historia" aria-label="NOVA"><svg id="navNova" viewBox="0 0 60 60"></svg><span>NOVA</span></a>
-  <div class="links"><a href="#historia">Story</a><a href="#modelos">How it works</a><a href="#real">Real screens</a><a href="#mujeres">Women's health</a><a href="#radiacion">Radiation</a><a href="#ciencia">Science</a><a href="#videos">Videos</a><a href="#preguntas">FAQ</a></div>
+  <div class="links"><a href="#historia">Story</a><a href="#modelos">How it works</a><a href="#real">Real screens</a><a href="#mujeres">Women's health</a><a href="#radiacion">Radiation</a><a href="#ciencia">Science</a><a href="#codigo">Code</a><a href="#preguntas">FAQ</a></div>
   <span class="evento"><i></i>Space Apps 2026</span>
   <span class="idioma" aria-label="Language"><a href="./" lang="en" aria-current="true">EN</a><a href="es/" lang="es" hreflang="es">ES</a></span>
 </div></nav>
 
 <!-- ═══ LA HISTORIA: el código del video, en la página, manejado por el scroll ═══ -->
 <section id="historia" class="top" aria-label="Nova's story">
-  <h1 class="oculto">NOVA, the health copilot for astronauts on the way to Mars</h1>
+  <h1 class="oculto">NOVA, the doctor that travels with astronauts</h1>
   <div class="h-pin">
     <div class="h-escena" id="hEscena"><div class="h-marco" id="hMarco">
       <video id="hVid" muted playsinline autoplay loop preload="auto" aria-label="Nova's story"></video>
@@ -55,22 +55,25 @@
     <div><span class="ic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><canvas class="sig" data-k="voice" aria-hidden="true"></canvas><b>Speech and voice</b><p>Understands the crew and reads every step aloud, in English and Spanish.</p><small>whisper.cpp · Kokoro</small></div>
     <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><canvas class="sig" data-k="sleep" aria-hidden="true"></canvas><b>Vision</b><p>Sees the body and the rescuer's hands through a phone camera, about 15 ms a frame.</p><small>MediaPipe Pose + Hands · ship GPU</small></div>
     <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/></svg></span><canvas class="sig" data-k="bone" aria-hidden="true"></canvas><b>Medical library</b><p>41 open sources and 35,830 passages. Every answer opens the real page it came from.</p><small>Gray's Anatomy · OpenStax · ISS medical kit</small></div>
-    <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></span><canvas class="sig" data-k="stress" aria-hidden="true"></canvas><b>Medical station</b><p>ECG, oxygen, blood pressure, temperature, breathing and glucose, one line of JSON per reading.</p><small>Built by our team · USB or UDP</small></div>
+    <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></span><canvas class="sig" data-k="stress" aria-hidden="true"></canvas><b>Medical station</b><p>Today it identifies each astronaut with an NFC card and records an ECG. It is designed to add oxygen, blood pressure, temperature, glucose, cognitive fatigue and gut microbiota.</p><small>Built by our team · Arduino · AD8232 · NFC</small></div>
   </div>
 </div></section>
 
 <!-- ═══ PANTALLAS REALES ═══ -->
 <section class="sec" id="real"><div class="wrap">
   <span class="rot rev">Real screens</span>
-  <h2 class="rev">Not a mockup. <span class="g">The real thing.</span></h2>
+  <h2 class="rev">Real screens, <span class="g">from NOVA running today.</span></h2>
   <p class="sub rev">Captured from NOVA running on our ship computer, with the demo crew: Mara, David, Ingrid and Kenji.</p>
   <div class="shots rev">
     <figure class="ancha"><img src="img/real/estacion.jpg" alt="NOVA PC crew view: four crew members with live vital signs and a note that Kenji is running low" loading="lazy"><figcaption><b>The big screen</b>The whole crew at once, live from the flight core. When something drifts, Nova says why.</figcaption></figure>
     <figure class="fono"><img src="img/real/app-hoy.jpg" alt="NOVA app Today screen in mission mode" loading="lazy"><figcaption><b>Each astronaut's phone</b>Their day at a glance, Emergency and the body scan, linked to the ship.</figcaption></figure>
-    <figure><img src="img/real/emergencia.jpg" alt="Emergency guide for cardiac arrest in microgravity with a 110 per minute metronome" loading="lazy"><figcaption><b>Emergencies</b>12 protocols with their source and page. Nova reads each step and keeps the beat.</figcaption></figure>
-    <figure><img src="img/real/escaner.jpg" alt="Body scan: organs and the heart drawn over a patient on the floor, with live heart rate" loading="lazy"><figcaption><b>Body scan</b>A phone camera, vision on the ship, anatomy fitted to the patient.</figcaption></figure>
+    <figure><img src="img/real/estacion-nfc.jpg" alt="NOVA Station hardware: a tablet on a stand with the heart board, the NFC reader and an Arduino Uno" loading="lazy"><figcaption><b>NOVA Station</b>Every morning each astronaut taps an NFC card and records an ECG in one minute.</figcaption></figure>
+    <figure><img src="img/real/emergencia.jpg" alt="Emergency guide for cardiac arrest in microgravity with a 110 per minute metronome" loading="lazy"><figcaption><b>Emergencies</b>13 protocols with their source and page. The alert reaches the ship, the station and every phone at once, and Nova reads each step aloud.</figcaption></figure>
+    <figure><img src="img/real/constelaciones.jpg" alt="Mind view: the crew's mood over the last 14 days drawn as constellations, with Kenji's line dropping" loading="lazy"><figcaption><b>Mind</b>A one-minute check-in on each phone. Nova draws it as constellations, so a crewmate who is struggling is noticed early.</figcaption></figure>
+    <figure><img src="img/real/hackaton.jpg" alt="Body scan tested on a teammate at the hackathon: skeleton and heart fitted to his body, the compression point and the Evetts-Russomano CPR steps" loading="lazy"><figcaption><b>Augmented reality, tested at the hackathon</b>A camera fits the anatomy to the body, follows the rescuer's hands and corrects each movement.</figcaption></figure>
     <figure><img src="img/real/rcp-0g.jpg" alt="CPR coaching in microgravity with the Evetts-Russomano technique and patient drift" loading="lazy"><figcaption><b>CPR for every gravity</b>Earth, Mars at 0.38 g, or weightlessness with Evetts-Russomano and drift.</figcaption></figure>
     <figure><img src="img/real/kit.jpg" alt="Medical kit rack with drawer A lit and the defibrillator photo" loading="lazy"><figcaption><b>The medical kit</b>Ask for the defibrillator and its drawer lights up.</figcaption></figure>
+    <figure><img src="img/real/tormenta.jpg" alt="Radiation view during a solar particle event: a banner sends everyone to the storm shelter and the dose rate spikes" loading="lazy"><figcaption><b>Solar storm</b>Every screen raises the alert and Nova guides the crew to the shelter.</figcaption></figure>
     <figure><img src="img/real/biblioteca.jpg" alt="Medical library showing the real page of a CPR in microgravity guideline with the passage highlighted" loading="lazy"><figcaption><b>The library</b>Every answer opens the real page, highlighted.</figcaption></figure>
   </div>
   <p class="cred-real rev">CPR footage under the scan: «RCP.ogv» by Primerosauxilios, CC BY-SA 3.0, Wikimedia Commons.</p>
@@ -114,7 +117,7 @@
   <div class="wrap b-txt">
     <span class="rot rev">Every night</span>
     <h2 class="rev">While the crew sleeps,<br><span class="g">Nova goes home.</span></h2>
-    <p class="sub rev">A report of about 6 KB leaves the F Prime core as CCSDS packets and crosses up to 22 light-minutes to Earth. There, a larger parent model learns from it, flight surgeons review every change, and a smaller child model flies back, signed with ed25519. The ship checks the signature before installing it and rolls back if anything fails.</p>
+    <p class="sub rev">A report of about 6 KB leaves the F Prime core as CCSDS packets and crosses up to 22 light-minutes to Earth. Updates come back signed with ed25519, and the ship checks the signature before installing them and rolls back if anything fails. The next stage is knowledge distillation: a larger teacher model on Earth learns from each report, flight surgeons review every change, and it trains the smaller model that flies on board.</p>
   </div>
   <span class="b-cred">PHOTO · NASA / ARTEMIS II</span>
 </section>
@@ -142,7 +145,7 @@
 <section class="sec" id="radiacion"><div class="wrap">
   <span class="rot rev">Try it</span>
   <h2 class="rev">Radiation adds up. <span class="g">Nova keeps count.</span></h2>
-  <p class="sub rev">Drag through a mission to Mars and watch the dose build up against NASA's career limit. Then hit the crew with a solar storm.</p>
+  <p class="sub rev">NOVA estimates the mission dose with the rates Curiosity measured on the way to Mars and on its surface. During a solar particle event it alerts every screen and guides the crew to the shelter. Drag through a mission and watch the dose build up against NASA's career limit, then hit the crew with a solar storm.</p>
   <div class="rd rev">
     <div class="rd-vis"><canvas id="rdCv" aria-label="Mission dose over time"></canvas></div>
     <aside class="rd-panel">
@@ -172,14 +175,16 @@
     <div class="amb"><b>≈<span class="cnt" data-n="660">660</span><small>mSv</small></b><p>for a round trip to Mars, over NASA's 600 mSv career limit</p></div>
   </div>
   <ul class="fuentes rev">
-    <li><b>Human Research Program</b><span>The five hazards of human spaceflight and their health risks.</span></li>
-    <li><b>NASA Twins Study</b><span>What a year in space changed in one twin and not the other (Science, 2019).</span></li>
-    <li><b>MSL RAD</b><span>Radiation measured inside Curiosity on the way to Mars (Zeitlin et al., Science, 2013).</span></li>
-    <li><b>NASA-STD-3001</b><span>NASA's crew health and performance standards.</span></li>
-    <li><b>Open Science Data Repository</b><span>NASA's open biological and physiological spaceflight data.</span></li>
-    <li><b>Venous thrombosis in spaceflight</b><span>NASA OCHMO-MTB-007 (2026): jugular stasis and the ultrasound screening of every crewmember.</span></li>
+    <li><b><a href="https://www.nasa.gov/hrp/hazards/" target="_blank" rel="noopener">5 Hazards of Human Spaceflight</a></b><span>NASA Human Research Program: radiation, isolation, distance, gravity and closed environments. NOVA reads every vital sign by the hazard that moves it.</span></li>
+    <li><b><a href="https://www.nasa.gov/hrp/risks/" target="_blank" rel="noopener">Risks of Human Spaceflight</a></b><span>The health risks behind each hazard: heart, bones, immunity, sleep, behavior and radiation cancer.</span></li>
+    <li><b><a href="https://www.nasa.gov/hrp/ongoing-hrp-research/" target="_blank" rel="noopener">Ongoing HRP Research</a></b><span>What NASA measures on crews today, from Artemis II to the space station.</span></li>
+    <li><b><a href="https://doi.org/10.1126/science.aau8650" target="_blank" rel="noopener">NASA Twins Study</a></b><span>What a year in space changed in one twin and not the other (Science, 2019).</span></li>
+    <li><b><a href="https://doi.org/10.1126/science.1235989" target="_blank" rel="noopener">MSL RAD</a></b><span>Radiation measured inside Curiosity on the way to Mars (Zeitlin et al., Science, 2013).</span></li>
+    <li><b><a href="https://www.nasa.gov/ochmo/hsa-standards/" target="_blank" rel="noopener">NASA-STD-3001</a></b><span>NASA's crew health and performance standards.</span></li>
+    <li><b><a href="https://osdr.nasa.gov/bio/" target="_blank" rel="noopener">Open Science Data Repository</a></b><span>NASA's open biological and physiological spaceflight data.</span></li>
+    <li><b><a href="https://www.nasa.gov/ochmo/hsa-standards/ochmo-technical-briefs/" target="_blank" rel="noopener">Venous thrombosis in spaceflight</a></b><span>NASA OCHMO-MTB-007 (2026): jugular stasis and the ultrasound screening of every crewmember.</span></li>
     <li><b>Women in space</b><span>Sex differences in spaceflight and female astronaut health (npj Microgravity, 2025; Experimental Physiology, 2026).</span></li>
-    <li><b>CPR in microgravity</b><span>The DGLRM/ESAM guideline behind every CPR step (Hinkelbein et al., 2020).</span></li>
+    <li><b><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7607644/" target="_blank" rel="noopener">CPR in microgravity</a></b><span>The DGLRM/ESAM guideline behind every CPR step (Hinkelbein et al., 2020).</span></li>
   </ul>
   <div class="ruta rev">
     <div class="r-linea"><i id="rLlena"></i></div>
@@ -191,21 +196,36 @@
   </div>
 </div></section>
 
-<!-- ═══ VIDEOS ═══ -->
-<section class="sec" id="videos"><div class="wrap">
-  <span class="rot rev">Videos</span>
-  <h2 class="rev">Nova, <span class="g">in short films.</span></h2>
-  <p class="sub rev">Meet Nova, her friends and the training for Mars.</p>
-  <div class="gal rev" id="gal"></div>
+<!-- ═══ CÓDIGO: acceso al repositorio ═══ -->
+<section class="sec" id="codigo"><div class="wrap">
+  <div class="gh rev">
+    <svg class="gh-ramas" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
+      <path class="r1" d="M-20 470 C 200 470, 260 380, 420 380 S 700 470, 900 300 S 1100 120, 1240 120"/>
+      <path class="r2" d="M-20 520 C 260 520, 380 540, 560 430 S 860 220, 1240 260"/>
+      <path class="r3" d="M-20 560 C 300 560, 520 600, 760 500 S 1060 420, 1240 440"/>
+    </svg>
+    <div class="gh-izq">
+      <span class="rot">Open the code</span>
+      <h2>The whole system, <span class="g">in one repository.</span></h2>
+      <p class="sub">The flight core, the ship screens, the station, the phone app, the vision and voice models and the link with Earth, with the build notes for each part.</p>
+      <div class="gh-cifras"><div><b>2,647</b><small>files</small></div><div><b>13</b><small>languages</small></div><div><b>10</b><small>modules</small></div></div>
+      <div class="gh-term" aria-hidden="true"><span class="pr">$</span> <span class="tx">git clone https://github.com/4mser/nova</span><i></i></div>
+      <a class="gh-btn" href="https://github.com/4mser/nova" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg><span>Open <b>4mser/nova</b> on GitHub</span><svg class="fl" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+    </div>
+    <div class="gh-arbol">
+      <div class="gh-cab"><i></i><i></i><i></i><span>4mser / nova</span><small>main</small></div>
+      <ul><li style="--k:0" class="t-c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><code>nave/vuelo/</code><span>Flight core</span><small>F Prime · C++ · FPP</small></li><li style="--k:1" class="t-c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><code>nave/tripulacion/</code><span>Ship screens</span><small>Tauri · Rust</small></li><li style="--k:2" class="t-ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><code>nave/estacion/</code><span>Station contract and NFC</span><small>Arduino · AD8232</small></li><li style="--k:3" class="t-ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><code>station/</code><span>NOVA Station tablet</span><small>Expo · TypeScript</small></li><li style="--k:4" class="t-ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><code>app/</code><span>Astronaut phone app</span><small>React Native</small></li><li style="--k:5" class="t-c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><code>nave/vision/</code><span>Body and hand tracking</span><small>MediaPipe · Python</small></li><li style="--k:6" class="t-c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><code>nave/voz/</code><span>Speech and voice</span><small>whisper.cpp · Kokoro</small></li><li style="--k:7" class="t-amb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><code>nave/biblioteca/</code><span>41 open medical sources</span><small>Python</small></li><li style="--k:8" class="t-mag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><code>nave/tierra/</code><span>Nightly report, signed updates</span><small>CCSDS · ed25519</small></li><li style="--k:9" class="t-c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><code>web/</code><span>This website</span><small>HTML · JS</small></li></ul>
+      <div class="gh-scan" aria-hidden="true"></div>
+    </div>
+  </div>
 </div></section>
-<div class="vmod" id="vmod" aria-hidden="true"><div class="vmod-in"><button id="vcer" aria-label="Close">✕</button><video id="vmv" controls playsinline></video><b id="vtit"></b></div></div>
 
 <!-- ═══ PREGUNTAS ═══ -->
 <section class="sec" id="preguntas"><div class="wrap estrecho">
   <span class="rot rev">FAQ</span>
   <h2 class="rev">Ask before <span class="g">launch.</span></h2>
   <div class="faq rev">
-    <details><summary>Is NOVA real?<i></i></summary><p>Yes. NOVA is a working prototype our team built for the NASA Space Apps Challenge 2026, for the challenge "Create Health Monitoring Software for Astronauts on Space Missions". The flight core, the ship screens, the phone app and the body scan all run today. The crew and their numbers are demo data.</p></details>
+    <details><summary>Is NOVA real?<i></i></summary><p>Yes. NOVA is a working prototype our team built for the NASA Space Apps Challenge 2026, for the challenge "Create Health Monitoring Software for Astronauts on Space Missions". The flight core, the ship screens, the station tablet, the phone app and the body scan all run today. The station measures ECG today; the other sensors are the next stage. The crew and their numbers are demo data.</p></details>
     <details><summary>Does it need a connection to Earth?<i></i></summary><p>No. Every model runs on the ship's computer, offline. Once a night, NOVA sends Mission Control a report of about 6 KB, and improvements come back signed, with the real delay of light.</p></details>
     <details><summary>Who sees what an astronaut shares?<i></i></summary><p>She or he decides. Vital signs go to the flight surgeon. Mood leaves the phone only if they choose to share their day, cycle care stays on the phone unless she sends a summary, and the journal never leaves it.</p></details>
     <details><summary>How does NOVA handle women's health?<i></i></summary><p>It follows what NASA has learned: private cycle care or menstrual suppression, the neck-vein ultrasound NASA now requires, urgent signs for clots, supplies counted to the end of the mission, anemia and urinary checks, and readiness for landing.</p></details>
@@ -217,7 +237,7 @@
 <!-- ═══ CIERRE ═══ -->
 <section class="sec cierre"><div class="wrap">
   <svg id="finNova" viewBox="0 0 400 400" role="img" aria-label="NOVA"></svg>
-  <h2 class="rev">NOVA. <span class="g">Health that travels with you.</span></h2>
+  <h2 class="rev">NOVA. <span class="g">The doctor that travels with astronauts.</span></h2>
   <p class="sub rev">NASA Space Apps Challenge · November 14–15, 2026</p>
   <div class="ctas rev"><a class="btn btn-p" href="#historia">Watch the story again</a></div>
 </div></section>
@@ -239,7 +259,7 @@
 
 <script src="motor/mascota-base.js?v=1791066072"></script>
 <script src="motor/mascota-orbes.js?v=1791066072"></script>
-<script src="nova.js?v=1791066072"></script>
+<script src="nova.js?v=1791180000"></script>
 <script src="radiacion.js?v=1791066072"></script>
 <script src="bucle.js?v=1791100000"></script>
 </body></html>

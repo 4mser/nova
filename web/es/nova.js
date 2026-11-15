@@ -180,7 +180,7 @@ function bucle(ms){
 requestAnimationFrame(bucle);
 
 /* ── videos de NOVA: tarjetas con vista previa al pasar el mouse y reproductor ── */
-{ const VID = [['teaser', 'Hola. Soy NOVA.', 'AVANCE', '0:17'], ['entrena', 'NOVA entrena para Marte', 'ENTRENAMIENTO', '0:57'], ['aura-nova', 'NOVA conoce a AURA', 'AMIGOS', '0:39'], ['familia', 'Una última foto antes del despegue', 'FAMILIA', '0:39'], ['historia', 'La historia completa', 'PRESENTACIÓN', '4:09']];
+if ($('gal')) { const VID = [['teaser', 'Hola. Soy NOVA.', 'AVANCE', '0:17'], ['entrena', 'NOVA entrena para Marte', 'ENTRENAMIENTO', '0:57'], ['aura-nova', 'NOVA conoce a AURA', 'AMIGOS', '0:39'], ['familia', 'Una última foto antes del despegue', 'FAMILIA', '0:39'], ['historia', 'La historia completa', 'PRESENTACIÓN', '4:09']];
   const src = id => id === 'historia' ? '../video/es/nova-pc.mp4' : `../video/gal/${id}.mp4`;
   const gal = $('gal'); gal.innerHTML = VID.map(([id, t, k, d]) => `<button class="vc" data-id="${id}" data-t="${t}"><span class="po"><img src="../video/gal/${id}.jpg" alt="" loading="lazy"><span class="pl"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="du">${d}</span><span class="bar"><i></i></span></span><small>${k}</small><b>${t}</b></button>`).join('');
   const md = $('vmod'), mv = $('vmv');

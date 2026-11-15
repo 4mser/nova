@@ -19,7 +19,7 @@
   },
   {
    "id": "05",
-   "text": "Our medical station measures heart, oxygen, blood pressure and breathing, and sends every reading straight to the ship's computer."
+   "text": "Every morning, each astronaut taps their card at NOVA Station, the medical station our team built. Today it reads a real ECG. It's designed to measure everything."
   },
   {
    "id": "06",
@@ -31,7 +31,7 @@
   },
   {
    "id": "08",
-   "text": "And their mind. Every evening we check in, and mood, stress and focus become a constellation they can read."
+   "text": "And their mind. Every evening they check in, and mood, stress and focus become a constellation: one for each of them, and one for the whole crew."
   },
   {
    "id": "09",
@@ -43,7 +43,7 @@
   },
   {
    "id": "11",
-   "text": "On the big screen, I watch the whole crew at once. When something drifts, I tell you why."
+   "text": "On the big screen, I watch the whole crew at once. Tap anyone, and their vital signs open."
   },
   {
    "id": "12",
@@ -92,7 +92,7 @@
   },
   {
    "id": "23",
-   "text": "On Earth, a much bigger parent model learns from it, and flight surgeons check every change. Then it teaches a smaller child model, light enough for the ship's computer."
+   "text": "Our design goes further: on Earth, a much bigger parent model learns from it, and flight surgeons check every change. Then it teaches a smaller child model, light enough for the ship's computer."
   },
   {
    "id": "24",
@@ -112,7 +112,7 @@
   },
   {
    "id": "28",
-   "text": "NOVA. Health that travels with you."
+   "text": "NOVA. The doctor that travels with astronauts."
   },
   {
    "id": "29",
@@ -125,6 +125,28 @@
   {
    "id": "31",
    "text": "And every answer opens the real page of the book it came from."
+  },
+  {
+   "id": "32",
+   "text": "Inside, an Arduino, an NFC reader and a heart board, all designed by our team and open to inspect, piece by piece.",
+   "say": "Inside, an Arduino, an N F C reader and a heart board, all designed by our team and open to inspect, piece by piece."
+  },
+  {
+   "id": "33",
+   "text": "A camera reads their eyes too: blinks, fatigue, and the changes NASA watches for in flight."
+  },
+  {
+   "id": "34",
+   "text": "I keep count of every millisievert against NASA's career limit. When a solar storm hits, every screen turns amber, and I guide the crew to the shelter.",
+   "say": "I keep count of every millisievert against NASA's career limit. When a solar storm hits, every screen turns amber, and I guide the crew to the shelter."
+  },
+  {
+   "id": "35",
+   "text": "And it works for real. We tested it right here, on our own team."
+  },
+  {
+   "id": "36",
+   "text": "And I see the whole mission at once: the real path to Mars, day by day."
   }
  ]
 }

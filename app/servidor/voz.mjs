@@ -13,10 +13,8 @@
      ← {tipo:'listo'} · {tipo:'audio', data} (PCM 24 kHz) · {tipo:'dice', texto} · {tipo:'oye', texto}
      ← {tipo:'fin_turno'} · {tipo:'interrumpido'} · {tipo:'herramienta', id, nombre, args} · {tipo:'error', mensaje}
 
-   Uso: cd servidor && npm install && node voz.mjs   (puerto 8132; clave en GEMINI_API_KEY o en fidelya-backend/.env) */
-import { existsSync, readFileSync } from 'node:fs';
+   Uso: cd servidor && npm install && node voz.mjs   (puerto 8132; clave en GEMINI_API_KEY) */
 import { createServer } from 'node:http';
-import { join } from 'node:path';
 import WebSocket, { WebSocketServer } from 'ws';
 
 const PUERTO = Number(process.env.PUERTO ?? 8132);
@@ -28,11 +26,7 @@ const ES_25 = MODELO.startsWith('gemini-2.5');
 
 function clave() {
   if (process.env.GEMINI_API_KEY) return process.env.GEMINI_API_KEY;
-  // la misma clave que usó voz_nova.py para la voz de los videos
-  const env = join(process.env.HOME, 'Development/FIDELYA/fidelya-backend/.env');
-  const l = existsSync(env) && readFileSync(env, 'utf8').split('\n').find(x => x.startsWith('OPENAI_API_KEY='));
-  if (!l) throw new Error('Falta GEMINI_API_KEY');
-  return l.split('=').slice(1).join('=').trim().replace(/^"|"$/g, '');
+  throw new Error('Falta GEMINI_API_KEY');
 }
 const KEY = clave();
 

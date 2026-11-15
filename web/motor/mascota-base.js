@@ -1,4 +1,4 @@
-/* AURA · la mascota (según la lámina de marca): gel rosado translúcido Fidelya Pink (#FF0ABA) con un núcleo oscuro brillante
+/* AURA · la mascota : gel rosado translúcido (#FF0ABA) con un núcleo oscuro brillante
    y dos ojos de luz. La forma fluctúa (armónicos lentos) y nunca es un círculo. Enojada: el gel se oscurece hacia rojo y los ojos
    se inclinan. Devuelve un string SVG; se dibuja por cuadro. */
 let _mid = 0;

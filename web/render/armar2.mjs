@@ -4,7 +4,7 @@ import { execFileSync, spawnSync } from 'node:child_process'
 import { envelope } from '/Users/nicolasmoreno/ambar-studio/src/lib/audio.js'
 const lang = process.argv[2], src = lang === 'en' ? (process.env.VOZ || 'render/v3/voz') : 'render/voz-es-v2', motor = lang === 'en' ? 'motor' : 'motor-es'
 const s = readFileSync('motor/halo3.js', 'utf8'), V = JSON.parse(s.match(/const V = (\[.*?\]);/s)[1]), DUR = +s.match(/const DUR = ([\d.]+);/)[1]
-const ids = V.map((_, i) => String(i + 1).padStart(2, '0')), out = {}
+const ids = V.map((_, i) => String(i + 1).padStart(2, '0')), out = {}, usa = i => V[i] >= 0
 for (const id of ids) {
   const b = execFileSync('ffmpeg', ['-v', 'error', '-i', `${src}/${id}.wav`, '-ac', '1', '-ar', '48000', '-f', 'f32le', 'pipe:1'], { maxBuffer: 1e9 }), mono = new Float32Array(b.buffer, b.byteOffset, b.length / 4)
   out[id] = { d: Math.round(mono.length / 48000 * 100) / 100, i0: 0, env: envelope(mono, 48000, { fps: 30 }).map(v => Math.round(Math.min(1, v) * 1000) / 1000) }
@@ -12,8 +12,9 @@ for (const id of ids) {
 writeFileSync(`${motor}/voz/env-${lang}.json`, JSON.stringify(out))
 // las frases no se pisan
 ids.forEach((id, i) => { if (i < ids.length - 1 && V[i] + out[id].d > V[i + 1] - .3) console.log('! se pisa', id, (V[i] + out[id].d).toFixed(2), V[i + 1]) })
-const inputs = ids.flatMap(id => ['-i', `${src}/${id}.wav`])
-const f = ids.map((_, i) => `[${i}:a]aresample=48000,adelay=${Math.round(V[i] * 1000)}:all=1[a${i}]`).join(';') + ';' + ids.map((_, i) => `[a${i}]`).join('') + `amix=inputs=${ids.length}:normalize=0,apad=whole_dur=${DUR},atrim=0:${DUR}[o]`
+const usados = ids.map((id, i) => i).filter(usa)
+const inputs = usados.flatMap(i => ['-i', `${src}/${ids[i]}.wav`])
+const f = usados.map((i, k) => `[${k}:a]aresample=48000,adelay=${Math.round(V[i] * 1000)}:all=1[a${k}]`).join(';') + ';' + usados.map((_, k) => `[a${k}]`).join('') + `amix=inputs=${usados.length}:normalize=0,apad=whole_dur=${DUR},atrim=0:${DUR}[o]`
 execFileSync('ffmpeg', ['-v', 'error', '-y', ...inputs, '-filter_complex', f, '-map', '[o]', '-ar', '48000', '-ac', '2', `render/narracion-${lang}.wav`])
 // música: se repite un tramo de 52,475 s (la pista se parece a sí misma con ese desfase) empalmado en el inicio de las escenas nuevas
 const CUT = +(process.env.CUT || 185.0), LAG = +(process.env.LAG || 24.0), X = 1.0

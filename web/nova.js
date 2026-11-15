@@ -41,7 +41,7 @@ addEventListener('scroll', alScroll, { passive: true }); alScroll();
 const H = { sec: $('historia'), esc: $('hEscena'), marco: $('hMarco'), v: $('hVid'), vis: true, full: false, src: '' };
 const VID = { movil: 'video/nova-movil.mp4', pc: 'video/nova-pc.mp4' };
 function fuente(t = 0){ const quiere = movil() && !H.full ? VID.movil : VID.pc; if (H.src === quiere) return;
-  const seguir = !H.v.paused || H.src === ''; H.src = quiere; H.v.poster = quiere.replace('.mp4', '.jpg'); H.v.src = quiere + '?v=1791051395';
+  const seguir = !H.v.paused || H.src === ''; H.src = quiere; H.v.poster = quiere.replace('.mp4', '.jpg'); H.v.src = quiere + '?v=1791180000';
   H.v.addEventListener('loadedmetadata', function f(){ H.v.removeEventListener('loadedmetadata', f); if (t > 0) H.v.currentTime = t; if (seguir) H.v.play().catch(() => {}); }); }
 fuente();
 function medir(){ H.marco.style.width = H.marco.style.height = H.marco.style.transform = '';
@@ -179,8 +179,8 @@ function bucle(ms){
 }
 requestAnimationFrame(bucle);
 
-/* ── videos de NOVA: tarjetas con vista previa al pasar el mouse y reproductor ── */
-{ const VID = [['teaser', 'Hi. I\'m Nova.', 'TEASER', '0:17'], ['entrena', 'Nova trains for Mars', 'TRAINING', '0:57'], ['aura-nova', 'Nova meets Aura', 'FRIENDS', '0:39'], ['familia', 'One last photo before launch', 'FAMILY', '0:39'], ['historia', 'The full story', 'PRESENTATION', '4:09']];
+/* ── videos de NOVA: tarjetas con vista previa al pasar el mouse y reproductor (solo si la página tiene la galería) ── */
+if ($('gal')) { const VID = [['teaser', 'Hi. I\'m Nova.', 'TEASER', '0:17'], ['entrena', 'Nova trains for Mars', 'TRAINING', '0:57'], ['aura-nova', 'Nova meets Aura', 'FRIENDS', '0:39'], ['familia', 'One last photo before launch', 'FAMILY', '0:39'], ['historia', 'The full story', 'PRESENTATION', '4:09']];
   const src = id => id === 'historia' ? 'video/nova-pc.mp4' : `video/gal/${id}.mp4`;
   const gal = $('gal'); gal.innerHTML = VID.map(([id, t, k, d]) => `<button class="vc" data-id="${id}" data-t="${t}"><span class="po"><img src="video/gal/${id}.jpg" alt="" loading="lazy"><span class="pl"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="du">${d}</span><span class="bar"><i></i></span></span><small>${k}</small><b>${t}</b></button>`).join('');
   const md = $('vmod'), mv = $('vmv');

@@ -23,10 +23,10 @@ function escena(el, t, a, b, o = {}){ const on = t > a - .01 && t < b + .6; if (
 const pop = (el, t, t0, d = .6, dy = 26) => { const k = pr(t, t0, d); fx(el, { op: eOut(k), y: lerp(dy, 0, eOut(k)), s: lerp(.85, 1, eBack(k)), b: lerp(8, 0, eOut(k)) }); return k; };
 
 /* ── tiempos ── */
-const S = {intro: 0, dist: 9, cuerpo: 18.44, nova: 30.83, reveal: 39.58, phones: 49.81, checkin: 75.09, privacy: 87.09, crewS: 95.02, vitalsS: 103.02, gemeloS: 110.21, ejercicio: 123.57, mujeres: 134.05, menteS: 145.88, emerg: 153.76, escaner: 165.4, rcpg: 182.37, kit: 191.82, bib: 208.82, pron: 215.32, abordo: 223.75, ciclo: 232.85, modelos: 272.22, ciencia: 283.24, ruta: 293.94, cierre: 305.91};
+const S = {intro: 0, dist: 9, cuerpo: 18.44, nova: 30.83, reveal: 39.58, phones: 53.18, checkin: 81.32, privacy: 93.32, crewS: 101.25, vitalsS: 110.25, gemeloS: 117.44, ojoS: 130.8, ejercicio: 139.28, mujeres: 149.76, menteS: 161.59, emerg: 169.47, escaner: 181.11, rcpg: 198.08, hackS: 207.53, kit: 227.13, bib: 241.61, pron: 248.11, radS: 256.55, misS: 268.26, abordo: 275.35, ciclo: 284.45, modelos: 324.73, ciencia: 335.75, ruta: 346.45, cierre: 358.42};
 S.movil = S.phones;
-const DUR = 314.884;
-const V = [1.4, 9.6, 19.04, 31.43, 40.18, 50.41, 55.75, 66.09, 75.69, 87.69, 95.62, 103.62, 110.81, 146.48, 154.36, 166, 175.76, 182.97, 196.82, 215.92, 224.35, 233.45, 245.69, 259.53, 272.82, 283.84, 294.54, 306.51, 124.17, 134.65, 209.42];
+const DUR = 364.96;
+const V = [1.4, 9.6, 19.04, 31.43, 40.18, 53.78, 59.12, 69.46, 81.92, 93.92, 101.85, 110.85, 118.04, 162.19, 170.07, 181.71, 191.47, 198.68, 232.13, 248.71, 275.95, 285.05, 297.29, 312.04, 325.33, 336.35, 347.05, 359.02, 139.88, 150.36, 242.21, -999, 131.4, 257.15, 208.13, 268.86];
 const VF = V.map((_, i) => i + 1);
 
 /* ── fondo: estrellas fijas que derivan lento ── */
@@ -133,7 +133,7 @@ function banda(t){
 const ES_ = /motor-es/.test(location.pathname);
 
 /* ── NOVA narra: subtítulos sincronizados con su voz ── */
-const FRASES = ["In April, four humans flew around the Moon. Next, we go to Mars.", "Mars is 225 million kilometers away. A message home takes up to 22 minutes.", "Out there, the body changes. Bones thin, sleep drifts, and radiation adds up. And the crew has to catch it themselves.", "That's why I'm here. I'm Nova, and I watch over the crew, every minute of the mission.", "Our medical station measures heart, oxygen, blood pressure and breathing, and sends every reading straight to the ship's computer.", "Every morning, each astronaut sees their day at a glance, on their own phone.", "Their body: heart, oxygen and training, tracked every day, so small changes never become big problems.", "And their mind. Every evening we check in, and mood, stress and focus become a constellation they can read.", "The check-in takes a minute, with a tap or with their voice. No forms to fill in.", "And they decide what to share. Vital signs go to the flight surgeon, and their journal stays theirs.", "On the big screen, I watch the whole crew at once. When something drifts, I tell you why.", "For each of them, every vital sign, live, against the limits the flight surgeon set.", "I keep a living model of every body on board, so you can see exactly what space is changing: fluid rising to the head, bone thinning in the hips, and a heart that works less.", "And I notice the quiet things, like a crewmate whose mood has been low for days.", "When something goes wrong, anyone on board can help. I open the right protocol, step by step, with my voice and a metronome.", "Point a phone at the patient, and I see the body: bones, organs, and the exact spot for each step.", "I confirm what's right and correct what isn't: a little higher, toward the head.", "And CPR changes with gravity: on Mars, astride the patient. In weightlessness, a technique built for zero g.", "Ask where the defibrillator is, and its drawer opens. In an emergency, the whole rack lights up what to grab.", "I don't just watch the numbers. I forecast where they're heading, and warn before a line is crossed.", "I think on board, without waiting for Earth. And every night, I send Mission Control a report smaller than a photo.", "That report travels as CCSDS packets, from F Prime, NASA's flight software, the same one that flew the Ingenuity helicopter on Mars.", "On Earth, a much bigger parent model learns from it, and flight surgeons check every change. Then it teaches a smaller child model, light enough for the ship's computer.", "The child flies back signed. The ship checks the signature before installing it, and rolls back if anything fails. And Mission Control sees it all with the real delay of light.", "Inside me runs a language model, speech recognition and a voice, all on the ship's own computer. No internet needed.", "Everything I do is built on NASA's own research: its human health risks, the Twins Study, and radiation measured on the way to Mars.", "NASA calls this Earth-independent medical care. We would test it in analog missions like HERA and CHAPEA, then on the space station, and then on the way to Mars.", "NOVA. Health that travels with you.", "Exercise is part of the treatment. I track every session, and show what skipping it would cost: bone and muscle, day by day.", "Women's health is built in from day one: cycle care that stays private, and a close watch on the risks NASA has found in flight, like clots in the neck veins.", "And every answer opens the real page of the book it came from."];
+const FRASES = ["In April, four humans flew around the Moon. Next, we go to Mars.", "Mars is 225 million kilometers away. A message home takes up to 22 minutes.", "Out there, the body changes. Bones thin, sleep drifts, and radiation adds up. And the crew has to catch it themselves.", "That's why I'm here. I'm Nova, and I watch over the crew, every minute of the mission.", "Every morning, each astronaut taps their card at NOVA Station, the medical station our team built. Today it reads a real ECG. It's designed to measure everything.", "Every morning, each astronaut sees their day at a glance, on their own phone.", "Their body: heart, oxygen and training, tracked every day, so small changes never become big problems.", "And their mind. Every evening they check in, and mood, stress and focus become a constellation: one for each of them, and one for the whole crew.", "The check-in takes a minute, with a tap or with their voice. No forms to fill in.", "And they decide what to share. Vital signs go to the flight surgeon, and their journal stays theirs.", "On the big screen, I watch the whole crew at once. Tap anyone, and their vital signs open.", "For each of them, every vital sign, live, against the limits the flight surgeon set.", "I keep a living model of every body on board, so you can see exactly what space is changing: fluid rising to the head, bone thinning in the hips, and a heart that works less.", "And I notice the quiet things, like a crewmate whose mood has been low for days.", "When something goes wrong, anyone on board can help. I open the right protocol, step by step, with my voice and a metronome.", "Point a phone at the patient, and I see the body: bones, organs, and the exact spot for each step.", "I confirm what's right and correct what isn't: a little higher, toward the head.", "And CPR changes with gravity: on Mars, astride the patient. In weightlessness, a technique built for zero g.", "Ask where the defibrillator is, and its drawer opens. In an emergency, the whole rack lights up what to grab.", "I don't just watch the numbers. I forecast where they're heading, and warn before a line is crossed.", "I think on board, without waiting for Earth. And every night, I send Mission Control a report smaller than a photo.", "That report travels as CCSDS packets, from F Prime, NASA's flight software, the same one that flew the Ingenuity helicopter on Mars.", "Our design goes further: on Earth, a much bigger parent model learns from it, and flight surgeons check every change. Then it teaches a smaller child model, light enough for the ship's computer.", "The child flies back signed. The ship checks the signature before installing it, and rolls back if anything fails. And Mission Control sees it all with the real delay of light.", "Inside me runs a language model, speech recognition and a voice, all on the ship's own computer. No internet needed.", "Everything I do is built on NASA's own research: its human health risks, the Twins Study, and radiation measured on the way to Mars.", "NASA calls this Earth-independent medical care. We would test it in analog missions like HERA and CHAPEA, then on the space station, and then on the way to Mars.", "NOVA. The doctor that travels with astronauts.", "Exercise is part of the treatment. I track every session, and show what skipping it would cost: bone and muscle, day by day.", "Women's health is built in from day one: cycle care that stays private, and a close watch on the risks NASA has found in flight, like clots in the neck veins.", "And every answer opens the real page of the book it came from.", "Inside, an Arduino, an NFC reader and a heart board, all designed by our team and open to inspect, piece by piece.", "A camera reads their eyes too: blinks, fatigue, and the changes NASA watches for in flight.", "I keep count of every millisievert against NASA's career limit. When a solar storm hits, every screen turns amber, and I guide the crew to the shelter.", "And it works for real. We tested it right here, on our own team.", "And I see the whole mission at once: the real path to Mars, day by day."];
 let ENV = null; try { const x = new XMLHttpRequest(); x.open('GET', 'voz/env-en.json', false); x.send(); ENV = JSON.parse(x.responseText); } catch (e) { ENV = null; }
 const kV = i => String(VF[i]).padStart(2, '0'), durV = i => ENV ? ENV[kV(i)].d : 5;
 function voz(t){ for (let i = 0; i < V.length; i++){ const a = V[i], d = durV(i); if (t >= a - .3 && t <= a + d + .5){ const e = ENV ? ENV[kV(i)].env : [];
@@ -217,7 +217,7 @@ function render(t){
     const dec = pr(t, T + 2.3, .7), ch = '01#/<>*◆'; E('novaT').textContent = NOMBRE_IA.split('').map((c, i) => dec * 4 > i + .5 ? c : ch[Math.floor(hsh(Math.floor(t * 30) + i) * ch.length)]).join('');
     fx(E('novaS'), { op: pr(t, T + 4.0, .7), y: lerp(14, 0, eOut(pr(t, T + 4.0, .9))) }); }
   // el wearable
-  if (escena(E('eReveal'), t, S.reveal, S.movil, { s0: 1.04 }) || (t > S.reveal && t < S.movil)){ banda(t); palabras(E('h7'), t, S.reveal + 1.2, S.movil - .3); }
+  if (false){ banda(t); palabras(E('h7'), t, S.reveal + 1.2, S.movil - .3); }
   /* ── la app real en el teléfono y la estación real en la pantalla grande ── */
   const fono = (id, t, a, foco = 1, dy = 0) => { const el = E(id); if (!el) return; const k = eOut(pr(t, a, .8));
     el.style.opacity = k * (.45 + .55 * foco); el.style.transform = `translateY(${(1 - k) * 40 - 14 * foco + dy}px) scale(${1 + .03 * foco})`; };
@@ -231,18 +231,18 @@ function render(t){
   if (escena(E('ePriv'), t, S.privacy, S.crewS) || (t > S.privacy && t < S.crewS + .6)){ const T = S.privacy;
     fono('fCrew', t, T + .2, 1); palabras(E('hPriv'), t, T + .5, S.crewS); E('ePriv').querySelectorAll('.pt').forEach((c, i) => pop(c, t, T + 1.4 + i * .6, .6, 16)); }
   if (escena(E('eCrewS'), t, S.crewS, S.vitalsS, { s0: .99 }) || (t > S.crewS && t < S.vitalsS + .6)){ const T = S.crewS, d = V[10] - T;
-    clip('vCrewS', t - T); camaraUI('pCrewS', t, [[T, .9, 960, 540], [V[10] + 3.2, .9, 960, 540], [V[10] + 4.4, 1.45, 1580, 300], [S.vitalsS, 1.47, 1580, 300]]); etiqueta('tCrewS', t, T); }
+    clip('vCrewS', t - T); camaraUI('pCrewS', t, [[T, .9, 960, 540], [S.vitalsS, .93, 960, 540]]); etiqueta('tCrewS', t, T); }
   if (escena(E('eVitS'), t, S.vitalsS, S.gemeloS, { s0: .99 }) || (t > S.vitalsS && t < S.gemeloS + .6)){ const T = S.vitalsS;
     clip('vVitS', t - T); camaraUI('pVitS', t, [[T, .9, 960, 540], [T + 1.4, .9, 960, 540], [T + 2.6, 1.35, 640, 420], [S.gemeloS, 1.37, 640, 420]]); etiqueta('tVitS', t, T); }
-  if (escena(E('eGemS'), t, S.gemeloS, S.ejercicio, { s0: .99 }) || (t > S.gemeloS && t < S.ejercicio + .6)){ const T = S.gemeloS, L = S.ejercicio - T;
-    clip('vGemS', t - T); camaraUI('pGemS', t, [[T, .9, 960, 540], [T + 1.8, .9, 960, 540], [T + 3.2, 1.3, 600, 520], [T + L * .55, 1.32, 600, 520], [T + L * .55 + 1.2, 1.4, 1160, 560], [S.ejercicio, 1.42, 1160, 560]]); etiqueta('tGemS', t, T); }
+  if (escena(E('eGemS'), t, S.gemeloS, S.ojoS, { s0: .99 }) || (t > S.gemeloS && t < S.ojoS + .6)){ const T = S.gemeloS, L = S.ojoS - T;
+    clip('vGemS', t - T); camaraUI('pGemS', t, [[T, .9, 960, 540], [T + 1.8, .9, 960, 540], [T + 3.2, 1.3, 600, 520], [T + L * .55, 1.32, 600, 520], [T + L * .55 + 1.2, 1.4, 1160, 560], [S.ojoS, 1.42, 1160, 560]]); etiqueta('tGemS', t, T); }
   if (escena(E('eEjer'), t, S.ejercicio, S.mujeres, { s0: .99 }) || (t > S.ejercicio && t < S.mujeres + .6)){ const T = S.ejercicio;
     clip('vEjer', t - T); camaraUI('pEjer', t, [[T, .9, 960, 540], [T + 2.2, .9, 960, 540], [T + 3.4, 1.55, 1190, 780], [S.mujeres, 1.57, 1190, 780]]); etiqueta('tEjer', t, T); }
   if (escena(E('eMuj'), t, S.mujeres, S.menteS) || (t > S.mujeres && t < S.menteS + .6)){ const T = S.mujeres, L = S.menteS - T;
     fono('fCicloApp', t, T + .2, 1); const k = eIO(pr(t, T + L * .38, L * .4)); E('iCiclo').style.transform = `translateY(${-1040 * k}px)`;
     palabras(E('hMuj'), t, T + .5, S.menteS); E('eMuj').querySelectorAll('.pt').forEach((c, i) => pop(c, t, T + 1.6 + i * .7, .6, 16)); etiqueta('tMuj', t, T); fx(E('fMuj'), { op: pr(t, T + 1.4, .6) * .9 }); }
   if (escena(E('eMenS'), t, S.menteS, S.emerg, { s0: .99 }) || (t > S.menteS && t < S.emerg + .6)){ const T = S.menteS;
-    clip('vMenS', t - T); camaraUI('pMenS', t, [[T, .9, 960, 540], [T + 1.4, .9, 960, 540], [T + 2.8, 1.45, 1580, 330], [S.emerg, 1.47, 1580, 330]]); etiqueta('tMenS', t, T); }
+    clip('vMenS', t - T); camaraUI('pMenS', t, [[T, .9, 960, 540], [S.emerg, .93, 960, 540]]); etiqueta('tMenS', t, T); }
   /* ── escenas nuevas: capturas reales (la nave y el escáner) ── */
   const ra = (i) => V[i], vE = V[18] - S.emerg;
   if (escena(E('eEmerg'), t, S.emerg, S.escaner, { s0: .99 }) || (t > S.emerg && t < S.escaner + .6)){ const u = t - S.emerg;
@@ -252,18 +252,27 @@ function render(t){
     const kc2 = eIO(pr(t, cambio, .6)); E('vEscRcp').style.opacity = kc2;
     fx(E('dEsc'), { op: eOut(pr(t, T + .2, .8)), y: lerp(30, 0, eOut(pr(t, T + .2, 1))) });
     palabras(E('hEsc1'), t, T + .8, cambio - .1); palabras(E('hEsc2'), t, cambio + .2, S.rcpg); etiqueta('tEsc', t, T); }
-  if (escena(E('eRcpG'), t, S.rcpg, S.kit) || (t > S.rcpg && t < S.kit + .6)){ const T = S.rcpg, d2 = V[17] + (S.kit - V[17]) * .42;
+  if (escena(E('eRcpG'), t, S.rcpg, S.hackS) || (t > S.rcpg && t < S.hackS + .6)){ const T = S.rcpg, d2 = V[17] + (S.hackS - V[17]) * .42;
     clip('vMarte', t - T); clip('vMicro', t - d2);
-    pop(E('dMarte'), t, T + .2, .8, 30); pop(E('dMicro'), t, d2, .8, 30); palabras(E('hRcp'), t, T + .4, S.kit); etiqueta('tRcp', t, T); }
-  if (escena(E('eKit'), t, S.kit, S.bib, { s0: .99 }) || (t > S.kit && t < S.bib + .6)){ const T = S.kit, u = t - T, A = V[18] - T, B = A + 3.4, L = S.bib - T;
-    // el clip real se lleva a la voz: escribir cuando dice «Ask…», modo emergencia cuando dice «In an emergency…»
-    const cu = u < A ? u * 5.3 / A : u < B ? 5.3 + (u - A) * 6.1 / (B - A) : 11.4 + (u - B) * 5.1 / Math.max(.1, L - B);
-    clip('vKit', cu);
-    camaraUI('pKit', t, [[T, .9, 960, 540], [T + .8, .9, 960, 540], [T + 1.8, 1.55, 560, 560], [T + A - .2, 1.55, 560, 560], [T + A + 1.2, 1.4, 900, 430], [S.bib, 1.42, 900, 430]]); etiqueta('tKit', t, S.kit); }
+    pop(E('dMarte'), t, T + .2, .8, 30); pop(E('dMicro'), t, d2, .8, 30); palabras(E('hRcp'), t, T + .4, S.hackS); etiqueta('tRcp', t, T); }
+  if (escena(E('eKit'), t, S.kit, S.bib, { s0: .99 }) || (t > S.kit && t < S.bib + .6)){ const T = S.kit;
+    // la toma real (clips/kit3.webm) está grabada 1:1 con la voz: pregunta a los 5,0 s, cajón a los 7,0 s, emergencia a los 8,6 s
+    clip('vKit', t - T);
+    camaraUI('pKit', t, [[T, 1, 960, 540], [T + .6, 1, 960, 540], [T + 4.6, 1.32, 760, 500], [S.bib, 1.38, 760, 500]]); etiqueta('tKit', t, S.kit); }
   if (escena(E('eBib'), t, S.bib, S.pron, { s0: .99 }) || (t > S.bib && t < S.pron + .6)){ clip('vBib', t - S.bib);
     camaraUI('pBib', t, [[S.bib, 1.1, 760, 470], [S.pron, 1.16, 720, 470]]); etiqueta('tBib', t, S.bib); }
-  if (escena(E('ePron'), t, S.pron, S.abordo, { s0: .99 }) || (t > S.pron && t < S.abordo + .6)){ clip('vPron', t - S.pron);
-    camaraUI('pPron', t, [[S.pron, .9, 960, 540], [S.pron + 1.6, .9, 960, 540], [S.pron + 3.0, 1.55, 560, 380], [S.abordo, 1.58, 560, 380]]); etiqueta('tPron', t, S.pron); }
+  if (escena(E('ePron'), t, S.pron, S.radS, { s0: .99 }) || (t > S.pron && t < S.radS + .6)){ clip('vPron', t - S.pron);
+    camaraUI('pPron', t, [[S.pron, .9, 960, 540], [S.pron + 1.6, .9, 960, 540], [S.pron + 3.0, 1.55, 560, 380], [S.radS, 1.58, 560, 380]]); etiqueta('tPron', t, S.pron); }
+  if (escena(E('eHwS'), t, S.reveal, S.phones, { s0: .99 }) || (t > S.reveal && t < S.phones + .6)){ const T = S.reveal;
+    clip('vHwS', t - T); camaraUI('pHwS', t, [[T, .92, 960, 540], [S.phones, .92, 960, 540]]); etiqueta('tHwS', t, T); }
+  if (escena(E('eOjoS'), t, S.ojoS, S.ejercicio, { s0: .99 }) || (t > S.ojoS && t < S.ejercicio + .6)){ const T = S.ojoS, L = S.ejercicio - T;
+    clip('vOjoS', t - T); camaraUI('pOjoS', t, [[T, .92, 960, 540], [S.ejercicio, .97, 960, 540]]); etiqueta('tOjoS', t, T); }
+  if (escena(E('eHackS'), t, S.hackS, S.kit, { s0: .99 }) || (t > S.hackS && t < S.kit + .6)){ const T = S.hackS, L = S.kit - T;
+    clip('vHackS', t - T); camaraUI('pHackS', t, [[T, .92, 960, 540], [S.kit, .95, 960, 540]]); etiqueta('tHackS', t, T); }
+  if (escena(E('eRadS'), t, S.radS, S.misS, { s0: .99 }) || (t > S.radS && t < S.misS + .6)){ const T = S.radS, L = S.misS - T;
+    clip('vRadS', t - T); camaraUI('pRadS', t, [[T, .9, 960, 540], [T + 1.2, .9, 960, 540], [T + 2.6, 1.3, 1220, 330], [T + L * .62, 1.32, 1220, 330], [T + L * .62 + 1.1, 1.25, 600, 330], [S.misS, 1.27, 600, 330]]); etiqueta('tRadS', t, T); }
+  if (escena(E('eMisS'), t, S.misS, S.abordo, { s0: .99 }) || (t > S.misS && t < S.abordo + .6)){ const T = S.misS, L = S.abordo - T;
+    clip('vMisS', t - T); camaraUI('pMisS', t, [[T, .9, 960, 540], [T + 1, .9, 960, 540], [S.abordo, 1.12, 900, 480]]); etiqueta('tMisS', t, T); }
   // piensa a bordo
   if (escena(E('eAbordo'), t, S.abordo, S.ciclo) || (t > S.abordo && t < S.ciclo + .6)){ const T = S.abordo, v = voz(t), amp = v ? v.amp : 0, ke = eSpr(pr(t, T + .2, 1.2));
     if (VERT){ let g = `<defs><radialGradient id="ab1"><stop offset="0" stop-color="#46c8e8" stop-opacity=".5"/><stop offset="1" stop-color="#46c8e8" stop-opacity="0"/></radialGradient></defs>`;
@@ -312,8 +321,9 @@ const FOCO = (() => { const K = [], k = (t, x, y = 540, z = 1) => K.push([t, x, 
   // escenas nuevas: capturas reales de la nave y del escáner
   k(S.emerg + .2, 960); k(S.escaner - .4, 960);
   k(S.escaner + .2, 1180, 510, .59); k(S.rcpg - .4, 1180, 510, .59);
-  k(S.rcpg + .2, 520, 520, .88); k(S.rcpg + 3.2, 520, 520, .88); k(S.rcpg + 4.2, 1400, 520, .88); k(S.kit - .4, 1400, 520, .88);
+  k(S.rcpg + .2, 520, 520, .88); k(S.rcpg + 3.2, 520, 520, .88); k(S.rcpg + 4.2, 1400, 520, .88); k(S.hackS - .4, 1400, 520, .88);
   k(S.kit + .2, 960); k(S.bib - .4, 960); k(S.bib + .2, 960); k(S.pron - .4, 960); k(S.pron + .2, 960); k(S.abordo - .4, 960);
+  k(S.ojoS + .2, 960); k(S.ejercicio - .4, 960); k(S.hackS + .2, 960); k(S.kit - .4, 960); k(S.radS + .2, 960); k(S.misS - .4, 960); k(S.misS + .2, 960);
   k(S.abordo + .2, 960); k(S.ciclo - .4, 960);
   k(S.ciclo + invC(.2), 380, 560, .95); k(S.ciclo + invC(4.6), 380, 560, .95); k(S.ciclo + invC(5.6), 960, 420, .95); k(S.ciclo + invC(9.6), 960, 420, .95);
   k(S.ciclo + invC(10.4), 1540, 560, .95); k(S.ciclo + invC(22), 1540, 560, .95); k(S.ciclo + invC(22.8), 960, 640, .95); k(S.ciclo + invC(26.8), 960, 640, .95);

@@ -7,9 +7,9 @@ const dir = process.argv[2]
 const dur = i => +spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', `${dir}/${String(i + 1).padStart(2, '0')}.wav`], { encoding: 'utf8' }).stdout
 const ESC = [
   ['intro', [0], { lead: 1.4, min: 9.0 }], ['dist', [1], { min: 9.12 }], ['cuerpo', [2], { min: 11.72 }], ['nova', [3], { min: 8.75 }],
-  ['reveal', [4], { min: 7.6 }], ['phones', [5, 6, 7]], ['checkin', [8], { min: 12 }], ['privacy', [9], { min: 7 }],
-  ['crewS', [10], { min: 8 }], ['vitalsS', [11], { min: 6.6 }], ['gemeloS', [12]], ['ejercicio', [28], { min: 9 }], ['mujeres', [29], { min: 11 }], ['menteS', [13], { min: 7.2 }],
-  ['emerg', [14], { min: 9.8 }], ['escaner', [15, 16]], ['rcpg', [17], { min: 8.5 }], ['kit', [18], { lead: 5.0, min: 17 }], ['bib', [30], { min: 6.5 }], ['pron', [19], { min: 6.6 }],
+  ['reveal', [4], { min: 13 }], ['phones', [5, 6, 7]], ['checkin', [8], { min: 12 }], ['privacy', [9], { min: 7 }],
+  ['crewS', [10], { min: 9 }], ['vitalsS', [11], { min: 6.6 }], ['gemeloS', [12]], ['ojoS', [32], { min: 7.6 }], ['ejercicio', [28], { min: 9 }], ['mujeres', [29], { min: 11 }], ['menteS', [13], { min: 7.2 }],
+  ['emerg', [14], { min: 9.8 }], ['escaner', [15, 16]], ['rcpg', [17], { min: 8.5 }], ['hackS', [34], { min: 19.6 }], ['kit', [18], { lead: 5.0, min: 14.48 }], ['bib', [30], { min: 6.5 }], ['pron', [19], { min: 6.6 }], ['radS', [33], { min: 11 }], ['misS', [35], { min: 7 }],
   ['abordo', [20], { min: 9.1 }], ['ciclo', [21, 22, 23], { min: 28 }], ['modelos', [24], { min: 9.6 }], ['ciencia', [25], { min: 10.7 }],
   ['ruta', [26], { min: 11.97 }], ['cierre', [27], { min: 6.54 }]
 ]
@@ -19,6 +19,7 @@ for (const [n, lineas, o = {}] of ESC) {
   for (const i of lineas) { V[i] = +x.toFixed(2); x += dur(i) + 1.0 }
   t = Math.max(x - 1.0 + 1.1, S[n] + (o.min ?? 0))
 }
+for (let i = 0; i < V.length; i++) if (V[i] == null) V[i] = -999   // frases fuera del video
 const DUR = process.env.DUR_OBJ ? +process.env.DUR_OBJ : +t.toFixed(3)
 const js = readFileSync('motor/halo3.js', 'utf8')
   .replace(/const S = \{.*?\};/s, 'const S = ' + JSON.stringify(S).replace(/"/g, '').replace(/,/g, ', ').replace(/:/g, ': ') + ';')
