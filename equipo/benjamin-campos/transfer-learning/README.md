@@ -171,8 +171,9 @@ Diferencias pareadas por sujeto (IC 95 %):
 
 Decidida el 14-11-2026 (ver [`PREGUNTAS.md`](PREGUNTAS.md)):
 - **Solo pulso, presión sistólica y presión diastólica**, con los datos reales del reposo. Los escalones sintéticos se
-  mantienen, declarados, porque son la única forma de medir la detección. LifeSnaps solo aporta el pulso: la presión en
-  Tierra sale del pre-reposo de cada sujeto.
+  mantienen, declarados, porque son la única forma de medir la detección. Los ocho canales de LifeSnaps siguen en el
+  pre-entrenamiento compartido; de las tres variables, solo el pulso está también en LifeSnaps, y la presión en Tierra
+  sale del pre-reposo de cada sujeto.
 - **Todos los modelos en igualdad de condiciones:** mismo lr y presupuesto, 60 épocas o más para «solo la cabeza» y
   3 semillas.
 - **«Solo la cabeza» de verdad**, con el backbone en `eval()`, comparada con la versión actual.

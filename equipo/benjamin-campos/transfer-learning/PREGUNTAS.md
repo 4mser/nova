@@ -32,8 +32,9 @@ Las cifras de LifeSnaps las medí hoy sobre su tabla diaria (`daily`, 7.410 fila
    contra reposo, mismas personas) y no contra LifeSnaps. La presión, el peso y los fluidos solo aparecen en Tierra a
    través del pre-reposo de cada sujeto. *Si no respondes:* queda así.
 
-   **Respuesta:** se mantiene, y la v4 mide cuánto aporta. Con solo pulso y presión, LifeSnaps aporta solo el pulso
-   (`resting_hr`).
+   **Respuesta:** se mantiene, y la v4 mide cuánto aporta. Sus ocho canales siguen en el pre-entrenamiento compartido;
+   de las tres variables de la v4, solo el pulso (`resting_hr`) está también en LifeSnaps. La presión en Tierra sale
+   del pre-reposo de cada sujeto.
 
 3. **¿Granularidad diaria u horaria?** El reposo es diario (una toma por mañana), así que queda diaria: 14 días de
    contexto y 7 de horizonte.
