@@ -15,9 +15,13 @@ El entrenamiento corre en Kaggle (GPU T4) y los modelos quedan en Hugging Face, 
 Funciona de punta a punta: datos → Kaggle → Hugging Face, con 27 tests en verde. Las cifras de este README salen del
 tercer run del kernel. El primero tenía mal la escala de la pérdida. El segundo pasó por `ecc:python-reviewer` y
 `ecc:mle-reviewer`, que encontraron una fuga del pre-reposo en el pronóstico y una comparación injusta en el rango
-esperado. El tercero corrige las dos cosas. Después, una auditoría independiente revisó el código y la salida del
-tercer run: las cifras cuadran y no encontró fuga entre sujetos. Este README ya incluye sus correcciones. La próxima
-corrida se concentra en el pulso y la presión: ver [Siguiente corrida (v4)](#siguiente-corrida-v4).
+esperado. El tercero corrige las dos cosas. Después, una auditoría posterior revisó el código y la salida del tercer
+run: las cifras cuadran y no encontró fuga entre sujetos. Este README ya incluye sus correcciones. La próxima corrida
+se concentra en el pulso y la presión: ver [Siguiente corrida (v4)](#siguiente-corrida-v4).
+
+Casi todas las cifras están en `resultados/metricas.json`. Hay tres que no: los pares del ajuste completo contra los
+modelos desde cero, las falsas alarmas por persona y el conteo de tensores que cambian. La auditoría recalculó las
+dos primeras desde las tablas por sujeto de la salida del kernel, y la tercera desde los pesos publicados.
 
 | Archivo | Qué es |
 |---|---|
@@ -184,8 +188,8 @@ Decidida el 14-11-2026 (ver [`PREGUNTAS.md`](PREGUNTAS.md)):
   BatchNorm). Trae además `corrector_poblacion.json`, los coeficientes del corrector del rango esperado con los 29
   sujetos.
 
-Ninguna cifra de este README sale de esos pesos publicados: todas salen de modelos entrenados dentro de cada grupo de
-validación.
+Ninguna cifra de desempeño de este README sale de esos pesos publicados: todas salen de modelos entrenados dentro de
+cada grupo de validación. De esos pesos sale solo el conteo de tensores que cambian (sección 2).
 
 ## Reproducir
 

@@ -107,7 +107,8 @@ def predecir(model: PatchTSTForPrediction, v: Ventanas, device: str, batch: int 
 
 def adaptar(base: PatchTSTForPrediction, train: Ventanas, val: Ventanas | None, modo: str, device: str,
             semilla: int = 0, ruido: dict[str, float] | None = None) -> tuple[PatchTSTForPrediction, dict]:
-    """modo «cabeza»: backbone congelado, solo la cabeza. modo «todo»: ajuste completo con lr bajo."""
+    """modo «cabeza»: pesos del backbone congelados y solo la cabeza entrena, pero el modelo queda en `train()`, así
+    que BatchNorm recalcula sus estadísticas con el reposo (ver README). modo «todo»: ajuste completo con lr bajo."""
     m = copy.deepcopy(base)
     if modo == "cabeza":
         congelar_backbone(m)

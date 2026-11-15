@@ -17,7 +17,7 @@ normalidad» en microgravedad. Al final tiene que poder mostrar los tres gráfic
 
 | Rol | Fuente | Qué trae |
 |---|---|---|
-| Espacio (análogo) | NASA NLSP/LSDA, reposo en cama con inclinación de −6° en la UTMB: campañas 1 y 3, CFT70 (tanda 3 de `enviado_whatsapp`) | 29 sujetos; signos vitales de cada mañana durante 11 a 21 días de pre-reposo, 42 a 90 días en cama y hasta 14 de post-reposo; diuresis y agua diarias en 24 y 23 sujetos |
+| Espacio (análogo) | NASA NLSP/LSDA, reposo en cama con inclinación de −6° en la UTMB: campañas 1 y 3, CFT70 (tanda 3 de `enviado_whatsapp`) | 29 sujetos; signos vitales de cada mañana durante 10 a 21 días de pre-reposo, 60 a 92 días en cama (42 a 91 con pulso medido) y hasta 14 de post-reposo; diuresis y agua diarias en 24 y 23 sujetos |
 | Tierra | LifeSnaps (Yfantidou et al. 2022, doi:10.1038/s41597-022-01764-x, CC BY 4.0), 71 personas | pulso en reposo, respiración y temperatura de piel del reloj, más VFC, SpO₂, sueño, actividad y estrés |
 | Tierra personal | el pre-reposo de cada sujeto | su línea base antes de «despegar» |
 

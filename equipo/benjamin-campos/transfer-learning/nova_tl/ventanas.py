@@ -48,7 +48,7 @@ def construir(largo: pd.DataFrame, C: int, H: int, min_ctx: int = 5, fases_objet
     min_ctx: mínimo de días observados en el contexto. fases_objetivo: fases permitidas para el primer día del
     objetivo (p. ej. {"IN_TEST"}). El objetivo no puede cruzar a otra fase que la de su primer día.
     relleno_inicio: permite ventanas cerca del inicio de la serie, con el contexto completado a la izquierda con días
-    no observados (el pre-reposo dura 11 a 21 días y no alcanza para 14 de contexto más 7 de objetivo).
+    no observados (el pre-reposo dura 10 a 21 días y no alcanza para 14 de contexto más 7 de objetivo).
     """
     xs, mxs, ys, mys, metas = [], [], [], [], []
     for (sujeto, variable), g in largo.groupby(["sujeto", "variable"], sort=True):

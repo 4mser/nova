@@ -5,8 +5,8 @@
                                     + δ_personal(k)            ← primeros k días en cama de esta persona
 
 Se evalúa con validación por sujetos (los de prueba nunca entran al ajuste), sobre los días de reposo desde
-`DIA_EVAL` en adelante, para que todos los k se comparen en el mismo tramo. Esto es lo que alimentaría el rango
-`ESPERADO_VUELO` pendiente en `nave/docs/umbrales.md`; los umbrales fijos de emergencia no se tocan.
+`DIA_EVAL` en adelante, para que todos los k se comparen en el mismo tramo. Por ahora no se propone como el
+rango `ESPERADO_VUELO` de `nave/docs/umbrales.md` (PREGUNTAS.md, 15); los umbrales fijos de emergencia no se tocan.
 
 Cómo se comparan los modelos sin hacerse trampa:
 - Centro y ancho se separan. «tierra» usa ±1,96·sd del pre-reposo; «tierra (ancho calibrado)» usa el mismo centro con
@@ -60,7 +60,7 @@ ADAPTADO = ("tierra+poblacion+personal", 28)
 def linea_base(largo: pd.DataFrame, sujetos_piso: list[str] | None = None) -> pd.DataFrame:
     """Media y desviación del pre-reposo por sujeto y variable.
 
-    La desviación tiene un piso (media de las medianas por variable): con 11 a 21 días, una sd casualmente chica
+    La desviación tiene un piso (media de las medianas por variable): con 10 a 21 días, una sd casualmente chica
     dispararía alarmas. El piso se calcula solo con `sujetos_piso` (los de entrenamiento) si se entregan.
     """
     pre = largo[largo.fase == "PRE_TEST"]
