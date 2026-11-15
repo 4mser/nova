@@ -1,0 +1,38 @@
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=4 by 2, horizontal sep=7mm, vertical sep=15mm, y descriptions at=edge left, x descriptions at=edge bottom}, informe, width=0.295\linewidth, height=4.6cm, xmin=-1.5, xmax=29.5, ymin=0.4, ymax=1.12, xtick={0,7,14,21,28}, ytick={0.4,0.6,0.8,1}, ymajorgrids, xlabel={días propios $k$}, ylabel={error / error de Tierra}, title style={yshift=-1mm}]
+\nextgroupplot[title={Peso}, legend to name=leyendacurva, legend columns=2]
+\draw[tinta3, densely dashed] (axis cs:-1.5,1) -- (axis cs:29.5,1);
+\addplot[serieC, line width=1.6pt, mark=square*, mark size=1.8pt] coordinates {(0,1.0) (3,1.023) (7,0.933) (14,0.784) (21,0.67) (28,0.594)};
+\addplot[serieA, line width=1.6pt, mark=*, mark size=2pt] coordinates {(0,0.707) (3,0.63) (7,0.607) (14,0.538) (21,0.493) (28,0.46)};
+\addlegendentry{solo días propios\quad}\addlegendentry{días propios + corrector de otros sujetos}
+\nextgroupplot[title={PA diastólica}]
+\draw[tinta3, densely dashed] (axis cs:-1.5,1) -- (axis cs:29.5,1);
+\addplot[serieC, line width=1.6pt, mark=square*, mark size=1.8pt] coordinates {(0,1.0) (3,0.986) (7,0.928) (14,0.858) (21,0.822) (28,0.794)};
+\addplot[serieA, line width=1.6pt, mark=*, mark size=2pt] coordinates {(0,1.018) (3,0.943) (7,0.878) (14,0.813) (21,0.789) (28,0.781)};
+\nextgroupplot[title={Pulso}]
+\draw[tinta3, densely dashed] (axis cs:-1.5,1) -- (axis cs:29.5,1);
+\addplot[serieC, line width=1.6pt, mark=square*, mark size=1.8pt] coordinates {(0,1.0) (3,1.08) (7,1.043) (14,1.005) (21,0.932) (28,0.858)};
+\addplot[serieA, line width=1.6pt, mark=*, mark size=2pt] coordinates {(0,0.972) (3,0.949) (7,0.901) (14,0.87) (21,0.836) (28,0.8)};
+\nextgroupplot[title={Diuresis}]
+\draw[tinta3, densely dashed] (axis cs:-1.5,1) -- (axis cs:29.5,1);
+\addplot[serieC, line width=1.6pt, mark=square*, mark size=1.8pt] coordinates {(0,1.0) (3,0.852) (7,0.809) (14,0.808) (21,0.81) (28,0.803)};
+\addplot[serieA, line width=1.6pt, mark=*, mark size=2pt] coordinates {(0,1.004) (3,0.846) (7,0.823) (14,0.828) (21,0.828) (28,0.821)};
+\nextgroupplot[title={Respiración}]
+\draw[tinta3, densely dashed] (axis cs:-1.5,1) -- (axis cs:29.5,1);
+\addplot[serieC, line width=1.6pt, mark=square*, mark size=1.8pt] coordinates {(0,1.0) (3,0.998) (7,0.978) (14,0.991) (21,0.977) (28,0.963)};
+\addplot[serieA, line width=1.6pt, mark=*, mark size=2pt] coordinates {(0,1.014) (3,1.012) (7,0.976) (14,0.989) (21,0.981) (28,0.967)};
+\nextgroupplot[title={PA sistólica}]
+\draw[tinta3, densely dashed] (axis cs:-1.5,1) -- (axis cs:29.5,1);
+\addplot[serieC, line width=1.6pt, mark=square*, mark size=1.8pt] coordinates {(0,1.0) (3,0.965) (7,0.913) (14,0.908) (21,0.887) (28,0.887)};
+\addplot[serieA, line width=1.6pt, mark=*, mark size=2pt] coordinates {(0,1.014) (3,0.98) (7,0.924) (14,0.922) (21,0.899) (28,0.898)};
+\nextgroupplot[title={Temperatura}]
+\draw[tinta3, densely dashed] (axis cs:-1.5,1) -- (axis cs:29.5,1);
+\addplot[serieC, line width=1.6pt, mark=square*, mark size=1.8pt] coordinates {(0,1.0) (3,0.966) (7,0.935) (14,0.945) (21,0.921) (28,0.895)};
+\addplot[serieA, line width=1.6pt, mark=*, mark size=2pt] coordinates {(0,0.988) (3,0.956) (7,0.919) (14,0.933) (21,0.915) (28,0.887)};
+\nextgroupplot[title={Agua}]
+\draw[tinta3, densely dashed] (axis cs:-1.5,1) -- (axis cs:29.5,1);
+\addplot[serieC, line width=1.6pt, mark=square*, mark size=1.8pt] coordinates {(0,1.0) (3,0.898) (7,0.801) (14,0.802) (21,0.801) (28,0.781)};
+\addplot[serieA, line width=1.6pt, mark=*, mark size=2pt] coordinates {(0,0.919) (3,0.898) (7,0.811) (14,0.822) (21,0.824) (28,0.803)};
+\end{groupplot}
+\node at ($(group c1r2.south west)!0.5!(group c4r2.south east)+(0,-1.45cm)$) {\pgfplotslegendfromname{leyendacurva}};
+\end{tikzpicture}

@@ -1,0 +1,209 @@
+% ── Preámbulo del informe · LuaLaTeX + memoir ─────────────────────────────────────────────────────────────────────
+\usepackage{iftex}
+\ifluatex\else\errmessage{Este informe se compila con LuaLaTeX: latexmk -lualatex informe}\fi
+
+% Idioma
+\usepackage[english,spanish,es-noshorthands,es-tabla,es-nolayout]{babel}
+\usepackage[autostyle=true]{csquotes}
+
+% Tipografía
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\setmainfont{Libertinus Serif}[Numbers=OldStyle]
+\setsansfont{Libertinus Sans}
+\setmonofont{Source Code Pro}[Scale=0.82]
+\setmathfont{Libertinus Math}
+\newfontfamily\cifrasfont{Libertinus Serif}[Numbers={Lining,Monospaced}]
+\newfontfamily\titularfont{Libertinus Sans}[Numbers=Lining]
+\usepackage{microtype}
+
+% Página
+\setlrmarginsandblock{30mm}{28mm}{*}
+\setulmarginsandblock{28mm}{30mm}{*}
+\setheadfoot{14pt}{24pt}
+\setheaderspaces{*}{10mm}{*}
+\checkandfixthelayout
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{2.5em}  % evita líneas que se salen por intervalos que no se cortan
+\linespread{1.06}
+
+% Colores: paleta categórica validada (dataviz, modo claro) y tintas de texto
+% Sin la opción table: el colortbl instalado (2026) usa \insert@pcolumn, que el array de MiKTeX (2023) no define,
+% y rompe toda columna p{} o X. El informe no usa filas coloreadas.
+\usepackage{xcolor}
+\definecolor{tinta}{HTML}{1B1B1A}
+\definecolor{tinta2}{HTML}{52514E}
+\definecolor{tinta3}{HTML}{8A8983}
+\definecolor{reja}{HTML}{E4E3DE}
+\definecolor{fondo}{HTML}{F6F5F1}
+\definecolor{serieA}{HTML}{2A78D6}  % adaptado
+\definecolor{serieB}{HTML}{EB6834}  % monitor de Tierra
+\definecolor{serieC}{HTML}{1BAF7A}  % Tierra con ancho calibrado / solo días propios
+\definecolor{azulnoche}{HTML}{0D366B}
+\definecolor{azulmedio}{HTML}{1C5CAB}
+\definecolor{azulclaro}{HTML}{CDE2FB}
+\definecolor{alto}{HTML}{C0392B}
+\definecolor{medio}{HTML}{B9770E}
+\definecolor{bajo}{HTML}{5D6D7E}
+\color{tinta}
+
+% Matemática, unidades y tablas
+\usepackage{mathtools}
+% siunitx no se usa: la versión instalada no calza con el núcleo de LaTeX de MiKTeX. Las cifras llegan ya
+% formateadas (coma decimal, espacio fino de miles) desde herramientas/construir_cifras.py.
+\newcommand*{\un}[1]{\,\textup{#1}}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{longtable}
+\setlength{\LTcapwidth}{\textwidth}  % mismo ancho de título que las demás tablas
+\usepackage{threeparttable}
+\usepackage{makecell}
+\renewcommand{\arraystretch}{1.18}
+
+% Listas
+\usepackage{enumitem}
+\setlist{itemsep=2pt,topsep=4pt,parsep=0pt}
+\setlist[description]{font=\normalfont\sffamily\bfseries\color{azulnoche},leftmargin=1.4em,labelindent=0pt}
+
+% Gráficos
+\usepackage{graphicx}
+\usepackage[section]{placeins}  % las figuras no se escapan de su sección
+\setcounter{topnumber}{3}\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.9}\renewcommand{\textfraction}{0.08}\renewcommand{\floatpagefraction}{0.75}
+\usepackage{tikz}
+\usetikzlibrary{babel,positioning,arrows.meta,calc,fit,backgrounds,shapes.geometric,decorations.pathreplacing,shadows}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots,fillbetween}
+\pgfplotsset{
+  informe/.style={
+    width=\linewidth, height=6cm,
+    axis line style={tinta3}, tick style={tinta3},
+    every tick label/.append style={font=\footnotesize\sffamily\color{tinta2}},
+    label style={font=\footnotesize\sffamily\color{tinta2}},
+    title style={font=\small\sffamily\bfseries\color{tinta}},
+    legend style={font=\footnotesize\sffamily, draw=none, fill=none,
+      /tikz/every even column/.append style={column sep=1.2em}},
+    legend cell align=left,
+    grid style={reja, line width=0.4pt},
+    /pgf/number format/.cd, use comma, 1000 sep={\,},
+  },
+}
+
+% Cajas
+\usepackage[most]{tcolorbox}
+\tcbset{
+  base/.style={enhanced, breakable, boxrule=0pt, arc=1.5mm, left=4mm, right=4mm, top=2.5mm, bottom=2.5mm,
+    fonttitle=\sffamily\bfseries\small, colback=fondo, before skip=8pt, after skip=10pt},
+}
+\newtcolorbox{clave}[1][]{base, unbreakable, colframe=serieA, borderline west={2.5pt}{0pt}{serieA},
+  title={\color{serieA}Lo esencial}, coltitle=serieA, colbacktitle=fondo, attach title to upper={\quad}, #1}
+\newtcolorbox{cuidado}[1][]{base, unbreakable, borderline west={2.5pt}{0pt}{serieB},
+  title={\color{serieB}Cuidado}, colbacktitle=fondo, attach title to upper={\quad}, #1}
+\newtcolorbox{decision}[1][]{base, unbreakable, borderline west={2.5pt}{0pt}{serieC},
+  title={\color{serieC!80!black}Decisión}, colbacktitle=fondo, attach title to upper={\quad}, #1}
+% hallazgo de la auditoría: {código}{gravedad}{color}{título}
+\newtcolorbox{hallazgo}[4]{base, colback=white, boxrule=0.5pt, colframe=reja, borderline west={3pt}{0pt}{#3},
+  title={\textcolor{#3}{#1\enspace·\enspace#2}\hfill\textcolor{tinta}{#4}}, coltitle=tinta, colbacktitle=white,
+  toptitle=1mm, bottomtitle=0mm, titlerule=0pt}
+
+% Código
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small, columns=fullflexible, keepspaces=true, breaklines=true,
+  backgroundcolor=\color{fondo}, frame=none, xleftmargin=3mm, xrightmargin=3mm, aboveskip=6pt, belowskip=6pt,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {→}{{$\to$}}1}
+
+% Bibliografía
+\usepackage[backend=biber, style=authoryear-comp, maxcitenames=2, mincitenames=1, maxbibnames=8, minbibnames=6,
+  uniquelist=false, uniquename=false, giveninits=true, dashed=false, backref=true, doi=true, url=false, isbn=false,
+  eprint=true, sorting=nyt]{biblatex}
+\addbibresource{generado/referencias.bib}
+% La nota «Metadatos de …» que deja resolver_bib2.py dice de dónde salió la entrada; no va en la lista impresa
+\DeclareSourcemap{\maps[datatype=bibtex]{\map{\step[fieldsource=note, match=\regexp{^Metadatos\s+de}, final]
+  \step[fieldset=note, null]}}}
+\DefineBibliographyStrings{spanish}{backrefpage={citado en la p\'agina}, backrefpages={citado en las p\'aginas}}
+\renewcommand*{\bibfont}{\small}
+\setlength{\bibitemsep}{3pt}
+
+% Enlaces y referencias cruzadas
+\usepackage[hidelinks=false, colorlinks=true, linkcolor=azulmedio, citecolor=azulmedio, urlcolor=azulmedio,
+  pdfauthor={Benjamín Campos}, pdftitle={Transfer learning Tierra → espacio en NOVA},
+  pdfsubject={Informe técnico}, pdfkeywords={transfer learning, ajuste fino, PatchTST, reposo en cama, NOVA},
+  bookmarksnumbered=true]{hyperref}
+\usepackage[spanish,noabbrev]{cleveref}
+% Los nombres van en \extrasspanish: cleveref los repone cada vez que se vuelve al español (tras el abstract)
+\newcommand{\nombresreferencias}{%
+  \crefname{table}{tabla}{tablas}\Crefname{table}{Tabla}{Tablas}%
+  \crefname{figure}{figura}{figuras}\Crefname{figure}{Figura}{Figuras}%
+  \crefname{chapter}{capítulo}{capítulos}\Crefname{chapter}{Capítulo}{Capítulos}%
+  \crefname{section}{sección}{secciones}\Crefname{section}{Sección}{Secciones}%
+  \crefname{subsection}{sección}{secciones}\Crefname{subsection}{Sección}{Secciones}%
+  \crefname{appendix}{apéndice}{apéndices}\Crefname{appendix}{Apéndice}{Apéndices}%
+  \crefname{equation}{ecuación}{ecuaciones}\Crefname{equation}{Ecuación}{Ecuaciones}%
+  \crefformat{equation}{ecuación~(##2##1##3)}\Crefformat{equation}{Ecuación~(##2##1##3)}%
+}
+\addto\extrasspanish{\nombresreferencias}
+\AtBeginDocument{\nombresreferencias}
+
+% Títulos de capítulo y sección
+\makechapterstyle{nova}{%
+  \renewcommand*{\chapterheadstart}{\vspace*{18mm}}
+  \renewcommand*{\printchaptername}{}
+  \renewcommand*{\chapternamenum}{}
+  \renewcommand*{\printchapternum}{%
+    {\titularfont\fontsize{48}{48}\selectfont\color{azulclaro}\thechapter}\par\vspace{-6mm}}
+  \renewcommand*{\afterchapternum}{}
+  \renewcommand*{\printchapternonum}{}
+  \renewcommand*{\chaptitlefont}{\titularfont\bfseries\Huge\color{azulnoche}\raggedright}
+  \renewcommand*{\printchaptertitle}[1]{\chaptitlefont ##1\par\vspace{3mm}{\color{serieA}\rule{24mm}{1.2pt}}}
+  \renewcommand*{\afterchaptertitle}{\par\vspace{12mm}}
+}
+\chapterstyle{nova}
+\setsecheadstyle{\titularfont\bfseries\Large\color{azulnoche}\raggedright}
+\setsubsecheadstyle{\titularfont\bfseries\large\color{tinta}\raggedright}
+\setsubsubsecheadstyle{\titularfont\bfseries\normalsize\color{tinta2}\raggedright}
+\setbeforesecskip{-3.2ex plus -1ex minus -.2ex}
+\setaftersecskip{1.6ex plus .2ex}
+\setsecnumdepth{subsection}
+\maxtocdepth{subsection}
+
+% Cabeceras
+\makepagestyle{nova}
+\makeevenhead{nova}{\small\sffamily\color{tinta3}\leftmark}{}{\small\sffamily\color{tinta3}\thepage}
+\makeoddhead{nova}{\small\sffamily\color{tinta3}\rightmark}{}{\small\sffamily\color{tinta3}\thepage}
+\makeheadrule{nova}{\textwidth}{0pt}
+\makepsmarks{nova}{%
+  \createmark{chapter}{both}{shownumber}{}{.\ }%
+  \createmark{section}{right}{shownumber}{}{.\ }}
+\makepagestyle{plainnova}
+\makeevenfoot{plainnova}{}{\small\sffamily\color{tinta3}\thepage}{}
+\makeoddfoot{plainnova}{}{\small\sffamily\color{tinta3}\thepage}{}
+\aliaspagestyle{chapter}{plainnova}
+\pagestyle{nova}
+
+% Leyendas
+\captionnamefont{\small\sffamily\bfseries\color{azulnoche}}
+\captiontitlefont{\small\color{tinta2}}
+\captiondelim{.\enspace}
+\setlength{\belowcaptionskip}{2pt}
+\setfloatadjustment{figure}{\centering}
+\setfloatadjustment{table}{\centering}
+
+% Índices
+\renewcommand*{\cftchapterfont}{\titularfont\bfseries}
+\renewcommand*{\cftchapterpagefont}{\titularfont\bfseries}
+\setlength{\cftbeforechapterskip}{6pt}
+
+% Cifras generadas desde la salida del kernel (generado/cifras.tex). Una cifra que falta queda marcada y avisada.
+\newcommand*{\cifra}[1]{%
+  \ifcsname cifra@#1\endcsname\csname cifra@#1\endcsname
+  \else\textbf{\textcolor{red}{??#1??}}\PackageWarning{informe}{Cifra indefinida: #1}\fi}
+\newcommand*{\defcifra}[2]{\expandafter\def\csname cifra@#1\endcsname{#2}}
+
+% Atajos
+\newcommand*{\var}[1]{\texttt{#1}}
+\newcommand*{\modelo}[1]{\textsf{#1}}
+\newcommand*{\IC}[2]{\,[#1;\,#2]}
+\newcommand*{\pct}{\,\%}

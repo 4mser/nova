@@ -1,0 +1,82 @@
+\chapter{Introducción}\label{cap:intro}
+
+\section{El problema: un médico que no puede esperar a la Tierra}
+
+En un viaje a Marte, una consulta con el cirujano de vuelo tarda entre 6 y 44 minutos de ida y vuelta, lo que tarda la
+luz, y durante la conjunción solar el enlace se corta por semanas. Una emergencia médica no puede esperar eso. Por eso
+el desafío \enquote{Create Health Monitoring Software for Astronauts on Space Missions} del NASA International Space
+Apps Challenge 2026 pide monitoreo, detección y primera respuesta \emph{dentro} de la nave.
+
+NOVA es la respuesta del equipo: un copiloto de salud que vive entero a bordo y funciona sin internet. Su núcleo de
+vuelo usa F~Prime, el software de vuelo de NASA JPL; recibe los signos vitales que cada tripulante registra a diario en
+una estación médica física y en su teléfono, aplica umbrales fijos y revisables y levanta alertas. Cinco modelos
+locales (lenguaje, búsqueda, oído, voz y visión) explican lo que pasa y guían los protocolos de emergencia. La regla
+del proyecto es estricta: lo crítico vive en reglas fijas y archivos revisables, y el modelo de lenguaje explica, no
+decide.
+
+Este informe trata de una pieza de NOVA: cómo saber qué es normal para cada persona cuando el cuerpo cambia en el
+espacio.
+
+\section{Por qué hace falta transferir lo aprendido en Tierra}
+
+En la Tierra, la forma más simple de vigilar a una persona es compararla consigo misma: su media de los últimos días,
+más o menos unas desviaciones. Antes del vuelo hay semanas de mediciones así. El problema es que la microgravedad
+cambia el punto de partida. Los fluidos se desplazan hacia la cabeza, el corazón trabaja de otra forma, se pierde
+masa muscular y ósea, y el peso baja \parencite{norsk2020,hughson2018,pavy2007}. Un monitor afinado en Tierra empieza
+a ver anomalías donde solo hay adaptación, y una tripulación que recibe alarmas todos los días deja de mirarlas.
+
+Lo que se necesita es una \enquote{nueva normalidad} personal: el valor que se espera de cada tripulante en cada día de
+misión, con un rango que avise cuando algo se sale de lo esperable para \emph{esa} persona en \emph{ese} momento. Para
+construirla hay muy pocos datos del propio tripulante en el espacio, sobre todo al principio. Es el problema clásico
+del transfer learning: aprovechar lo que se aprendió en un dominio con muchos datos (la Tierra) para un dominio
+parecido, pero distinto, en el que hay pocos (el espacio) \parencite{pan2010}.
+
+\section{Preguntas de este trabajo}
+
+El trabajo responde tres preguntas, que corresponden a los tres gráficos centrales del proyecto:
+
+\begin{enumerate}[label=\textbf{P\arabic*.}, leftmargin=2.2em]
+\item ¿Sirve en el espacio el monitor de Tierra? Si no sirve, ¿cuántas falsas alarmas da y en qué variables?
+\item ¿Cuánto mejora un rango esperado adaptado, con las mismas falsas alarmas? ¿Cuántos días propios necesita y qué
+  aporta lo aprendido del reposo de otras personas?
+\item ¿El pre-entrenamiento en Tierra mejora el pronóstico a 7 días de un modelo de series de tiempo, frente a
+  entrenarlo desde cero y frente a una línea de base simple?
+\end{enumerate}
+
+Las preguntas se responden con dos tareas. La primera, el \emph{rango esperado}, es un modelo residual pequeño: la
+línea base de Tierra, un corrector aprendido de otros sujetos y los primeros días de la propia persona. La segunda, el
+\emph{pronóstico}, usa PatchTST \parencite{nie2023}, un transformer para series de tiempo de la librería
+\texttt{transformers} de Hugging Face \parencite{wolf2020}, pre-entrenado en Tierra y ajustado al espacio, con
+Chronos-2 \parencite{ansari2025} como referencia sin adaptar.
+
+\section{Alcance y advertencias}
+
+\begin{cuidado}
+Los datos del \enquote{espacio} son de reposo en cama con la cabeza inclinada a $-6^\circ$, el análogo terrestre más
+usado de la microgravedad \parencite{pavy2007,hargens2016}. No son datos de vuelo. Las anomalías que se usan para medir
+la detección son escalones sintéticos inyectados sobre los datos reales, y sus magnitudes son supuestos, salvo la del
+pulso. La conexión con la nave está diseñada, pero no construida.
+\end{cuidado}
+
+El trabajo cubre los primeros 2 a 3 meses de una misión, que es lo que duran las campañas de reposo en cama (entre
+\cifra{datos.chk.cama.min} y \cifra{datos.chk.cama.max} días en cama según el sujeto). No cubre radiación, CO$_2$ de
+cabina ni ánimo: el reposo en cama no los tiene. La radiación queda diseñada como entrada futura del corrector.
+
+\section{Cómo leer este informe}
+
+El \cref{cap:historia} cuenta la historia del transfer learning y del ajuste fino desde sus orígenes en la psicología de
+principios del siglo~\textsc{xx} hasta los modelos fundacionales de series de tiempo, y deja la teoría que se usa
+después. El \cref{cap:datos} describe los datos y lo que cambia en cama. El \cref{cap:metodo} explica los dos modelos, la
+validación y cómo se evitó hacerse trampa. El \cref{cap:resultados} presenta los resultados; el \cref{cap:auditoria}, la
+auditoría independiente del tercer run; el \cref{cap:discusion}, qué significan a la luz de la literatura y cuáles son
+sus límites; el \cref{cap:nova}, cómo se conecta con la nave y qué viene en la corrida siguiente, y el
+\cref{cap:conclusiones}, las respuestas a las tres preguntas. Los apéndices traen las 26 decisiones que se tomaron
+sobre el trabajo, la reproducibilidad y tablas de apoyo.
+
+\begin{clave}
+En los gráficos, el \textcolor{serieB}{\textbf{naranjo}} es siempre el monitor de Tierra, el
+\textcolor{serieA}{\textbf{azul}} es el modelo adaptado y el \textcolor{serieC!80!black}{\textbf{verde}} es el monitor
+de Tierra con el ancho calibrado o, en la curva de aprendizaje, el modelo que solo usa los días propios. En los
+gráficos del entrenamiento las series llevan su nombre al lado. Las cifras de resultados salen de la salida del kernel
+por un script, así que el texto y las tablas no pueden discrepar.
+\end{clave}

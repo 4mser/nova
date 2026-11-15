@@ -1,0 +1,36 @@
+clave	accion	detalle
+loshchilov2019	arxiv	1711.05101 Decoupled Weight Decay Regularization 2017
+pratt1991	s2	Direct Transfer of Learned Information Among Neural Networks | AAAI Conference on Artificial Intelligence | None
+pratt1993	s2	Discriminability-Based Transfer between Neural Networks | Neural Information Processing Systems | None
+thrun1996	s2	Is Learning The n-th Thing Any Easier Than Learning The First? | Neural Information Processing Systems | None
+thrun1998	crossref-json	titulo=False autores=True
+erhan2010	s2	Why Does Unsupervised Pre-training Help Deep Learning? | International Conference on Artificial Intelligence and Statistics | None
+bengio2012	openalex (sin s2)	
+donahue2014	s2	DeCAF: A Deep Convolutional Activation Feature for Generic Visual Recognition | International Conference on Machine Learning | ArXiv
+yosinski2014	s2	How transferable are features in deep neural networks? | Neural Information Processing Systems | ArXiv
+ganin2016	s2	Domain-Adversarial Training of Neural Networks | Journal of machine learning research | J. Mach. Learn. Res.
+ioffe2015	s2	Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift | International Conference on Machine Learning | None
+schneider2020	s2	Improving robustness against common corruptions by covariate shift adaptation | Neural Information Processing Systems | ArXiv
+vaswani2017	s2	Attention is All you Need | Neural Information Processing Systems | None
+houlsby2019	s2	Parameter-Efficient Transfer Learning for NLP | International Conference on Machine Learning | ArXiv
+raghu2019	s2	Transfusion: Understanding Transfer Learning for Medical Imaging | Neural Information Processing Systems | None
+neyshabur2020	s2	What is being transferred in transfer learning? | Neural Information Processing Systems | ArXiv
+dodge2020	s2	Fine-Tuning Pretrained Language Models: Weight Initializations, Data Orders, and Early Stopping | arXiv.org | ArXiv
+bommasani2021	s2	On the Opportunities and Risks of Foundation Models | arXiv.org | ArXiv
+hu2022	s2	LoRA: Low-Rank Adaptation of Large Language Models | International Conference on Learning Representations | ArXiv
+kumar2022	s2	Fine-Tuning can Distort Pretrained Features and Underperform Out-of-Distribution | International Conference on Learning Representations | ArXiv
+lee2023	s2	Surgical Fine-Tuning Improves Adaptation to Distribution Shifts | International Conference on Learning Representations | ArXiv
+nie2023	s2	A Time Series is Worth 64 Words: Long-term Forecasting with Transformers | International Conference on Learning Representations | ArXiv
+rasul2023	s2	Lag-Llama: Towards Foundation Models for Probabilistic Time Series Forecasting |  | None
+ansari2024	s2	Chronos: Learning the Language of Time Series | Trans. Mach. Learn. Res. | ArXiv
+das2024	s2	A decoder-only foundation model for time-series forecasting | International Conference on Machine Learning | None
+woo2024	s2	Unified Training of Universal Time Series Forecasting Transformers | International Conference on Machine Learning | None
+goswami2024	s2	MOMENT: A Family of Open Time-series Foundation Models | International Conference on Machine Learning | None
+vovk2005	crossref-json	titulo=True autores=True
+bouthillier2021	s2	Accounting for Variance in Machine Learning Benchmarks | Conference on Machine Learning and Systems | ArXiv
+kingma2015	s2	Adam: A Method for Stochastic Optimization | International Conference on Learning Representations | arXiv: Learning
+srivastava2014	s2	Dropout: a simple way to prevent neural networks from overfitting | Journal of machine learning research | J. Mach. Learn. Res.
+paszke2019	s2	PyTorch: An Imperative Style, High-Performance Deep Learning Library | Neural Information Processing Systems | None
+pedregosa2011	s2	Scikit-learn: Machine Learning in Python | Journal of machine learning research | ArXiv
+lsda	web	https://lsda.jsc.nasa.gov/ -> 200
+spaceapps	web	https://www.spaceappschallenge.org/ -> URLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)'))

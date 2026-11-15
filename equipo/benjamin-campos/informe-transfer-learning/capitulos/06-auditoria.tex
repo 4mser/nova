@@ -1,0 +1,207 @@
+\chapter{Auditoría del tercer run}\label{cap:auditoria}
+
+\newcommand*{\veredicto}[2]{{\sffamily\bfseries\footnotesize\tikz[baseline=-0.6ex]\fill[#1] (0,0) circle[radius=2.6pt];\,\textcolor{#1}{#2}}}
+
+Antes de abrir el pull request se auditó el tercer run: se contrastó cada frase del README con el código y con la
+salida del kernel. Este capítulo resume esa auditoría, porque cambió lo que el trabajo puede afirmar.
+
+\section{Qué se revisó y cómo}
+
+La revisión tuvo dos partes. Un revisor independiente, el agente \texttt{ecc:mle-reviewer} en modo de solo lectura y
+sin correr redes, leyó el código buscando fugas, comparaciones injustas y problemas de reproducibilidad. Después, la
+auditoría recalculó desde las tablas por sujeto de la salida del kernel todo lo que el README afirma, y leyó
+directamente los pesos publicados.
+
+\begin{clave}
+Las cifras cuadran. El \texttt{metricas.json} del repositorio es idéntico al del kernel, igual que los cuatro gráficos
+(\cref{tab:traza}), y el revisor rehízo el rango esperado en CPU desde los parquet y obtuvo las mismas tablas. Tampoco
+hay fuga: los cinco folds no se cruzan y ningún sujeto de prueba entra a un ajuste. Lo que la auditoría encontró son
+conclusiones que dicen más de lo que muestran los datos y frases que no describen lo que hace el código.
+\end{clave}
+
+\section{Afirmación por afirmación}
+
+La \cref{tab:afirmaciones} recorre las once afirmaciones del README que se revisaron, con su veredicto: se sostiene, falta
+aclarar, es inexacta o está sobredicha.
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.9cm} >{\raggedright\arraybackslash}p{2.35cm}
+  >{\raggedright\arraybackslash}p{7.05cm}@{}}
+\caption[Las afirmaciones del README y su veredicto]{Las afirmaciones del README del tercer run y lo que muestran el
+código y la salida del kernel.}\label{tab:afirmaciones}\\
+\toprule
+Afirmación & Veredicto & Por qué \\
+\midrule
+\endfirsthead
+\multicolumn{3}{@{}l}{\footnotesize\sffamily\color{tinta3} Viene de la página anterior}\\
+\toprule
+Afirmación & Veredicto & Por qué \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{@{}r}{\footnotesize\sffamily\color{tinta3} Sigue en la página siguiente}\\
+\endfoot
+\bottomrule
+\endlastfoot
+\enquote{Las cifras de este README salen del tercer run del kernel.} & \veredicto{serieC!80!black}{Se sostiene} &
+\texttt{metricas.json} y los cuatro gráficos son idénticos a los del kernel (sha256). \\
+\enquote{Los sujetos de prueba nunca entran a ningún ajuste.} & \veredicto{serieC!80!black}{Se sostiene} & El
+ridge, el ancho calibrado, el piso de la desviación, la parada temprana y el ruido por variable salen solo de sujetos
+de entrenamiento, y los folds no se cruzan. \\
+\enquote{En el peso, el rango queda a la mitad y la detección sube de 10 a 26\pct.} &
+\veredicto{medio}{Falta aclarar} & Es la comparación justa, pero ese 10\pct{} es el monitor de Tierra \emph{con el
+ancho calibrado}, y la tabla lo llamaba \enquote{Tierra}. El de Tierra sin calibrar detecta \cifra{peso.tierra.rec}\pct,
+con \cifra{peso.tierra.fareg}\pct{} de falsas alarmas por la regla (M2). \\
+\enquote{Una alarma cuenta cuando 2 de 3 días seguidos quedan fuera, y esa misma regla se usa para las falsas
+alarmas.} & \veredicto{serieB}{Inexacto} & La tabla usaba falsas alarmas diarias. Con la regla, el adaptado en la
+presión diastólica da \cifra{pa_dia.adapt.fareg}\pct, no \cifra{pa_dia.adapt.fa}\pct{} (M1). \\
+\enquote{El 5\pct{} del adaptado sale por construcción.} & \veredicto{medio}{Falta aclarar} & En promedio, sí. Pero
+el ancho es uno para toda la población: en el peso, \cifra{fapeso.cero} de \cifra{fapeso.n} personas no tienen
+ninguna falsa alarma y una llega a \cifra{fapeso.max}\pct{} (M4). \\
+\enquote{El resultado fuerte sale del corrector: la línea base, lo aprendido de otros sujetos y los primeros 28
+días.} & \veredicto{medio}{Falta aclarar} & Vale para el peso. Con los 28 días propios ya puestos, lo aprendido de
+otros baja el error en más de \cifra{banda} solo en \cifra{aporte.ayuda}, y en el \cifra{aporte.empeora} lo sube (M3).
+\\
+\enquote{Con estos datos, el pre-entrenamiento en Tierra no aporta al pronóstico.} & \veredicto{alto}{Sobredicho} &
+Se apoya en \enquote{solo la cabeza contra desde cero}. Con ajuste completo, Tierra → espacio gana
+\cifra{par.todo.cero} \cifra{par.todo.cero.ic}, y el intervalo no cruza el cero. Tampoco se puede afirmar lo
+contrario: una sola semilla y brazos no igualados (H1). \\
+\enquote{Después se adapta al reposo ajustando solo la cabeza o todo el modelo.} & \veredicto{serieB}{Inexacto} &
+\enquote{Solo la cabeza} también cambia el backbone: entre los pesos publicados cambian \cifra{pesos.cambian} de
+\cifra{pesos.tensores} tensores, \cifra{pesos.bn} de BatchNorm (A1). \\
+\enquote{NOVA aprende cómo es cada persona en la Tierra y se adapta a su nueva normalidad con los pocos días de la
+misión.} & \veredicto{medio}{Falta aclarar} & Eso lo muestra el rango esperado. El pronóstico se adapta al reposo en
+general: el sujeto de prueba nunca aporta sus propios días (M5). \\
+\enquote{La mejora es real pero chica: cerca de 1,5\pct{} del error de persistencia.} &
+\veredicto{serieB}{Cifra inexacta} & Son \cifra{par.cabeza.media7.puntos} puntos ajustando solo la cabeza y
+\cifra{par.todo.media7.puntos} ajustando todo (L4). \\
+\enquote{Con 11 a 21 días de pre-reposo y 42 a 90 en cama.} & \veredicto{serieB}{Cifra inexacta} & Contando los días
+con pulso, son de \cifra{datos.chk.pulso.pre.min} a \cifra{datos.chk.pulso.pre.max} y de
+\cifra{datos.chk.pulso.cama.min} a \cifra{datos.chk.pulso.cama.max} (L4). \\
+\end{longtable}
+\endgroup
+
+\section{Hallazgos}
+
+El revisor independiente encontró 0 críticos, 1 alto, 5 medios y 8 bajos; la auditoría agregó uno medio, el A1.
+Cada hallazgo dice qué pasa y cómo se arregla.
+
+\subsection{El hallazgo alto}\label{sec:h1}
+
+\begin{hallazgo}{H1}{Alto}{alto}{\enquote{El pre-entrenamiento no aporta} sale de una comparación elegida}
+\begin{description}
+\item[Qué pasa] El README concluía \enquote{empate} comparando solo la cabeza contra el modelo desde cero,
+  \cifra{par.cabeza.cero} \cifra{par.cabeza.cero.ic}. El ajuste completo, que es la mejor variante, no se comparaba con
+  los modelos desde cero. Contra ellos gana: \cifra{par.todo.cero} \cifra{par.todo.cero.ic} y \cifra{par.todo.sinls}
+  \cifra{par.todo.sinls.ic} sin LifeSnaps.
+\item[Confusores] Tasa de aprendizaje distinta entre brazos; \enquote{solo la cabeza} cortada por el tope de épocas
+  en \cifra{cabeza.cortados} de 5 folds; una sola semilla. Que los modelos desde cero sufran por su tasa de aprendizaje
+  es una hipótesis: no se probó otra.
+\item[Arreglo] Informar los pares del ajuste completo y escribir que la diferencia es de \cifra{par.todo.cero.r} o
+  menos y que una semilla no permite separarla del ruido. En la corrida siguiente, igualar la tasa de aprendizaje y el
+  presupuesto, subir el tope de la cabeza y usar varias semillas.
+\end{description}
+\end{hallazgo}
+
+\subsection{Hallazgos medios}
+
+\begin{hallazgo}{M1}{Medio}{medio}{La tabla usaba falsas alarmas diarias, no la regla de 2 de 3}
+El texto decía que las falsas alarmas usan la misma regla que la detección, pero las columnas eran diarias. Con la
+regla, el monitor de Tierra en la presión diastólica pasa de \cifra{pa_dia.tierra.fa} a
+\cifra{pa_dia.tierra.fareg}\pct, y el adaptado de \cifra{pa_dia.adapt.fa} a \cifra{pa_dia.adapt.fareg}\pct.
+\emph{Arreglo:} decir que la tabla es diaria y agregar la regla (\cref{tab:regla}).
+\end{hallazgo}
+
+\begin{hallazgo}{M2}{Medio}{medio}{La comparación de detección era contra el monitor de Tierra calibrado}
+En el peso, el 10\pct{} es \modelo{tierra (ancho calibrado)}. El monitor de Tierra real detecta
+\cifra{peso.tierra.rec}\pct, pero con \cifra{peso.tierra.fareg}\pct{} de falsas alarmas por la regla, así que esa
+detección es ruido. En promedio sin agua, el adaptado detecta menos que el de Tierra sin calibrar
+(\cifra{prom.adapt.rec} contra \cifra{prom.tierra.rec}\pct), y eso no se decía. \emph{Arreglo:} llamar a la columna
+\enquote{Tierra con ancho calibrado → adaptado} y explicar por qué el monitor sin calibrar no sirve de referencia.
+\end{hallazgo}
+
+\begin{hallazgo}{M3}{Medio}{medio}{El corrector de otros sujetos suma solo en algunas variables}
+Con los 28 días propios ya puestos, el corrector baja el error en más de \cifra{banda} solo en \cifra{aporte.ayuda}.
+El README le daba el crédito en general; en la mayoría de las variables, la mejora viene de los días propios.
+\emph{Arreglo:} mostrar \modelo{tierra+personal} junto al adaptado (\cref{tab:aporte}).
+\end{hallazgo}
+
+\begin{hallazgo}{M4}{Medio}{medio}{El 5\pct{} de falsas alarmas es de la población, no de cada persona}
+En el peso, la falsa alarma diaria del adaptado por persona tiene mediana \cifra{fapeso.mediana}\pct, media
+\cifra{fapeso.media}\pct{} y máximo \cifra{fapeso.max}\pct. Unas pocas personas alarman casi todos los días y la
+mayoría nunca. \emph{Arreglo:} mostrar la distribución por persona (\cref{fig:fa-persona}) y probar un ancho por
+persona.
+\end{hallazgo}
+
+\begin{hallazgo}{M5}{Medio}{medio}{El pronóstico no se adapta a cada persona}
+La adaptación usa los días en cama de los sujetos de entrenamiento; el sujeto de prueba nunca ve los suyos. La
+adaptación personal solo está en el rango esperado. \emph{Arreglo:} decirlo, o agregar un experimento con los primeros
+$k$ días del sujeto de prueba.
+\end{hallazgo}
+
+\subsection{El hallazgo nuevo: BatchNorm se mueve}\label{sec:a1}
+
+\begin{hallazgo}{A1}{Medio}{medio}{\enquote{Solo la cabeza} también re-estima BatchNorm del backbone}
+\texttt{congelar\_backbone} solo apaga los gradientes, y el entrenamiento deja el modelo en modo de entrenamiento.
+Entre \texttt{nova-tierra} y \texttt{nova-espacio} cambian \cifra{pesos.cambian} de \cifra{pesos.tensores} tensores:
+\cifra{pesos.cabeza} de la cabeza y \cifra{pesos.bn} de BatchNorm (\cref{sec:pesos}). Puede explicar parte de lo que
+\enquote{solo la cabeza} le gana a Tierra sin adaptar. \emph{Arreglo:} poner el backbone en modo de evaluación, o
+describir el brazo como \enquote{cabeza + normalización}. Amplía el L1 del revisor.
+\end{hallazgo}
+
+\subsection{Hallazgos bajos}
+
+\begin{hallazgo}{L1}{Bajo}{bajo}{Dropout activo en el backbone congelado}
+El modo de entrenamiento también activa el dropout de las capas congeladas.
+\end{hallazgo}
+\begin{hallazgo}{L2}{Bajo}{bajo}{Reproducibilidad incompleta}
+\texttt{chronos-forecasting>=2.0} se instala sin versión fija (en la corrida fue la 2.3.2), \texttt{metricas.json}
+guarda el hash de los datos pero no el del código, y no se fija el determinismo de CUDA.
+\end{hallazgo}
+\begin{hallazgo}{L3}{Bajo}{bajo}{Ninguna aserción de que prueba y entrenamiento no se cruzan}
+A mano está correcto, pero una aserción de una línea lo dejaría comprobado en cada corrida.
+\end{hallazgo}
+\begin{hallazgo}{L4}{Bajo}{bajo}{Cifras del README que no eran exactas}
+El \enquote{cerca de 1,5\pct}, los días de pre-reposo y en cama, y que LifeSnaps tiene \cifra{datos.ls.personas}
+personas pero al modelo base entran \cifra{datos.ls.entrenan}: 7 quedan para la parada temprana.
+\end{hallazgo}
+\begin{hallazgo}{L5}{Bajo}{bajo}{Las magnitudes de los escalones son supuestos}
+Salvo la del pulso. El nivel de detección depende de ellas; lo robusto es el orden entre modelos. No se barrió la
+magnitud.
+\end{hallazgo}
+\begin{hallazgo}{L6}{Bajo}{bajo}{Muchas comparaciones sin corrección}
+Tres versiones del kernel, ocho variables y muchos pares, sin corrección por multiplicidad \parencite{benjamini1995}.
+Conviene declararlo o quedarse con pares definidos de antemano.
+\end{hallazgo}
+\begin{hallazgo}{L7}{Bajo}{bajo}{Dos desplazamientos sin comentar}
+El agua baja \cifra{desp.agua}\un{g/día} ($\pm$\cifra{desp.agua.ic}) y la presión diastólica sube
+\cifra{desp.pa_dia}\un{mmHg} ($\pm$\cifra{desp.pa_dia.ic}); el README no los comentaba.
+\end{hallazgo}
+\begin{hallazgo}{L8}{Bajo}{bajo}{El cargador toma el primer número de cada celda}
+Si una celda trae dos números, el segundo se pierde sin aviso. Conviene que el cargador avise cuando pase.
+\end{hallazgo}
+
+\section{Qué se corrigió en el pull request}
+
+El pull request \#2 lleva el README y las preguntas abiertas corregidos con todo lo anterior:
+\begin{itemize}
+\item La columna de detección dice \enquote{Tierra con ancho calibrado → adaptado}, y el texto explica por qué el
+  monitor sin calibrar no sirve de referencia.
+\item La tabla dice que las falsas alarmas son diarias, y el texto da el rango con la regla de 2 de 3.
+\item El 5\pct{} se presenta como un promedio de la población, con la distribución del peso por persona.
+\item El crédito del corrector se limita al peso y el pulso.
+\item \enquote{El pre-entrenamiento no aporta} se reemplazó por \enquote{todavía no se puede decir si aporta}, con los
+  pares del ajuste completo y los confusores.
+\item \enquote{Solo la cabeza} se describe como cabeza más normalización, con el conteo de tensores.
+\item El pronóstico se describe como adaptado al reposo en general, no a cada persona.
+\item Las cifras inexactas se corrigieron, y un párrafo dice cuáles cifras no están en \texttt{metricas.json} y de
+  dónde salen.
+\end{itemize}
+
+Quedan para la corrida siguiente los cambios de código: igualar los brazos, congelar de verdad el backbone, fijar la
+versión de Chronos, guardar el hash del código y agregar las aserciones. Una frase se corrigió después, el 15-11-2026:
+el plan de la v4 en el README y la respuesta a la pregunta~2 decían que LifeSnaps \enquote{aporta solo el pulso}. Ahora
+dicen lo correcto: LifeSnaps aporta sus ocho canales al pre-entrenamiento compartido y, de las variables de la v4,
+solo el pulso también está en LifeSnaps.

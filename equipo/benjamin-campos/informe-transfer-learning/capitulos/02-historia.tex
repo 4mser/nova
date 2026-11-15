@@ -1,0 +1,303 @@
+\chapter{Transfer learning y ajuste fino: historia y teoría}\label{cap:historia}
+
+Este capítulo cuenta de dónde viene la idea de transferir lo aprendido y cómo llegó a ser la forma habitual de
+entrenar modelos. No es un repaso exhaustivo: elige los trabajos que sirven para entender las decisiones y los
+resultados de NOVA. La \cref{fig:linea} resume el recorrido y la \cref{tab:estrategias} ubica cada estrategia de adaptación
+en este trabajo.
+
+\section{Una idea más antigua que las redes}
+
+La pregunta de si aprender una cosa ayuda a aprender otra es de la psicología. \textcite{thorndike1901} estudiaron si
+mejorar en una función mental mejora la eficiencia en otras funciones. Encontraron que la mejora se traspasa solo en
+parte y que depende de lo que las dos tareas tienen en común. La idea de
+fondo, que lo aprendido se transfiere mejor cuanto más se parecen las tareas, reaparece casi un siglo después en las
+redes neuronales, con otras palabras: la distancia entre dominios.
+
+\section{Las primeras redes que transfieren}
+
+La historia habitual sitúa el comienzo del transfer learning en redes neuronales a principios de los noventa.
+\textcite{bozinovski2020} recuerda que el trabajo empezó más de una década antes: hubo investigación en los setenta, con
+una primera publicación en 1976, y ya tenía un modelo matemático de la transferencia, una interpretación geométrica y
+una medida que distingue entre transferencia positiva, negativa y nula.
+
+En los noventa la idea toma su forma moderna. \textcite{pratt1991} estudiaron cómo usar lo que aprendió una red para
+que otra aprenda una tarea relacionada, transfiriendo directamente los pesos, y lo usaron para acelerar el
+aprendizaje. \textcite{pratt1993} propuso una forma más fina, la transferencia basada en discriminabilidad: estima con
+una medida de información qué tan útil es, en el problema destino, cada hiperplano que definen los pesos de la fuente,
+y reescala los pesos transferidos según eso. Las redes que parten así aprenden bastante más rápido que las que parten
+al azar. Es, treinta años antes, la intuición detrás del ajuste fino parcial que se discute más abajo: no todas las
+partes de una red sirven igual en el dominio nuevo.
+
+\section{Aprender a aprender}
+
+A mediados de los noventa la pregunta cambia de escala. \textcite{thrun1996} preguntó si aprender la tarea número $n$
+es más fácil que aprender la primera, y planteó el aprendizaje de por vida: un sistema que acumula conocimiento a lo
+largo de muchas tareas y lo usa para aprender las siguientes con menos ejemplos. \textcite{caruana1997} propuso el
+aprendizaje multitarea: entrenar a la vez varias tareas relacionadas, con una representación compartida, para que lo
+que aprende cada una sirva de sesgo a las demás. El libro editado por \textcite{thrun1998} reunió esta línea bajo el
+nombre de \enquote{aprender a aprender}, y \textcite{baxter2000} le dio una base teórica: si las tareas vienen de un
+mismo entorno, se puede aprender el sesgo inductivo que conviene a todas, y el número de ejemplos que necesita cada
+tarea nueva baja.
+
+En NOVA esta idea aparece en el modelo de pronóstico, que es \emph{compartido entre variables}: un mismo PatchTST
+aprende la dinámica diaria del pulso, la presión, el peso y los demás canales, en vez de un modelo por variable.
+
+\section{Qué es transferir, con precisión}\label{sec:definicion}
+
+La definición que se volvió estándar es la de \textcite{pan2010}. Un \emph{dominio} $\mathcal{D} = \{\mathcal{X},
+P(X)\}$ es un espacio de entradas con su distribución, y una \emph{tarea} $\mathcal{T} = \{\mathcal{Y}, f(\cdot)\}$ es
+un espacio de salidas con la función que se quiere aprender. Dados un dominio y una tarea fuente
+$(\mathcal{D}_S, \mathcal{T}_S)$ y un dominio y una tarea destino $(\mathcal{D}_T, \mathcal{T}_T)$, el transfer
+learning busca aprender mejor $f_T$ usando lo que se sabe de $\mathcal{D}_S$ y $\mathcal{T}_S$, cuando
+$\mathcal{D}_S \neq \mathcal{D}_T$ o $\mathcal{T}_S \neq \mathcal{T}_T$.
+
+Con esa definición, \textcite{pan2010} ordenaron el campo en tres familias según qué cambia y si hay etiquetas en el
+destino (inductivo, transductivo y no supervisado) y en cuatro según qué se transfiere: instancias, representaciones,
+parámetros o relaciones. Las revisiones posteriores de \textcite{weiss2016}, \textcite{tan2018} y
+\textcite{zhuang2021} extendieron esa taxonomía al aprendizaje profundo y a cientos de métodos nuevos.
+
+\begin{clave}
+En NOVA, la fuente es la Tierra: la tabla diaria de LifeSnaps y los días de pre-reposo de cada sujeto. El destino es el
+reposo en cama, análogo del espacio. La tarea es la misma en ambos (el valor esperado de una variable o sus próximos 7
+días), pero cambia la distribución: el peso baja, el pulso sube y la \enquote{normalidad} de cada persona se corre. Es
+transfer learning \emph{inductivo con cambio de dominio}, y lo que se transfiere son parámetros (los pesos de PatchTST)
+y una línea base personal.
+\end{clave}
+
+\section{Cuando cambia la distribución}
+
+El caso más estudiado de cambio de dominio es el \emph{cambio de covariables}: cambia la distribución de las entradas,
+$P_S(x) \neq P_T(x)$, pero no la relación entre entrada y salida, $P_S(y \mid x) = P_T(y \mid x)$.
+\textcite{shimodaira2000} mostró que en ese caso conviene ponderar la verosimilitud de cada ejemplo de entrenamiento
+por el cociente de densidades
+\begin{equation}
+w(x) = \frac{p_T(x)}{p_S(x)},
+\end{equation}
+de modo que los ejemplos que se parecen más al destino pesen más.
+
+\textcite{bendavid2010} dieron una cota que dice cuándo un clasificador $h$ entrenado en la fuente puede funcionar en
+el destino:
+\begin{equation}\label{eq:bendavid}
+\varepsilon_T(h) \le \varepsilon_S(h) + \tfrac{1}{2}\, d_{\mathcal{H}\Delta\mathcal{H}}(\mathcal{D}_S, \mathcal{D}_T)
+  + \lambda .
+\end{equation}
+El error en el destino queda acotado por el error en la fuente, más una distancia entre las dos distribuciones que
+mide qué tan bien puede distinguirlas la familia de modelos, más $\lambda$, el error del mejor modelo conjunto en
+ambos dominios. Si $\lambda$ es grande, ninguna representación compartida sirve y transferir puede empeorar las cosas:
+es la \emph{transferencia negativa}. \textcite{ganin2016} convirtieron la cota en un método: entrenar una
+representación que prediga bien en la fuente y que, a la vez, un discriminador no pueda usar para distinguir de qué
+dominio viene cada ejemplo. Antes, \textcite{dai2007} habían adaptado el \emph{boosting} para repesar instancias de la
+fuente según cuánto ayudan en el destino.
+
+En el reposo en cama el cambio no es solo de covariables. El nivel normal del peso de una persona baja con los días,
+así que también cambia $P(y \mid x)$: el mismo historial ya no predice el mismo valor. Eso justifica un modelo que
+corrija explícitamente el nivel según el día en cama (\cref{sec:rango}).
+
+\section{Pre-entrenar y ajustar fino}
+
+El ajuste fino, tal como se usa hoy, nace con el aprendizaje profundo. \textcite{hinton2006dbn} propusieron entrenar
+una red profunda capa por capa, sin etiquetas, y después \enquote{ajustar fino} (\emph{fine-tune}) todos los pesos con
+un segundo algoritmo. \textcite{hinton2006science} usaron la misma receta para autoencoders profundos: el
+pre-entrenamiento deja los pesos cerca de una buena solución y el ajuste fino con retropropagación termina el trabajo.
+\textcite{bengio2007} extendieron el entrenamiento voraz capa por capa a otros tipos de unidades, y
+\textcite{erhan2010} explicaron por qué funciona: el pre-entrenamiento actúa como un regularizador que lleva la
+optimización a regiones del espacio de parámetros que generalizan mejor.
+
+En paralelo, \textcite{raina2007} propusieron el aprendizaje autodidacta: aprender una representación con datos sin
+etiquetar de otra fuente y usarla en una tarea supervisada con pocos ejemplos. \textcite{bengio2012} reunió el
+argumento de que las buenas representaciones son justamente las que se transfieren. En notación, el ajuste fino parte
+de los parámetros aprendidos en la fuente y sigue optimizando en el destino:
+\begin{equation}\label{eq:ajuste}
+\theta_T = \arg\min_{\theta}\; \mathcal{L}_T(\theta), \qquad \text{empezando en } \theta = \theta_S ,
+\end{equation}
+con todos los parámetros libres (ajuste completo) o solo un subconjunto, el resto congelado.
+
+\section{Qué capas se transfieren}
+
+Con las redes convolucionales entrenadas en ImageNet, transferir se volvió la práctica por defecto en visión.
+\textcite{donahue2014} mostraron que las activaciones internas de una red ya entrenada, usadas tal cual, sirven como
+rasgos genéricos para tareas nuevas, y \textcite{razavian2014} confirmaron que esos rasgos \enquote{sacados del
+estante} son una línea de base difícil de superar. \textcite{oquab2014} transfirieron las representaciones intermedias a tareas con pocos
+datos, entrenando capas nuevas encima, y \textcite{girshick2014} establecieron la receta que dominó la década: pre-entrenar
+supervisado en un conjunto grande y ajustar fino en el dominio específico.
+
+\textcite{yosinski2014} midieron capa por capa qué tan transferibles son los rasgos. Las primeras capas aprenden cosas
+generales y las últimas se especializan en la tarea fuente. La transferencia empeora por dos causas: esa
+especialización y la coadaptación entre capas vecinas, que se rompe al cortar la red en un punto. Cuanto más distintas
+son las tareas, menos sirve transferir, aunque iniciar con rasgos transferidos sigue dando una ventaja que dura después
+del ajuste fino.
+
+\section{La normalización también se adapta}\label{sec:bn}
+
+\textcite{ioffe2015} introdujeron la normalización por lotes (BatchNorm) para reducir lo que llamaron cambio interno de
+covariables. Cada activación se normaliza con la media y la varianza del lote y se reescala con dos parámetros
+entrenables:
+\begin{equation}\label{eq:bn}
+\hat{x} = \frac{x - \mu_{\mathcal{B}}}{\sqrt{\sigma^2_{\mathcal{B}} + \epsilon}}, \qquad y = \gamma \hat{x} + \beta,
+\qquad \mu \leftarrow (1-m)\,\mu + m\,\mu_{\mathcal{B}}, \quad \sigma^2 \leftarrow (1-m)\,\sigma^2 + m\,\sigma^2_{\mathcal{B}}.
+\end{equation}
+Las medias móviles $\mu$ y $\sigma^2$ no son parámetros que se entrenan con gradientes: son \emph{buffers} que se
+actualizan cada vez que el modelo procesa un lote en modo de entrenamiento, y que se usan, fijos, en modo de
+evaluación.
+
+Eso convierte a BatchNorm en una vía de adaptación por sí sola. \textcite{li2018adabn} propusieron AdaBN: adaptar un
+modelo a otro dominio reemplazando solo esas estadísticas por las del dominio destino, sin tocar los pesos.
+\textcite{schneider2020} mostraron que lo mismo mejora la robustez frente a imágenes corrompidas. El punto importa para
+este trabajo: el brazo \enquote{solo la cabeza} de NOVA entrena con el modelo en modo de entrenamiento, así que además
+de la cabeza adapta las estadísticas de BatchNorm del backbone (\cref{sec:pesos,sec:a1}).
+
+\section{Lo que se olvida al adaptar}
+
+Ajustar una red a un dominio nuevo puede borrar lo que sabía del anterior. \textcite{mccloskey1989} lo llamaron
+interferencia catastrófica: al aprender tareas en secuencia, lo nuevo pisa lo viejo. \textcite{kirkpatrick2017}
+propusieron frenar ese olvido penalizando el cambio de los pesos importantes para la tarea anterior, con una
+importancia estimada por la información de Fisher $F_i$:
+\begin{equation}
+\mathcal{L}(\theta) = \mathcal{L}_T(\theta) + \sum_i \frac{\lambda}{2}\, F_i\, \bigl(\theta_i - \theta^{*}_{S,i}\bigr)^2 .
+\end{equation}
+En NOVA el olvido se evita por diseño: el modelo de Tierra no se reemplaza, el adaptado se guarda aparte, y el
+corrector del rango esperado se suma a la línea base sin modificarla.
+
+\section{Modelos fundacionales y ajuste eficiente}
+
+El transformer de \textcite{vaswani2017} cambió la escala del pre-entrenamiento. \textcite{howard2018} mostraron con
+ULMFiT que un modelo de lenguaje pre-entrenado en texto general se puede ajustar fino a cualquier clasificación de
+textos, con técnicas para no destruir lo aprendido: tasas de aprendizaje distintas por capa y descongelar las capas de
+a una. \textcite{devlin2019} llevaron la receta a BERT, que se ajusta a cada tarea con una sola capa de salida
+adicional. \textcite{bommasani2021} acuñaron el término \emph{modelos fundacionales} para estos modelos entrenados con
+datos amplios y adaptables a muchas tareas.
+
+Como ajustar todos los parámetros de un modelo grande es caro, aparecieron formas de ajustar pocos.
+\textcite{houlsby2019} insertaron \emph{adaptadores}, módulos pequeños entre las capas congeladas.
+\textcite{hu2022} propusieron LoRA: congelar los pesos $W_0$ y aprender una corrección de rango bajo,
+\begin{equation}\label{eq:lora}
+W = W_0 + BA, \qquad B \in \mathbb{R}^{d \times r},\; A \in \mathbb{R}^{r \times k},\; r \ll \min(d, k).
+\end{equation}
+En NOVA, LoRA queda para después de la corrida v4, y solo si el ajuste completo sigue ganándole al modelo entrenado
+desde cero (\cref{sec:v4}).
+
+\section{¿Cuándo ayuda pre-entrenar?}\label{sec:cuando}
+
+Que el pre-entrenamiento sea la norma no quiere decir que siempre ayude. \textcite{he2019} entrenaron detectores de
+objetos desde cero, con más iteraciones, y obtuvieron resultados no peores que con pre-entrenamiento en ImageNet: el
+pre-entrenamiento acelera la convergencia, pero no siempre mejora el resultado final. \textcite{raghu2019} encontraron
+que en imágenes médicas transferir desde ImageNet aporta poco y que modelos chicos entrenados desde cero rinden
+parecido. \textcite{kornblith2019} vieron que en dos conjuntos pequeños de clasificación fina el beneficio es mínimo.
+
+\textcite{neyshabur2020} separaron qué se transfiere: una parte es reutilización de rasgos y otra son estadísticas de
+bajo nivel de los datos, que ayudan aunque los datos fuente se desordenen. \textcite{kumar2022} mostraron que el ajuste
+completo puede distorsionar los rasgos pre-entrenados y rendir peor que entrenar solo la cabeza cuando el destino se
+aleja de la fuente, y \textcite{lee2023} que ajustar solo un subconjunto de capas, elegido según el tipo de cambio de
+distribución, puede rendir mejor que ajustarlas todas.
+
+Hay además un problema de medición. \textcite{dodge2020} mostraron que, en el ajuste fino de modelos de lenguaje, la
+semilla aleatoria cambia los resultados de forma sustancial, y que la inicialización de la cabeza y el orden de los
+datos pesan parecido. \textcite{bouthillier2021} pidieron contar esa variabilidad antes de declarar que un modelo le
+gana a otro. Con una sola semilla, una diferencia de milésimas no se puede separar del ruido. Es exactamente la
+situación del pronóstico de NOVA (\cref{sec:res-pronostico,sec:h1}).
+
+\section{Transferir en series de tiempo}
+
+En series de tiempo el pre-entrenamiento llegó más tarde. \textcite{fawaz2018} probaron transferir redes
+convolucionales entre conjuntos de clasificación de series y vieron que, según la fuente, la transferencia puede
+mejorar o empeorar el resultado. \textcite{oreshkin2021} plantearon el pronóstico \enquote{zero-shot}: un modelo
+entrenado en muchas series que pronostica series nuevas sin reentrenar. \textcite{zeng2023} pusieron un límite a la
+euforia: en pronóstico de largo plazo, un modelo lineal de una capa le gana a varios transformers.
+
+PatchTST \parencite{nie2023}, el modelo base de NOVA, respondió a esa crítica con dos decisiones: cortar la serie en
+\emph{parches} de varios pasos, que funcionan como las palabras de un texto, y tratar cada canal por separado con
+pesos compartidos (independencia de canales). Después llegaron los modelos fundacionales de series:
+Lag-Llama \parencite{rasul2023}, Chronos \parencite{ansari2024}, que escala y cuantiza la serie en fichas y la modela
+con la familia T5, TimesFM \parencite{das2024}, Moirai \parencite{woo2024} y MOMENT \parencite{goswami2024}.
+Chronos-2 \parencite{ansari2025}, la referencia de este trabajo, pronostica sin ajuste series univariadas,
+multivariadas y con covariables, con atención entre las series de un mismo grupo.
+
+Para comparar pronósticos entre variables de unidades distintas hacen falta errores relativos.
+\textcite{hyndman2006} discutieron las medidas escaladas y relativas a un pronóstico ingenuo. Este trabajo usa el MAE
+dividido por el MAE de la persistencia (repetir el último valor), en esa línea.
+
+\section{Línea de tiempo}
+
+La \cref{fig:linea} junta en una sola línea los trabajos de este capítulo, desde la psicología de
+principios del siglo~\textsc{xx} hasta los modelos fundacionales de series de tiempo, y marca dónde entra NOVA. Los colores
+separan las ideas y la teoría, el pre-entrenamiento y el ajuste fino, y las series de tiempo.
+
+\begin{figure}[p]
+\centering
+\newcommand*{\hito}[4]{%
+  \node[anchor=east, font=\small\titularfont\bfseries\color{azulnoche}] at (-0.32,#1) {#2};
+  \node[circle, inner sep=0pt, minimum size=6.5pt, fill=#3, draw=white, line width=1.1pt] at (0,#1) {};
+  \node[anchor=west, font=\footnotesize, text width=12.3cm, align=left, inner sep=1pt] at (0.32,#1) {#4};}
+\begin{tikzpicture}[y=-7.65mm]
+  \draw[reja, line width=1.8pt] (0,-0.5) -- (0,26.5);
+  \hito{0}{1901}{tinta3}{\citeauthor{thorndike1901}: mejorar en una tarea mental se traspasa a otras solo en parte.}
+  \hito{1}{1976}{tinta3}{Primera publicación sobre transferencia en redes neuronales, con una medida de transferencia positiva, negativa y nula \parencite{bozinovski2020}.}
+  \hito{2}{1989}{tinta3}{\citeauthor{mccloskey1989}: interferencia catastrófica al aprender en secuencia.}
+  \hito{3}{1991}{tinta3}{\citeauthor{pratt1991}: transferir los pesos de una red como punto de partida de otra.}
+  \hito{4}{1992}{tinta3}{\citeauthor{pratt1993}: transferencia basada en discriminabilidad, que reescala los pesos transferidos.}
+  \hito{5}{1995}{tinta3}{\citeauthor{thrun1996}: aprendizaje de por vida; ¿es más fácil aprender lo enésimo?}
+  \hito{6}{1997}{tinta3}{\citeauthor{caruana1997}: aprendizaje multitarea con representación compartida.}
+  \hito{7}{2000}{tinta3}{\citeauthor{baxter2000}: aprender el sesgo inductivo. \citeauthor{shimodaira2000}: cambio de covariables.}
+  \hito{8}{2006}{serieA}{\citeauthor{hinton2006dbn}: pre-entrenar capa por capa y después ajustar fino.}
+  \hito{9}{2007}{serieA}{\citeauthor{raina2007}: aprendizaje autodidacta. \citeauthor{dai2007}: TrAdaBoost.}
+  \hito{10}{2009}{tinta3}{\citeauthor{bendavid2010}: cota del error en el dominio destino.}
+  \hito{11}{2010}{tinta3}{\citeauthor{pan2010}: definición y taxonomía del transfer learning. \citeauthor{erhan2010}: por qué ayuda pre-entrenar.}
+  \hito{12}{2014}{serieA}{\citeauthor{yosinski2014}: rasgos generales abajo, específicos arriba. \citeauthor{girshick2014}: pre-entrenar y ajustar fino en visión.}
+  \hito{13}{2015}{serieA}{\citeauthor{ioffe2015}: BatchNorm.}
+  \hito{14}{2016}{tinta3}{\citeauthor{ganin2016}: adaptación de dominio adversaria.}
+  \hito{15}{2017}{serieA}{\citeauthor{vaswani2017}: el transformer. \citeauthor{kirkpatrick2017}: frenar el olvido con EWC.}
+  \hito{16}{2018}{serieA}{\citeauthor{howard2018}: ULMFiT. \citeauthor{li2018adabn}: adaptar solo las estadísticas de BatchNorm. \citeauthor{fawaz2018}: transferir en series de tiempo.}
+  \hito{17}{2019}{serieA}{\citeauthor{devlin2019}: BERT. \citeauthor{houlsby2019}: adaptadores. \citeauthor{he2019}: entrenar desde cero no siempre pierde.}
+  \hito{18}{2020}{serieA}{\citeauthor{neyshabur2020}: qué se transfiere. \citeauthor{dodge2020}: el peso de la semilla en el ajuste fino.}
+  \hito{19}{2021}{serieA}{\citeauthor{hu2022}: LoRA. \citeauthor{bommasani2021}: modelos fundacionales.}
+  \hito{20}{2022}{serieC}{\citeauthor{nie2023}: PatchTST. \citeauthor{kumar2022}: el ajuste fino puede distorsionar rasgos. \citeauthor{lee2023}: ajuste quirúrgico.}
+  \hito{21}{2023}{serieC}{\citeauthor{zeng2023}: un modelo lineal le gana a los transformers. \citeauthor{rasul2023}: Lag-Llama. \citeauthor{das2024}: TimesFM.}
+  \hito{22}{2024}{serieC}{\citeauthor{ansari2024}: Chronos. \citeauthor{woo2024}: Moirai. \citeauthor{goswami2024}: MOMENT.}
+  \hito{23}{2025}{serieC}{\citeauthor{ansari2025}: Chronos-2, univariado, multivariado y con covariables.}
+  \hito{24.4}{2026}{serieB}{\textbf{NOVA:} línea base de Tierra + corrector de otros sujetos + días propios, y PatchTST Tierra → reposo en cama.}
+  % leyenda
+  \begin{scope}[shift={(0.32,26.3)}]
+    \node[circle, inner sep=0pt, minimum size=6pt, fill=tinta3] at (0,0) {};
+    \node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (0.15,0) {ideas y teoría};
+    \node[circle, inner sep=0pt, minimum size=6pt, fill=serieA] at (2.9,0) {};
+    \node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (3.05,0) {pre-entrenamiento y ajuste fino};
+    \node[circle, inner sep=0pt, minimum size=6pt, fill=serieC] at (7.6,0) {};
+    \node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (7.75,0) {series de tiempo};
+  \end{scope}
+\end{tikzpicture}
+\caption[Línea de tiempo del transfer learning y del ajuste fino]{Línea de tiempo del transfer learning y del ajuste
+fino, con los trabajos que usa este informe. Los años son los de la versión citada en la bibliografía.}
+\label{fig:linea}
+\end{figure}
+
+\section{Dónde cae este trabajo}
+
+La \cref{tab:estrategias} ordena las estrategias de adaptación de más simple a más compleja, como pide el plan del
+proyecto, y dice cuántos parámetros cambia cada una en NOVA y si está construida.
+
+\begin{table}[htbp]
+\caption[Estrategias de adaptación y su lugar en este trabajo]{Estrategias de adaptación, de la más simple a la más
+compleja, y su lugar en este trabajo. El PatchTST tiene \cifra{modelo.parametros} parámetros entrenables.}
+\label{tab:estrategias}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}X
+  >{\raggedright\arraybackslash}p{2.7cm} >{\raggedright\arraybackslash}p{2.5cm}@{}}
+\toprule
+Estrategia & Qué se ajusta en NOVA & Cuánto cambia & Estado \\
+\midrule
+Corrector residual & Tres coeficientes ridge por variable (rango esperado), más la media contraída de los días
+propios & 3 por variable & Construido; es el resultado fuerte \\
+Sin adaptar & Nada: el modelo de Tierra o Chronos-2 se usan tal cual & 0 & Construido, como referencia \\
+Solo la cabeza & La proyección final del PatchTST & \cifra{modelo.cabeza} parámetros (\cifra{modelo.cabeza.pct}\pct)
+& Construido, pero también mueve BatchNorm \\
+Estadísticas de BatchNorm & Medias y varianzas móviles del backbone, sin gradientes (AdaBN) & \cifra{pesos.bn}
+tensores & Ocurre dentro de \enquote{solo la cabeza} \\
+Ajuste completo & Todos los parámetros, con una tasa de aprendizaje baja & \cifra{modelo.parametros} parámetros &
+Construido \\
+Adaptadores o LoRA & Matrices de rango bajo sobre los pesos congelados & Según el rango & Diseñado; solo después de
+la v4 \\
+Desde cero & Todos los parámetros, sin pre-entrenamiento & \cifra{modelo.parametros} parámetros & Construido, como
+control \\
+\bottomrule
+\end{tabularx}
+\end{table}

@@ -1,0 +1,42 @@
+% Informe técnico: transfer learning Tierra → espacio en NOVA.
+% Compilar con:  latexmk -lualatex informe
+% Las cifras de resultados, las tablas y los gráficos de datos salen de generado/, que arma
+% herramientas/construir_cifras.py desde la salida del tercer run del kernel (fuentes/). No se escriben a mano.
+\documentclass[a4paper,11pt,oneside,openany]{memoir}
+\input{preambulo}
+\input{generado/cifras}
+
+\begin{document}
+
+\frontmatter
+\input{capitulos/00-portada}
+\input{capitulos/00-resumen}
+
+\cleardoublepage
+\tableofcontents*
+\clearpage
+\listoffigures*
+\clearpage
+\listoftables*
+
+\mainmatter
+\input{capitulos/01-introduccion}
+\input{capitulos/02-historia}
+\input{capitulos/03-datos}
+\input{capitulos/04-metodo}
+\input{capitulos/05-resultados}
+\input{capitulos/06-auditoria}
+\input{capitulos/07-discusion}
+\input{capitulos/08-nova}
+\input{capitulos/09-conclusiones}
+
+\appendix
+\input{capitulos/A-decisiones}
+\input{capitulos/B-reproducibilidad}
+\input{capitulos/C-complementos}
+\input{capitulos/D-glosario}
+
+\backmatter
+\input{capitulos/Z-bibliografia}
+
+\end{document}

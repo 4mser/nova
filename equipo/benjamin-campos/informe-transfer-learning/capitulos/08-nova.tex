@@ -1,0 +1,80 @@
+\chapter{Integración con NOVA y trabajo siguiente}\label{cap:nova}
+
+\section{Cómo encajaría en la nave}
+
+\begin{cuidado}
+Todo lo de esta sección está diseñado, pero no construido. El cambio en la nave va en un pull request aparte y lo
+integra Nicolás Moreno.
+\end{cuidado}
+
+NOVA ya levanta sus modelos como servicios locales, que la propia nave abre y vigila: lenguaje en el puerto 8081, voz
+en el 8082, oído en el 8083, búsqueda en el 8084 y visión en el 8792. El rango esperado y el pronóstico correrían como
+un servicio Python más, en el 8793, que lee la historia de signos vitales de cada tripulante y devuelve el valor
+esperado, el rango, el estado de la regla de 2 de 3 y el pronóstico a 7 días (\cref{fig:nave}).
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  caja/.style={draw=#1, line width=0.8pt, rounded corners=2pt, fill=white, align=center, font=\footnotesize,
+    text width=3.2cm, minimum height=1.3cm, inner sep=3pt},
+  caja/.default=tinta3,
+  flecha/.style={-{Stealth[length=2.2mm]}, line width=0.8pt, color=tinta2},
+  nota/.style={font=\scriptsize\sffamily\color{tinta2}, align=center}]
+  \node[caja] (est) at (0,2.4) {\textbf{Estación médica}\\ y teléfono de cada\\ tripulante};
+  \node[caja=azulnoche] (nucleo) at (4.8,2.4) {\textbf{La nave}\\ F~Prime y enlace:\\ umbrales fijos y alertas};
+  \node[caja=serieA, dashed] (serv) at (4.8,-0.6) {\textbf{Servicio :8793}\\ rango esperado\\ y pronóstico};
+  \node[caja=tinta3] (ask) at (9.6,-0.6) {\textbf{Ask NOVA}\\ el modelo de lenguaje\\ explica, no decide};
+  \node[caja=tinta3] (pant) at (9.6,2.4) {\textbf{Pantallas}\\ Vitals y NOVA Station};
+  \node[caja=serieB] (tierra) at (0,-0.6) {\textbf{Tierra}\\ recibe el reporte\\ y firma paquetes};
+  \draw[flecha] (est) -- node[nota, above] {signos} (nucleo);
+  \draw[flecha] (nucleo) -- (pant);
+  \draw[flecha] (nucleo.south west) -- node[nota, sloped, above] {reporte nocturno} (tierra.north east);
+  \draw[flecha, dashed] (nucleo) -- node[nota, right, align=left] {historia\\ diaria} (serv);
+  \draw[flecha, dashed] (serv) -- node[nota, above] {JSON} (ask);
+  \draw[flecha, dashed] (serv.north east) -- node[nota, sloped, below] {tendencia a 7 días} (pant.south west);
+  \draw[flecha, dashed] (tierra) -- node[nota, below, align=center] {modelo\\ base,\\ firmado} (serv);
+  \node[nota, anchor=north] at (4.8,-1.4) {el corrector se reajusta\\ a bordo cada día};
+\end{tikzpicture}
+\caption[Diseño de la conexión con la nave]{Diseño de la conexión con la nave. Las líneas continuas existen hoy; las
+punteadas están diseñadas, pero no construidas. Los umbrales fijos de emergencia no cambian.}
+\label{fig:nave}
+\end{figure}
+
+Las decisiones que dan forma a ese diseño son estas (\cref{ap:decisiones}):
+\begin{description}
+\item[Dónde corre] Un servicio Python local en el puerto 8793, no un modelo exportado al enlace en Rust.
+\item[Qué se adapta a bordo] El corrector son unos pocos coeficientes por variable y se puede reajustar a bordo cada
+  día, sin esperar a la Tierra. El modelo base se mejora en la Tierra con los reportes nocturnos y vuelve a la nave
+  como paquete firmado, el mismo mecanismo que hoy trae notas y respuestas corregidas.
+\item[Qué no reemplaza] El rango adaptado no se propone, por ahora, como el rango \enquote{esperado en vuelo} de los
+  umbrales de la nave. Los umbrales fijos de emergencia no se tocan, y el pronóstico no reemplaza el cono de la
+  pantalla de signos vitales: va aparte, como una tendencia a 7 días.
+\item[Quién explica] El servicio entrega números; el modelo de lenguaje de Ask NOVA los explica, sin generar
+  predicciones propias ni diagnósticos. Esa conexión y qué variables llegan por la estación los define Nicolás Moreno.
+\item[Qué queda fuera] La radiación queda diseñada como entrada del corrector (dosis diaria), sin construir; hay que
+  definir con el equipo qué serie usar. El ánimo queda como variable opcional para más adelante, porque en NOVA solo
+  existe si cada persona decide compartirlo.
+\end{description}
+
+\section{La corrida siguiente (v4)}\label{sec:v4}
+
+Las respuestas del 14-11-2026 a las preguntas abiertas (\cref{ap:decisiones}) definieron una cuarta corrida, que va en
+un pull request aparte:
+\begin{enumerate}
+\item \textbf{Solo pulso, presión sistólica y presión diastólica}, con los datos reales del reposo. Los escalones
+  sintéticos se mantienen, declarados, porque son la única forma de medir la detección.
+\item \textbf{LifeSnaps se mantiene y se mide cuánto aporta.} Sus ocho canales siguen entrando al pre-entrenamiento
+  compartido; de las tres variables de la v4, solo el pulso está también en LifeSnaps.
+\item \textbf{Todos los brazos en igualdad de condiciones}: misma tasa de aprendizaje y presupuesto, un tope de 60
+  épocas o más para la cabeza, y 3 semillas.
+\item \textbf{\enquote{Solo la cabeza} de verdad}, con el backbone en modo de evaluación, comparada con la versión
+  actual (cabeza más BatchNorm).
+\item \textbf{Pronóstico adaptado a cada persona}, con sus primeros $k = 7$, 14 y 28 días en cama.
+\item \textbf{Ancho del rango por persona}, comparado con el poblacional.
+\item \textbf{LoRA}, solo si el ajuste completo sigue ganándole al modelo desde cero con las 3 semillas.
+\end{enumerate}
+
+La auditoría deja además tareas de código para la misma corrida: aserciones de que prueba y entrenamiento no se cruzan,
+la versión de Chronos fija y el hash del código en \texttt{metricas.json}. Para no repetir el problema de las muchas
+comparaciones, conviene fijar de antemano los pares que responden cada pregunta. La demo del hackatón usa la presión y
+el pulso, y los modelos de Hugging Face se harán públicos al final del hackatón, con sus fichas corregidas.

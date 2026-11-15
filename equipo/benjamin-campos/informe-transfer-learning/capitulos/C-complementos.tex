@@ -1,0 +1,37 @@
+\chapter{Tablas complementarias}\label{ap:complementos}
+
+\section{Coeficientes del corrector poblacional}
+
+La \cref{tab:corrector} trae los coeficientes de la \cref{eq:corrector} para cada variable, ajustados con los
+\cifra{datos.sujetos} sujetos. Es el corrector que viaja con \texttt{nova-espacio} en Hugging Face. Ninguna cifra del
+\cref{cap:resultados} sale de él: en la validación, cada fold usa un corrector ajustado sin los sujetos que evalúa.
+Las dos últimas columnas son el cambio que el corrector espera a los 30 y 60 días en cama, en la unidad de la variable.
+El peso baja, el pulso y la presión diastólica suben, y la presión sistólica, la respiración y la temperatura casi no
+cambian, que es el mismo orden del desplazamiento de la \cref{sec:desplazamiento}. El agua ingerida refleja la meta del
+protocolo más que la fisiología.
+
+\begin{table}[htbp]
+\caption[Coeficientes del corrector poblacional]{Coeficientes del corrector poblacional
+$\Delta(d) = \beta_0 + \beta_1 \log(1+d) + \beta_2\, d/30$, ajustado con todos los sujetos, y su valor a los 30 y
+60 días en cama.}
+\label{tab:corrector}
+\centering\small
+\input{generado/tab_corrector}
+\end{table}
+
+\section{Pronóstico por variable}
+
+La \cref{tab:pronostico-var} desglosa por variable el pronóstico en cama de la \cref{tab:pronostico}. Salvo en el peso, los
+cinco PatchTST quedan a una centésima o menos entre sí. En el peso la media de 7 días le gana a todos, y en la
+frecuencia respiratoria gana Chronos-2. En las tres variables de la v4, el pulso y las dos presiones, el mejor es el
+PatchTST entrenado desde cero, por milésimas: otra razón para no dar por hecho que el pre-entrenamiento aporta
+(\cref{sec:v4}).
+
+\begin{table}[htbp]
+\caption[Pronóstico en cama por variable]{MAE del pronóstico a 7 días en cama, relativo a la persistencia, por
+variable. En negrita el menor de cada fila, comparado con todos sus decimales. Cero: PatchTST entrenado solo con el
+reposo. Sin LS: pre-entrenado sin LifeSnaps. Tierra: sin adaptar. Cabeza y Todo: adaptados desde Tierra.}
+\label{tab:pronostico-var}
+\centering\small
+\input{generado/tab_pronostico_var}
+\end{table}

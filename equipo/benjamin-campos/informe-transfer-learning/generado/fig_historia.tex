@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\begin{axis}[informe, width=0.82\linewidth, height=6.2cm, xmin=0, xmax=33, ymajorgrids, xlabel={época}, ylabel={pérdida de validación (MSE escalado)}, axis x line*=bottom, axis y line*=left, clip=false, xtick={0,5,...,30}, y tick label style={/pgf/number format/fixed, /pgf/number format/precision=2}]
+\addplot[tinta3, line width=1.5pt, mark=*, mark size=1.2pt] coordinates {(1,3.17139) (2,3.16791) (3,3.12855) (4,3.08697) (5,3.08573) (6,3.11419) (7,3.14897) (8,3.25872) (9,3.16860) (10,3.09800) (11,3.54830)};
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:11,3.54830) {\, reposo desde cero};
+\addplot[serieC, line width=1.5pt, mark=*, mark size=1.2pt] coordinates {(1,3.16873) (2,3.16085) (3,3.15889) (4,3.15214) (5,3.14798) (6,3.14439) (7,3.14352) (8,3.13900) (9,3.13466) (10,3.13637) (11,3.13316) (12,3.13074) (13,3.12544) (14,3.12813) (15,3.13083) (16,3.12448) (17,3.12500) (18,3.12240) (19,3.12289) (20,3.12606) (21,3.12339) (22,3.12191) (23,3.12276) (24,3.12456) (25,3.12180) (26,3.12556) (27,3.12235) (28,3.12046) (29,3.12190) (30,3.11946)};
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:30,3.11946) {\, solo la cabeza};
+\addplot[serieA, line width=1.5pt, mark=*, mark size=1.2pt] coordinates {(1,3.10849) (2,3.10577) (3,3.10536) (4,3.09487) (5,3.09256) (6,3.08953) (7,3.07840) (8,3.07787) (9,3.08025) (10,3.07249) (11,3.06811) (12,3.06254) (13,3.06953) (14,3.06265) (15,3.05707) (16,3.05822) (17,3.07858) (18,3.07381) (19,3.07577) (20,3.07000) (21,3.08060)};
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:21,3.08060) {\, ajuste completo};
+\draw[tinta3, densely dashed] (axis cs:30,\pgfkeysvalueof{/pgfplots/ymin}) -- (axis cs:30,\pgfkeysvalueof{/pgfplots/ymax});
+\end{axis}
+\end{tikzpicture}

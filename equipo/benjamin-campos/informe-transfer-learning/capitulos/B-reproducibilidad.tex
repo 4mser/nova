@@ -1,0 +1,81 @@
+\chapter{Reproducibilidad}\label{ap:reproducibilidad}
+
+\section{Cómo se repite el trabajo}
+
+El código está en la carpeta \texttt{equipo/benjamin-campos/transfer-learning/} de la rama \texttt{transfer-learning}
+del repositorio de NOVA. Estos son los pasos del README. Los tres primeros corren en el PC: preparan los datos y
+corren las pruebas. Las redes se entrenan solo en Kaggle, y el rango esperado, que es ridge en CPU, se puede correr en
+cualquiera de los dos.
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+python -m nova_tl.datos --reposo <carpeta nlsp_tablas> \
+       --lifesnaps <daily .csv|.parquet> --salida <carpeta>
+python -m pytest tests
+kaggle datasets version -p <carpeta con nova_tl/ y los parquet> \
+       -m "..." --dir-mode zip
+kaggle kernels push -p kaggle --accelerator NvidiaTeslaT4
+kaggle kernels output benjacampos/nova-transfer-learning -p <salida>
+python -m nova_tl.graficos <salida>/salida   # rehace los gráficos, sin redes
+\end{lstlisting}
+
+El entorno del kernel está en la \cref{tab:entorno}. Lo que falta para que una corrida se pueda repetir bit a bit está en
+las limitaciones (\cref{sec:limitaciones}): la versión de Chronos no está fija, no se guarda el hash del código y no se
+fija el determinismo de CUDA.
+
+\section{Trazabilidad de las cifras}
+
+Las cifras del informe salen de la salida del tercer run del kernel \texttt{benjacampos/nova-transfer-learning}. Para
+comprobar que el README describía ese mismo run, se compararon los archivos de la salida del kernel con los que están
+en la rama (\cref{tab:traza}): son idénticos. La \cref{tab:hashes} identifica además los datos de entrada y los pesos
+publicados en Hugging Face que se usaron para contar los tensores que cambian.
+
+\begin{table}[htbp]
+\caption[Archivos del kernel y del repositorio]{Archivos de resultados del tercer run: sha256 de la salida del kernel y
+de la copia en la rama (primeros 16 caracteres).}
+\label{tab:traza}
+\centering\small
+\input{generado/tab_traza}
+\end{table}
+
+\begin{table}[htbp]
+\caption[Datos de entrada y pesos publicados]{Datos de entrada del kernel y pesos de Hugging Face usados en la
+auditoría: sha256, primeros 16 caracteres.}
+\label{tab:hashes}
+\centering\small
+\input{generado/tab_hashes}
+\end{table}
+
+\section{Cómo se construye este informe}
+
+Ninguna cifra de resultado está escrita a mano en los capítulos. Un script lee la salida del kernel y escribe las
+macros, tablas y figuras; los capítulos las usan con \verb|\cifra{...}| o las incluyen tal cual. La bibliografía se
+armó desde los servicios de metadatos, nunca de memoria. Los pasos son:
+\begin{description}[style=nextline, leftmargin=1.2em]
+\item[\texttt{resolver\_bib.py}] Busca cada obra en Crossref y DBLP. Acepta un resultado solo si el título
+  normalizado coincide (similitud de al menos 0,90), el apellido del primer autor aparece y el año difiere en uno o
+  menos. El BibTeX se descarga del propio servicio y solo se le cambia la clave.
+\item[\texttt{resolver\_bib2.py}] Segunda pasada, con las mismas reglas, en OpenAlex y arXiv para lo que la primera no
+  resolvió. Guarda también los resúmenes de las obras, con los que se contrastó lo que este informe dice de cada una.
+\item[\texttt{pulir\_bib.py}] Completa autores y sedes con Semantic Scholar y Crossref, y agrega la palabra clave de
+  tema con que se divide la bibliografía.
+\item[\texttt{construir\_cifras.py}] Lee la salida del kernel, los datos y los pesos, y escribe
+  \texttt{generado/cifras.tex}, las tablas \texttt{tab\_*.tex} y las figuras \texttt{fig\_*.tex}.
+\item[\texttt{latexmk}] Compila con Lua\LaTeX{} y biber.
+\end{description}
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+cd herramientas
+G=../generado
+python resolver_bib.py $G/referencias_crudas.bib $G/registro_bib.tsv
+python resolver_bib2.py $G/referencias_crudas.bib $G/registro_bib2.tsv \
+       $G/referencias_resueltas.bib $G/resumenes.json
+python pulir_bib.py $G/referencias_resueltas.bib $G/referencias.bib \
+       $G/registro_pulir.tsv
+python construir_cifras.py .. <carpeta transfer-learning del repositorio>
+cd .. && latexmk -lualatex informe
+\end{lstlisting}
+
+Tres fuentes no se pudieron resolver con esas reglas y quedaron fuera: el libro \emph{Dataset shift in machine
+learning} de Quiñonero-Candela y coautores y el artículo de RevIN de Kim y coautores, que ningún servicio devolvió con
+título, autor y año coincidentes, y la página del desafío de Space Apps, que falló la comprobación de su certificado. Los
+registros \texttt{registro\_*.tsv} dicen, para cada clave, qué servicio la resolvió y con qué similitud.

@@ -1,0 +1,372 @@
+\chapter{Método}\label{cap:metodo}
+
+\section{Visión general}
+
+El trabajo tiene dos tareas que comparten los datos y la validación (\cref{fig:flujo}). La primera, el rango esperado,
+es un modelo residual pequeño que corre en cualquier CPU. La segunda, el pronóstico a 7 días, entrena redes neuronales
+y corre solo en Kaggle. Las dos se evalúan con validación por sujetos: una persona que se usa para medir nunca entra a
+ningún ajuste.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  caja/.style={draw=#1, line width=0.8pt, rounded corners=2pt, fill=white, align=center, font=\footnotesize,
+    text width=3.05cm, minimum height=1.25cm, inner sep=3pt},
+  caja/.default=tinta3,
+  flecha/.style={-{Stealth[length=2.2mm]}, line width=0.8pt, color=tinta2},
+  etiqueta/.style={font=\scriptsize\sffamily\color{tinta2}, align=center}]
+  \node[caja=serieB] (reposo) at (0,1) {\textbf{Reposo en cama}\\ NASA NLSP/LSDA\\ \cifra{datos.sujetos} sujetos};
+  \node[caja=serieB] (ls) at (0,-1) {\textbf{LifeSnaps}\\ reloj Fitbit\\ \cifra{datos.ls.personas} personas};
+  \node[caja] (datos) at (3.95,0) {\texttt{nova\_tl.datos}\\ formato largo\\ 3 archivos parquet};
+  \node[caja=serieA] (t1) at (7.9,1) {\textbf{Tarea 1}\\ rango esperado\\ ridge, en CPU};
+  \node[caja=serieA] (t2) at (7.9,-1) {\textbf{Tarea 2}\\ pronóstico a 7 días\\ PatchTST, GPU T4};
+  \node[caja] (sal) at (11.85,1) {\texttt{metricas.json}\\ tablas por sujeto\\ y gráficos};
+  \node[caja] (hf) at (11.85,-1) {\textbf{Hugging Face}\\ \texttt{nova-tierra}\\ \texttt{nova-espacio},\\ con el corrector};
+  \node[caja=azulnoche] (inf) at (11.85,3.2) {\textbf{Este informe}\\ \texttt{construir\_cifras.py}};
+  \node[caja=tinta3, dashed] (nave) at (11.85,-3.2) {\textbf{NOVA a bordo}\\ servicio en el :8793\\ diseñado, no construido};
+  \draw[flecha] (reposo.east) -- (datos.west);
+  \draw[flecha] (ls.east) -- (datos.west);
+  \draw[flecha] (datos.east) -- (t1.west);
+  \draw[flecha] (datos.east) -- (t2.west);
+  \draw[flecha] (t1.east) -- (sal.west);
+  \draw[flecha] (t2.east) -- (sal.west);
+  \draw[flecha] (t2.east) -- (hf.west);
+  \draw[flecha] (sal.north) -- (inf.south);
+  \draw[flecha, dashed] (hf.south) -- (nave.north);
+  \begin{scope}[on background layer]
+    \node[fill=fondo, rounded corners=4pt, inner sep=6pt, fit=(t1)(t2)(datos),
+      label={[etiqueta, anchor=south]north:{kernel de Kaggle, validación por sujetos en 5 folds}}] {};
+  \end{scope}
+\end{tikzpicture}
+\caption[Flujo del trabajo]{Flujo del trabajo. Los datos se llevan a un formato común; el kernel corre las dos tareas
+con la misma validación por sujetos y deja métricas, tablas, gráficos y pesos. Este informe se arma desde esa salida.
+La conexión con la nave está diseñada, pero no construida.}
+\label{fig:flujo}
+\end{figure}
+
+\section{Rango esperado}\label{sec:rango}
+
+El rango esperado responde a una pregunta simple: dado lo que se sabe de una persona, ¿qué valor se espera de ella hoy,
+y cuánto se puede alejar de ese valor sin que sea raro? Es el modelo residual que el plan del proyecto ponía primero en
+la lista de adaptaciones: una predicción de Tierra más un corrector pequeño y explicable.
+
+\subsection{Línea base de Tierra}
+
+Para cada sujeto $s$ y variable $v$, la línea base es la media y la desviación de sus días de pre-reposo:
+\begin{equation}\label{eq:lineabase}
+\mu_{s,v} = \frac{1}{n^{\text{pre}}_{s,v}} \sum_{d<0} x_{s,v,d}, \qquad
+\sigma_{s,v} = \max\Bigl(\operatorname{de}_{d<0}(x_{s,v,d}),\; \tfrac{1}{2}\,\operatorname{mediana}_{s'\in\text{entr.}}\,
+\operatorname{de}(x_{s',v})\Bigr).
+\end{equation}
+Se exigen al menos 3 días de pre-reposo. La desviación tiene un piso, la mitad de la mediana de las desviaciones de los
+sujetos de entrenamiento, porque con 10 a 21 días una desviación casualmente chica dispararía alarmas. El
+\emph{monitor de Tierra} es esa línea base tal cual: espera $\mu_{s,v}$ y acepta $\pm 1{,}96\,\sigma_{s,v}$.
+
+\subsection{Corrector aprendido de otros sujetos}
+
+En cama, el residuo respecto de la línea base, $r_{s,v,d} = x_{s,v,d} - \mu_{s,v}$, tiene una forma típica: el peso, por
+ejemplo, baja rápido al principio y después más lento. El corrector poblacional la aprende con una regresión ridge
+\parencite{hoerl1970} sobre dos rasgos del día en cama $d$, ajustada con los residuos de los sujetos de entrenamiento:
+\begin{equation}\label{eq:corrector}
+\Delta_v(d) = \beta_{0,v} + \beta_{1,v} \log(1+d) + \beta_{2,v}\, \frac{d}{30}, \qquad
+\hat\beta_v = \arg\min_{\beta} \sum_{s,d} \bigl(r_{s,v,d} - \Delta_v(d)\bigr)^2 + \alpha\bigl(\beta_{1,v}^2 + \beta_{2,v}^2\bigr),
+\end{equation}
+con $\alpha = 1$. Son tres coeficientes por variable (\cref{tab:corrector}). El logaritmo captura el cambio rápido de
+las primeras semanas y el término lineal la deriva lenta. Este corrector es lo único que se transfiere \emph{entre
+personas}: lo que se aprendió del reposo de otros.
+
+\subsection{Ajuste con los días propios}
+
+Con los primeros $k$ días en cama de la propia persona se estima cuánto se aparta de lo típico. El ajuste personal es
+la media del residuo que queda después del corrector, contraída hacia cero:
+\begin{equation}\label{eq:personal}
+\delta_{s,v}(k) = \frac{n}{n + \kappa}\cdot\frac{1}{n}\sum_{d<k}\bigl(r_{s,v,d} - \Delta_v(d)\bigr)
+               = \frac{1}{n+\kappa}\sum_{d<k}\bigl(r_{s,v,d} - \Delta_v(d)\bigr),
+\end{equation}
+donde $n$ es el número de días medidos antes del día $k$ y $\kappa = 3$. La contracción equivale a sumar $\kappa$ días
+ficticios con residuo cero: con pocos días el ajuste es tímido y con muchos se acerca a la media observada. El valor
+esperado final es
+\begin{equation}\label{eq:esperado}
+\hat x_{s,v,d}(k) = \mu_{s,v} + \Delta_v(d) + \delta_{s,v}(k).
+\end{equation}
+Se prueban $k \in \{0, 3, 7, 14, 21, 28\}$. El modelo \enquote{adaptado} de los titulares es el de $k = 28$.
+
+\subsection{Ancho del rango}
+
+El monitor de Tierra usa $\pm1{,}96\,\sigma_{s,v}$, que supone que los días en cama se parecen a los del pre-reposo.
+Los modelos adaptados usan un \emph{ancho calibrado}, igual para todas las personas de una variable: el cuantil 95 del
+error absoluto fuera de muestra,
+\begin{equation}\label{eq:ancho}
+a_v = q_{0{,}95}\bigl\{\,|x_{s,v,d} - \hat x^{\text{(VC)}}_{s,v,d}|\; : \; s \in \text{entrenamiento},\; d \ge 28 \,\bigr\},
+\end{equation}
+donde $\hat x^{\text{(VC)}}$ es la predicción para cada sujeto de entrenamiento hecha con un corrector que no lo vio,
+por validación cruzada en 4 grupos de sujetos. Es la misma idea de la predicción conforme partida
+\parencite{vovk2005,lei2018}: calibrar el ancho con residuos de datos que el modelo no usó. Como en la predicción
+conforme, la garantía es \emph{marginal}: el 5\pct{} de días fuera se cumple en promedio sobre la población, no en
+cada persona.
+
+\subsection{Regla de alarma}
+
+Un día queda \emph{fuera} si $|x_{s,v,d} - \hat x_{s,v,d}| > a$. Como un día fuera puede ser ruido, la alarma se
+levanta cuando al menos 2 de 3 días seguidos de calendario quedan fuera:
+\begin{equation}\label{eq:regla}
+\text{alarma}_{s,v,d} = \mathbb{1}\Bigl[\,\textstyle\sum_{j=d-2}^{d} \text{fuera}_{s,v,j} \ge 2\Bigr],
+\end{equation}
+definida solo si los tres días se midieron. Es una regla de la familia de las cartas de control: se parece a una de las
+pruebas de \textcite{nelson1984}, \enquote{2 de 3 puntos seguidos más allá de 2 sigmas}, aunque aquí no se exige que
+estén del mismo lado. Para cambios sostenidos y pequeños existen reglas acumulativas como la CUSUM de
+\textcite{page1954}, que este trabajo no prueba.
+
+\subsection{Seis modelos para separar el centro del ancho}
+
+Si el modelo adaptado tuviera menos falsas alarmas solo por usar un ancho calibrado, el mérito sería de la calibración y
+no de la adaptación. Para separar las dos cosas se cruzan centros y anchos (\cref{tab:modelos-rango}).
+
+\begin{table}[htbp]
+\caption[Modelos del rango esperado]{Modelos del rango esperado. Cruzar centro y ancho permite ver cuánto de la mejora
+viene de mover el centro y cuánto de calibrar el ancho.}
+\label{tab:modelos-rango}
+\small
+\begin{tabularx}{\textwidth}{@{}l >{\raggedright\arraybackslash}X l l@{}}
+\toprule
+Modelo & Centro & $k$ & Ancho \\
+\midrule
+\modelo{tierra} & $\mu_{s,v}$ & 0 & $\pm1{,}96\,\sigma_{s,v}$ \\
+\modelo{tierra (ancho calibrado)} & $\mu_{s,v}$ & 0 & calibrado \\
+\modelo{tierra+personal} & $\mu_{s,v} + \delta_{s,v}(k)$, sin corrector & 3 a 28 & calibrado \\
+\modelo{tierra+poblacion} & $\mu_{s,v} + \Delta_v(d)$ & 0 & calibrado \\
+\modelo{tierra+poblacion+personal} & $\mu_{s,v} + \Delta_v(d) + \delta_{s,v}(k)$ & 3 a 28 & calibrado \\
+\modelo{adaptado (ancho de Tierra)} & $\mu_{s,v} + \Delta_v(d) + \delta_{s,v}(28)$ & 28 & $\pm1{,}96\,\sigma_{s,v}$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Escalones sintéticos para medir la detección}\label{sec:escalones}
+
+En el reposo en cama no hay anomalías marcadas, así que para medir si un modelo detecta algo hay que ponerlo. En cada
+sujeto de prueba y variable se inyectan hasta $\min(3, \lfloor n/12 \rfloor)$ escalones, donde $n$ es el número de días
+evaluados: bloques de 3 días seguidos medidos, desde el día 28, que no se tocan entre sí y dejan al menos un día libre
+entre uno y otro. Cada escalón suma o resta, con signo al azar, la magnitud de la \cref{tab:variables}: 10\un{lpm} de
+pulso, 15 y 10\un{mmHg} de presión sistólica y diastólica, 4\un{rpm} de respiración, 0,8\un{°C} de temperatura,
+1,5\un{kg} de peso y 1000\un{g/día} de diuresis o agua. Solo la del pulso tiene fuente, los umbrales de NOVA
+(\enquote{pulso en reposo +10\un{lpm} en 3 días}); las demás son supuestos, elegidas como un cambio clínicamente
+notable.
+
+Un escalón cuenta como detectado si la regla de 2 de 3 se activa en su último día. Como el signo es al azar, algunos
+escalones van a favor de la deriva del reposo (por ejemplo, el peso que baja aún más) y otros en contra; la detección
+se informa también por separado, porque un monitor desplazado detecta con facilidad lo que va a favor y casi nada de lo
+que va en contra.
+
+\subsection{Métricas y placebo}
+
+Todo se evalúa en los días desde el 28 en cama, para que todos los $k$ se comparen en el mismo tramo:
+\begin{description}
+\item[Falsas alarmas diarias] porcentaje de días normales (sin escalón) que quedan fuera del rango.
+\item[Falsas alarmas con la regla] porcentaje de bloques de 3 días normales en que la regla de 2 de 3 se activa.
+\item[Detección] porcentaje de escalones detectados, en total, a favor y en contra de la deriva.
+\item[Ancho] ancho medio del rango, en las unidades de la variable.
+\item[Error] error absoluto medio del valor esperado, en días normales.
+\end{description}
+Todas son cocientes de sumas sobre sujetos, lo que permite remuestrear personas (\cref{sec:validacion}).
+
+El \emph{placebo} mide cuántas falsas alarmas da la regla de Tierra sin ningún efecto del reposo: dentro del pre-reposo,
+cada día se compara con la media y la desviación de los \emph{demás} días del pre-reposo (con el mismo piso), y cada
+bloque de 3 días con los días restantes. Es el piso de falsas alarmas que tiene esa regla solo por estimar la
+variación de una persona con 10 a 21 días.
+
+\section{Pronóstico a 7 días}\label{sec:pronostico}
+
+\subsection{Ventanas}
+
+Cada serie diaria de una persona y una variable se corta en ventanas: 14 días de contexto y los 7 siguientes como
+objetivo, una ventana por día de inicio. Los días sin medición del contexto se rellenan con el último valor observado
+(o el siguiente, al inicio) y quedan marcados como no observados; en el objetivo quedan con máscara cero, así la
+pérdida y las métricas solo cuentan lo medido. El objetivo no puede cruzar de una fase a otra. Se exigen al menos 5
+días observados en el contexto en el reposo y 7 en LifeSnaps. Como el pre-reposo dura 10 a 21 días y no alcanza para
+14 de contexto más 7 de objetivo, se permiten ventanas cerca del inicio de la serie con el contexto completado a la
+izquierda con días no observados. Las ventanas que se evalúan en cama empiezan su objetivo desde el día 14, para que el
+contexto entero esté en cama.
+
+\subsection{PatchTST}
+
+El modelo es \texttt{PatchTSTForPrediction} de \texttt{transformers} \parencite{nie2023,wolf2020} con un canal: es
+univariado y compartido entre variables. La \cref{fig:patchtst} muestra su arquitectura y la \cref{tab:patchtst} su
+configuración.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  bloque/.style={draw=#1, line width=0.8pt, rounded corners=2pt, fill=white, align=center, font=\footnotesize,
+    minimum height=1.55cm, inner sep=3pt},
+  flecha/.style={-{Stealth[length=2mm]}, line width=0.8pt, color=tinta2}]
+  % serie de entrada
+  \begin{scope}[shift={(0,0)}]
+    \foreach \i/\y in {0/0.30,1/0.42,2/0.36,3/0.55,4/0.50,5/0.62,6/0.48,7/0.58,8/0.70,9/0.64,10/0.72,11/0.60,12/0.68,13/0.75}{
+      \fill[tinta2] (\i*0.12, \y) circle[radius=0.9pt];
+    }
+    \draw[tinta3, line width=0.5pt] (0,0.30) -- (0.12,0.42) -- (0.24,0.36) -- (0.36,0.55) -- (0.48,0.50) -- (0.60,0.62)
+      -- (0.72,0.48) -- (0.84,0.58) -- (0.96,0.70) -- (1.08,0.64) -- (1.20,0.72) -- (1.32,0.60) -- (1.44,0.68) -- (1.56,0.75);
+    \node[font=\scriptsize\sffamily\color{tinta2}, align=center] at (0.78,-0.25) {14 días};
+  \end{scope}
+  \node[bloque=tinta3, text width=1.65cm] (esc) at (3.0,0.35) {escala\\ \texttt{std}};
+  \node[bloque=tinta3, text width=1.9cm] (par) at (5.35,0.35) {\cifra{modelo.parches} parches\\ de \cifra{cfg.patch.length},
+    paso \cifra{cfg.patch.stride}};
+  \node[bloque=tinta3, text width=2.0cm] (emb) at (7.85,0.35) {proyección a\\ $d=\cifra{cfg.d.model}$ +\\ posición sincos};
+  \node[bloque=serieA, text width=2.35cm, minimum height=2.1cm] (enc) at (10.65,0.35) {\cifra{cfg.num.hidden.layers}
+    capas:\\ atención de \cifra{cfg.num.attention.heads} cabezas,\\ FFN de \cifra{cfg.ffn.dim},\\ BatchNorm};
+  \node[bloque=serieB, text width=1.75cm] (cab) at (13.35,0.35) {promedio\\ de parches,\\ lineal a 7};
+  \draw[flecha] (1.75,0.5) -- (esc.west);
+  \draw[flecha] (esc) -- (par);
+  \draw[flecha] (par) -- (emb);
+  \draw[flecha] (emb) -- (enc);
+  \draw[flecha] (enc) -- (cab);
+  \draw[flecha] (cab.south) -- ++(0,-0.75) node[below, font=\scriptsize\sffamily\color{tinta2}] {7 días};
+  \draw[decorate, decoration={brace, amplitude=5pt, mirror}, tinta2] (6.3,-0.75) -- (11.85,-0.75)
+    node[midway, below=6pt, font=\scriptsize\sffamily\color{tinta2}, align=center] {backbone: congelado en
+    \enquote{solo la cabeza},\\ salvo las estadísticas de BatchNorm};
+  \draw[decorate, decoration={brace, amplitude=5pt}, serieB] (12.45,1.45) -- (14.25,1.45)
+    node[midway, above=6pt, font=\scriptsize\sffamily\color{tinta2}] {cabeza: \cifra{modelo.cabeza} parámetros};
+\end{tikzpicture}
+\caption[Arquitectura del PatchTST]{Arquitectura del PatchTST de NOVA. La serie se normaliza, se corta en parches que
+funcionan como fichas, pasa por un codificador transformer y una cabeza lineal produce los 7 días. Tiene
+\cifra{modelo.parametros} parámetros entrenables, de los que \cifra{modelo.cabeza} (\cifra{modelo.cabeza.pct}\pct) son
+de la cabeza.}
+\label{fig:patchtst}
+\end{figure}
+
+\begin{table}[htbp]
+\caption[Configuración del PatchTST]{Configuración del PatchTST, leída de \texttt{config.json} de los pesos
+publicados.}
+\label{tab:patchtst}
+\small
+\begin{tabular}{@{}ll@{\hspace{2.2em}}ll@{}}
+\toprule
+Parámetro & Valor & Parámetro & Valor \\
+\midrule
+Contexto & \cifra{cfg.context.length} días & Dimensión del modelo & \cifra{cfg.d.model} \\
+Horizonte & \cifra{cfg.prediction.length} días & Cabezas de atención & \cifra{cfg.num.attention.heads} \\
+Largo del parche & \cifra{cfg.patch.length} días & Capas del codificador & \cifra{cfg.num.hidden.layers} \\
+Paso del parche & \cifra{cfg.patch.stride} días & Dimensión de la FFN & \cifra{cfg.ffn.dim} \\
+Parches por ventana & \cifra{modelo.parches} & Dropout / de la cabeza & \cifra{cfg.dropout} / \cifra{cfg.head.dropout} \\
+Escalado & \texttt{std} & Normalización & BatchNorm, antes de cada subcapa \\
+Posición & sinusoidal & Agregación & promedio de parches \\
+Activación & GELU & Parámetros entrenables & \cifra{modelo.parametros} \\
+Canales & 1 (compartido) & Buffers de BatchNorm & \cifra{modelo.buffers} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La pérdida que trae \texttt{PatchTSTForPrediction} es un MSE sin máscara, así que se calcula aparte: el error al
+cuadrado, dividido por el ruido diario típico de cada variable $s_v$ (\cref{tab:variables}), solo en los días
+observados del objetivo,
+\begin{equation}\label{eq:perdida}
+\mathcal{L} = \frac{\sum_{i,h} m_{i,h}\,\bigl(\hat y_{i,h} - y_{i,h}\bigr)^2 / s_{v(i)}^2}{\sum_{i,h} m_{i,h}} ,
+\end{equation}
+donde $m_{i,h}$ vale 1 si el día $h$ de la ventana $i$ se midió. Dividir por $s_v$ hace que el pulso y la diuresis
+pesen parecido aunque sus unidades sean muy distintas. El ruido se calcula en cada fold solo con LifeSnaps y el
+pre-reposo de los sujetos de entrenamiento.
+
+El entrenamiento usa AdamW \parencite{kingma2015,loshchilov2019} con decaimiento de pesos de $10^{-4}$, lotes de 512
+ventanas y recorte del gradiente a norma 1. Se detiene cuando la pérdida de validación no mejora en 6 épocas
+\parencite{prechelt1998}, y se queda con el mejor estado. El dropout \parencite{srivastava2014} está activo en
+entrenamiento.
+
+\subsection{Brazos del experimento}
+
+La \cref{tab:brazos} define los modelos que se comparan. El modelo de Tierra se entrena de nuevo en cada fold, sin el
+pre-reposo de los sujetos de prueba. Los dos brazos de adaptación parten de ese modelo y se ajustan con los días en
+cama de los sujetos de entrenamiento. El sujeto evaluado nunca aporta sus propios días: el pronóstico se adapta al
+reposo en general, no a cada persona.
+
+\begin{table}[htbp]
+\caption[Brazos del pronóstico]{Brazos del pronóstico. \enquote{Entr.}: sujetos de entrenamiento del fold, sin los 4
+de validación. Los dos brazos de adaptación y los dos desde cero no se entrenaron en las mismas condiciones; la
+\cref{sec:h1} discute por qué importa.}
+\label{tab:brazos}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.3cm} >{\raggedright\arraybackslash}X
+  >{\raggedright\arraybackslash}p{2.2cm} l r@{}}
+\toprule
+Brazo & Datos de entrenamiento & Parte de & lr & Tope \\
+\midrule
+Tierra (base) & LifeSnaps (\cifra{datos.ls.entrenan} personas) y pre-reposo de entr. & azar & \texttt{1e-3} & 60 \\
+Tierra sin adaptar & ninguno más & Tierra & -- & -- \\
+Tierra → espacio, solo la cabeza & días en cama de entr.; backbone sin gradientes, modelo en modo entrenamiento & Tierra
+& \texttt{1e-3} & 30 \\
+Tierra → espacio, ajuste completo & días en cama de entr.; todos los parámetros & Tierra & \texttt{2e-4} & 30 \\
+Reposo, desde cero & días en cama de entr. & azar & \texttt{1e-3} & 60 \\
+Pre-reposo + reposo, desde cero & pre-reposo y días en cama de entr., sin LifeSnaps & azar & \texttt{1e-3} & 60 \\
+Chronos-2 sin adaptar & ninguno; contexto con los huecos rellenados & \texttt{amazon/\allowbreak chronos-2} & -- & -- \\
+Persistencia & repite el último día observado & -- & -- & -- \\
+Media de 7 días & repite la media de los últimos 7 días & -- & -- & -- \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La métrica es el MAE de cada modelo dividido por el MAE de la persistencia, por variable, promediado entre las siete
+variables sin el agua \parencite{hyndman2006}. Bajo 1, el modelo se equivoca menos que repetir el último día. Las
+comparaciones entre modelos son diferencias pareadas por sujeto de ese promedio.
+
+\section{Validación}\label{sec:validacion}
+
+\subsection{Por sujetos, estratificada por campaña}
+
+Los días de una misma persona se parecen entre sí, así que validar con días mezclados sobreestima el desempeño
+\parencite{saeb2017}. Aquí se valida por sujetos: dentro de cada campaña, los sujetos se permutan con una semilla fija
+y se reparten por turno en 5 folds, de modo que cada fold tiene sujetos de las tres campañas en proporción
+(\cref{fig:folds}).
+
+\begin{figure}[htbp]
+\centering
+\input{generado/fig_folds}
+\caption[Folds de la validación por sujetos]{Folds de la validación por sujetos. Cada columna es un sujeto y cada fila
+un fold; el cuadro lleno marca los sujetos de prueba de ese fold. Cada sujeto es de prueba exactamente una vez.}
+\label{fig:folds}
+\end{figure}
+
+Dentro de cada fold hay dos particiones internas, también por sujetos. Para la parada temprana de las redes se apartan
+4 sujetos de entrenamiento (y 7 personas de LifeSnaps para el modelo de Tierra). Para calibrar el ancho del rango, los
+sujetos de entrenamiento se dividen en 4 grupos de validación cruzada.
+
+\subsection{Intervalos por bootstrap de sujetos}
+
+Los intervalos de confianza del 95\pct{} se calculan con un bootstrap de sujetos \parencite{efron1979,efron1993}: se
+remuestrean personas, no días, porque los días de una persona no son independientes \parencite{field2007}. Cada
+métrica es un cociente de sumas (errores, días fuera, escalones detectados), así que cada uno de los 1000 remuestreos
+suma numerador y denominador de los sujetos elegidos y recién ahí divide. Las diferencias entre dos modelos usan los
+mismos remuestreos para ambos, lo que las hace pareadas, y el intervalo es el de los percentiles 2,5 y 97,5.
+
+\subsection{Cómo se evitó hacerse trampa}
+
+\textcite{kapoor2023} mostraron que la fuga de información entre entrenamiento y prueba es una de las causas más
+comunes de resultados que no se reproducen en el aprendizaje automático aplicado. Estas son las protecciones del
+trabajo:
+\begin{itemize}
+\item Los sujetos de prueba no entran a ningún ajuste: ni al corrector, ni al ancho calibrado, ni al piso de la
+  desviación, ni a la parada temprana, ni al ruido por variable que escala la pérdida.
+\item El modelo de Tierra se entrena de nuevo en cada fold, sin el pre-reposo de los sujetos de prueba. El segundo run
+  del kernel tenía esta fuga y el tercero la corrigió.
+\item El ancho calibrado sale de residuos fuera de muestra, por validación cruzada dentro de los sujetos de
+  entrenamiento.
+\item Centro y ancho se separan con modelos cruzados, para no atribuir a la adaptación lo que es solo calibrar.
+\item Los escalones tienen signo al azar y la detección se informa a favor y en contra de la deriva.
+\item El ajuste personal de $k$ días solo ve los días anteriores al día $k \le 28$, y todo se evalúa desde el día 28.
+\end{itemize}
+
+\section{Infraestructura}
+
+El código vive en el paquete \texttt{nova\_tl} de la rama \texttt{transfer-learning}, con 27 pruebas automáticas. Los
+datos y el código se suben a Kaggle como un conjunto de datos privado, y el kernel corre las dos tareas en una GPU
+\cifra{kernel.gpu}; el tercer run tardó \cifra{kernel.segundos}\un{s}. La regla del equipo es que las redes neuronales
+se entrenan solo en Kaggle; el rango esperado, que es una regresión ridge, también se puede correr en un computador
+personal. Los pesos se suben a Hugging Face desde el computador, porque la línea de comandos de Kaggle no maneja
+secretos. Las librerías son PyTorch \parencite{paszke2019}, \texttt{transformers} \parencite{wolf2020},
+scikit-learn \parencite{pedregosa2011}, NumPy \parencite{harris2020}, SciPy \parencite{virtanen2020} y pandas
+\parencite{mckinney2010}, en las versiones de la \cref{tab:entorno}.
+
+\begin{table}[htbp]
+\caption[Entorno del tercer run]{Entorno del tercer run del kernel, tal como lo registró \texttt{metricas.json}.}
+\label{tab:entorno}
+\small
+\input{generado/tab_entorno}
+\end{table}

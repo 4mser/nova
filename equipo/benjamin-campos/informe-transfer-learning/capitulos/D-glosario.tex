@@ -1,0 +1,53 @@
+\chapter{Glosario}\label{ap:glosario}
+
+\begin{description}[style=nextline, leftmargin=1.2em, itemsep=3pt]
+\item[Ajuste fino] Seguir entrenando, con datos del destino, un modelo que ya se entrenó con datos de la fuente. Puede
+  tocar todos los pesos o solo algunos (\cref{sec:definicion}).
+\item[Análogo] Situación en la Tierra que reproduce parte de lo que le pasa al cuerpo en el espacio. Aquí, el reposo en
+  cama con la cabeza inclinada a $-6^\circ$.
+\item[Backbone] La parte del PatchTST que convierte los parches en representaciones: la proyección de entrada, la
+  posición y las capas del codificador. Todo menos la cabeza.
+\item[BatchNorm] Normalización por lote. Guarda la media y la varianza de sus activaciones; si se recalculan con datos
+  del destino, el modelo se adapta aunque no cambie ningún peso (\cref{sec:bn}).
+\item[Bootstrap por sujetos] Remuestreo de personas, no de días, para calcular intervalos que respeten que los días de
+  una misma persona se parecen.
+\item[Cabeza] La última capa del PatchTST, que pasa de la representación a los 7 días de pronóstico.
+\item[Chronos-2] Modelo fundacional de series de tiempo de Amazon, usado sin adaptar como referencia.
+\item[Contracción] Llevar una estimación hacia un valor de referencia en proporción a lo poco que se sabe. El ajuste
+  personal usa el factor $n/(n+\kappa)$.
+\item[Corrector poblacional] Regresión ridge que aprende, de otras personas, cómo se desplaza cada variable con los
+  días en cama.
+\item[Desplazamiento de dominio] Cambio en la distribución de los datos entre el lugar donde se entrena un modelo y el
+  lugar donde se usa.
+\item[Escalón sintético] Cambio artificial de 3 días que se suma a la serie real para medir si un monitor lo detecta.
+\item[Falsa alarma] Día normal que queda fuera del rango esperado.
+\item[Fold] Cada una de las cinco particiones de la validación cruzada: sus sujetos se evalúan con modelos que no los
+  vieron.
+\item[Fuga] Información de la prueba que se cuela en el entrenamiento y hace ver un modelo mejor de lo que es.
+\item[LifeSnaps] Conjunto de datos de relojes y encuestas de \cifra{datos.ls.personas} personas en su vida diaria, usado como Tierra para el
+  pre-entrenamiento del pronóstico.
+\item[LoRA] Ajuste fino que agrega matrices de rango bajo a los pesos congelados y entrena solo esas.
+\item[MAE relativo a la persistencia] Error absoluto medio de un pronóstico dividido por el de repetir el último valor.
+  Menos de 1 es mejor que la persistencia.
+\item[Media de 7 días] Pronóstico que repite el promedio de los últimos 7 días observados.
+\item[Monitor de Tierra] Rango que usa solo el pre-reposo de cada persona: su media más o menos 1,96 desviaciones.
+\item[Monitor de Tierra calibrado] El mismo centro, con el ancho calibrado para dar el mismo 5\pct{} de falsas alarmas
+  que el adaptado.
+\item[Parche] Tramo de días consecutivos que el PatchTST trata como una unidad, como una palabra en un modelo de
+  lenguaje.
+\item[PatchTST] Transformer para series de tiempo que divide la serie en parches y procesa cada variable por separado.
+\item[Persistencia] Pronóstico que repite el último valor observado.
+\item[Placebo] La misma regla del monitor de Tierra aplicada dentro del pre-reposo, donde no hay efecto del reposo. Da
+  el piso de falsas alarmas.
+\item[Pre-entrenamiento] Entrenar un modelo con muchos datos de una fuente antes de adaptarlo al destino.
+\item[Predicción conforme] Método que calibra el ancho de un intervalo con residuos fuera de muestra para garantizar
+  una cobertura promedio.
+\item[Rango esperado] Intervalo de valores normales de una persona en un día dado, con su centro y su ancho.
+\item[Regla de 2 de 3] La alarma se levanta cuando al menos 2 de 3 días seguidos quedan fuera del rango
+  (ecuación~\ref{eq:regla}).
+\item[Semilla] Número que fija el azar de un entrenamiento. Repetir con varias muestra cuánto cambia el resultado por
+  azar.
+\item[Transfer learning] Usar lo aprendido en una tarea o dominio fuente para aprender mejor en uno de destino
+  (\cref{cap:historia}).
+\item[Validación por sujetos] Validación en la que las personas evaluadas nunca aportan datos al entrenamiento.
+\end{description}

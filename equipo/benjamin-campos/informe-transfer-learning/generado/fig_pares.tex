@@ -1,0 +1,42 @@
+\begin{tikzpicture}
+\begin{axis}[informe, width=0.42\linewidth, height=8.4cm, xmin=-0.022, xmax=0.022, ymin=-0.6, ymax=9.6, ytick={0,...,9}, yticklabels={{ajuste completo − solo la cabeza},{solo la cabeza − Tierra sin adaptar},{ajuste completo − Tierra sin adaptar},{ajuste completo − pre-reposo + reposo sin LifeSnaps},{ajuste completo − reposo desde cero},{Chronos-2 − media de 7 días},{solo la cabeza − pre-reposo + reposo sin LifeSnaps},{solo la cabeza − reposo desde cero},{ajuste completo − media de 7 días},{solo la cabeza − media de 7 días}},
+ xmajorgrids, xtick={-0.02,-0.01,0,0.01,0.02}, scaled x ticks=false,
+ x tick label style={/pgf/number format/fixed, /pgf/number format/precision=2},
+ xlabel={diferencia de MAE relativo (negativo: gana el primero)},
+ y axis line style={draw=none}, ytick style={draw=none}, axis x line*=bottom, clip=false,
+ legend style={at={(0.5,1.02)}, anchor=south}, legend columns=2]
+\addlegendimage{only marks, mark=*, mark size=2.6pt, tinta}\addlegendentry{informado por el kernel\quad}
+\addlegendimage{only marks, mark=*, mark size=2.6pt, mark options={fill=white, draw=serieA, line width=1pt}}\addlegendentry{recalculado en la auditoría}
+\draw[tinta3, densely dashed] (axis cs:0,-0.6) -- (axis cs:0,9.6);
+\draw[serieA, line width=1.4pt] (axis cs:-0.0049,0) -- (axis cs:-0.0011,0);
+\filldraw[fill=white, draw=serieA, line width=1.1pt] (axis cs:-0.003,0) circle[radius=2.6pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.0225,0) {−0,0030 [−0,0049;\,−0,0011]};
+\draw[serieA, line width=1.4pt] (axis cs:-0.0066,1) -- (axis cs:0.0001,1);
+\filldraw[fill=white, draw=serieA, line width=1.1pt] (axis cs:-0.0033,1) circle[radius=2.6pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.0225,1) {−0,0033 [−0,0066;\,0,0001]};
+\draw[serieA, line width=1.4pt] (axis cs:-0.009,2) -- (axis cs:-0.0037,2);
+\filldraw[fill=white, draw=serieA, line width=1.1pt] (axis cs:-0.0062,2) circle[radius=2.6pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.0225,2) {−0,0062 [−0,0090;\,−0,0037]};
+\draw[serieA, line width=1.4pt] (axis cs:-0.0047,3) -- (axis cs:-0.0007,3);
+\filldraw[fill=white, draw=serieA, line width=1.1pt] (axis cs:-0.0027,3) circle[radius=2.6pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.0225,3) {−0,0027 [−0,0047;\,−0,0007]};
+\draw[serieA, line width=1.4pt] (axis cs:-0.0064,4) -- (axis cs:-0.0011,4);
+\filldraw[fill=white, draw=serieA, line width=1.1pt] (axis cs:-0.0038,4) circle[radius=2.6pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.0225,4) {−0,0038 [−0,0064;\,−0,0011]};
+\draw[tinta, line width=1.4pt] (axis cs:0.007,5) -- (axis cs:0.019,5);
+\fill[tinta, draw=white, line width=0.8pt] (axis cs:0.0129,5) circle[radius=2.8pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.0225,5) {+0,0129 [0,0070;\,0,0190]};
+\draw[tinta, line width=1.4pt] (axis cs:-0.002,6) -- (axis cs:0.0027,6);
+\fill[tinta, draw=white, line width=0.8pt] (axis cs:0.0003,6) circle[radius=2.8pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.0225,6) {+0,0003 [−0,0020;\,0,0027]};
+\draw[tinta, line width=1.4pt] (axis cs:-0.0038,7) -- (axis cs:0.002,7);
+\fill[tinta, draw=white, line width=0.8pt] (axis cs:-0.0008,7) circle[radius=2.8pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.0225,7) {−0,0008 [−0,0038;\,0,0020]};
+\draw[tinta, line width=1.4pt] (axis cs:-0.0193,8) -- (axis cs:-0.0077,8);
+\fill[tinta, draw=white, line width=0.8pt] (axis cs:-0.0137,8) circle[radius=2.8pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.0225,8) {−0,0137 [−0,0193;\,−0,0077]};
+\draw[tinta, line width=1.4pt] (axis cs:-0.0163,9) -- (axis cs:-0.0045,9);
+\fill[tinta, draw=white, line width=0.8pt] (axis cs:-0.0107,9) circle[radius=2.8pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.0225,9) {−0,0107 [−0,0163;\,−0,0045]};
+\end{axis}
+\end{tikzpicture}

@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+\begin{axis}[informe, width=0.80\linewidth, height=6.4cm, xmin=-3, xmax=1.2,
+ ymin=-0.6, ymax=7.6, ytick={0,...,7}, yticklabels={Peso,Agua,Diuresis,PA sistólica,Respiración,Temperatura,PA diastólica,Pulso},
+ xmajorgrids, xlabel={cambio medio desde el día 28 en cama, en desviaciones del día a día del pre-reposo},
+ axis y line*=left, axis x line*=bottom, y axis line style={draw=none}, ytick style={draw=none},
+ clip=false]
+\draw[tinta3, densely dashed] (axis cs:0,-0.6) -- (axis cs:0,7.6);
+\draw[serieA, line width=1.6pt] (axis cs:-3.0612,0) -- (axis cs:-1.3168,0);
+\fill[serieA] (axis cs:-2.1890,0) circle[radius=2.6pt];
+\node[anchor=west, font=\footnotesize\sffamily\color{tinta2}] at (axis cs:1.25,0) {−1,31\,kg};
+\draw[serieA, line width=1.6pt] (axis cs:-0.7256,1) -- (axis cs:-0.0671,1);
+\fill[serieA] (axis cs:-0.3963,1) circle[radius=2.6pt];
+\node[anchor=west, font=\footnotesize\sffamily\color{tinta2}] at (axis cs:1.25,1) {−104\,g/día};
+\draw[serieA, line width=1.6pt] (axis cs:-0.3950,2) -- (axis cs:0.1639,2);
+\fill[serieA] (axis cs:-0.1155,2) circle[radius=2.6pt];
+\node[anchor=west, font=\footnotesize\sffamily\color{tinta2}] at (axis cs:1.25,2) {−59\,g/día};
+\draw[serieA, line width=1.6pt] (axis cs:-0.3168,3) -- (axis cs:0.2139,3);
+\fill[serieA] (axis cs:-0.0514,3) circle[radius=2.6pt];
+\node[anchor=west, font=\footnotesize\sffamily\color{tinta2}] at (axis cs:1.25,3) {−0,35\,mmHg};
+\draw[serieA, line width=1.6pt] (axis cs:-0.3757,4) -- (axis cs:0.3024,4);
+\fill[serieA] (axis cs:-0.0366,4) circle[radius=2.6pt];
+\node[anchor=west, font=\footnotesize\sffamily\color{tinta2}] at (axis cs:1.25,4) {−0,04\,rpm};
+\draw[serieA, line width=1.6pt] (axis cs:-0.0548,5) -- (axis cs:0.2955,5);
+\fill[serieA] (axis cs:0.1203,5) circle[radius=2.6pt];
+\node[anchor=west, font=\footnotesize\sffamily\color{tinta2}] at (axis cs:1.25,5) {+0,03\,°C};
+\draw[serieA, line width=1.6pt] (axis cs:-0.0750,6) -- (axis cs:0.5044,6);
+\fill[serieA] (axis cs:0.2147,6) circle[radius=2.6pt];
+\node[anchor=west, font=\footnotesize\sffamily\color{tinta2}] at (axis cs:1.25,6) {+1,49\,mmHg};
+\draw[serieA, line width=1.6pt] (axis cs:0.1163,7) -- (axis cs:0.7087,7);
+\fill[serieA] (axis cs:0.4125,7) circle[radius=2.6pt];
+\node[anchor=west, font=\footnotesize\sffamily\color{tinta2}] at (axis cs:1.25,7) {+2,58\,lpm};
+\end{axis}
+\end{tikzpicture}

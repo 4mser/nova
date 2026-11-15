@@ -1,0 +1,24 @@
+# Archivos intermedios de LaTeX (latexmk, biber)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.xdv
+*-SAVE-ERROR
+
+# Datos de personas, pesos y salida del kernel: no van al repositorio (ver README)
+fuentes/
+
+# Resúmenes de terceros que baja resolver_bib2.py
+generado/resumenes.json
+
+__pycache__/

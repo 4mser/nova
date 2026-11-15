@@ -1,0 +1,33 @@
+\chapter{Conclusiones}\label{cap:conclusiones}
+
+Este trabajo probó cómo transferir lo que se sabe de una persona en la Tierra a su vida en el espacio, usando el reposo
+en cama de la NASA como análogo y validando por sujetos. Las tres preguntas del \cref{cap:intro} tienen estas
+respuestas.
+
+\begin{description}
+\item[P1. ¿Sirve el monitor de Tierra?] No en el peso, que es la variable que más se desplaza en cama: deja fuera el
+  \cifra{peso.tierra.fa}\pct{} de los días normales. En las demás variables las falsas alarmas son menores, y su
+  exceso sobre el piso que tiene la misma regla dentro del pre-reposo es chico y no se distingue bien del ruido.
+\item[P2. ¿Cuánto mejora un rango adaptado?] Con las mismas falsas alarmas que el monitor de Tierra calibrado, el rango
+  adaptado es más angosto en todas las variables. Detecta más escalones de forma clara en el peso,
+  \cifra{peso.rec.dif} puntos \cifra{peso.rec.dif.ic}, y en la presión diastólica, \cifra{pa_dia.rec.dif}
+  \cifra{pa_dia.rec.dif.ic}. En el pulso (\cifra{pulso.rec.dif} \cifra{pulso.rec.dif.ic}) y la presión sistólica
+  (\cifra{pa_sis.rec.dif} \cifra{pa_sis.rec.dif.ic}) la mejora es menor y su intervalo cruza el cero. Detecta en los
+  dos sentidos, a favor y en contra de la deriva del reposo. Lo aprendido de otras personas sirve sobre todo cuando
+  aún no hay días propios y en las variables que más cambian; con 28 días propios, la mayor parte de la mejora viene de
+  la propia persona.
+\item[P3. ¿El pre-entrenamiento en Tierra mejora el pronóstico?] El PatchTST adaptado le gana por poco a la media de
+  7 días (\cifra{par.todo.media7.r} ajustando todo). Frente al mismo modelo entrenado desde cero la diferencia es de
+  \cifra{par.todo.cero.r} o menos, con una sola semilla y brazos entrenados en condiciones distintas. Todavía no se
+  puede decir si el pre-entrenamiento aporta.
+\end{description}
+
+La auditoría confirmó que las cifras son las del kernel y que no hay fuga entre sujetos, y obligó a decir con más
+precisión lo que el trabajo muestra. La lección más útil para NOVA es que, con pocos datos y un cambio que es sobre
+todo de nivel, la transferencia que funciona es la más simple: la línea base de cada persona, la forma típica del
+cambio aprendida de otras y los días propios que se van juntando, con un ancho calibrado y una regla fija y revisable.
+Es también la que mejor calza con la regla del proyecto, porque son pocos números que se pueden revisar y reajustar a
+bordo.
+
+Queda por resolver si una red pre-entrenada en Tierra agrega algo encima de eso. La corrida v4 está diseñada para
+responderlo con el pulso y la presión arterial, en igualdad de condiciones y con varias semillas.

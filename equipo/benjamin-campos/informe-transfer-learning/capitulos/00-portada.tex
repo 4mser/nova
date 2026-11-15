@@ -1,0 +1,70 @@
+% ── Portada ────────────────────────────────────────────────────────────────────────────────────────────────────
+\begin{titlingpage}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[azulnoche] (current page.south west) rectangle (current page.north east);
+  % estrellas en posiciones fijas (semilla fija: la portada sale igual en cada compilación)
+  \pgfmathsetseed{1976}
+  \foreach \i in {1,...,140}{
+    \pgfmathsetmacro{\ex}{rnd*21}
+    \pgfmathsetmacro{\ey}{rnd*29.7}
+    \pgfmathsetmacro{\er}{0.25+rnd*0.9}
+    \fill[white, opacity=0.55] ($(current page.south west)+(\ex cm,\ey cm)$) circle[radius=\er pt];
+  }
+  % la Tierra, abajo a la izquierda
+  \coordinate (centro) at ($(current page.south west)+(-4cm,-6.5cm)$);
+  \begin{scope}
+    \clip (current page.south west) rectangle (current page.north east);
+    \fill[azulmedio] (centro) circle[radius=13cm];
+    \fill[serieA!80!white] (centro) circle[radius=12.6cm];
+    \fill[serieC!70!azulnoche, opacity=0.55]
+      ($(current page.south west)+(0.4cm,2.9cm)$) .. controls +(1.5,0.8) and +(-1,-0.6) .. ++(4.0,1.0)
+      .. controls +(0.8,0.4) and +(0.5,0.9) .. ++(0.5,-1.9) .. controls +(-1.2,-0.7) and +(1.4,0.2) .. cycle;
+    \fill[serieC!70!azulnoche, opacity=0.55]
+      ($(current page.south west)+(-0.6cm,5.0cm)$) .. controls +(1.2,0.9) and +(-0.6,0.2) .. ++(2.1,0.5)
+      .. controls +(0.5,-0.4) and +(0.4,0.5) .. ++(-0.2,-1.3) .. controls +(-0.8,-0.2) and +(0.2,-0.9) .. cycle;
+    \draw[white, opacity=0.35, line width=3pt] (centro) circle[radius=13.25cm];
+  \end{scope}
+  % trayectoria Tierra → espacio
+  \coordinate (sale) at ($(current page.south west)+(6.7cm,3.1cm)$);
+  \coordinate (llega) at ($(current page.north east)+(-4.6cm,-11.8cm)$);
+  \draw[white, opacity=0.85, line width=0.9pt, dash pattern=on 4pt off 3pt]
+    (sale) .. controls +(5,1.6) and +(-2.5,-6) .. (llega);
+  \fill[white] (sale) circle[radius=2.2pt];
+  \fill[serieB] (llega) circle[radius=0.75cm];
+  \fill[serieB!70!black, opacity=0.35] ($(llega)+(0.25cm,-0.2cm)$) circle[radius=0.22cm];
+  \fill[serieB!70!black, opacity=0.3] ($(llega)+(-0.3cm,0.25cm)$) circle[radius=0.12cm];
+  \node[font=\titularfont\footnotesize, white, opacity=0.9, anchor=south] at ($(llega)+(0,0.95cm)$) {reposo en cama a $-6^\circ$};
+  \node[font=\titularfont\footnotesize, white, opacity=0.9, anchor=west] at ($(sale)+(0.25cm,-0.3cm)$) {Tierra};
+  % textos
+  \node[anchor=north west, text width=15cm, align=left, white] at ($(current page.north west)+(2.6cm,-2.8cm)$) {%
+    {\titularfont\small\color{azulclaro} NOVA\enspace·\enspace NASA International Space Apps Challenge 2026}\par\vspace{9mm}
+    {\titularfont\bfseries\fontsize{34}{38}\selectfont Transfer\hspace{0.3em}learning\\[1mm] Tierra\hspace{0.25em}→\hspace{0.25em}espacio}\par\vspace{7mm}
+    {\titularfont\Large\color{azulclaro} Rango esperado personal y pronóstico a 7 días\\ de signos vitales, probados con el reposo en\\ cama de la NASA como análogo de la microgravedad}\par\vspace{12mm}
+    {\color{white}\rule{30mm}{1.2pt}}\par\vspace{5mm}
+    {\titularfont\large Informe técnico}\par\vspace{2mm}
+    {\titularfont\normalsize\color{azulclaro} Benjamín Campos\enspace·\enspace ciencia de datos}\par\vspace{1mm}
+    {\titularfont\normalsize\color{azulclaro} 14 de noviembre de 2026}};
+\end{tikzpicture}
+\end{titlingpage}
+
+% ── Créditos ───────────────────────────────────────────────────────────────────────────────────────────────────
+\thispagestyle{empty}
+\null\vfill
+{\small\sffamily\color{tinta2}
+\noindent\begin{tabularx}{\textwidth}{@{}>{\bfseries\color{azulnoche}}l >{\raggedright\arraybackslash}X@{}}
+Proyecto & NOVA, copiloto de salud a bordo. Desafío \enquote{Create Health Monitoring Software for Astronauts on Space Missions}, NASA International Space Apps Challenge 2026. \\[2pt]
+Autor & Benjamín Campos, ciencia de datos del equipo NOVA. \\[2pt]
+Código & Repositorio \texttt{4mser/nova}, rama \texttt{transfer-learning}, carpeta \texttt{equipo/benjamin-campos/transfer-learning}. Pull request \#2 a \texttt{main}, abierto y sin integrar: lo integra Nicolás Moreno. \\[2pt]
+Cómputo & Kernel privado de Kaggle \texttt{benjacampos/nova-transfer-learning}, GPU \cifra{kernel.gpu}, \cifra{kernel.segundos}\un{s} en el tercer run. Las redes neuronales solo corren ahí. \\[2pt]
+Modelos & \texttt{Benjjaman/nova-tierra} y \texttt{Benjjaman/nova-espacio} en Hugging Face, privados hasta el final del hackatón. \\[2pt]
+Datos & Reposo en cama a $-6^\circ$ de la NASA (NLSP/LSDA, campañas 1 y 3 y CFT70 de la UTMB) y LifeSnaps \parencite{yfantidou2022}, con licencia CC BY 4.0. \\[2pt]
+Cifras & Todas las cifras de resultados, las tablas de datos y los gráficos salen de la salida del tercer run del kernel por medio de \texttt{herramientas/construir\_cifras.py}. Ninguna se copió a mano. La bibliografía se resolvió con Crossref, OpenAlex, Semantic Scholar y arXiv, y cada obra se contrastó con su resumen. \\
+\end{tabularx}
+
+\vspace{6mm}
+\begin{cuidado}[title={\color{serieB}Lo que este informe no es}]
+El reposo en cama con la cabeza inclinada hacia abajo es el análogo terrestre más usado de la microgravedad. No son datos de vuelo. Lo que aquí funciona en el reposo en cama todavía tiene que probarse con astronautas. Lo que está diseñado pero no construido se dice así en cada caso.
+\end{cuidado}
+}
+\clearpage

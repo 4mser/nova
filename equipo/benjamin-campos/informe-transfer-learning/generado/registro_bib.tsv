@@ -1,0 +1,135 @@
+clave	fuente	estado	similitud	id	titulo_encontrado	anio	tipo	sede
+thorndike1901	crossref	ok	0.950	10.1037/h0074898	The influence of improvement in one mental function upon the efficiency of other functions. (I).	1901	journal-article	Psychological Review
+bozinovski2020	crossref	ok	1.000	10.31449/inf.v44i3.2828	Reminder of the First Paper on Transfer Learning in Neural Networks, 1976	2020	journal-article	Informatica
+pratt1991	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+pratt1991	-	NO RESUELTA			Direct transfer of learned information among neural networks	1991		
+pratt1993	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+pratt1993	-	NO RESUELTA			Discriminability-based transfer between neural networks	1992		
+thrun1996	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+thrun1996	-	NO RESUELTA			Is learning the n-th thing any easier than learning the first?	1995		
+caruana1997	crossref	ok	1.000	10.1007/978-1-4615-5529-2_5	Multitask Learning	1998	book-chapter	Learning to Learn
+thrun1998	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+thrun1998	-	NO RESUELTA			Learning to learn	1998		
+baxter2000	crossref	ok	1.000	10.1613/jair.731	A Model of Inductive Bias Learning	2000	journal-article	Journal of Artificial Intelligence Research
+shimodaira2000	crossref	ok	1.000	10.1016/s0378-3758(00)00115-4	Improving predictive inference under covariate shift by weighting the log-likelihood function	2000	journal-article	Journal of Statistical Planning and Inference
+hinton2006dbn	crossref	ok	1.000	10.1162/neco.2006.18.7.1527	A Fast Learning Algorithm for Deep Belief Nets	2006	journal-article	Neural Computation
+hinton2006science	crossref	ok	1.000	10.1126/science.1127647	Reducing the Dimensionality of Data with Neural Networks	2006	journal-article	Science
+bengio2007	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+bengio2007	crossref	ok	1.000	10.7551/mitpress/7503.003.0024	Greedy Layer-Wise Training of Deep Networks	2007	book-chapter	Advances in Neural Information Processing Systems 19
+raina2007	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+raina2007	-	NO RESUELTA			Self-taught learning: transfer learning from unlabeled data	2007		
+dai2007	crossref	ok	1.000	10.1145/1273496.1273521	Boosting for transfer learning	2007	proceedings-article	Proceedings of the 24th international conference on Machine learning
+quinonero2009	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+quinonero2009	-	NO RESUELTA			Dataset shift in machine learning	2008		
+erhan2010	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+erhan2010	-	NO RESUELTA			Why does unsupervised pre-training help deep learning?	2010		
+pan2010	crossref	ok	1.000	10.1109/tkde.2009.191	A Survey on Transfer Learning	2010	journal-article	IEEE Transactions on Knowledge and Data Engineering
+bendavid2010	crossref	ok	1.000	10.1007/s10994-009-5152-4	A theory of learning from different domains	2009	journal-article	Machine Learning
+bengio2012	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+bengio2012	-	NO RESUELTA			Deep learning of representations for unsupervised and transfer learning	2012		
+donahue2014	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+donahue2014	-	NO RESUELTA			DeCAF: A deep convolutional activation feature for generic visual recognition	2014		
+oquab2014	crossref	ok	1.000	10.1109/cvpr.2014.222	Learning and Transferring Mid-level Image Representations Using Convolutional Neural Networks	2014	proceedings-article	2014 IEEE Conference on Computer Vision and Pattern Recognition
+razavian2014	crossref	ok	1.000	10.1109/cvprw.2014.131	CNN Features Off-the-Shelf: An Astounding Baseline for Recognition	2014	proceedings-article	2014 IEEE Conference on Computer Vision and Pattern Recognition Workshops
+girshick2014	crossref	ok	1.000	10.1109/cvpr.2014.81	Rich Feature Hierarchies for Accurate Object Detection and Semantic Segmentation	2014	proceedings-article	2014 IEEE Conference on Computer Vision and Pattern Recognition
+yosinski2014	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+yosinski2014	-	NO RESUELTA			How transferable are features in deep neural networks?	2014		
+weiss2016	crossref	ok	1.000	10.1186/s40537-016-0043-6	A survey of transfer learning	2016	journal-article	Journal of Big Data
+ganin2016	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+ganin2016	crossref	ok	1.000	10.1007/978-3-319-58347-1_10	Domain-Adversarial Training of Neural Networks	2017	book-chapter	Advances in Computer Vision and Pattern Recognition
+ioffe2015	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+ioffe2015	-	NO RESUELTA			Batch normalization: accelerating deep network training by reducing internal covariate shift	2015		
+li2018adabn	crossref	ok	1.000	10.1016/j.patcog.2018.03.005	Adaptive Batch Normalization for practical domain adaptation	2018	journal-article	Pattern Recognition
+schneider2020	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+schneider2020	-	NO RESUELTA			Improving robustness against common corruptions by covariate shift adaptation	2020		
+mccloskey1989	crossref	ok	1.000	10.1016/s0079-7421(08)60536-8	Catastrophic Interference in Connectionist Networks: The Sequential Learning Problem	1989	book-chapter	Psychology of Learning and Motivation
+kirkpatrick2017	crossref	ok	1.000	10.1073/pnas.1611835114	Overcoming catastrophic forgetting in neural networks	2017	journal-article	Proceedings of the National Academy of Sciences
+vaswani2017	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+vaswani2017	-	NO RESUELTA			Attention is all you need	2017		
+howard2018	crossref	ok	1.000	10.18653/v1/p18-1031	Universal Language Model Fine-tuning for Text Classification	2018	proceedings-article	Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+tan2018	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+tan2018	-	NO RESUELTA			A survey on deep transfer learning	2018		
+devlin2019	crossref	ok	1.000	10.18653/v1/n19-1423	BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding	2019	proceedings-article	Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)
+houlsby2019	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+houlsby2019	-	NO RESUELTA			Parameter-efficient transfer learning for NLP	2019		
+he2019	crossref	ok	1.000	10.1109/iccv.2019.00502	Rethinking ImageNet Pre-Training	2019	proceedings-article	2019 IEEE/CVF International Conference on Computer Vision (ICCV)
+raghu2019	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+raghu2019	-	NO RESUELTA			Transfusion: understanding transfer learning for medical imaging	2019		
+kornblith2019	crossref	ok	1.000	10.1109/cvpr.2019.00277	Do Better ImageNet Models Transfer Better?	2019	proceedings-article	2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)
+neyshabur2020	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+neyshabur2020	-	NO RESUELTA			What is being transferred in transfer learning?	2020		
+dodge2020	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+dodge2020	-	NO RESUELTA			Fine-tuning pretrained language models: weight initializations, data orders, and early stopping	2020		
+zhuang2021	crossref	ok	1.000	10.1109/jproc.2020.3004555	A Comprehensive Survey on Transfer Learning	2021	journal-article	Proceedings of the IEEE
+bommasani2021	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+bommasani2021	-	NO RESUELTA			On the opportunities and risks of foundation models	2021		
+hu2022	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+hu2022	-	NO RESUELTA			LoRA: low-rank adaptation of large language models	2022		
+kumar2022	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+kumar2022	-	NO RESUELTA			Fine-tuning can distort pretrained features and underperform out-of-distribution	2022		
+lee2023	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+lee2023	-	NO RESUELTA			Surgical fine-tuning improves adaptation to distribution shifts	2023		
+fawaz2018	crossref	ok	1.000	10.1109/bigdata.2018.8621990	Transfer learning for time series classification	2018	proceedings-article	2018 IEEE International Conference on Big Data (Big Data)
+oreshkin2021	crossref	ok	1.000	10.1609/aaai.v35i10.17115	Meta-Learning Framework with Applications to Zero-Shot Time-Series Forecasting	2021	journal-article	Proceedings of the AAAI Conference on Artificial Intelligence
+kim2022	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+kim2022	-	NO RESUELTA			Reversible instance normalization for accurate time-series forecasting against distribution shift	2022		
+zeng2023	crossref	ok	1.000	10.1609/aaai.v37i9.26317	Are Transformers Effective for Time Series Forecasting?	2023	journal-article	Proceedings of the AAAI Conference on Artificial Intelligence
+nie2023	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+nie2023	-	NO RESUELTA			A time series is worth 64 words: long-term forecasting with transformers	2023		
+rasul2023	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+rasul2023	-	NO RESUELTA			Lag-Llama: towards foundation models for probabilistic time series forecasting	2023		
+ansari2024	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+ansari2024	-	NO RESUELTA			Chronos: learning the language of time series	2024		
+das2024	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+das2024	-	NO RESUELTA			A decoder-only foundation model for time-series forecasting	2024		
+woo2024	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+woo2024	-	NO RESUELTA			Unified training of universal time series forecasting transformers	2024		
+goswami2024	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+goswami2024	-	NO RESUELTA			MOMENT: a family of open time-series foundation models	2024		
+ansari2025	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+ansari2025	-	NO RESUELTA			Chronos-2: from univariate to universal forecasting	2025		
+hyndman2006	crossref	ok	1.000	10.1016/j.ijforecast.2006.03.001	Another look at measures of forecast accuracy	2006	journal-article	International Journal of Forecasting
+hoerl1970	crossref	ok	1.000	10.1080/00401706.1970.10488634	Ridge Regression: Biased Estimation for Nonorthogonal Problems	1970	journal-article	Technometrics
+efron1979	crossref	ok	1.000	10.1214/aos/1176344552	Bootstrap Methods: Another Look at the Jackknife	1979	journal-article	The Annals of Statistics
+efron1993	crossref	ok	1.000	10.1201/9780429246593	An Introduction to the Bootstrap	1994	book	
+field2007	crossref	ok	1.000	10.1111/j.1467-9868.2007.00593.x	Bootstrapping Clustered Data	2007	journal-article	Journal of the Royal Statistical Society Series B: Statistical Methodology
+vovk2005	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+vovk2005	-	NO RESUELTA			Algorithmic learning in a random world	2005		
+lei2018	crossref	ok	1.000	10.1080/01621459.2017.1307116	Distribution-Free Predictive Inference for Regression	2018	journal-article	Journal of the American Statistical Association
+nelson1984	crossref	ok	1.000	10.1080/00224065.1984.11978921	The Shewhart Control Chart—Tests for Special Causes	1984	journal-article	Journal of Quality Technology
+page1954	crossref	ok	1.000	10.2307/2333009	Continuous Inspection Schemes	1954	journal-article	Biometrika
+saeb2017	crossref	ok	1.000	10.1093/gigascience/gix019	The need to approximate the use-case in clinical machine learning	2017	journal-article	GigaScience
+kapoor2023	crossref	ok	1.000	10.1016/j.patter.2023.100804	Leakage and the reproducibility crisis in machine-learning-based science	2023	journal-article	Patterns
+benjamini1995	crossref	ok	1.000	10.1111/j.2517-6161.1995.tb02031.x	Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing	1995	journal-article	Journal of the Royal Statistical Society Series B: Statistical Methodology
+bouthillier2021	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+bouthillier2021	-	NO RESUELTA			Accounting for variance in machine learning benchmarks	2021		
+prechelt1998	crossref	ok	1.000	10.1007/3-540-49430-8_3	Early Stopping - But When?	1998	book-chapter	Lecture Notes in Computer Science
+kingma2015	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+kingma2015	-	NO RESUELTA			Adam: a method for stochastic optimization	2015		
+loshchilov2019	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+loshchilov2019	-	NO RESUELTA			Decoupled weight decay regularization	2019		
+srivastava2014	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+srivastava2014	-	NO RESUELTA			Dropout: a simple way to prevent neural networks from overfitting	2014		
+pavy2007	crossref	ok	1.000	10.1007/s00421-007-0474-z	From space to Earth: advances in human physiology from 20 years of bed rest studies (1986–2006)	2007	journal-article	European Journal of Applied Physiology
+hargens2016	crossref	ok	1.000	10.1152/japplphysiol.00935.2015	Long-duration bed rest as an analog to microgravity	2016	journal-article	Journal of Applied Physiology
+meck2009	crossref	ok	1.000	10.3357/asem.br01.2009	Long-Duration Head-Down Bed Rest: Project Overview, Vital Signs, and Fluid Balance	2009	journal-article	Aviation, Space, and Environmental Medicine
+platts2009	crossref	ok	1.000	10.3357/asem.br03.2009	Cardiovascular Adaptations to Long-Duration Head-Down Bed Rest	2009	journal-article	Aviation, Space, and Environmental Medicine
+hughson2018	crossref	ok	1.000	10.1038/nrcardio.2017.157	Heart in space: effect of the extraterrestrial environment on the cardiovascular system	2017	journal-article	Nature Reviews Cardiology
+norsk2020	crossref	ok	1.000	10.1111/apha.13434	Adaptation of the cardiovascular system to weightlessness: Surprises, paradoxes and implications for deep space missions	2020	journal-article	Acta Physiologica
+stahn2017	crossref	ok	1.000	10.1038/s41598-017-15560-w	Increased core body temperature in astronauts during long-duration space missions	2017	journal-article	Scientific Reports
+garrettbakelman2019	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+garrettbakelman2019	-	NO RESUELTA			The NASA Twins Study: a multidimensional analysis of a year-long human spaceflight	2019		
+overbey2024	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+overbey2024	-	NO RESUELTA			The Space Omics and Medical Atlas (SOMA) and international astronaut biobank	2024		
+yfantidou2022	crossref	ok	1.000	10.1038/s41597-022-01764-x	LifeSnaps, a 4-month multi-modal dataset capturing unobtrusive snapshots of our lives in the wild	2022	journal-article	Scientific Data
+li2017	crossref	ok	1.000	10.1371/journal.pbio.2001402	Digital Health: Tracking Physiomes and Activity Using Wearable Biosensors Reveals Useful Health-Related Information	2017	journal-article	PLOS Biology
+mishra2020	crossref	ok	1.000	10.1038/s41551-020-00640-6	Pre-symptomatic detection of COVID-19 from smartwatch data	2020	journal-article	Nature Biomedical Engineering
+paszke2019	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+paszke2019	-	NO RESUELTA			PyTorch: an imperative style, high-performance deep learning library	2019		
+wolf2020	crossref	ok	1.000	10.18653/v1/2020.emnlp-demos.6	Transformers: State-of-the-Art Natural Language Processing	2020	proceedings-article	Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations
+pedregosa2011	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+pedregosa2011	-	NO RESUELTA			Scikit-learn: machine learning in Python	2011		
+harris2020	crossref	ok	1.000	10.1038/s41586-020-2649-2	Array programming with NumPy	2020	journal-article	Nature
+virtanen2020	dblp	error			JSONDecodeError('Expecting value: line 1 column 1 (char 0)')			
+virtanen2020	-	NO RESUELTA			SciPy 1.0: fundamental algorithms for scientific computing in Python	2020		
+mckinney2010	crossref	ok	1.000	10.25080/majora-92bf1922-00a	Data Structures for Statistical Computing in Python	2010	proceedings-article	Proceedings of the Python in Science Conference

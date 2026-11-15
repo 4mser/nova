@@ -1,0 +1,139 @@
+\chapter{Datos}\label{cap:datos}
+
+El trabajo usa dos fuentes. El \enquote{espacio} es el reposo en cama de la NASA: personas sanas acostadas durante
+semanas con la cabeza inclinada a $-6^\circ$, medidas cada mañana por enfermería. La \enquote{Tierra} es la vida
+diaria de personas con un reloj Fitbit, del conjunto público LifeSnaps, más los días previos al reposo de cada sujeto.
+
+\section{El reposo en cama como análogo de la microgravedad}
+
+En el reposo en cama con la cabeza hacia abajo, los fluidos se desplazan hacia el tórax y la cabeza y los músculos y
+huesos dejan de cargar peso, como en el espacio. Por eso es el análogo terrestre más usado: \textcite{pavy2007}
+revisaron veinte años de estudios de reposo en cama y lo que enseñaron de la fisiología humana, y
+\textcite{hargens2016} discutieron por qué el reposo prolongado sirve como análogo de la microgravedad.
+
+Los datos de este trabajo vienen del proyecto Flight Analogs de la NASA, en el Johnson Space Center y la University of
+Texas Medical Branch (UTMB), publicados en el Life Sciences Data Archive \parencite{lsda}. \textcite{meck2009}
+describieron ese proyecto y sus signos vitales: al inicio del reposo, el pulso y la presión diastólica bajan de forma
+transitoria y hay una diuresis temprana que se estabiliza en unos 3 días. \textcite{platts2009} describieron las
+adaptaciones cardiovasculares en 13 sujetos del mismo programa.
+
+\begin{cuidado}
+El reposo en cama reproduce el desplazamiento de fluidos y la descarga del cuerpo, pero no la radiación, el CO$_2$ de
+la cabina ni el aislamiento de una nave. En vuelo hay efectos que el reposo no muestra, como el aumento de la
+temperatura central en misiones largas \parencite{stahn2017} y las paradojas cardiovasculares que revisa
+\textcite{norsk2020}. Los datos de vuelo públicos que encontró el equipo, como el estudio de gemelos de la NASA
+\parencite{garrettbakelman2019} o el atlas SOMA \parencite{overbey2024}, son análisis en días puntuales, no series
+diarias de signos vitales. Por eso este trabajo no valida con vuelo real.
+\end{cuidado}
+
+\section{Las campañas}
+
+Se usan tres campañas de la UTMB: la campaña~1, la campaña~3 y el CFT70. En total son \cifra{datos.sujetos} sujetos
+(\cifra{datos.c1} de la campaña~1, \cifra{datos.c3} de la campaña~3 y \cifra{datos.cft70} del CFT70) y
+\cifra{datos.mediciones} mediciones diarias: \cifra{datos.med.pre} antes del reposo, \cifra{datos.med.cama} en cama y
+\cifra{datos.med.post} después. La \cref{tab:campanas} resume cada una.
+
+\begin{table}[htbp]
+\caption[Campañas de reposo en cama]{Campañas de reposo en cama. Los días se cuentan desde el primer día en cama
+(día~0); el pre-reposo es negativo. Los rangos son los que define cada protocolo.}
+\label{tab:campanas}
+\input{generado/tab_campanas}
+\end{table}
+
+Contando los días con pulso medido, cada sujeto tiene entre \cifra{datos.chk.pulso.pre.min} y
+\cifra{datos.chk.pulso.pre.max} días de pre-reposo y entre \cifra{datos.chk.pulso.cama.min} y
+\cifra{datos.chk.pulso.cama.max} en cama. Contando cualquier variable, cada uno pasó entre \cifra{datos.chk.cama.min}
+y \cifra{datos.chk.cama.max} días en cama. Los fluidos se registran en menos personas: la diuresis en
+\cifra{datos.fluidos.diuresis} y el agua ingerida en \cifra{datos.fluidos.agua}.
+
+Dos detalles de diseño de las campañas importan para leer los resultados. En el CFT70, 2 de los 3 sujetos hicieron
+ejercicio como contramedida, y la campaña~3 tiene dos grupos. El corrector poblacional del rango esperado los mezcla
+con el resto (\cref{cap:discusion}).
+
+\section{Las ocho variables}
+
+La \cref{tab:variables} muestra las ocho variables diarias. Seis están en el contrato de datos de la estación médica de
+NOVA (\texttt{nave/estacion/CONTRATO.md}) y usan sus nombres y unidades. La diuresis y el agua ingerida no están en el
+contrato; sus rangos válidos son supuestos.
+
+\begin{table}[htbp]
+\caption[Variables diarias]{Variables diarias. \enquote{Rango válido}: un valor fuera de ese rango se trata como error
+de sensor y se descarta. \enquote{Ruido diario}: mediana entre personas de la desviación de cada una, que escala la
+pérdida del pronóstico. \enquote{Escalón}: magnitud de la anomalía sintética que se inyecta para medir la detección.}
+\label{tab:variables}
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{generado/tab_variables}
+\end{table}
+
+El agua ingerida es la más débil de las ocho: sigue una meta diaria del protocolo, así que su \enquote{valor esperado}
+es la meta y una desviación es un desvío del protocolo, no fisiología. Se muestra aparte y no entra en los promedios.
+
+\section{LifeSnaps: la Tierra}
+
+LifeSnaps \parencite{yfantidou2022} es un conjunto público de unos cuatro meses de datos de personas que usaron un reloj
+Fitbit en su vida diaria, con licencia CC BY 4.0. Después de la limpieza quedan \cifra{datos.ls.personas} personas,
+\cifra{datos.ls.diaspersona} días-persona y \cifra{datos.ls.mediciones} mediciones en \cifra{datos.ls.canales}
+canales: pulso en reposo, respiración, temperatura de la piel, variabilidad cardíaca, saturación de oxígeno, estrés,
+horas de sueño y minutos de actividad.
+
+Los ocho canales entran al pre-entrenamiento del PatchTST, que es univariado y compartido: el modelo aprende la
+dinámica diaria de cualquier serie, no de una variable en particular. Con el reposo en cama, LifeSnaps comparte solo
+el pulso, la respiración y la temperatura, y medidos con otro instrumento: el reloj en vez de la enfermería, y la piel
+en vez del cuerpo. La presión, el peso y los fluidos solo aparecen en Tierra a través del pre-reposo de cada sujeto.
+De las \cifra{datos.ls.personas} personas, \cifra{datos.ls.entrenan} entrenan y 7 quedan aparte para la parada
+temprana. La idea de usar los relojes para conocer la fisiología personal no es nueva: \textcite{li2017} mostraron
+que los sensores que se llevan puestos siguen la fisiología y la actividad de cada persona, y \textcite{mishra2020}
+detectaron COVID-19 antes de los síntomas con datos de relojes inteligentes.
+
+\section{Formato común y limpieza}
+
+Las dos fuentes se llevan a un formato largo, con una fila por medición y las columnas fuente, campaña, sujeto,
+instrumento, día, fase, variable y valor. En el reposo, el día se cuenta desde el inicio de la inclinación: el
+pre-reposo es negativo, el primer día en cama es el~0 y el post-reposo sigue después del último día en cama. Las fases
+son \texttt{PRE\_TEST}, \texttt{IN\_TEST} y \texttt{POST\_TEST}. En LifeSnaps, el día se cuenta desde la primera fecha
+de cada persona.
+
+Las tablas de la NASA usan nombres de columna distintos en cada versión de sus formularios; el cargador los unifica y
+convierte la temperatura de Fahrenheit a Celsius cuando hace falta. De cada celda toma el primer número, y lo que no
+es número, como \enquote{Not reported}, queda vacío. Los valores fuera del rango válido se descartan. El código
+comprueba que haya a lo sumo una medición por sujeto, variable y día. Para el pronóstico se arman
+\cifra{ventanas.ls} ventanas de LifeSnaps, \cifra{ventanas.pre} de pre-reposo y \cifra{ventanas.cama} en cama
+(\cref{sec:pronostico}).
+
+\section{Qué cambia en cama}\label{sec:desplazamiento}
+
+Antes de modelar, conviene ver cuánto cambia cada variable. La \cref{fig:desplazamiento} y la \cref{tab:desplazamiento}
+comparan, en las mismas personas, la media desde el día 28 en cama con la media del pre-reposo. El cambio se expresa
+en unidades y en desviaciones del día a día del pre-reposo, para que las variables se puedan comparar.
+
+\begin{figure}[htbp]
+\input{generado/fig_desplazamiento}
+\caption[Cuánto cambia cada variable en cama]{Cambio medio desde el día 28 en cama respecto del pre-reposo, en las
+mismas personas, medido en desviaciones del día a día del pre-reposo, con su IC~95\pct{} (t de Student). El peso es
+la única variable que se mueve más que su ruido diario.}
+\label{fig:desplazamiento}
+\end{figure}
+
+\begin{table}[htbp]
+\caption[Desplazamiento de cada variable en cama]{Desplazamiento de cada variable: media desde el día 28 en cama menos
+media del pre-reposo, pareado por sujeto. \enquote{DE diaria}: mediana entre personas de la desviación del pre-reposo.
+\enquote{Post $-$ pre}: media del post-reposo menos la del pre-reposo.}
+\label{tab:desplazamiento}
+\small
+\input{generado/tab_desplazamiento}
+\end{table}
+
+El peso baja \cifra{desp.peso}\un{kg} (IC~95\pct{} $\pm$\cifra{desp.peso.ic}), unas \cifra{desp.peso.sd}
+desviaciones de su variación de un día a otro, y vuelve casi al nivel previo después del reposo
+(\cifra{desp.peso.post}\un{kg}). El pulso sube \cifra{desp.pulso}\un{lpm} ($\pm$\cifra{desp.pulso.ic}) y, al
+levantarse, queda \cifra{desp.pulso.post}\un{lpm} sobre el pre-reposo. La presión diastólica sube
+\cifra{desp.pa_dia}\un{mmHg}, con un intervalo de $\pm$\cifra{desp.pa_dia.ic} que cruza el cero, y el agua ingerida
+baja \cifra{desp.agua}\un{g/día} ($\pm$\cifra{desp.agua.ic}), aunque sigue una meta. Las demás variables cambian
+poco: a lo sumo un octavo de su ruido diario.
+
+\begin{clave}
+El desplazamiento es grande solo en el peso. En el pulso y la presión, las variables que protagonizarán la corrida
+siguiente, el cambio es menor que la mitad de su ruido diario. Eso anticipa el resultado del \cref{cap:resultados}: el
+monitor de Tierra falla sobre todo en el peso, y es ahí donde la adaptación gana más. Estas cifras se miden desde el
+día 28, así que no ven los cambios del inicio del reposo que describen \textcite{meck2009}.
+\end{clave}

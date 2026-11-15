@@ -1,0 +1,115 @@
+\chapter{Discusión}\label{cap:discusion}
+
+\section{Lo simple es lo que funciona}
+
+El resultado más fuerte del trabajo no usa redes neuronales ni LifeSnaps. Sale de un modelo con tres coeficientes por
+variable y una media contraída de los días propios. Con las mismas falsas alarmas que el monitor de Tierra calibrado,
+deja el rango del peso en \cifra{peso.ancho.ratio} de su ancho y detecta \cifra{peso.rec.dif} puntos más de escalones.
+El PatchTST, con \cifra{modelo.parametros} parámetros, le gana a la media de 7 días por \cifra{par.todo.media7.r}.
+
+Eso calza con lo que dice la literatura sobre datos chicos. \textcite{zeng2023} mostraron que un modelo lineal le gana
+a varios transformers en series de tiempo, y \textcite{he2019}, \textcite{raghu2019} y \textcite{kornblith2019}, que el
+pre-entrenamiento aporta poco cuando el destino es pequeño o se aleja de la fuente. Con \cifra{datos.sujetos} sujetos,
+un modelo que tiene la forma correcta del problema le gana a uno que tiene que aprenderla.
+
+Y la forma del problema es, sobre todo, un cambio de nivel. El reposo desplaza la normalidad de cada persona
+(\cref{sec:desplazamiento}), y un modelo residual que corrige ese nivel ataca justo ese cambio. En términos de la cota
+de \textcite{bendavid2010} (ecuación~\ref{eq:bendavid}), una vez corregido el nivel, la distancia entre el dominio de Tierra y
+el del reposo se achica y lo que se aprendió de la persona en Tierra vuelve a servir.
+
+\section{Dos cosas distintas se transfieren}
+
+El rango adaptado transfiere dos cosas. La primera es la línea base de cada persona, de su propia Tierra a su propio
+espacio: su nivel y su variación del pre-reposo. La segunda es la forma típica del cambio en cama, de otras personas a
+esta: el corrector poblacional. La curva de aprendizaje (\cref{sec:curva}) muestra que la segunda importa sobre todo
+al principio y en las variables que más se mueven. En el peso, el corrector solo ya baja el error a
+\cifra{curva.peso.pob.0} del de Tierra, sin ningún día propio. Con 28 días propios, en cambio, el corrector suma de
+forma apreciable solo en \cifra{aporte.ayuda}.
+
+Para NOVA eso tiene una lectura práctica. En los primeros días de una misión, cuando no hay datos propios, lo aprendido
+de otras personas es lo único que corrige el nivel. Después, los días de la propia persona pesan más. El ajuste
+contraído de la \cref{eq:personal} hace esa transición solo: con pocos días es tímido y con muchos sigue a la persona.
+
+\section{El pre-entrenamiento en el pronóstico, sin resolver}
+
+La pregunta P3 queda abierta, y por buenas razones. Las diferencias entre los PatchTST son de milésimas, hay una sola
+semilla y los brazos no se entrenaron igual. \textcite{dodge2020} mostraron que en el ajuste fino la semilla puede
+mover el resultado más que eso, y \textcite{bouthillier2021} pidieron medir esa variabilidad antes de comparar. Las
+épocas de la \cref{tab:entreno} sugieren además que los modelos desde cero sobreajustan pronto con su tasa de
+aprendizaje, lo que es compatible con lo que encontraron \textcite{he2019}: el pre-entrenamiento acelera la
+convergencia, pero entrenando desde cero con el ajuste adecuado se llega a resultados parecidos.
+
+Hay también una explicación posible de por qué Tierra sin adaptar ya queda cerca de los adaptados. El PatchTST de
+NOVA escala cada ventana por su propia media y desviación antes de procesarla, y deshace la escala a la salida. Un
+cambio de nivel como el del reposo queda absorbido en buena parte por esa normalización, así que lo que el modelo tiene
+que transferir es la forma de la dinámica diaria, no el nivel. Es una hipótesis que la corrida v4 podría probar
+comparando contra un modelo sin escalado.
+
+LifeSnaps agrega su propio desfase. Mide con otro instrumento, en otro contexto, y comparte con el reposo solo tres
+variables. \textcite{neyshabur2020} mostraron que parte de lo que se transfiere son estadísticas de bajo nivel de los
+datos, y \textcite{fawaz2018}, que en series de tiempo la transferencia puede mejorar o empeorar según la fuente. Por
+eso el brazo sin LifeSnaps es tan importante: con solo la cabeza, el modelo con LifeSnaps empata con él
+(\cifra{par.cabeza.sinls} \cifra{par.cabeza.sinls.ic}).
+
+\section{BatchNorm como forma de adaptación}
+
+El hallazgo A1 parece un error de etiqueta, pero también dice algo de cómo se adapta un modelo. Re-estimar las
+estadísticas de BatchNorm con los datos del destino es, por sí solo, un método de adaptación de dominio: AdaBN
+\parencite{li2018adabn}, que \textcite{schneider2020} usaron para ganar robustez frente a imágenes corrompidas.
+\textcite{lee2023} mostraron que ajustar un subconjunto de capas elegido según el tipo de cambio puede rendir igual o
+mejor que ajustarlas todas, y \textcite{kumar2022}, que el ajuste completo puede distorsionar rasgos buenos cuando el
+cambio es grande. El brazo \enquote{solo la cabeza} de NOVA resultó ser una combinación razonable, cabeza más
+normalización; el problema era llamarlo de otra forma. La v4 separa las dos cosas: la cabeza sola, con el backbone en
+modo de evaluación, contra la versión actual.
+
+\section{Chronos-2 sin adaptar}
+
+El modelo fundacional sin adaptar queda detrás de la media de 7 días en cama (\cifra{par.chronos.media7.r}
+\cifra{par.chronos.media7.icr}) y en el pre-reposo casi empata con la persistencia (\cifra{pron.pre.chronos}). Con 14
+días de contexto, series ruidosas medidas una vez al día y huecos rellenados, hay poco patrón que un modelo general
+pueda aprovechar más allá del nivel, y el nivel ya lo captura la media de 7 días. No es un juicio sobre Chronos-2 en
+general: no se ajustó, no se le dieron covariables y recibió el contexto con los huecos rellenados.
+
+\section{Falsas alarmas: la población y la persona}
+
+El ancho calibrado garantiza el 5\pct{} de falsas alarmas en promedio sobre las personas, no en cada una
+(\cref{sec:personas}). Es la misma limitación de la predicción conforme: su garantía de cobertura es marginal
+\parencite{lei2018}. Una cobertura por persona es más difícil de lograr, porque cada persona aporta pocos días, pero
+tiene sentido para un monitor de salud: a quien recibe alarmas casi todos los días no le sirve que el promedio de la
+tripulación esté bien. La v4 prueba un ancho por persona y lo compara con el poblacional.
+
+La regla de 2 de 3 días también es una decisión de diseño. Es simple, fija y revisable, como pide NOVA para todo lo
+crítico, y pertenece a la familia de reglas de las cartas de control \parencite{nelson1984}. Para cambios lentos y
+sostenidos, una regla acumulativa como la CUSUM \parencite{page1954} sería más sensible; queda como alternativa.
+
+\section{Qué tan lejos llega el análogo}
+
+El reposo en cama reproduce bien el desplazamiento de fluidos y la descarga del cuerpo \parencite{pavy2007,hargens2016},
+pero no todo. En vuelo la temperatura central sube en misiones largas \parencite{stahn2017} y el sistema cardiovascular
+tiene comportamientos que el reposo no muestra \parencite{norsk2020}. Lo que este trabajo puede afirmar es que el
+método funciona en el mejor análogo disponible con datos públicos individuales y diarios. Con datos de vuelo podría
+cambiar la magnitud de las mejoras, y la forma del corrector se tendría que volver a aprender.
+
+\section{Limitaciones}\label{sec:limitaciones}
+
+\begin{itemize}
+\item Es un análogo: reposo en cama a $-6^\circ$, no vuelo.
+\item Son \cifra{datos.sujetos} sujetos. Las redes se entrenaron con una sola semilla, y las constantes del rango se
+  fijaron a mano, sin barrido: el día 28 de evaluación, $\kappa = 3$, el $\alpha$ del ridge y las magnitudes de los
+  escalones.
+\item En el CFT70, 2 de 3 sujetos hicieron ejercicio como contramedida, y la campaña~3 tiene dos grupos. El corrector
+  poblacional los mezcla.
+\item El pulso, la respiración y la temperatura de LifeSnaps vienen de un reloj, y la temperatura es de la piel; en el
+  reposo los mide enfermería.
+\item El agua ingerida sigue una meta del protocolo. Se muestra aparte y no entra en los promedios.
+\item El ancho del rango es uno para la población: el 5\pct{} se cumple en promedio, no en cada persona.
+\item Los escalones son sintéticos y sus magnitudes, salvo la del pulso, son supuestos. El nivel de detección depende
+  de ellas; el orden entre modelos es lo robusto.
+\item La curva de aprendizaje se evalúa siempre desde el día 28: mide cuánto sirve cada $k$ para lo que viene después,
+  no qué tan rápido se adapta el rango en las primeras semanas.
+\item El pronóstico se adapta al reposo en general, no a cada persona.
+\item Hay muchas comparaciones (ocho variables, varios modelos y tres runs del kernel) sin corrección por
+  multiplicidad \parencite{benjamini1995}.
+\item La reproducibilidad es incompleta: la versión de Chronos no está fija, no se guarda el hash del código y no se
+  fija el determinismo de CUDA.
+\end{itemize}

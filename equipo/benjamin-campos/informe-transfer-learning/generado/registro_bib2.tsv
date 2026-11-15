@@ -1,0 +1,93 @@
+clave	fuente	estado	similitud	id	titulo	anio	sede
+thorndike1901	crossref	ok		10.1037/h0074898			
+bozinovski2020	crossref	ok		10.31449/inf.v44i3.2828			
+pratt1991	openalex	ok	1.000	https://openalex.org/W54398672	Direct transfer of learned information among neural networks	1991	
+pratt1993	openalex	ok	1.000	https://openalex.org/W2106837051	Discriminability-Based Transfer between Neural Networks	1992	
+thrun1996	openalex	ok	1.000	https://openalex.org/W2133013156	Is Learning The n-th Thing Any Easier Than Learning The First?	1995	
+caruana1997	openalex	ok	1.000	10.1023/a:1007379606734	Multitask Learning	1997	Machine Learning
+thrun1998	openalex	ok	1.000	10.1007/978-1-4615-5529-2	Learning to Learn	1998	Springer eBooks
+baxter2000	crossref	ok		10.1613/jair.731			
+shimodaira2000	crossref	ok		10.1016/s0378-3758(00)00115-4			
+hinton2006dbn	crossref	ok		10.1162/neco.2006.18.7.1527			
+hinton2006science	crossref	ok		10.1126/science.1127647			
+bengio2007	crossref	ok		10.7551/mitpress/7503.003.0024			
+raina2007	openalex	ok	1.000	10.1145/1273496.1273592	Self-taught learning: transfer learning from unlabeled data	2007	International Conference on Machine Learning
+dai2007	crossref	ok		10.1145/1273496.1273521			
+quinonero2009	-	NO RESUELTA			Dataset shift in machine learning	2008	
+erhan2010	openalex	ok	1.000	10.5555/1756006.1756025	Why Does Unsupervised Pre-training Help Deep Learning?	2010	Journal of Machine Learning Research
+pan2010	crossref	ok		10.1109/tkde.2009.191			
+bendavid2010	crossref	ok		10.1007/s10994-009-5152-4			
+bengio2012	openalex	ok	1.000	https://openalex.org/W2295582178	Deep Learning of Representations for Unsupervised and Transfer Learning.	2011	
+donahue2014	openalex	ok	1.000	10.48550/arxiv.1310.1531	DeCAF: A Deep Convolutional Activation Feature for Generic Visual Recognition	2013	arXiv (Cornell University)
+oquab2014	crossref	ok		10.1109/cvpr.2014.222			
+razavian2014	crossref	ok		10.1109/cvprw.2014.131			
+girshick2014	crossref	ok		10.1109/cvpr.2014.81			
+yosinski2014	openalex	ok	1.000	10.48550/arxiv.1411.1792	How transferable are features in deep neural networks?	2014	arXiv (Cornell University)
+weiss2016	crossref	ok		10.1186/s40537-016-0043-6			
+ganin2016	openalex	ok	1.000	10.5555/2946645.2946704	Domain-adversarial training of neural networks	2016	Journal of Machine Learning Research
+ioffe2015	openalex	ok	1.000	10.48550/arxiv.1502.03167	Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift	2015	arXiv (Cornell University)
+li2018adabn	crossref	ok		10.1016/j.patcog.2018.03.005			
+schneider2020	openalex	ok	1.000	10.48550/arxiv.2006.16971	Improving robustness against common corruptions by covariate shift adaptation	2020	arXiv (Cornell University)
+mccloskey1989	crossref	ok		10.1016/s0079-7421(08)60536-8			
+kirkpatrick2017	crossref	ok		10.1073/pnas.1611835114			
+vaswani2017	openalex	ok	1.000	10.48550/arxiv.1706.03762	Attention Is All You Need	2017	arXiv (Cornell University)
+howard2018	crossref	ok		10.18653/v1/p18-1031			
+tan2018	openalex	ok	1.000	10.1007/978-3-030-01424-7_27	A Survey on Deep Transfer Learning	2018	Lecture notes in computer science
+devlin2019	crossref	ok		10.18653/v1/n19-1423			
+houlsby2019	openalex	ok	1.000	10.48550/arxiv.1902.00751	Parameter-Efficient Transfer Learning for NLP	2019	arXiv (Cornell University)
+he2019	crossref	ok		10.1109/iccv.2019.00502			
+raghu2019	openalex	ok	1.000	https://openalex.org/W2970854840	Transfusion: Understanding Transfer Learning for Medical Imaging	2019	neural information processing systems
+kornblith2019	crossref	ok		10.1109/cvpr.2019.00277			
+neyshabur2020	openalex	ok	1.000	10.48550/arxiv.2008.11687	What is being transferred in transfer learning?	2020	arXiv (Cornell University)
+dodge2020	openalex	ok	1.000	10.48550/arxiv.2002.06305	Fine-Tuning Pretrained Language Models: Weight Initializations, Data Orders, and Early Stopping	2020	arXiv (Cornell University)
+zhuang2021	crossref	ok		10.1109/jproc.2020.3004555			
+bommasani2021	openalex	ok	1.000	10.48550/arxiv.2108.07258	On the Opportunities and Risks of Foundation Models	2021	arXiv (Cornell University)
+hu2022	openalex	ok	1.000	10.48550/arxiv.2106.09685	LoRA: Low-Rank Adaptation of Large Language Models	2021	arXiv (Cornell University)
+kumar2022	openalex	ok	1.000	10.48550/arxiv.2202.10054	Fine-Tuning can Distort Pretrained Features and Underperform Out-of-Distribution	2022	arXiv (Cornell University)
+lee2023	openalex	ok	1.000	10.48550/arxiv.2210.11466	Surgical Fine-Tuning Improves Adaptation to Distribution Shifts	2022	arXiv (Cornell University)
+fawaz2018	crossref	ok		10.1109/bigdata.2018.8621990			
+oreshkin2021	crossref	ok		10.1609/aaai.v35i10.17115			
+kim2022	-	NO RESUELTA			Reversible instance normalization for accurate time-series forecasting against distribution shift	2022	
+zeng2023	crossref	ok		10.1609/aaai.v37i9.26317			
+nie2023	openalex	ok	1.000	10.48550/arxiv.2211.14730	A Time Series is Worth 64 Words: Long-term Forecasting with Transformers	2022	arXiv (Cornell University)
+rasul2023	openalex	ok	1.000	10.48550/arxiv.2310.08278	Lag-Llama: Towards Foundation Models for Probabilistic Time Series Forecasting	2023	arXiv (Cornell University)
+ansari2024	openalex	ok	1.000	10.48550/arxiv.2403.07815	Chronos: Learning the Language of Time Series	2024	arXiv (Cornell University)
+das2024	openalex	ok	1.000	10.48550/arxiv.2310.10688	A decoder-only foundation model for time-series forecasting	2023	arXiv (Cornell University)
+woo2024	openalex	ok	1.000	10.48550/arxiv.2402.02592	Unified Training of Universal Time Series Forecasting Transformers	2024	arXiv (Cornell University)
+goswami2024	openalex	ok	1.000	10.48550/arxiv.2402.03885	MOMENT: A Family of Open Time-series Foundation Models	2024	arXiv (Cornell University)
+ansari2025	arxiv	ok	1.000	2510.15821	Chronos-2: From Univariate to Universal Forecasting	2025	arXiv
+hyndman2006	crossref	ok		10.1016/j.ijforecast.2006.03.001			
+hoerl1970	crossref	ok		10.1080/00401706.1970.10488634			
+efron1979	crossref	ok		10.1214/aos/1176344552			
+efron1993	crossref	ok		10.1201/9780429246593			
+field2007	crossref	ok		10.1111/j.1467-9868.2007.00593.x			
+vovk2005	openalex	ok	1.000	10.1007/b106715	Algorithmic Learning in a Random World	2005	Springer eBooks
+lei2018	crossref	ok		10.1080/01621459.2017.1307116			
+nelson1984	crossref	ok		10.1080/00224065.1984.11978921			
+page1954	crossref	ok		10.2307/2333009			
+saeb2017	crossref	ok		10.1093/gigascience/gix019			
+kapoor2023	crossref	ok		10.1016/j.patter.2023.100804			
+benjamini1995	crossref	ok		10.1111/j.2517-6161.1995.tb02031.x			
+bouthillier2021	openalex	ok	1.000	10.48550/arxiv.2103.03098	Accounting for Variance in Machine Learning Benchmarks	2021	arXiv (Cornell University)
+prechelt1998	crossref	ok		10.1007/3-540-49430-8_3			
+kingma2015	openalex	ok	1.000	10.48550/arxiv.1412.6980	Adam: A Method for Stochastic Optimization	2015	UvA-DARE (University of Amsterdam)
+loshchilov2019	-	NO RESUELTA			Decoupled weight decay regularization	2019	
+srivastava2014	openalex	ok	1.000	https://openalex.org/W2095705004	Dropout: a simple way to prevent neural networks from overfitting	2014	
+pavy2007	crossref	ok		10.1007/s00421-007-0474-z			
+hargens2016	crossref	ok		10.1152/japplphysiol.00935.2015			
+meck2009	crossref	ok		10.3357/asem.br01.2009			
+platts2009	crossref	ok		10.3357/asem.br03.2009			
+hughson2018	crossref	ok		10.1038/nrcardio.2017.157			
+norsk2020	crossref	ok		10.1111/apha.13434			
+stahn2017	crossref	ok		10.1038/s41598-017-15560-w			
+garrettbakelman2019	openalex	ok	1.000	10.1126/science.aau8650	The NASA Twins Study: A multidimensional analysis of a year-long human spaceflight	2019	Science
+overbey2024	openalex	ok	1.000	10.1038/s41586-024-07639-y	The Space Omics and Medical Atlas (SOMA) and international astronaut biobank	2024	Nature
+yfantidou2022	crossref	ok		10.1038/s41597-022-01764-x			
+li2017	crossref	ok		10.1371/journal.pbio.2001402			
+mishra2020	crossref	ok		10.1038/s41551-020-00640-6			
+paszke2019	openalex	ok	1.000	10.48550/arxiv.1912.01703	PyTorch: An Imperative Style, High-Performance Deep Learning Library	2019	arXiv (Cornell University)
+wolf2020	crossref	ok		10.18653/v1/2020.emnlp-demos.6			
+pedregosa2011	openalex	ok	1.000	10.5555/1953048.2078195	Scikit-learn: Machine Learning in Python	2011	Journal of Machine Learning Research
+harris2020	crossref	ok		10.1038/s41586-020-2649-2			
+virtanen2020	openalex	ok	1.000	10.1038/s41592-019-0686-2	SciPy 1.0: fundamental algorithms for scientific computing in Python	2020	Nature Methods
+mckinney2010	crossref	ok		10.25080/majora-92bf1922-00a			

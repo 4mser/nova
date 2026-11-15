@@ -1,0 +1,79 @@
+\chapter{Las 26 decisiones}\label{ap:decisiones}
+
+El 14-11-2026 se respondieron las 22 preguntas abiertas del trabajo y se sumaron 4 que salieron de la auditoría
+(\cref{cap:auditoria}). El registro completo, con la opción por defecto de cada una, está en \texttt{PREGUNTAS.md} de la
+rama \texttt{transfer-learning}. La \cref{tab:decisiones} resume la pregunta y lo que se decidió.
+
+\newcommand{\grupo}[1]{\multicolumn{3}{@{}l}{\rule{0pt}{3.2ex}\sffamily\bfseries\small\color{azulnoche}#1}\\[0.4ex]}
+
+{\small
+\begin{longtable}{@{}>{\raggedleft\arraybackslash}p{0.55cm} >{\raggedright\arraybackslash}p{4.3cm}
+  >{\raggedright\arraybackslash}p{9.3cm}@{}}
+\caption[Las 26 decisiones del 14-11-2026]{Las preguntas abiertas del trabajo y su respuesta del 14-11-2026. Las cuatro
+últimas salieron de la auditoría del tercer run.}\label{tab:decisiones}\\
+\toprule
+N.º & Pregunta & Decisión \\
+\midrule
+\endfirsthead
+\multicolumn{3}{@{}l}{\footnotesize\sffamily\color{tinta3} Viene de la página anterior}\\
+\toprule
+N.º & Pregunta & Decisión \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{@{}r}{\footnotesize\sffamily\color{tinta3} Sigue en la página siguiente}\\
+\endfoot
+\bottomrule
+\endlastfoot
+\grupo{A. Las variables y los datos de Tierra}
+1 & ¿Qué variables? & Las ocho del reposo quedaron en el tercer run. La v4 usa solo pulso, presión sistólica y
+  presión diastólica, con los datos reales; los resultados de las otras cinco quedan como referencia. \\
+2 & ¿Qué aporta LifeSnaps? & Se mantiene y la v4 mide cuánto aporta. Sus ocho canales entran al pre-entrenamiento
+  compartido; de las tres variables de la v4, solo el pulso está también en LifeSnaps. \\
+3 & ¿Diario u horario? & Diario, porque el reposo trae una toma por mañana: 14 días de contexto y 7 de horizonte. \\
+\grupo{B. Los datos del espacio}
+4 & ¿Qué es el \enquote{espacio}? & El reposo en cama a $-6^\circ$, con datos reales de las campañas 1 y 3 y el CFT70.
+  Los escalones sintéticos se mantienen, declarados. \\
+5 & ¿Se piden datos de vuelo? & No. El reposo basta como análogo; en las carpetas disponibles no hay signos vitales
+  diarios en vuelo. \\
+6 & ¿Cuánto dura la misión? & Se presenta como los primeros 2 a 3 meses de una misión, no como un vuelo de 6 meses. \\
+\grupo{C. Modelo y transfer learning}
+7 & ¿Qué modelos? & PatchTST propio como base y Chronos-2 sin adaptar como referencia, con persistencia y media de
+  7 días como baselines. Si un baseline gana, se reporta tal cual. \\
+8 & ¿Hasta dónde llega la adaptación? & LoRA va después de la v4, y solo si el ajuste completo sigue ganándole al
+  modelo desde cero con 3 semillas. El ajuste completo ya le gana a la media de 7 días
+  (\cifra{par.todo.media7.r} \cifra{par.todo.media7.icr}). \\
+9 & ¿Qué variables van en la demo? & Presión y pulso. Primero fue peso y pulso, pero el peso quedó fuera de la v4. \\
+10 & ¿Entra la radiación? & Diseñada como entrada del corrector (dosis diaria), sin construir. En el reposo no hay
+  radiación con la que probarla. \\
+\grupo{D. Kaggle y Hugging Face}
+11 & ¿Cómo llega el token a Kaggle? & Por defecto: el kernel deja los pesos en su salida y se suben a Hugging Face
+  desde el PC, donde solo se copian archivos. \\
+12 & ¿Repos privados o públicos? & Privados por ahora; públicos al final del hackatón, con las fichas corregidas. \\
+\grupo{E. Cómo encaja en NOVA}
+13 & ¿Dónde corre a bordo? & Un servicio Python local en el puerto 8793, como los demás modelos de la nave. \\
+14 & ¿Se adapta a bordo o en la Tierra? & El corrector se reajusta a bordo cada día; el modelo base llega desde la
+  Tierra como paquete firmado. \\
+15 & ¿Define el rango esperado en vuelo? & No por ahora. Los umbrales fijos de emergencia no se tocan. \\
+16 & ¿Reemplaza el cono de Vitals? & No; el pronóstico va aparte, como tendencia a 7 días. \\
+17 & ¿Qué recibe Ask NOVA? & La conexión la hace Nicolás Moreno. \\
+18 & ¿Diuresis y agua al contrato? & No hace falta: la v4 usa solo variables que ya están en el contrato. \\
+\grupo{F. Equipo}
+19 & ¿Qué mide la estación física? & Lo define Nicolás Moreno. \\
+20 & ¿Qué serie de radiación? & Pendiente: hay que preguntarle a Luis. No frena la v4. \\
+21 & ¿Entra el ánimo? & Fuera; queda como variable opcional para más adelante. \\
+\grupo{G. Entrega}
+22 & ¿Se sube la rama y se abre el PR? & Sí. La rama se subió y el pull request a \texttt{main} se abrió con el README
+  corregido. Lo integra Nicolás Moreno; la v4 va en un pull request aparte. \\
+\grupo{H. Lo que dejó la auditoría}
+23 & ¿Varias semillas? & Sí, 3, con todos los brazos en igualdad de condiciones. Hoy el ajuste completo le gana al
+  modelo desde cero por \cifra{par.todo.cero.r} \cifra{par.todo.cero.icr}, con una semilla, y a \enquote{solo la
+  cabeza} la cortó el tope de épocas en \cifra{cabeza.cortados} de 5 folds. \\
+24 & ¿\enquote{Solo la cabeza} congela de verdad? & No: BatchNorm se recalcula con el reposo (cambian
+  \cifra{pesos.cambian} de \cifra{pesos.tensores} tensores, \cifra{pesos.bn} de BatchNorm). La v4 congela con el
+  backbone en modo de evaluación y lo compara con la versión actual. \\
+25 & ¿Pronóstico por persona? & Sí, con sus primeros $k = 7$, 14 y 28 días en cama. \\
+26 & ¿Ancho poblacional o por persona? & Probar uno por persona. Hoy, en el peso, \cifra{fapeso.cero} de
+  \cifra{fapeso.n} personas no tienen ninguna falsa alarma y una llega al \cifra{fapeso.max}\pct. \\
+\end{longtable}
+}

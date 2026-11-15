@@ -1,0 +1,28 @@
+\begin{tikzpicture}
+\begin{axis}[informe, width=0.62\linewidth, height=6cm, xmin=0.785, xmax=0.825, ymin=-0.6, ymax=6.6, ytick={0,...,6}, yticklabels={{Chronos-2 sin adaptar},{Media de los últimos 7 días},{Tierra sin adaptar},{Solo reposo, desde cero},{Pre-reposo + reposo, desde cero (sin LifeSnaps)},{Tierra → espacio, solo la cabeza},{Tierra → espacio, ajuste completo}},
+ xmajorgrids, xtick={0.79,0.80,0.81,0.82}, x tick label style={/pgf/number format/fixed, /pgf/number format/precision=2},
+ xlabel={MAE relativo a persistencia, promedio sin agua (menos es mejor)},
+ y axis line style={draw=none}, ytick style={draw=none}, axis x line*=bottom, clip=false]
+\draw[reja, line width=1pt] (axis cs:0.785,0) -- (axis cs:0.8200,0);
+\fill[tinta3, draw=white, line width=0.8pt] (axis cs:0.8200,0) circle[radius=3.2pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.8200,0) {\enspace0,820};
+\draw[reja, line width=1pt] (axis cs:0.785,1) -- (axis cs:0.8070,1);
+\fill[tinta3, draw=white, line width=0.8pt] (axis cs:0.8070,1) circle[radius=3.2pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.8070,1) {\enspace0,807};
+\draw[reja, line width=1pt] (axis cs:0.785,2) -- (axis cs:0.7990,2);
+\fill[serieB, draw=white, line width=0.8pt] (axis cs:0.7990,2) circle[radius=3.2pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.7990,2) {\enspace0,799};
+\draw[reja, line width=1pt] (axis cs:0.785,3) -- (axis cs:0.7970,3);
+\fill[tinta2, draw=white, line width=0.8pt] (axis cs:0.7970,3) circle[radius=3.2pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.7970,3) {\enspace0,797};
+\draw[reja, line width=1pt] (axis cs:0.785,4) -- (axis cs:0.7960,4);
+\fill[tinta2, draw=white, line width=0.8pt] (axis cs:0.7960,4) circle[radius=3.2pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.7960,4) {\enspace0,796};
+\draw[reja, line width=1pt] (axis cs:0.785,5) -- (axis cs:0.7960,5);
+\fill[serieA, draw=white, line width=0.8pt] (axis cs:0.7960,5) circle[radius=3.2pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.7960,5) {\enspace0,796};
+\draw[reja, line width=1pt] (axis cs:0.785,6) -- (axis cs:0.7930,6);
+\fill[serieA, draw=white, line width=0.8pt] (axis cs:0.7930,6) circle[radius=3.2pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:0.7930,6) {\enspace0,793};
+\end{axis}
+\end{tikzpicture}

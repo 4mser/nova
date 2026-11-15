@@ -1,0 +1,65 @@
+\chapter*{Resumen}
+\addcontentsline{toc}{chapter}{Resumen}
+
+NOVA es un copiloto de salud que vive a bordo de la nave, sin depender de la Tierra. Para avisar a tiempo necesita
+saber qué es normal para cada tripulante, y en microgravedad lo normal cambia. Un monitor que compara cada medición con
+la media y la desviación de la persona en Tierra se queda corto: en el reposo en cama de la NASA, el análogo terrestre
+de la microgravedad, ese monitor deja fuera de rango el \cifra{peso.tierra.fa}\pct{} de los días normales del peso.
+
+Este informe prueba dos formas de transferir lo aprendido en Tierra al espacio, con \cifra{datos.sujetos} sujetos
+reales de reposo en cama (\cifra{datos.mediciones} mediciones diarias) y validación por sujetos.
+
+\begin{description}
+\item[Rango esperado adaptado.] A la línea base de Tierra de cada persona se le suma un corrector ridge aprendido del
+  reposo de \emph{otros} sujetos y la media contraída de sus primeros 28 días en cama. El ancho se calibra fuera de
+  muestra. Con el mismo 5\pct{} de falsas alarmas que el monitor de Tierra calibrado, el rango del peso queda en
+  \cifra{peso.ancho.ratio} de su ancho y los escalones sintéticos de 3 días detectados pasan de
+  \cifra{peso.calib.rec.r}\pct{} a \cifra{peso.adapt.rec.r}\pct{} (\cifra{peso.rec.dif} puntos, IC 95\pct{}
+  \cifra{peso.rec.dif.ic}).
+\item[Pronóstico a 7 días.] Un PatchTST de Hugging Face se pre-entrena en Tierra con LifeSnaps
+  (\cifra{datos.ls.personas} personas) y el pre-reposo, y se adapta al reposo. Le gana a la media de los últimos 7 días
+  por \cifra{par.cabeza.media7.r} ajustando solo la cabeza y por \cifra{par.todo.media7.r} ajustando todo (MAE relativo
+  a persistencia). Contra un modelo igual entrenado desde cero, la diferencia es de \cifra{par.todo.cero.r} o menos.
+  Con una sola semilla y brazos entrenados en condiciones distintas, todavía no se puede decir si el pre-entrenamiento
+  en Tierra aporta.
+\end{description}
+
+Una auditoría independiente comprobó que las cifras cuadran con la salida del kernel y que ningún sujeto de prueba
+entra a un ajuste. También encontró que el brazo \enquote{solo la cabeza} re-estima además las estadísticas de
+BatchNorm del backbone: entre los pesos publicados cambian \cifra{pesos.cambian} de \cifra{pesos.tensores} tensores.
+El informe repasa la historia del transfer learning y del ajuste fino desde sus orígenes, ubica cada resultado en esa
+literatura y deja el plan de la corrida siguiente, centrada en el pulso y la presión arterial.
+
+\medskip\noindent{\small\sffamily\color{tinta2}\textbf{Palabras clave:} transfer learning, ajuste fino, adaptación de
+dominio, PatchTST, Chronos-2, reposo en cama, microgravedad, signos vitales, detección de anomalías, validación por
+sujetos.}
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\begin{otherlanguage}{english}
+NOVA is an onboard health copilot that works without Earth in the loop. To raise alerts on time it must know what is
+normal for each crew member, and in microgravity normal shifts. A monitor that compares each measurement with the
+person's Earth mean and standard deviation falls short: in NASA head-down bed rest, the standard terrestrial analog of
+microgravity, it flags \cifra{peso.tierra.fa}\pct{} of normal body-weight days.
+
+This report tests two ways of transferring what is learned on Earth to space, on \cifra{datos.sujetos} real bed-rest
+subjects (\cifra{datos.mediciones} daily measurements) with subject-wise validation.
+
+\begin{description}
+\item[Adapted expected range.] Each person's Earth baseline is shifted by a ridge corrector learned from \emph{other}
+  subjects' bed rest and by the shrunken mean of their own first 28 days in bed, with an out-of-sample calibrated
+  width. At the same 5\pct{} false-alarm rate as the calibrated Earth monitor, the weight range is
+  \cifra{peso.ancho.ratio} times as wide and the detection of synthetic 3-day steps rises from
+  \cifra{peso.calib.rec.r}\pct{} to \cifra{peso.adapt.rec.r}\pct{}.
+\item[7-day forecast.] A Hugging Face PatchTST is pre-trained on Earth (LifeSnaps and pre-bed-rest days) and adapted
+  to bed rest. It beats the 7-day mean by \cifra{par.cabeza.media7.r} (head only) and \cifra{par.todo.media7.r}
+  (full fine-tuning) in MAE relative to persistence. Against the same model trained from scratch the gap is
+  \cifra{par.todo.cero.r} or less; with a single seed and unequal training arms, it is not yet possible to say whether
+  Earth pre-training helps.
+\end{description}
+
+An independent audit confirmed that the figures match the kernel output and found no subject leakage. It also found
+that the \enquote{head only} arm re-estimates the backbone's BatchNorm statistics. The report traces transfer learning
+and fine-tuning back to their origins, places each result in that literature and sets out the next run, focused on
+pulse and blood pressure.
+\end{otherlanguage}

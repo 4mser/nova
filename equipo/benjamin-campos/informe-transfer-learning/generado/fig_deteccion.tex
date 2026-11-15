@@ -1,0 +1,42 @@
+\begin{tikzpicture}
+\begin{axis}[informe, width=0.86\linewidth, height=7cm, xmin=0, xmax=100, ymin=-0.6, ymax=7.6, ytick={0,...,7}, yticklabels={Agua,Temperatura,PA sistólica,Respiración,Diuresis,Pulso,PA diastólica,Peso},
+ xmajorgrids, xtick={0,20,...,100}, xticklabel={\pgfmathprintnumber{\tick}\,\%},
+ xlabel={escalones de 3 días detectados, con el ancho de ambos calibrado al 5\,\% de falsas alarmas},
+ y axis line style={draw=none}, ytick style={draw=none}, axis x line*=bottom, clip=false,
+ legend style={at={(0.02,1.02)}, anchor=south west}, legend columns=2]
+\addlegendimage{only marks, mark=*, mark size=2.8pt, serieC}\addlegendentry{Tierra con ancho calibrado\quad}
+\addlegendimage{only marks, mark=*, mark size=2.8pt, serieA}\addlegendentry{adaptado}
+\draw[reja, line width=3pt] (axis cs:91.800,0) -- (axis cs:96.720,0);
+\fill[serieC, draw=white, line width=0.8pt] (axis cs:91.800,0) circle[radius=3pt];
+\fill[serieA, draw=white, line width=0.8pt] (axis cs:96.720,0) circle[radius=3pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:96.720,0) {\enspace +5\,pp [−2;\,12]};
+\draw[reja, line width=3pt] (axis cs:92.540,1) -- (axis cs:92.540,1);
+\fill[serieC, draw=white, line width=0.8pt] (axis cs:92.540,1) circle[radius=3pt];
+\fill[serieA, draw=white, line width=0.8pt] (axis cs:92.540,1) circle[radius=3pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:92.540,1) {\enspace sin cambio};
+\draw[reja, line width=3pt] (axis cs:43.840,2) -- (axis cs:49.320,2);
+\fill[serieC, draw=white, line width=0.8pt] (axis cs:43.840,2) circle[radius=3pt];
+\fill[serieA, draw=white, line width=0.8pt] (axis cs:49.320,2) circle[radius=3pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:49.320,2) {\enspace +5\,pp [−4;\,16]};
+\draw[reja, line width=3pt] (axis cs:72.600,3) -- (axis cs:76.710,3);
+\fill[serieC, draw=white, line width=0.8pt] (axis cs:72.600,3) circle[radius=3pt];
+\fill[serieA, draw=white, line width=0.8pt] (axis cs:76.710,3) circle[radius=3pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:76.710,3) {\enspace +4\,pp [0;\,10]};
+\draw[reja, line width=3pt] (axis cs:51.610,4) -- (axis cs:66.130,4);
+\fill[serieC, draw=white, line width=0.8pt] (axis cs:51.610,4) circle[radius=3pt];
+\fill[serieA, draw=white, line width=0.8pt] (axis cs:66.130,4) circle[radius=3pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:66.130,4) {\enspace +15\,pp [0;\,29]};
+\draw[reja, line width=3pt] (axis cs:10.960,5) -- (axis cs:17.810,5);
+\fill[serieC, draw=white, line width=0.8pt] (axis cs:10.960,5) circle[radius=3pt];
+\fill[serieA, draw=white, line width=0.8pt] (axis cs:17.810,5) circle[radius=3pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:17.810,5) {\enspace +7\,pp [−1;\,16]};
+\draw[reja, line width=3pt] (axis cs:12.330,6) -- (axis cs:31.510,6);
+\fill[serieC, draw=white, line width=0.8pt] (axis cs:12.330,6) circle[radius=3pt];
+\fill[serieA, draw=white, line width=0.8pt] (axis cs:31.510,6) circle[radius=3pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:31.510,6) {\enspace +19\,pp [9;\,30]};
+\draw[reja, line width=3pt] (axis cs:9.590,7) -- (axis cs:26.030,7);
+\fill[serieC, draw=white, line width=0.8pt] (axis cs:9.590,7) circle[radius=3pt];
+\fill[serieA, draw=white, line width=0.8pt] (axis cs:26.030,7) circle[radius=3pt];
+\node[anchor=west, font=\scriptsize\sffamily\color{tinta2}] at (axis cs:26.030,7) {\enspace +16\,pp [5;\,30]};
+\end{axis}
+\end{tikzpicture}

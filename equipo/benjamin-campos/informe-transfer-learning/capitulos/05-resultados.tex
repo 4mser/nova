@@ -1,0 +1,331 @@
+\chapter{Resultados}\label{cap:resultados}
+
+Todas las cifras de este capítulo salen del tercer run del kernel y se evalúan en los sujetos de prueba de cada fold.
+Los intervalos son del 95\pct{}, por bootstrap de sujetos.
+
+\section{Un sujeto para empezar}
+
+Antes de los promedios, un caso. La \cref{fig:ilustracion} muestra el peso de un sujeto real de la campaña~3 que en el
+fold~0 es de prueba. Antes del reposo, su peso oscila alrededor de la media del pre-reposo. En cama baja, como en casi
+todos, y se queda abajo.
+
+\begin{figure}[htbp]
+\input{generado/fig_ilustracion}
+\caption[Un sujeto real: rango de Tierra y rango adaptado]{Peso de un sujeto real (C3\_6043, fold~0, sujeto de
+prueba). El rango de Tierra (media del pre-reposo $\pm$\cifra{ilus.sd}\un{kg}) deja fuera
+\cifra{ilus.fuera.tierra} de sus \cifra{ilus.dias} días evaluados desde el día 28. El rango adaptado, con sus
+primeros 28 días en cama y un ancho calibrado de $\pm$\cifra{ilus.ancho}\un{kg}, no deja fuera ninguno
+(\cifra{ilus.fuera.adapt}).}
+\label{fig:ilustracion}
+\end{figure}
+
+El rango adaptado de este sujeto es más ancho que el de Tierra, porque el ancho calibrado es uno para toda la
+población. Lo que cambia es el centro: sigue el nivel nuevo de la persona. En promedio, como se verá, el rango
+adaptado también es más angosto que el de Tierra cuando a ambos se les exigen las mismas falsas alarmas.
+
+\section{P1. El monitor de Tierra no sirve en cama}\label{sec:res-p1}
+
+La \cref{fig:falsas} y la \cref{tab:rango} muestran cuántos días normales en cama quedan fuera del rango de Tierra. En el
+peso son el \cifra{peso.tierra.fa}\pct{} \cifra{peso.tierra.fa.ic}: más de la mitad de los días, una persona sana recibiría una
+alarma solo por estar en cama. En la presión diastólica, el pulso y la respiración son
+\cifra{pa_dia.tierra.fa}, \cifra{pulso.tierra.fa} y \cifra{fr.tierra.fa}\pct. Promediando las siete variables sin
+el agua, el monitor de Tierra da falsa alarma en el \cifra{prom.tierra.fa}\pct{} de los días.
+
+\begin{figure}[htbp]
+\input{generado/fig_falsas}
+\caption[Falsas alarmas diarias del monitor de Tierra y del adaptado]{Falsas alarmas diarias desde el día 28 en cama.
+Naranjo: monitor de Tierra (media del pre-reposo $\pm1{,}96$ desviaciones). Azul: rango adaptado, que por construcción
+queda cerca del 5\pct. Raya negra: la misma regla de Tierra aplicada dentro del pre-reposo (placebo), el piso de
+falsas alarmas que tiene sin ningún efecto del reposo.}
+\label{fig:falsas}
+\end{figure}
+
+Parte de esas falsas alarmas no es culpa del reposo. Con 10 a 21 días de pre-reposo, la variación de una persona se
+estima mal, y la misma regla aplicada \emph{dentro} del pre-reposo, dejando fuera el día evaluado, ya da entre
+\cifra{placebo.min} y \cifra{placebo.max}\pct{} de falsas alarmas según la variable. Ese es el piso. Solo el peso
+queda claramente por encima: en el pulso y la presión, el exceso sobre el piso es de pocos puntos (en el pulso,
+\cifra{pulso.tierra.fa} contra \cifra{pulso.placebo}\pct) y los intervalos de Tierra incluyen el valor del placebo. En la diuresis y la temperatura, el monitor de Tierra queda incluso
+por debajo de su piso.
+
+\begin{table}[htbp]
+\caption[Rango esperado: falsas alarmas, ancho y detección por variable]{Rango esperado por variable, desde el día 28
+en cama. Falsas alarmas diarias del monitor de Tierra y de su placebo dentro del pre-reposo. Ancho del rango adaptado
+dividido por el del monitor de Tierra calibrado, con el mismo 5\pct{} de falsas alarmas. Escalones de 3 días
+detectados con la regla de 2 de 3 y diferencia adaptado menos Tierra calibrado, en puntos.}
+\label{tab:rango}
+\centering\footnotesize\setlength{\tabcolsep}{4.5pt}
+\input{generado/tab_rango}
+\end{table}
+
+\begin{decision}
+La respuesta a P1 es no, al menos para el peso. Las demás variables tienen un exceso de falsas alarmas sobre el piso
+que es chico y que no se distingue bien del ruido. Que el monitor falle sobre todo donde el desplazamiento es grande
+(\cref{sec:desplazamiento}) es lo que se espera si el problema es el cambio de nivel.
+\end{decision}
+
+\section{P2. Con las mismas falsas alarmas, el adaptado ve más}\label{sec:res-p2}
+
+Comparar el monitor de Tierra con el adaptado tal como están es injusto: el adaptado tiene el ancho calibrado al
+5\pct{} y el de Tierra no. La comparación justa es contra el monitor de Tierra \emph{con el ancho calibrado} de la
+misma forma, que también queda en torno al 5\pct{} de falsas alarmas diarias (\cifra{prom.calib.fa}\pct{} en
+promedio, contra \cifra{prom.adapt.fa}\pct{} del adaptado).
+
+\subsection{Rango más angosto}
+
+Con las mismas falsas alarmas, el rango adaptado es más angosto en todas las variables (\cref{fig:ancho}). En el peso
+mide \cifra{peso.ancho.ratio} del de Tierra calibrado: \cifra{peso.adapt.ancho}\un{kg} contra
+\cifra{peso.calib.ancho}\un{kg}. En la presión diastólica, \cifra{pa_dia.ancho.ratio}, y en el pulso,
+\cifra{pulso.ancho.ratio}. Un rango más angosto con la misma tasa de falsas alarmas quiere decir que el centro está
+mejor puesto.
+
+\begin{figure}[htbp]
+\centering
+\input{generado/fig_ancho}
+\caption[Ancho del rango adaptado frente al de Tierra calibrado]{Ancho del rango adaptado dividido por el del monitor
+de Tierra con el ancho calibrado, con el mismo 5\pct{} de falsas alarmas. Bajo 1, el adaptado logra lo mismo con un
+rango más angosto.}
+\label{fig:ancho}
+\end{figure}
+
+\subsection{Más escalones detectados}
+
+Un rango más angosto detecta más. La \cref{fig:deteccion} muestra los escalones sintéticos de 3 días detectados con la
+regla de 2 de 3. En el peso, la detección pasa de \cifra{peso.calib.rec.r}\pct{} a \cifra{peso.adapt.rec.r}\pct{}
+(\cifra{peso.rec.dif} puntos \cifra{peso.rec.dif.ic}); en la presión diastólica, de \cifra{pa_dia.calib.rec.r} a
+\cifra{pa_dia.adapt.rec.r}\pct{} (\cifra{pa_dia.rec.dif} \cifra{pa_dia.rec.dif.ic}), y en el pulso, de
+\cifra{pulso.calib.rec.r} a \cifra{pulso.adapt.rec.r}\pct{} (\cifra{pulso.rec.dif} \cifra{pulso.rec.dif.ic}), con
+un intervalo que cruza el cero. En la temperatura y el agua los escalones son fáciles de ver con cualquier rango y la
+diferencia es mínima.
+
+\begin{figure}[htbp]
+\input{generado/fig_deteccion}
+\caption[Escalones detectados con las mismas falsas alarmas]{Escalones sintéticos de 3 días detectados desde el día
+28, con la regla de 2 de 3 y el ancho de ambos modelos calibrado al 5\pct{} de falsas alarmas. Verde: monitor de
+Tierra calibrado. Azul: adaptado con 28 días propios.}
+\label{fig:deteccion}
+\end{figure}
+
+Promediando sin el agua, el adaptado detecta el \cifra{prom.adapt.rec}\pct{} de los escalones y el monitor de Tierra
+calibrado el \cifra{prom.calib.rec}\pct. El monitor de Tierra \emph{sin} calibrar detecta más, el
+\cifra{prom.tierra.rec}\pct, pero a cambio de alarmar en el \cifra{prom.tierra.fa}\pct{} de los días normales: con
+tantas alarmas, detectar es fácil y no sirve como referencia.
+
+\subsection{A favor y en contra de la deriva}
+
+El signo al azar de los escalones permite ver algo que el promedio esconde. El monitor de Tierra ya está desplazado
+respecto del nivel nuevo, así que detecta muy bien lo que va a favor de la deriva y mal lo que va en contra. En el peso,
+detecta el \cifra{peso.tierra.recfavor.r}\pct{} de los escalones que lo bajan aún más, pero solo el
+\cifra{peso.tierra.reccontra.r}\pct{} de los que lo suben. Calibrado, el desequilibrio se agrava: \cifra{peso.calib.recfavor.r}\pct{}
+a favor y \cifra{peso.calib.reccontra.r}\pct{} en contra. El adaptado, centrado en el nivel nuevo, detecta parecido en
+los dos sentidos: \cifra{peso.adapt.recfavor.r} y \cifra{peso.adapt.reccontra.r}\pct. Para un monitor de salud eso
+importa: un peso que sube de golpe en cama, por ejemplo por retención de líquidos, es justo lo que el monitor de
+Tierra no ve.
+
+\subsection{Cuánto es el centro y cuánto el ancho}
+
+El modelo cruzado \modelo{adaptado (ancho de Tierra)} usa el centro adaptado con el ancho de Tierra,
+$\pm1{,}96\,\sigma_{s,v}$. Solo con mover el centro, las falsas alarmas diarias del peso bajan de
+\cifra{peso.tierra.fa} a \cifra{peso.adapttierra.fa}\pct, y el error del valor esperado baja de
+\cifra{peso.tierra.mae} a \cifra{peso.adapt.mae}\un{kg}. Calibrar el ancho hace el resto. En promedio sin el agua, el
+centro adaptado lleva las falsas alarmas de \cifra{prom.tierra.fa} a \cifra{prom.adapttierra.fa}\pct{} con el ancho
+de Tierra, y el error del valor esperado baja a \cifra{prom.adapt.mae} del de Tierra.
+
+\subsection{Con la regla de 2 de 3}
+
+La \cref{tab:rango} y la \cref{fig:falsas} usan falsas alarmas diarias: basta un día fuera. La \cref{tab:regla} las muestra
+también con la regla de 2 de 3, que es la que levanta la alarma. Con la regla, el adaptado da entre
+\cifra{adapt.fareg.min} y \cifra{adapt.fareg.max}\pct{} de falsas alarmas según la variable, y el monitor de Tierra
+sigue en \cifra{peso.tierra.fareg}\pct{} en el peso.
+
+\begin{table}[htbp]
+\caption[Falsas alarmas diarias y con la regla de 2 de 3]{Falsas alarmas (\%) diarias y con la regla de 2 de 3, desde
+el día 28 en cama. La última columna es la detección del monitor de Tierra sin calibrar, alta solo porque alarma
+mucho.}
+\label{tab:regla}
+\small
+\input{generado/tab_regla}
+\end{table}
+
+\section{Cuántos días propios hacen falta}\label{sec:curva}
+
+La \cref{fig:curva} separa las dos fuentes de la adaptación. Cada punto es el error del valor esperado dividido por el
+error del monitor de Tierra, así que bajo 1 es mejor. La línea verde usa solo los primeros $k$ días propios; la azul
+les suma el corrector aprendido de otros sujetos. En $k = 0$, la azul es el corrector solo.
+
+\begin{figure}[htbp]
+\centering
+\input{generado/fig_curva}
+\caption[Curva de aprendizaje del rango esperado]{Error del valor esperado relativo al monitor de Tierra según los días
+propios en cama que usa el modelo ($k$). Verde: solo días propios. Azul: días propios más el corrector de otros
+sujetos. Se evalúa siempre desde el día 28, así que mide cuánto sirve para predecir lo que viene después, no qué tan
+rápido se adapta en las primeras semanas.}
+\label{fig:curva}
+\end{figure}
+
+En el peso, el corrector solo, sin ningún día propio, ya baja el error a \cifra{curva.peso.pob.0} del de Tierra. Con
+28 días propios y sin corrector llega a \cifra{curva.peso.prop.28}, y con los dos a \cifra{curva.peso.pob.28}. En el
+pulso y la presión diastólica la curva llega a \cifra{curva.pulso.pob.28} y \cifra{curva.pa_dia.pob.28}.
+
+La \cref{tab:aporte} mide qué agrega el corrector cuando ya están los 28 días propios. Baja el error en más de
+\cifra{banda} solo en \cifra{aporte.ayuda}; en el \cifra{aporte.empeora} lo sube, y en las demás variables la
+diferencia queda bajo ese umbral. En la mayoría de las variables, entonces, la mejora viene de los días propios. El
+umbral de \cifra{banda} es una elección de la auditoría, y estas diferencias no tienen intervalo de confianza.
+
+\begin{table}[htbp]
+\caption[Qué aporta el corrector de otros sujetos]{Error del valor esperado relativo al monitor de Tierra. El aporte del
+corrector es la diferencia entre usar ambos y usar solo los días propios, con $k = 28$; se clasifica con una banda de
+$\pm$\cifra{banda}.}
+\label{tab:aporte}
+\small
+\input{generado/tab_aporte}
+\end{table}
+
+\section{Persona por persona}\label{sec:personas}
+
+El ancho calibrado es uno para toda la población, así que el 5\pct{} de falsas alarmas se cumple en promedio, no en
+cada persona. La \cref{fig:fa-persona} lo muestra en el peso: de \cifra{fapeso.n} personas, \cifra{fapeso.cero} no
+tienen ninguna falsa alarma y \cifra{fapeso.sobre10} pasan del 10\pct, con un máximo de \cifra{fapeso.max}\pct. La
+mediana es \cifra{fapeso.mediana}\pct{} y la media \cifra{fapeso.media}\pct, con entre \cifra{fapeso.dias_min} y
+\cifra{fapeso.dias_max} días evaluados por persona.
+
+\begin{figure}[htbp]
+\input{generado/fig_fa_persona}
+\caption[Falsas alarmas del adaptado persona por persona]{Falsas alarmas diarias del rango adaptado en el peso,
+persona por persona, ordenadas de más a menos. La línea punteada es el promedio de la población.}
+\label{fig:fa-persona}
+\end{figure}
+
+El error del valor esperado también se reparte de forma desigual (\cref{tab:por-persona}). En el peso, el adaptado se
+equivoca menos que el monitor de Tierra en \cifra{porpersona.peso.mejoran} de las \cifra{porpersona.peso.n} personas, y la mediana del
+cociente de error es \cifra{porpersona.peso.mediana}; pero en la peor persona el cociente llega a \cifra{porpersona.peso.peor}.
+
+\begin{table}[htbp]
+\caption[Error del adaptado frente al de Tierra, por persona]{Error del valor esperado del adaptado ($k = 28$) dividido
+por el del monitor de Tierra, calculado persona por persona.}
+\label{tab:por-persona}
+\small
+\input{generado/tab_por_persona}
+\end{table}
+
+\section{P3. El pronóstico a 7 días}\label{sec:res-pronostico}
+
+La \cref{tab:pronostico} y la \cref{fig:pronostico} muestran el MAE relativo a la persistencia, promediado sin el agua. En
+cama, todos los PatchTST le ganan a la media de los últimos 7 días (\cifra{pron.media7}), y Chronos-2 sin adaptar
+queda detrás (\cifra{pron.chronos}). El mejor es el ajuste completo desde Tierra, con \cifra{pron.todo}, pero los
+cinco PatchTST quedan muy juntos, entre \cifra{pron.todo} y \cifra{pron.tierra}.
+
+\begin{figure}[htbp]
+\centering
+\input{generado/fig_pronostico}
+\caption[MAE relativo a persistencia de cada modelo]{Pronóstico a 7 días en cama: MAE relativo a la persistencia,
+promedio de las siete variables sin el agua. Naranjo: modelo de Tierra sin adaptar. Azul: Tierra adaptado al reposo.
+Gris: referencias y modelos desde cero.}
+\label{fig:pronostico}
+\end{figure}
+
+\begin{table}[htbp]
+\caption[Pronóstico a 7 días por modelo]{MAE relativo a la persistencia, promedio sin el agua, en cama y en el
+pre-reposo de los sujetos de prueba. Los modelos adaptados al reposo y los entrenados desde cero en el reposo solo se
+evalúan en cama.}
+\label{tab:pronostico}
+\small
+\input{generado/tab_pronostico}
+\end{table}
+
+Las diferencias son de milésimas, así que lo que importa son los pares, con su intervalo (\cref{fig:pares}):
+\begin{description}
+\item[Contra la media de 7 días] Tierra → espacio le gana por \cifra{par.cabeza.media7.r} \cifra{par.cabeza.media7.icr}
+  ajustando solo la cabeza y por \cifra{par.todo.media7.r} \cifra{par.todo.media7.icr} ajustando todo. La mejora es
+  real pero chica: \cifra{par.cabeza.media7.puntos} y \cifra{par.todo.media7.puntos} puntos del error de la
+  persistencia.
+\item[Contra los modelos desde cero] Ajustando solo la cabeza es un empate: \cifra{par.cabeza.cero}
+  \cifra{par.cabeza.cero.ic} contra el reposo desde cero y \cifra{par.cabeza.sinls} \cifra{par.cabeza.sinls.ic}
+  contra el pre-reposo + reposo sin LifeSnaps. Con ajuste completo gana por poco: \cifra{par.todo.cero}
+  \cifra{par.todo.cero.ic} y \cifra{par.todo.sinls} \cifra{par.todo.sinls.ic}.
+\item[Contra Tierra sin adaptar] El ajuste completo mejora al modelo de Tierra en \cifra{par.todo.tierra}
+  \cifra{par.todo.tierra.ic}; solo la cabeza, en \cifra{par.cabeza.tierra} \cifra{par.cabeza.tierra.ic}, con un
+  intervalo que toca el cero.
+\item[Chronos-2] Sin adaptar le va peor que a la media de 7 días: \cifra{par.chronos.media7.r}
+  \cifra{par.chronos.media7.icr}. Recibe el contexto con los huecos rellenados, así que es solo una referencia.
+\end{description}
+
+\begin{figure}[htbp]
+\centering
+\input{generado/fig_pares}
+\caption[Diferencias pareadas del pronóstico]{Diferencias pareadas por sujeto del MAE relativo a la persistencia, con
+IC~95\pct{} por bootstrap de sujetos. Bajo 0, el primer modelo se equivoca menos. Punto lleno: par que informó el
+kernel; punto hueco: par recalculado en la auditoría con la misma función del proyecto.}
+\label{fig:pares}
+\end{figure}
+
+En el pre-reposo, donde no hay que adaptar nada, el modelo de Tierra sin adaptar queda en \cifra{pron.pre.tierra},
+apenas mejor que la media de 7 días (\cifra{pron.pre.media7}), y Chronos-2 en \cifra{pron.pre.chronos}, casi igual que
+la persistencia. El detalle por variable está en la \cref{tab:pronostico-var}.
+
+\begin{cuidado}
+Con una sola semilla y brazos entrenados en condiciones distintas (\cref{sec:entreno}), una ventaja de
+\cifra{par.todo.cero.r} o menos no alcanza para decir si el pre-entrenamiento en Tierra aporta. Tampoco alcanza para decir que no
+aporta. La corrida v4 iguala las condiciones y usa tres semillas (\cref{sec:v4}).
+\end{cuidado}
+
+\section{Cómo se entrenaron las redes}\label{sec:entreno}
+
+La \cref{tab:entreno} muestra en qué época cada brazo alcanzó su mejor pérdida de validación. Los modelos desde cero
+llegan a su mejor época entre la \cifra{cero.ep.min} y la \cifra{cero.ep.max}, de un tope de 60: con una tasa de
+aprendizaje de \texttt{1e-3} sobreajustan pronto. El ajuste completo, con una tasa cinco veces menor y partiendo de un
+modelo ya entrenado, también para temprano. \enquote{Solo la cabeza} es el caso contrario: el tope de 30 épocas lo
+cortó en \cifra{cabeza.cortados} de 5 folds, y en el fold~0 su mejor época fue la última.
+
+\begin{table}[htbp]
+\caption[Épocas de entrenamiento por brazo y fold]{Mejor época de cada brazo y fold (contada desde 1). En negrita, una
+mejor época igual al tope. \enquote{Cortados por el tope}: folds en que el tope llegó antes de que la paciencia de 6
+épocas pudiera detener el entrenamiento.}
+\label{tab:entreno}
+\small
+\input{generado/tab_entreno}
+\end{table}
+
+La \cref{fig:historia} muestra la pérdida de validación del fold~0. La de \enquote{solo la cabeza} baja de forma lenta y
+sostenida, de \cifra{hist.f0.cabeza.prim} a \cifra{hist.f0.cabeza.ult}, y seguía bajando cuando se cortó. El modelo
+desde cero sobreajusta en pocas épocas.
+
+\begin{figure}[htbp]
+\centering
+\input{generado/fig_historia}
+\caption[Pérdida de validación en el fold 0]{Pérdida de validación del fold~0 por época. La línea punteada marca el
+tope de 30 épocas de los brazos de adaptación.}
+\label{fig:historia}
+\end{figure}
+
+\section{Qué cambia en los pesos}\label{sec:pesos}
+
+El modelo publicado \texttt{nova-espacio} es \texttt{nova-tierra} adaptado en modo \enquote{solo la cabeza}. Si ese
+modo congelara todo el backbone, entre los dos solo cambiarían los tensores de la cabeza. Comparando los archivos
+\texttt{.safetensors}, cambian \cifra{pesos.cambian} de \cifra{pesos.tensores}: los \cifra{pesos.cabeza} de la cabeza
+y \cifra{pesos.bn} de BatchNorm (\cref{tab:pesos}). Ningún peso entrenable del backbone cambia; cambian las medias y
+varianzas móviles de BatchNorm y su contador de lotes, que pasa de \cifra{pesos.nb.tierra} a \cifra{pesos.nb.espacio}.
+
+\begin{table}[htbp]
+\caption[Tensores que cambian entre los pesos publicados]{Tensores que cambian entre \texttt{nova-tierra} y
+\texttt{nova-espacio}.}
+\label{tab:pesos}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X l r@{}}
+\toprule
+Tensores & Tipo & Cuántos \\
+\midrule
+\texttt{head.projection.weight}, \texttt{head.projection.bias} & parámetros de la cabeza & \cifra{pesos.cabeza} \\
+\texttt{encoder.layers.\{0,1,2\}.norm\_sublayer\{1,3\}.batchnorm}: \texttt{running\_mean}, \texttt{running\_var},
+\texttt{num\_batches\_tracked} & buffers de BatchNorm & \cifra{pesos.bn} \\
+\midrule
+Total & & \cifra{pesos.cambian} de \cifra{pesos.tensores} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La causa está en el código: congelar el backbone solo apaga sus gradientes, pero el entrenamiento pone el modelo en
+modo de entrenamiento, y en ese modo BatchNorm actualiza sus estadísticas con cada lote (ecuación~\ref{eq:bn}) y el dropout
+sigue activo. El brazo \enquote{solo la cabeza} es, en la práctica, la cabeza más una normalización re-estimada con los
+datos del reposo, una forma de AdaBN \parencite{li2018adabn}. Los folds usan la misma función, así que lo mismo pasa
+en las cifras de la \cref{sec:res-pronostico}. Ninguna cifra de desempeño sale de los pesos publicados; de ellos sale solo
+este conteo.
