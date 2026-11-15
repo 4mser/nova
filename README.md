@@ -130,9 +130,9 @@ Every night F Prime sends a report to Earth as **CCSDS packets**. Updates come b
 
 <table>
 <tr>
-<td align="center"><img src=".github/media/station-home.gif" width="240"><br><sub>NOVA Station: the crew around NOVA</sub></td>
-<td align="center"><img src=".github/media/station-ecg.gif" width="320"><br><sub>Live ECG from the heart board</sub></td>
-<td align="center"><img src=".github/media/station-storm.gif" width="240"><br><sub>Solar storm: everyone to the shelter</sub></td>
+<td align="center"><img src=".github/media/station-home.gif" width="200"><br><sub>NOVA Station: the crew around NOVA</sub></td>
+<td align="center"><img src=".github/media/station-ecg.gif" width="300"><br><sub>Live ECG from the heart board</sub></td>
+<td align="center"><img src=".github/media/station-storm.gif" width="200"><br><sub>Solar storm: everyone to the shelter</sub></td>
 </tr>
 </table>
 
