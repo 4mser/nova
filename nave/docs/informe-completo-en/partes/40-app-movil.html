@@ -1,0 +1,30 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">40</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part IV · The phone</div>
+  <h1 style="font-size:25pt;margin-top:10px">Each crew member, their own app connected to the ship</h1>
+  <p class="lead">The NOVA app has a mission mode. With the ship address and the seat (T1 to T4) set, the phone stops using cloud services and talks only to the ship link over the local network. It uses the same data contract as the medical station, so to the core a phone is just one more station.</p>
+  <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+    <span class="chip"><si n="expo" style="color:var(--ink)"></si>Expo SDK 57</span>
+    <span class="chip"><si n="react" style="color:#61dafb"></si>React Native 0.86</span>
+    <span class="chip"><lu n="route" style="color:var(--cian)"></lu>expo-router</span>
+    <span class="chip"><si n="android" style="color:#3ddc84"></si>Android widget</span>
+    <span class="chip"><lu n="wifi" style="color:var(--ok)"></lu>ship network only</span>
+  </div>
+  <div class="g3" style="margin-top:18px;gap:14px">
+    <div><div class="tel" style="width:112px;margin:0 auto"><img src="img/capturas/m-hoy.jpg" alt="Today screen"></div><p class="capleg" style="text-align:center"><b>Today</b> · NOVA summary, emergency button and vitals arriving from the ship</p></div>
+    <div><div class="tel" style="width:112px;margin:0 auto"><img src="img/capturas/m-hoy-abajo.jpg" alt="Today, further down"></div><p class="capleg" style="text-align:center"><b>Today, further down</b> · Home, check-in and the day’s plan in ship time</p></div>
+    <div><div class="tel" style="width:112px;margin:0 auto"><img src="img/capturas/m-crew.jpg" alt="Crew"></div><p class="capleg" style="text-align:center"><b>Crew</b> · the crew live from the ship, with “Help David”</p></div>
+  </div>
+  <h2 style="margin-top:16px">What travels between the phone and the ship</h2>
+  <table class="t" style="margin-top:10px">
+    <thead><tr><th style="width:190px">Data</th><th style="width:150px">How often · route</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td><b>Pulse and HRV, SpO₂, steps, light and noise</b></td><td><code>POST /v1/lote</code> every 5 s</td><td>Numbers only. The core validates them like the station’s.</td></tr>
+      <tr><td><b>Last night’s sleep and resting pulse</b></td><td>every minute, if changed</td><td>Numbers only.</td></tr>
+      <tr><td><b>Check-in mood and energy</b></td><td>every minute, if changed</td><td>Only with “Share my day”. Journal text never leaves the phone.</td></tr>
+      <tr><td><b>Crew status</b></td><td><code>GET /v1/estado</code> every 5 s</td><td>Feeds Today, Crew and the “The ship” card.</td></tr>
+      <tr><td><b>Mission, systems and Home</b></td><td><code>/v1/mision</code>, <code>/v1/sistemas</code>, <code>/v1/casa</code> every minute</td><td>Home is stored on the phone to view without a link.</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:6px;font-size:7.6pt;color:var(--mut)">Code: <code>src/cuenta/nave.ts</code> and <code>naveEstado.ts</code> in nova-app. Screenshots from November 9.</p>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>40 / 58</span></div>
+</section>

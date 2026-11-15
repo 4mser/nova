@@ -1,0 +1,26 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">14</span>&nbsp;&nbsp;·&nbsp;&nbsp;Vitals and forecast</div>
+  <h1 style="font-size:25pt;margin-top:10px">Each sign's history and what comes in the next 15 minutes</h1>
+  <p class="lead">The Vitals view draws the history stored on board (1 Hz for 6 h and per minute for 30 days, on disk; windows of 10 min to 7 days) with the core's current thresholds on top, projects each sign forward and warns when something departs from what is expected.</p>
+  <div style="display:grid;grid-template-columns:330px 1fr;gap:16px;margin-top:16px;align-items:start">
+    <div><div class="cap"><img src="img/capturas/pc2-vitals-pulso.jpg" alt="Pulse panel with the forecast cone"></div>
+      <p class="capleg"><b>Kenji's pulse, last hour.</b> In lilac, the 15 min cone: 55 ±18 bpm, with a 14% chance of landing at the attention threshold (≤ 45).</p></div>
+    <div class="lista" style="margin-top:0">
+      <div class="it"><i style="background:var(--cian)"></i><p><b>Trend.</b> Weighted least squares over that person's last 30 min, with more weight on recent data (15 min constant).</p></div>
+      <div class="it"><i style="background:var(--lila)"></i><p><b>Cone.</b> Projects a quarter of the chosen window, up to 15 min. Width is ±2 deviations and grows with the horizon.</p></div>
+      <div class="it"><i style="background:var(--amb)"></i><p><b>Crossing probability.</b> The chance of passing the attention threshold at the end of the horizon. Above 30% the cone turns amber.</p></div>
+      <div class="it"><i style="background:var(--mag)"></i><p><b>Unexpected change.</b> If the latest reading lands more than 3 deviations from what the trend expected, the panel marks it as <i>unexpected change</i>.</p></div>
+    </div>
+  </div>
+  <div class="tj" style="margin-top:14px;border-color:rgba(242,180,87,.35)"><div class="k" style="color:var(--amb)"><lu n="info"></lu>&nbsp; Honest scope</div><p>Simple, explainable statistics on each person's data, in the spirit of world models: predict and act on the prediction. It is neither a learned model nor clinically validated. It runs only with readings from the last 30 s.</p></div>
+  <h2 style="margin-top:18px">Each vital sign, read through the spaceflight hazard that drives it</h2>
+  <table class="t" style="margin-top:10px">
+    <tr><th style="width:28%">Hazard (NASA HRP)</th><th style="width:34%">What NOVA watches</th><th>How</th></tr>
+    <tr><td><b>Space radiation</b></td><td>Cumulative mission dose</td><td>MSL RAD rates: 1.84 mSv/day in cruise, 0.64 on Mars; limit 600 mSv</td></tr>
+    <tr><td><b>Isolation and confinement</b></td><td>Sleep, mood, energy, HRV</td><td>Shared check-ins and heart rate variability</td></tr>
+    <tr><td><b>Distance from Earth</b></td><td>Blood sugar and light delay</td><td>No resupply or evacuation</td></tr>
+    <tr><td><b>Gravity fields</b></td><td>Pulse and pressure</td><td>Fluids shift up and the heart adapts</td></tr>
+    <tr><td><b>Hostile, closed environment</b></td><td>SpO₂, breathing, temperature, CO₂</td><td>Cabin air reaches the body</td></tr>
+  </table>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>14 / 58</span></div>
+</section>

@@ -1,0 +1,24 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">46</span>&nbsp;&nbsp;·&nbsp;&nbsp;Investigación · Visión ocular y detector de radiación</div>
+  <h1 style="font-size:25pt;margin-top:10px">Dos líneas que ya cambiaron la nave</h1>
+  <p class="lead">El trabajo del equipo vive en <code>research/</code> del repositorio público. Cada línea dice su estado; las conexiones con la nave que se nombran aquí existen en el código.</p>
+  <div class="tj" style="margin-top:16px">
+    <div class="k" style="color:var(--cian)"><lu n="eye"></lu>&nbsp; Salud ocular con visión artificial · Nicolás Richardson</div>
+    <p>Monitoreo de los ojos solo con cámara: parpadeo, PERCLOS, posición del párpado inferior y distancia a la pantalla, comparados con la línea base de cada persona. Aviso de seguimiento, nunca diagnóstico. Incluye una revisión de antecedentes con fuentes primarias y etiquetas de verificación, un plan por fases y pruebas con pytest.</p>
+    <table class="t cmp" style="margin-top:10px;font-size:8.2pt;table-layout:fixed">
+      <tr><th>Medición del spike (webcam 640×480, una persona)</th><th style="width:150px">Resultado</th></tr>
+      <tr><td><b>MediaPipe Face Landmarker</b> · 478 puntos, iris incluido</td><td>100 % de detección</td></tr>
+      <tr><td><b>Latencia mediana</b></td><td>7,76 ms</td></tr>
+      <tr><td><b>Cambio mínimo detectable (MDC95, con reposición)</b></td><td>~1,8 a 2,2 mm de apertura</td></tr>
+      <tr><td><b>Distancia pupila–ceja</b> · meta ≤ 2,3 mm</td><td>3,3 mm: no sirve aún</td></tr>
+    </table>
+    <p style="margin-top:8px"><b style="color:var(--ink)">En la nave:</b> su método, su modelo y sus MDC son la base del sistema Eyes del escáner (página 27). Sus fases 1 a 3 (módulo propio, mediciones y control de calidad) siguen pendientes.</p>
+  </div>
+  <div class="tj" style="margin-top:12px">
+    <div class="k" style="color:var(--amb)"><lu n="radiation"></lu>&nbsp; Detector activo de radiación · Luis González</div>
+    <p>Diseño conceptual (propuesta de 9 páginas) con siete cambios para que sea viable en vuelo: pantallas de ⁶LiF/ZnS:Ag para neutrones en vez de ³He, una sola esfera Bonner con detectores a seis radios, CsI(Tl) o GAGG:Ce en vez de NaI(Tl), telescopio ΔE-E para protones, espectrómetro LET de silicio para iones pesados (sin LET no hay dosis equivalente), canal rápido de alerta solar en la FPGA y manejo de los SiPM bajo radiación. Presupuesto de ~15–25 kg y 10–25 W, plan de simulación (Geant4, FLUKA, MCNP) y calibración, y una hoja de ruta de cuatro fases hasta un vuelo de demostración en órbita baja.</p>
+    <p style="margin-top:8px"><b style="color:var(--ink)">En la nave:</b> el contrato de la estación ya define su mensaje (<code>tasa_usv_h</code>, <code>alerta_spe</code>, <code>let_kev_um</code>, <code>neutrones_usv_h</code>, <code>protones_cm2_s</code>) y la vista Radiation muestra cada canal «esperando hardware». No está construido. Revisión física sugerida: Daniella Mora.</p>
+  </div>
+  <div class="tj" style="margin-top:12px;border-color:rgba(111,214,176,.35)"><div class="k" style="color:var(--ok)"><lu n="github"></lu>&nbsp; Repositorio público</div><p>El 15 de noviembre se publicó <code>github.com/4mser/nova</code> con historial limpio y documentación en inglés: README por módulo, GIF del sistema real, <code>research/</code> con estas líneas y <code>hardware/</code> con la estación de Luis. Cada aporte conserva su autoría en los commits.</p></div>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>46 / 58</span></div>
+</section>

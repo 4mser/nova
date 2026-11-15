@@ -1,0 +1,38 @@
+<section class="page p10">
+<style>.p10 table.t td{padding:4px 12px}.p10 table.t td:first-child,.p10 table.t td:last-child{white-space:nowrap}.p10 .lead{font-size:10.2pt!important}.p10 table.t th{padding:7px 12px}.p10 .tj{padding:12px 15px}.p10 .tj p{font-size:8.8pt}</style>
+  <div class="kick"><span style="color:var(--mut)">10</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part I · Architecture&nbsp;&nbsp;·&nbsp;&nbsp;Medical station</div><h1 style="font-size:25pt;margin-top:10px">A data contract to connect any hardware</h1>
+  <p class="lead">The medical station talks to the core through an open contract: one JSON line per measurement (NDJSON). If the message meets the contract, the core understands it without knowing which board is behind it. Luis's station, the simulator and the phones come in through the same door.</p>
+
+  <div class="g2" style="margin-top:14px;grid-template-columns:1.15fr 1fr">
+    <div class="tj"><div class="k" style="color:var(--ok)"><lu n="cable"></lu>&nbsp; Transport</div>
+      <p><b style="color:var(--ink)">UDP to port 50050</b>, one message per datagram, max 1 KB, UTF-8 ending in a newline. The contract also proposes USB serial at 115,200 baud to avoid depending on the network; the <code>Estacion</code> component reads only UDP today. Phones come in through <code>/v1/lote</code>.</p></div>
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="braces"></lu>&nbsp; One measurement</div>
+      <p style="font:400 7.8pt/1.55 'PM',monospace;color:var(--cian);margin-top:8px;word-break:break-all">{"v":1,"tipo":"medicion","est":"estacion-1",<br>"t":1763164800123,"trip":"T2","sensor":"spo2",<br>"valor":97,"unidad":"%","calidad":0.92}</p>
+      <p style="font-size:8.4pt">The unit is checked against the contract table; if it does not match, the message is dropped with its reason.</p></div>
+  </div>
+
+  <table class="t" style="margin-top:12px;font-size:8.4pt">
+    <thead><tr><th style="width:96px">Type</th><th>Purpose</th><th style="width:196px">What the core does today</th></tr></thead>
+    <tbody>
+      <tr><td><b>medicion</b></td><td>vital signs, cabin and the 7 phone sensors</td><td><span class="est ok">in use</span> validates and classifies</td></tr>
+      <tr><td><b>latido</b></td><td>the station is still alive, every 5 s</td><td><span class="est ok">in use</span> 15 s without signal = <code>PERDIDA</code></td></tr>
+      <tr><td><b>onda</b></td><td>numbered ECG or PPG chunks</td><td><span class="est par">partial</span> sign of life</td></tr>
+      <tr><td><b>evento</b></td><td><code>sin_contacto</code>, <code>movimiento</code>, <code>error_sensor</code>…</td><td><span class="est par">partial</span> sign of life</td></tr>
+    </tbody>
+  </table>
+
+  <h2 style="margin-top:16px">The simulator: real variability and five scenarios</h2>
+  <p style="margin-top:5px;font-size:9.4pt">Until the physical station is present, <code>estacion/simulador/simulador.py</code> sends messages with the same contract. Pulse, SpO₂ and breathing follow, second by second, the variability of four records from the BIDMC PPG and Respiration Dataset (PhysioNet, ODC-By 1.0), one per crew member, on top of their baseline. It sends pulse and SpO₂ every 1 s, breathing every 2 s, HRV and temperature every 10 s, pressure every 15 s and glucose every 30 s. Scenarios are requested in the terminal or over UDP 50053.</p>
+  <table class="t" style="margin-top:10px;font-size:8.4pt">
+    <thead><tr><th style="width:132px">Scenario</th><th>What changes</th><th style="width:152px">Timing</th></tr></thead>
+    <tbody>
+      <tr><td><b>desmayo T3</b></td><td>pulse −26 (Ingrid at 34 bpm), pressure −48/−34</td><td>drops in 20 s, recovers at 3 min</td></tr>
+      <tr><td><b>hipoglucemia T1</b></td><td>glucose −46 mg/dL, pulse +38, HRV −25 ms</td><td>120 s ramp</td></tr>
+      <tr><td><b>fiebre T2</b></td><td>temperature +2.0 °C, pulse +22, breathing +5</td><td>150 s ramp</td></tr>
+      <tr><td><b>hipoxia T4</b></td><td>SpO₂ −11%, pulse +30, breathing +10</td><td>60 s ramp</td></tr>
+      <tr><td><b>co2</b> · <b>normal</b></td><td>cabin CO₂ +1,500 ppm · all to baseline</td><td>immediate</td></tr>
+    </tbody>
+  </table>
+    <p style="margin-top:9px;font-size:8.6pt;color:var(--mut)"><lu n="calendar-days" style="color:var(--lila)"></lu>&nbsp; <code>sembrar_diarios.py</code> leaves two weeks of sleep, mood and energy for the Mind view. &nbsp;<lu n="cpu" style="color:var(--amb)"></lu>&nbsp; Luis's physical station already reads ECG and cards (pages 34 to 39); with <code>NOVA_SIN_SIMULADOR=1</code> the ship does not start the simulator.</p>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>10 / 58</span></div>
+</section>

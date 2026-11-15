@@ -1,0 +1,42 @@
+<section class="page p09">
+<style>.p09 table.t td{padding:5px 12px;white-space:nowrap}.p09 .tj{padding:12px 15px}.p09 .tj p{font-size:8.6pt}.p09 table.t th{padding:7px 12px}</style>
+  <div class="kick"><span style="color:var(--mut)">09</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part I · Architecture&nbsp;&nbsp;·&nbsp;&nbsp;F Prime in detail</div><h1 style="font-size:25pt;margin-top:10px" class="p09x">Two thresholds per side and a rule against false alarms</h1>
+  <p class="lead">The health monitor compares each reading with two limits: <b style="color:var(--amb)">attention</b>, handled by the crew, and <b style="color:var(--mag)">Earth notice</b>, which calls the flight surgeon. The 31 limits are F Prime parameters: they live in <code>prmDb</code>, change by command and the screen draws them exactly as they are in the core.</p>
+
+  <svg class="dg" viewBox="0 0 674 118" style="margin-top:12px" role="img" aria-label="Levels of an indicator">
+    <rect x="1" y="14" width="118" height="56" rx="12" fill="#0f1722" stroke="rgba(150,185,215,.26)"/><text class="t" x="14" y="38">SIN_DATO</text><text x="14" y="56">not reporting yet</text>
+    <rect x="139" y="14" width="118" height="56" rx="12" fill="rgba(111,214,176,.08)" stroke="rgba(111,214,176,.55)"/><text class="t" x="152" y="38">NORMAL</text><text x="152" y="56">within range</text>
+    <rect x="277" y="14" width="118" height="56" rx="12" fill="rgba(143,230,245,.06)" stroke="rgba(143,230,245,.4)" stroke-dasharray="4 4"/><text class="t" x="290" y="38">ESPERADO_VUELO</text><text x="290" y="56">defined, no rule</text>
+    <rect x="415" y="14" width="118" height="56" rx="12" fill="rgba(242,180,87,.08)" stroke="rgba(242,180,87,.6)"/><text class="t" x="428" y="38">ATENCION</text><text x="428" y="56">the crew</text>
+    <rect x="553" y="14" width="120" height="56" rx="12" fill="rgba(236,106,168,.09)" stroke="rgba(236,106,168,.6)"/><text class="t" x="566" y="38">AVISO_TIERRA</text><text x="566" y="56">flight surgeon</text>
+    <path d="M119 42H139M257 42H277M395 42H415M533 42H553" stroke="rgba(150,185,215,.4)" stroke-width="1.2"/>
+    <text class="m" x="290" y="86">NEXT · OSDR</text>
+    <text class="mo" x="139" y="110">LEVEL UP: IMMEDIATE</text><text class="mm" x="415" y="110">DOWN: 10 S IN A ROW AT THE LOWER LEVEL</text>
+  </svg>
+
+  <table class="t" style="margin-top:12px;font-size:7.9pt">
+    <thead><tr><th style="width:150px">Indicator</th><th style="width:74px">Physical range</th><th style="width:96px">Attention</th><th style="width:96px">Earth notice</th><th>Basis of the starting value</th></tr></thead>
+    <tbody>
+      <tr><td><b>Pulse</b> <span class="mono" style="color:var(--mut)">bpm</span></td><td>20–250</td><td style="color:var(--amb)">≥110 · ≤45</td><td style="color:var(--mag)">≥140 · ≤35</td><td>tachycardia &gt;100, bradycardia &lt;50</td></tr>
+      <tr><td><b>SpO₂</b> <span class="mono" style="color:var(--mut)">%</span></td><td>50–100</td><td style="color:var(--amb)">≤94</td><td style="color:var(--mag)">≤90</td><td>hypoxemia below 90%</td></tr>
+      <tr><td><b>Systolic</b> <span class="mono" style="color:var(--mut)">mmHg</span></td><td>50–250</td><td style="color:var(--amb)">≥140 · ≤90</td><td style="color:var(--mag)">≥180 · ≤80</td><td>ACC/AHA 2017; hypotension &lt;90</td></tr>
+      <tr><td><b>Diastolic</b> <span class="mono" style="color:var(--mut)">mmHg</span></td><td>30–150</td><td style="color:var(--amb)">≥90</td><td style="color:var(--mag)">≥120</td><td>ACC/AHA 2017</td></tr>
+      <tr><td><b>Temperature</b> <span class="mono" style="color:var(--mut)">°C</span></td><td>30–43</td><td style="color:var(--amb)">≥38.0 · ≤35.5</td><td style="color:var(--mag)">≥39.5 · ≤35.0</td><td>fever ≥38; hypothermia &lt;35</td></tr>
+      <tr><td><b>Breathing</b> <span class="mono" style="color:var(--mut)">rpm</span></td><td>4–60</td><td style="color:var(--amb)">≥24 · ≤10</td><td style="color:var(--mag)">≥30 · ≤8</td><td>clinical early warning</td></tr>
+      <tr><td><b>Glucose</b> <span class="mono" style="color:var(--mut)">mg/dL</span></td><td>20–600</td><td style="color:var(--amb)">≤70 · ≥180</td><td style="color:var(--mag)">≤54 · ≥250</td><td>ADA: level 1 and 2 hypoglycemia</td></tr>
+      <tr><td><b>Cabin CO₂</b> <span class="mono" style="color:var(--mut)">ppm</span></td><td>0–10,000</td><td style="color:var(--amb)">≥2,600</td><td style="color:var(--mag)">≥5,000</td><td>NASA-STD-3001 vol. 2</td></tr>
+      <tr><td><b>Sleep</b> <span class="mono" style="color:var(--mut)">h</span></td><td>0–16</td><td style="color:var(--amb)">≤5.9</td><td style="color:var(--mag)">≤3.5</td><td>cautious rule: under 6 h</td></tr>
+      <tr><td><b>Mood · energy</b> <span class="mono" style="color:var(--mut)">1–5</span></td><td>1–5</td><td style="color:var(--amb)">≤2</td><td>never</td><td>only if the person shares their day</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:7px;font-size:8pt;color:var(--mut)">Starting values (<code>docs/umbrales.md</code>), all “pending” until a physician validates them. HRV, resting pulse, steps, light, noise, cabin O₂ and temperature have no fixed threshold: they will be compared with each person's baseline.</p>
+
+  <div class="g3" style="margin-top:10px">
+    <div class="tj"><div class="k" style="color:var(--ok)"><lu n="filter"></lu>&nbsp; Estacion</div><p>Passive component at 1 Hz. Reads up to 256 messages per cycle without blocking, checks unit and range, and raises <code>PERDIDA</code> if the station is silent 15 s.</p></div>
+    <div class="tj"><div class="k" style="color:var(--mag)"><lu n="activity"></lu>&nbsp; MonitorSalud</div><p>Active component with a queue. A reading with quality below 0.5 is stored without alerting; an impossible value is dropped as a sensor error, not an emergency.</p></div>
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="monitor"></lu>&nbsp; Pantalla</div><p>Bridge to NOVA PC: sends the full status and each alert over UDP 50051 and receives what the crew enters by hand on 50052.</p></div>
+  </div>
+
+  <div class="franja" style="margin-top:10px"><div><b>4</b><span>health events: ALERTA_TIERRA, ALERTA_ATENCION, VUELVE_NORMAL, SIN_DATOS</span></div><div><b>0.5</b><span>minimum quality to alert</span></div><div><b>120 s</b><span>without data, then warns (parameter)</span></div><div><b>10</b><span>max warnings per impossible value</span></div></div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>09 / 58</span></div>
+</section>

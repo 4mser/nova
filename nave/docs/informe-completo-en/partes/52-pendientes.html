@@ -1,0 +1,31 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">52</span>&nbsp;&nbsp;·&nbsp;&nbsp;Status · Pending work, risks and plan</div>
+  <h1 style="font-size:25pt;margin-top:10px">What is missing, who owns it and in what order</h1>
+  <p class="lead">The hackathon ended on November 15 with the live demo. What follows is what makes NOVA fit to fly, in this order.</p>
+  <table class="t aire3 cmp" style="margin-top:16px;font-size:8.4pt">
+    <tr><th style="width:150px">Pending</th><th>What it includes</th><th style="width:96px">Owner</th><th style="width:70px">Status</th></tr>
+    <tr><td><b>Clinical review</b></td><td>Flight surgeons review the 13 protocols, the guided steps and the thresholds</td><td>To find</td><td><span class="est par">risk</span></td></tr>
+ <tr><td><b>Station sensors</b></td><td>Oxygen, pressure, temperature, glucose, cognitive fatigue and microbiota; entered by hand today. Networked board (ESP32) with no PC in between</td><td>Luis González</td><td><span class="est sig">next</span></td></tr>
+ <tr><td><b>Radiation detector</b></td><td>Simulation, prototype and calibration per the proposal</td><td>Luis González · Daniella Mora</td><td><span class="est sig">next</span></td></tr>
+ <tr><td><b>Research to the ship</b></td><td>Run v4 of Earth → space learning as service :8793; phases 1–3 of eye vision</td><td>Benjamín Campos · Nicolás Richardson</td><td><span class="est sig">next</span></td></tr>
+ <tr><td><b>Wellbeing and private session</b></td><td>Check-ins, Mind, Constellations and the session with the psychologist</td><td>Ambar Martínez</td><td><span class="est par">to review</span></td></tr>
+ <tr><td><b>Full Earth cycle</b></td><td>Automatic rollback, scheduled downlink, traffic held during conjunction and parent → child distillation</td><td>Team</td><td><span class="est sig">next</span></td></tr>
+ <tr><td><b>Native AR and glasses</b></td><td>WebXR <code>immersive-ar</code> and guidance for complex procedures</td><td>Team</td><td><span class="est sig">next</span></td></tr>
+ <tr><td><b>Non-commercial sources</b></td><td>Replace the 8 from WHO and OpenStax before any commercial use</td><td>Team</td><td><span class="est sig">next</span></td></tr>
+ </table>
+  <div class="g2" style="margin-top:12px">
+    <div class="tj"><div class="k" style="color:var(--mag)">Risk · Space Apps rules</div><p>Part of the work predates the hackathon. We must check what the rules allow on prior work and declare it clearly in the submission.</p></div>
+    <div class="tj"><div class="k" style="color:var(--amb)">Risk · sensors</div><p>The station already measures ECG and reads cards; the other vitals are still simulated with real PhysioNet data and labeled. The core does not change as each sensor arrives: the contract is the same.</p></div>
+  </div>
+  <svg class="dg" viewBox="0 0 674 92" style="margin-top:12px" role="img" aria-label="Timeline">
+    <line x1="20" y1="30" x2="654" y2="30" stroke="rgba(150,185,215,.26)" stroke-width="1.4"/>
+    <circle cx="40" cy="30" r="6" fill="#6fd6b0"/><circle cx="250" cy="30" r="6" fill="#6fd6b0"/><circle cx="445" cy="30" r="7" fill="#f2b457"/><circle cx="630" cy="30" r="6" fill="#a898ff"/>
+    <text class="mo" x="20" y="58">5–10 NOV</text><text x="20" y="76">core, PC, app, Earth</text>
+    <text class="mo" x="250" y="58" text-anchor="middle">11–13 NOV</text><text x="250" y="76" text-anchor="middle">vision, scanner, procedures</text>
+    <text class="ma" x="445" y="58" text-anchor="middle">14–15 NOV</text><text x="445" y="76" text-anchor="middle">station, ECG, radiation, submission</text>
+    <text class="ml" x="630" y="58" text-anchor="middle">AFTER</text><text x="630" y="76" text-anchor="middle">flight and clinic</text>
+  </svg>
+  
+  <style>.cmp td{padding:5.5px 12px!important;line-height:1.38!important}.cmp th{padding:7px 12px!important}</style>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>52 / 58</span></div>
+</section>

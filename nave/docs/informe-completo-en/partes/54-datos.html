@@ -1,0 +1,26 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">54</span>&nbsp;&nbsp;·&nbsp;&nbsp;Bibliography and data · The data</div>
+  <h1 style="font-size:25pt;margin-top:10px">What data NOVA uses and where it comes from</h1>
+  <p class="lead">What is actually measured, the public data the ship uses, the team's research data and what is simulated, which is always labeled on screen.</p>
+  <table class="t cmp" style="margin-top:14px;font-size:7.6pt;table-layout:fixed">
+    <tr><th style="width:178px">Data</th><th>What for</th><th style="width:112px">License</th><th style="width:114px">Type</th></tr>
+    <tr><td><b>Crew NOVA apps</b></td><td>Mood and energy check-in, sleep, steps, resting pulse, light and noise; only if the person shares</td><td>Own, with consent</td><td><span class="est ok">measured</span></td></tr>
+    <tr><td><b>Luis's station (AD8232 · RC522)</b></td><td>Single-lead ECG at 250 Hz, pulse, RMSSD and card identification</td><td>Own</td><td><span class="est ok">measured</span></td></tr>
+    <tr><td><b>Scanner camera</b></td><td>Pose, hands and face with MediaPipe; nothing is stored except the Eye check medians</td><td>Own</td><td><span class="est ok">measured</span></td></tr>
+    <tr><td><b>PhysioNet BIDMC</b> · Pimentel et al., 2016</td><td>Real variability of pulse, breathing and SpO₂ in the simulator</td><td>ODC-By 1.0</td><td><span class="est par">simulator</span></td></tr>
+    <tr><td><b>MSL RAD</b> · Zeitlin 2013 · Hassler 2014</td><td>Radiation rate in cruise and on Mars until the detector exists</td><td>Published</td><td><span class="est par">estimated</span></td></tr>
+    <tr><td><b>Standish J2000 elements</b> · JPL</td><td>Earth and Mars position, light delay and solar conjunction</td><td>Public use</td><td><span class="est ok">calculated</span></td></tr>
+    <tr><td><b>NASA-STD-3001 and OCHMO</b></td><td>Cabin CO₂, 600 mSv career, 250 mSv per event, shelter</td><td>US Gov.</td><td><span class="est ok">limits</span></td></tr>
+    <tr><td><b>NASA bed rest</b> · LSDA</td><td>29 subjects, campaigns 1, 3 and CFT70 (UTMB): expected range and forecast</td><td>NASA LSDA</td><td><span class="est sig">research</span></td></tr>
+    <tr><td><b>LifeSnaps</b> · Yfantidou et al., 2022</td><td>71 people with Fitbit: PatchTST pre-training</td><td>CC BY 4.0</td><td><span class="est sig">research</span></td></tr>
+    <tr><td><b>Richardson measurement</b> · Nov 14 2026</td><td>Noise floor and MDC95 of the eye measures</td><td>Own</td><td><span class="est ok">measured</span></td></tr>
+    <tr><td><b>BodyParts3D 4.0 · HRA Organ Set v1.5</b></td><td>Anatomy of the twin and the scanner (plus MakeHuman CC0 silhouette)</td><td>CC BY 4.0</td><td><span class="est ok">model</span></td></tr>
+        <tr><td><b>Medical kit photos</b></td><td>42 photos, license noted per item in <code>kit/inicial.json</code></td><td>CC0 to CC BY-SA 4.0</td><td><span class="est ok">image</span></td></tr>
+    <tr><td><b>NASA: Apollo 17 “Blue Marble” · photo of Jessica Meir</b></td><td>Earth image on the website; test body in an AR capture (the rest are team photos at Space Apps)</td><td>Public domain</td><td><span class="est ok">image</span></td></tr>
+    <tr><td><b>“RCP.ogv”</b> · Primerosauxilios, Wikimedia Commons</td><td>Tuning the compression count of guided CPR</td><td>CC BY-SA 3.0</td><td><span class="est par">testing</span></td></tr>
+    <tr><td><b>Vitals of those who do not share</b></td><td>What neither the phone nor the station measures is simulated and labeled</td><td>—</td><td><span class="est par">simulated</span></td></tr>
+  </table>
+  <div class="tj" style="margin-top:12px;border-color:rgba(242,180,87,.35)"><div class="k" style="color:var(--amb)"><lu n="info"></lu>&nbsp; What was not used</div><p>OSDR and the SOMA atlas (Inspiration4, Twins) were reviewed for in-flight expected ranges, but they publish analyses of specific days, not daily vital sign series. So <code>ESPERADO_VUELO</code> is still pending and no NOVA threshold comes from them.</p></div>
+  <style>.cmp td{padding:2.6px 10px!important;line-height:1.26!important}.cmp th{padding:6px 11px!important}</style>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>54 / 58</span></div>
+</section>

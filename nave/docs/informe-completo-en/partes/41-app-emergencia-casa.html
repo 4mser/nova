@@ -1,0 +1,26 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">41</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part IV · The phone</div>
+  <h1 style="font-size:25pt;margin-top:10px">What keeps working even if the link drops</h1>
+  <p class="lead">The functions a person depends on in a bad moment live inside the phone: the emergency protocols, messages from home already received and the private log. When there is a link, the phone adds live vitals, NOVA’s voice and the surgeon’s log.</p>
+  <div class="g4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px">
+    <div><div class="tel" style="width:132px;margin:0 auto"><img src="img/capturas/m-emergencia.jpg" alt="Emergency"></div><p class="capleg" style="text-align:center"><b>Emergency</b> · who and what happened</p></div>
+    <div><div class="tel" style="width:132px;margin:0 auto"><img src="img/capturas/m-rcp.jpg" alt="CPR guide"></div><p class="capleg" style="text-align:center"><b>CPR guide</b> · live vitals and source</p></div>
+    <div><div class="tel" style="width:132px;margin:0 auto"><img src="img/capturas/m-casa.jpg" alt="Home"></div><p class="capleg" style="text-align:center"><b>From home</b> · the family, with the light delay</p></div>
+    <div><div class="tel" style="width:132px;margin:0 auto"><img src="img/capturas/m-tu-nave.jpg" alt="The ship and private session"></div><p class="capleg" style="text-align:center"><b>The ship</b> · core, link and private session</p></div>
+  </div>
+  <div class="g2" style="margin-top:18px">
+    <div class="tj"><div class="cajacab" style="display:flex;justify-content:space-between;align-items:center"><div class="k" style="color:var(--mag)"><lu n="siren"></lu>&nbsp; Emergency on the phone</div><span class="est ok">in use</span></div>
+      <p>The ship’s 13 protocols also live inside the app (<code>src/emergencia/protocolos.json</code>), so they work without the ship and without internet. With a link, the guide shows the person’s vitals, speaks with NOVA’s voice (<code>/v1/decir</code>) and logs each step (<code>/v1/bitacora</code>). CPR has a haptic metronome at the step’s rhythm. Steps and voice in Spanish.</p></div>
+    <div class="tj"><div style="display:flex;justify-content:space-between;align-items:center"><div class="k" style="color:var(--amb)"><lu n="house"></lu>&nbsp; Home and widget</div><span class="est ok">in use</span></div>
+      <p>Family photos and messages are uploaded from Earth and arrive once the light delay has passed. The phone keeps the inbox to view without a link, replies with text or a photo (<code>/v1/casa/respuesta</code>) and shows the latest family photo in an Android home-screen widget, even with the app closed.</p></div>
+    <div class="tj"><div style="display:flex;justify-content:space-between;align-items:center"><div class="k" style="color:var(--cian)"><lu n="scan-line"></lu>&nbsp; Body scanner</div><span class="est par">partial</span></div>
+      <p>The “Body scanner” button in Today opens <code>https://&lt;nave&gt;:8751/escaner.html</code> with the crew member already chosen: the browser camera requires a secure page and the ship brings its own certificate. Tested with a simulated camera; a test on a real phone is still pending.</p></div>
+    <div class="tj"><div style="display:flex;justify-content:space-between;align-items:center"><div class="k" style="color:var(--lila)"><lu n="lock"></lu>&nbsp; Privacy</div><span class="est ok">in use</span></div>
+      <p>The journal and everything written stay on the phone. Mood leaves only with “Share my day”. A cycle summary leaves only if the person chooses, and via <code>/v1/privado</code> goes only to the flight surgeon’s report, never to the crew screen.</p></div>
+  </div>
+  <div class="tj" style="margin-top:12px;display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start">
+    <lu n="calendar-clock" style="color:var(--amb);width:20px;height:20px"></lu>
+    <p style="margin:0">The profile’s <b>“The ship”</b> card shows the core online, the distance in light-minutes and the last change sent from Earth. Below it, the private session with the psychologist on Earth: video arrives about 9 minutes late, so NOVA sends her the topics the person chose in advance.</p>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>41 / 58</span></div>
+</section>

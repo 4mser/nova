@@ -1,0 +1,22 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">43</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part IV · Earth</div>
+  <h1 style="font-size:25pt;margin-top:10px">Mission Control: what the flight surgeon sees, always minutes behind</h1>
+  <p class="lead">The Earth console (<code>ui/tierra/</code>) is served by the same link at <code>/tierra/</code>. It represents the Earth side: everything it shows comes from the ship with the light delay, and everything it sends travels with that same delay, computed by the mission. Today, day 220, it is 9.9 minutes each way.</p>
+  <div class="cap" style="margin:12px auto 0;width:480px"><img src="img/capturas/pc-tierra.jpg" alt="Earth console"></div>
+  <p class="capleg" style="width:480px;margin-left:auto;margin-right:auto"><b>Earth console</b> · crew status “as received”, 24 h alerts and the nightly report. Screenshot from November 9; the “Teach NOVA” panel on the next page was added later.</p>
+  <div class="g3" style="margin-top:14px">
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="clock-arrow-down"></lu>&nbsp; What arrives</div><p>The state the ship sent 9.9 min ago (<code>/v1/tierra/estado</code>). Before the first delay has passed, the console says so: “first signal since link start”.</p></div>
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="file-text"></lu>&nbsp; Nightly report</div><p>24 h summary per person, alerts, emergency guides with their log, questions to NOVA with their sources, private summaries with consent and what NOVA needs to improve.</p></div>
+    <div class="tj"><div class="k" style="color:var(--mag)"><lu n="send"></lu>&nbsp; What goes up</div><p>Core limit changes with their reason, signed packages for NOVA and messages from families. Each with its arrival time at the ship.</p></div>
+  </div>
+  <table class="t" style="margin-top:14px">
+    <thead><tr><th style="width:150px">Action</th><th style="width:170px">Link route</th><th>Effect on the ship</th></tr></thead>
+    <tbody>
+      <tr><td><b>Read the report</b></td><td><code>GET /v1/tierra/informe</code></td><td>24 h summary, alerts, guides, conversations and private data with consent.</td></tr>
+      <tr><td><b>Change a threshold</b></td><td><code>POST /v1/sistemas/comando</code></td><td>Only names from the deployment dictionary. Travels as <code>en_vuelo</code> → <code>entregando</code> → <code>entregado</code> and is applied as <code>*_PRM_SET</code>.</td></tr>
+      <tr><td><b>Teach NOVA</b></td><td><code>POST /v1/tierra/actualizar</code></td><td>Up to 10 notes and 10 validated answers, signed on Earth (page 44).</td></tr>
+      <tr><td><b>Message from home</b></td><td><code>POST /v1/casa/subida</code></td><td>Reaches the phone and the widget with the delay.</td></tr>
+    </tbody>
+  </table>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>43 / 58</span></div>
+</section>

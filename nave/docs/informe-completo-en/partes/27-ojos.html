@@ -1,0 +1,19 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">27</span>&nbsp;&nbsp;·&nbsp;&nbsp;Body scan · Eyes</div>
+  <h1 style="font-size:25pt;margin-top:10px">The eyes, measured with the camera and compared with oneself</h1>
+  <p class="lead">Spaceflight-associated neuro-ocular syndrome (SANS) and tiredness show in the eyes. The scanner adds the Eyes system with Nicolás Richardson's ocular vision method: MediaPipe Face Landmarker on the same device, at full resolution, with the same model he measured (sha256 verified).</p>
+  <div class="cap" style="margin-top:14px"><img src="img/propias/ojos-2.jpg" style="height:300px;object-fit:cover;object-position:center 30%" alt="Eyes system on a team member"></div>
+  <p class="capleg"><b>Eyes live.</b> Opening of each eye, upper and lower eyelid to pupil, blinks per minute, distance, head stillness and alertness level. Tested on a team member at Space Apps, looking at the Eye check red dot.</p>
+  <div class="g2" style="margin-top:12px">
+    <div class="tj">
+      <div class="k" style="color:var(--cian)"><lu n="ruler"></lu>&nbsp; Measures and their noise</div>
+      <p>Millimeters assume an 11.7 mm iris. There is a stillness gate and blinks are excluded. The 20 s “Eye check” looking at a red dot stores the median on the ship (<code>/v1/ojos</code>) and compares it with that person's and that camera's baseline. It only asks for follow-up if the change exceeds the minimal detectable change (MDC95) Richardson measured: 1.8 mm in opening, 1.2 mm in upper eyelid and 0.9 mm in lower.</p>
+    </div>
+    <div class="tj">
+      <div class="k" style="color:var(--amb)"><lu n="moon"></lu>&nbsp; Tiredness, not emotions</div>
+      <p>PERCLOS over the last minute (eyes ≥ 80 % closed; Dinges and Grace, 1998): from 7.5 % “some signs”, from 15 % “tired”. It adds blink duration, closures of 0.5 s or more and yawns. An Eye check with tiredness in the last 12 h shows up in Mind with its reason. NOVA knows it does not read emotions from the face.</p>
+    </div>
+  </div>
+  <div class="tj" style="margin-top:12px;border-color:rgba(242,180,87,.35)"><div class="k" style="color:var(--amb)"><lu n="info"></lu>&nbsp; What it does not do</div><p>It does not diagnose SANS: it flags a change and suggests repeating the next day and reading a near-vision chart. Pupil–brow distance is not used because its MDC (3.3 mm) does not yet allow useful changes to be seen. It was measured with one camera and one person; clinical validation is pending.</p></div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>27 / 58</span></div>
+</section>

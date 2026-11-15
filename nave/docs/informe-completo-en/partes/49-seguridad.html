@@ -1,0 +1,46 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">49</span>&nbsp;&nbsp;·&nbsp;&nbsp;Rigor · Clinical safety and privacy</div>
+  <h1 style="font-size:25pt;margin-top:10px">Fixed rules where there is risk, and the person decides what is shared</h1>
+  <div class="g2" style="margin-top:18px;align-items:start">
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="shield-check"></lu>&nbsp; Clinical safety</div>
+      <div class="lista" style="margin-top:6px;gap:4px">
+        <div class="it"><i style="background:var(--amb)"></i><p>Thresholds in the flight core, with two levels and 10 s of hysteresis to clear.</p></div>
+                <div class="it"><i style="background:var(--amb)"></i><p>Verbatim emergency steps from a versioned file, with their source.</p></div>
+        <div class="it"><i style="background:var(--amb)"></i><p>The language model gives no emergency steps or diagnoses.</p></div>
+        <div class="it"><i style="background:var(--amb)"></i><p>What the crew reports overrides what the sensors say.</p></div>
+        <div class="it"><i style="background:var(--amb)"></i><p>AR anatomy is an estimate and the screen says so: “organ positions estimated”.</p></div>
+      </div></div>
+    <div class="tj"><div class="k" style="color:var(--lila)"><lu n="lock"></lu>&nbsp; Privacy</div>
+      <div class="lista" style="margin-top:6px;gap:4px">
+        <div class="it"><i style="background:var(--lila)"></i><p>Nothing goes to the internet: models, library, voice and vision run on the ship.</p></div>
+        <div class="it"><i style="background:var(--lila)"></i><p>Mood and energy leave only with “Share my day”. The journal never leaves the phone.</p></div>
+                <div class="it"><i style="background:var(--lila)"></i><p>The scanner stores no frames: the ship keeps only the last one in memory for the station.</p></div>
+        <div class="it"><i style="background:var(--lila)"></i><p><code>/v1/privado</code> takes consented summaries only to the flight surgeon.</p></div>
+        <div class="it"><i style="background:var(--lila)"></i><p>The demo with an external model is declared on screen and sees only demo data.</p></div>
+      </div></div>
+  </div>
+  <h2 style="margin-top:16px">Who sees each piece of data</h2>
+  <div class="g4v" style="margin-top:10px">
+    <div><b style="color:var(--cian)">Whole crew</b><span>vital signs · cabin · alerts and guides · sleep and steps · mood if shared · live scan</span></div>
+    <div><b style="color:var(--amb)">Flight surgeon</b><span>nightly report · log of guides and interventions · questions to NOVA · consented summaries</span></div>
+    <div><b style="color:var(--lila)">Psychologist</b><span>topics the person chooses for the private session</span></div>
+    <div><b style="color:var(--mag)">The person only</b><span>journal and notes · menstrual cycle · replies home until the downlink</span></div>
+  </div>
+  <h2 style="margin-top:16px">What can go wrong, and what stops it</h2>
+  <table class="t aire3 cmp" style="margin-top:10px;font-size:8.4pt">
+    <tr><th style="width:150px">Risk</th><th>Current mitigation</th><th style="width:70px">Status</th></tr>
+    <tr><td><b>The model makes up data</b></td><td>Context computed by the ship, mandatory citations, “I have not measured that”, 5 sentences</td><td><span class="est ok">mitigated</span></td></tr>
+    <tr><td><b>Wrong emergency step</b></td><td>Fixed text, no model, with source; a medical advisor is missing</td><td><span class="est par">partial</span></td></tr>
+    <tr><td><b>False alarms from a spike</b></td><td>Plausible range, minimum quality, hysteresis, thresholds by command</td><td><span class="est ok">mitigated</span></td></tr>
+    <tr><td><b>Hologram does not fit</b></td><td>3D fit to the person's measurements and FOV adjustable from the station; the instructor watches the real hands</td><td><span class="est par">partial</span></td></tr>
+    <tr><td><b>A third party on the ship's network</b></td><td><code>NOVA_TOKEN</code> on the 8 write routes; network with no internet access</td><td><span class="est par">basic</span></td></tr>
+    <tr><td><b>Malicious update</b></td><td>ed25519-signed packages and invalid signatures rejected; rollback on failure is missing</td><td><span class="est par">partial</span></td></tr>
+  </table>
+  <style>
+    .g4v{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--l1);border:1px solid var(--l1);border-radius:14px;overflow:hidden}
+    .g4v div{background:var(--s1);padding:11px 13px}.g4v b{display:block;font:600 9pt 'SG'}.g4v span{display:block;font-size:8pt;line-height:1.45;color:var(--ink2);margin-top:5px}
+  </style>
+  
+  <style>.cmp td{padding:5.5px 12px!important;line-height:1.38!important}.cmp th{padding:7px 12px!important}</style>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>49 / 58</span></div>
+</section>

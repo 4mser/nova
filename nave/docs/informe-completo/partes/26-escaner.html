@@ -1,0 +1,29 @@
+<section class="page aire3 p3t">
+  <div class="kick"><span style="color:var(--mut)">26</span>&nbsp;&nbsp;·&nbsp;&nbsp;Parte III · Escáner del cuerpo</div>
+  <h1 style="font-size:25pt;margin-top:10px">La anatomía se ajusta al cuerpo que tienes enfrente</h1>
+  <p class="lead">Apuntas el teléfono a un tripulante y NOVA pone encima su anatomía de referencia, del tamaño de esa persona, girada como está parada y a su distancia. Los órganos laten y respiran con los valores en vivo de su gemelo.</p>
+
+  <div class="cap" style="margin-top:14px;height:282px"><img style="height:100%;object-fit:cover;object-position:50% 45%" src="img/propias/esqueleto.jpg" alt="Escáner con el esqueleto completo calzado sobre un integrante del equipo en Space Apps"></div>
+  <p class="capleg"><b>En vivo en Space Apps Santiago, 15 nov.</b> El esqueleto completo calzado sobre un integrante del equipo, brazos incluidos, con la densidad ósea estimada y la franja de signos abajo. Arriba a la izquierda, lo que midió: torso de 46 cm a 1,3 m. Datos de la tripulación de demostración.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 140px;gap:16px;margin-top:12px;align-items:start">
+    <div class="lista" style="gap:7px">
+      <div class="it" style="font-size:9pt"><i style="background:var(--cian)"></i><p style="font-size:9pt;line-height:1.5"><b>Dónde está.</b> La posición sale de resolver por mínimos cuadrados los puntos 3D de MediaPipe contra los mismos puntos en la imagen, con la cámara en perspectiva (67° de campo en el teléfono, 60° en un PC, ajustable desde la estación). Así se conoce la distancia real.</p></div>
+      <div class="it" style="font-size:9pt"><i style="background:var(--lila)"></i><p style="font-size:9pt;line-height:1.5"><b>Cuánto mide.</b> El ancho de hombros (MediaPipe × 1,18, calibrado) y el largo del torso se promedian en los primeros cuadros. La anatomía se escala entre 0,85 y 1,35 veces la referencia, y el largo no cambia si las caderas salen del cuadro.</p></div>
+      <div class="it" style="font-size:9pt"><i style="background:var(--amb)"></i><p style="font-size:9pt;line-height:1.5"><b>Cómo se dobla.</b> Tres huesos (pelvis, tórax y cabeza) se mezclan por altura dentro del shader, como un esqueleto de animación. Brazos y piernas tienen un hueso rígido por segmento, y solo se dibujan si sus articulaciones se ven dentro del cuadro.</p></div>
+      <div class="it" style="font-size:9pt"><i style="background:var(--mag)"></i><p style="font-size:9pt;line-height:1.5"><b>Una ventana al interior.</b> El contorno del torso se proyecta, se recorta por la silueta de la persona y se oscurece como una cavidad. Las manos que pasan por delante tapan el holograma.</p></div>
+      <div class="it" style="font-size:9pt"><i style="background:var(--ok)"></i><p style="font-size:9pt;line-height:1.5"><b>Tres estilos.</b> Holograma (bordes luminosos, el de serie), clínico (órganos sombreados y sólidos) y rayos X (hueso claro, tejido tenue). Se cambian en vivo desde la estación.</p></div>
+    </div>
+    <div>
+      <div class="tel" style="border-radius:18px;padding:4px"><img src="img/propias/wa-2.jpg" alt="La pantalla de la nave siguiendo el escáner en vivo en Space Apps" style="border-radius:14px"></div>
+      <p class="capleg"><b>En el hackathon.</b> La pantalla de la nave sigue lo que ve el visor.</p>
+    </div>
+  </div>
+
+  <div class="g3" style="margin-top:10px">
+    <div class="tj" style="padding:13px 15px"><div class="k" style="color:var(--cian)">Atlas</div><p>BodyParts3D 4.0 (hombre) con el hígado del Human Reference Atlas (HuBMAP), CC BY 4.0. 689 piezas, 9,6 MB comprimidos.</p></div>
+    <div class="tj" style="padding:13px 15px"><div class="k" style="color:var(--lila)">Render</div><p>three.js con shaders propios sobre la imagen de la cámara, a la frecuencia de pantalla del teléfono.</p></div>
+    <div class="tj" style="padding:13px 15px"><div class="k" style="color:var(--amb)">Lo que no es</div><p>Una estimación por proporciones, no una imagen del interior. La pantalla de inicio lo dice antes de empezar.</p></div>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>26 / 58</span></div>
+</section>

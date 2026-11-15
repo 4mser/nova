@@ -1,0 +1,73 @@
+<section class="page">
+<style>
+.api{width:100%;table-layout:fixed;border-collapse:collapse;font-size:7.4pt;background:var(--s1);border:1px solid var(--l1);border-radius:12px;overflow:hidden}
+.api td{padding:3.4px 8px;border-bottom:1px solid var(--l1);color:var(--ink2);vertical-align:top;line-height:1.3;white-space:nowrap}
+.api tr:last-child td{border-bottom:0}
+.api td.r{font:400 7pt 'PM',monospace;color:var(--cian)}.api td{font-size:7.4pt}
+.api td.v{font:500 7pt 'PM',monospace;color:var(--mut);width:30px}
+.api tr.g td{background:var(--s2);font:500 7pt 'PM',monospace;letter-spacing:.14em;text-transform:uppercase;padding:5px 8px}
+.api .k{color:var(--amb)}
+</style>
+  <div class="kick"><span style="color:var(--mut)">12</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part I · Architecture&nbsp;&nbsp;·&nbsp;&nbsp;Ship API</div><h1 style="font-size:25pt;margin-top:10px">Thirty-nine routes for screens, phones, viewers and Earth</h1>
+  <p class="lead">All come from <code>tripulacion/src-tauri/src/main.rs</code> and answer the same on :8750 and :8751. GET reads, POST writes, WS is WebSocket. Those marked with <span style="color:var(--amb)"><lu n="key-round"></lu></span> require <code>x-nova-token</code> when the ship sets <code>NOVA_TOKEN</code>.</p>
+  <div class="g2" style="margin-top:14px;align-items:start;gap:12px">
+    <table class="api"><colgroup><col style="width:34px"><col style="width:158px"><col></colgroup>
+      <tr class="g"><td colspan="3" style="color:var(--cian)">Live status</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/flujo</td><td>status and alerts (SSE)</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/estado</td><td>latest full status</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/mision</td><td>day and light delay</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/salud</td><td>link version</td></tr>
+      <tr class="g"><td colspan="3" style="color:var(--ok)">What enters the core</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/lote <lu n="key-round" class="k"></lu></td><td>phone readings</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/ingreso</td><td>manual measurement</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/escenario</td><td>demo: scenario</td></tr>
+      <tr class="g"><td colspan="3" style="color:var(--cian)">History</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/historia</td><td>series for one sign</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/resumen</td><td>24 h: mean, min, max</td></tr>
+      <tr class="g"><td colspan="3" style="color:var(--lila)">Ask NOVA</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/preguntar</td><td>live answer (SSE)</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/modelo</td><td>active brain</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/opinion</td><td>was the answer useful?</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/oir</td><td>speech to text</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/decir</td><td>text to speech</td></tr>
+      <tr class="g"><td colspan="3" style="color:var(--lila)">Medical library</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/biblioteca</td><td>the 41 sources</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/biblioteca/buscar</td><td>passages by meaning</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/biblioteca/recargar</td><td>reload the index</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/biblioteca/pdf/…</td><td>original PDF</td></tr>
+      <tr class="g"><td colspan="3" style="color:var(--ok)">Medical kit</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/kit</td><td>inventory</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/kit/buscar</td><td>query the graph</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/kit/uso</td><td>log a use</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/kit/ajuste</td><td>correct a count</td></tr>
+    </table>
+    <table class="api"><colgroup><col style="width:34px"><col style="width:158px"><col></colgroup>
+      <tr class="g"><td colspan="3" style="color:var(--mag)">Emergencies and privacy</td></tr>
+      <tr><td class="v">G·P</td><td class="r">/v1/bitacora</td><td>on-board log</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/privado <lu n="key-round" class="k"></lu></td><td>surgeon only</td></tr>
+      <tr class="g"><td colspan="3" style="color:var(--lila)">Scan and vision</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/escaner/cuadro <lu n="key-round" class="k"></lu></td><td>frame; orders return</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/escaner/flujo</td><td>latest frame (SSE)</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/escaner/visores</td><td>who's scanning</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/escaner/orden <lu n="key-round" class="k"></lu></td><td>drive a viewer</td></tr>
+      <tr><td class="v">WS</td><td class="r">/v1/vision/ws</td><td>bridge to vision</td></tr>
+      <tr class="g"><td colspan="3" style="color:var(--amb)">Home</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/casa</td><td>inbox</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/casa/archivo/{id}</td><td>attachment</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/casa/respuesta</td><td>reply</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/casa/subida <lu n="key-round" class="k"></lu></td><td>arrives from Earth</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/casa/bajada <lu n="key-round" class="k"></lu></td><td>goes down to Earth</td></tr>
+      <tr class="g"><td colspan="3" style="color:var(--amb)">Systems and Earth</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/sistemas</td><td>F Prime events</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/sistemas/comando <lu n="key-round" class="k"></lu></td><td>delayed command</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/tierra/informe</td><td>nightly report</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/tierra/estado</td><td>the ship, delayed</td></tr>
+      <tr><td class="v">POST</td><td class="r">/v1/tierra/actualizar <lu n="key-round" class="k"></lu></td><td>signed package</td></tr>
+      <tr><td class="v">GET</td><td class="r">/v1/aprende</td><td>what arrived</td></tr>
+      <tr class="g"><td colspan="3" style="color:var(--mut)">Interface</td></tr>
+      <tr><td class="v">GET</td><td class="r">/ · /escaner.html</td><td>interface</td></tr>
+    </table>
+  </div>
+  <div class="franja"><div><b>39</b><span>/v1 routes plus the original PDFs</span></div><div><b>8</b><span>protected by token</span></div><div><b>3</b><span>SSE streams: status, scan, NOVA</span></div><div><b>6 MB</b><span>limit per request</span></div></div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>12 / 58</span></div>
+</section>

@@ -227,6 +227,13 @@ cd nova
 
 The model weights, the voice files and the built library index are large and are not stored in Git; each module's README explains how to get or build them.
 
+## Technical report
+
+The full technical report covers every part of NOVA as it stood at the end of the hackathon, in 58 pages: architecture, ship screens, NOVA Station and its hardware part by part, the AR body scan, the phone, the signed loop with Earth, the team's research, and every NASA document and dataset behind it.
+
+- [English (PDF)](nave/docs/informe-completo-en/NOVA-technical-report.pdf)
+- [Spanish (PDF)](nave/docs/informe-completo/NOVA-informe-tecnico-completo.pdf)
+
 ## Status
 
 Honest status at the end of the hackathon (15 Nov 2026).

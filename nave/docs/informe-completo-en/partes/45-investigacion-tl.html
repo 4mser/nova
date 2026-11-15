@@ -1,0 +1,25 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">45</span>&nbsp;&nbsp;·&nbsp;&nbsp;Research · Earth → space learning</div>
+  <h1 style="font-size:25pt;margin-top:10px">Learn each person's normal on Earth and adjust it in flight</h1>
+  <p class="lead">Benjamín Campos tested whether NOVA can learn each crew member's baseline on Earth and adapt to their “new normal” with the first days of flight. Since there are no public daily series of in-flight vital signs, he used the most studied ground analog: NASA's −6° head-down bed rest.</p>
+  <table class="t cmp" style="margin-top:14px;font-size:8.3pt;table-layout:fixed">
+    <tr><th style="width:150px">Data</th><th>What they are</th><th style="width:120px">License</th></tr>
+    <tr><td><b>NASA bed rest</b></td><td>29 subjects from campaigns 1 and 3 and CFT70 (Flight Analogs, JSC and UTMB), vitals measured every morning by nursing, published in the Life Sciences Data Archive</td><td>NASA LSDA</td></tr>
+    <tr><td><b>LifeSnaps</b></td><td>71 people with a Fitbit watch for about 4 months; “Earth” pre-training</td><td>CC BY 4.0</td></tr>
+  </table>
+  <div class="franja" style="margin-top:14px">
+    <div><b>1.9 kg</b><span>width of the adapted weight range, versus 3.8 kg unadapted</span></div>
+    <div><b>26 %</b><span>3-day steps detected, versus 10 %, with 5 % daily false alarms</span></div>
+    <div><b>52 %</b><span>normal bed-rest days the Earth monitor flags as unusual</span></div>
+    <div><b>0.793</b><span>PatchTST relative MAE, versus 0.807 for the 7-day mean</span></div>
+  </div>
+  <div class="g2" style="margin-top:14px">
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="target"></lu>&nbsp; Adapted expected range</div><p>Personal baseline + a ridge corrector learned from other subjects + that person's first 28 days in bed. It is the strongest result: at the same false alarm rate, the weight range is cut in half.</p></div>
+    <div class="tj"><div class="k" style="color:var(--lila)"><lu n="trending-up"></lu>&nbsp; 7-day forecast</div><p>PatchTST (Hugging Face <code>transformers</code>, trained on Kaggle) narrowly beats the 7-day mean. Whether pre-training on Earth data helps is still open. 27 tests pass.</p></div>
+  </div>
+  <div class="g2" style="margin-top:12px">
+    <div class="tj"><div class="k" style="color:var(--ok)"><lu n="link"></lu>&nbsp; How it connects to the ship</div><p>It uses the names in the station contract (<code>pulso</code>, <code>pa_sis</code>, <code>pa_dia</code>, <code>fr</code>, <code>temp</code>, <code>peso</code>). It is designed as one more local service, on port 8793. The team decided not to propose it yet for <code>ESPERADO_VUELO</code>: the fixed emergency thresholds do not change.</p></div>
+    <div class="tj" style="border-color:rgba(242,180,87,.35)"><div class="k" style="color:var(--amb)"><lu n="info"></lu>&nbsp; Stated limits</div><p>Bed rest reproduces the fluid shift and body unloading, not radiation, CO₂ or isolation. It is not validated with real flight. Run v4 (pulse and pressure, 3 seeds, per-person adaptation) is decided and not yet run. 65-page LaTeX report with 91 references.</p></div>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>45 / 58</span></div>
+</section>

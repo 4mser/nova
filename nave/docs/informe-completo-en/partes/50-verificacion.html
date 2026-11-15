@@ -1,0 +1,30 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">50</span>&nbsp;&nbsp;·&nbsp;&nbsp;Rigor · How we verified it</div>
+  <h1 style="font-size:25pt;margin-top:10px">What was tested, with what, and the result</h1>
+  <p class="lead">Every figure comes from a test or a measurement on the running system. What remains to be tested is in the second table, with the reason.</p>
+  <table class="t aire3 cmp" style="margin-top:16px;font-size:8.4pt">
+    <tr><th style="width:160px">Test</th><th>How</th><th style="width:118px">Result</th></tr>
+    <tr><td><b><lu n="flask-conical" style="color:var(--ok)"></lu>&nbsp; Link tests</b></td><td><code>cargo test</code>: 5-sentence cut, emergency detector, language, ed25519 signatures</td><td><span class="est ok">5 of 5 · Nov 14</span></td></tr>
+    <tr><td><b><lu n="radio" style="color:var(--ok)"></lu>&nbsp; Flight core</b></td><td>Simulator → core → alerts, events and commands in fprime-gds</td><td><span class="est ok">works</span></td></tr>
+    <tr><td><b><lu n="gamepad-2" style="color:var(--ok)"></lu>&nbsp; Headset remote control</b></td><td>Puppeteer: simulated phone in the headset and the station changing 15 controls</td><td><span class="est ok">15 of 15 · Nov 14</span></td></tr>
+    <tr><td><b><lu n="scan-eye" style="color:var(--ok)"></lu>&nbsp; Scanner, simulated camera</b></td><td>Chrome fake camera with a NASA photo as the patient</td><td><span class="est ok">60 fps · 12 fps to station</span></td></tr>
+    <tr><td><b><lu n="cpu" style="color:var(--ok)"></lu>&nbsp; Vision on the GPU</b></td><td><code>vision/bench.py</code>, Nov 14: Pose heavy 4.8 ms on GPU + hands 8.0 ms</td><td><span class="est ok">~13 ms per frame</span></td></tr>
+    <tr><td><b><lu n="heart-pulse" style="color:var(--ok)"></lu>&nbsp; Compression count</b></td><td>Real CPR video from Wikimedia Commons, Nov 11</td><td><span class="est par">8 of 11 · 0 false</span></td></tr>
+    <tr><td><b><lu n="timer" style="color:var(--ok)"></lu>&nbsp; NOVA response</b></td><td>First token with the fixed prompt cached and <code>-fa</code></td><td><span class="est ok">~1.5 s</span></td></tr>
+    <tr><td><b><lu n="smartphone" style="color:var(--ok)"></lu>&nbsp; App in mission mode</b></td><td>Puppeteer with a fake session and external network blocked</td><td><span class="est ok">works</span></td></tr>
+    <tr><td><b><lu n="book-open-check" style="color:var(--ok)"></lu>&nbsp; Library</b></td><td>License of each source checked by hand</td><td><span class="est ok">41 of 42 indexed</span></td></tr>
+    <tr><td><b><lu n="file-check-2" style="color:var(--ok)"></lu>&nbsp; This report</b></td><td><code>ambar check</code> and a visual review of each page</td><td><span class="est ok">no errors</span></td></tr>
+  </table>
+  <h2 style="margin-top:14px">What remains to be tested</h2>
+  <table class="t aire3 cmp" style="margin-top:10px;font-size:8.4pt">
+    <tr><th style="width:160px">What</th><th>Why it is not tested</th><th style="width:118px">When</th></tr>
+    <tr><td><b>Latency inside the headset</b></td><td>The scanner and guided CPR were tested live at the hackathon; latency with the phone inside the headset is not yet measured</td><td><span class="est sig">next</span></td></tr>
+    <tr><td><b>Certificate in Android Chrome</b></td><td>The ship's certificate must be accepted once</td><td><span class="est sig">pending</span></td></tr>
+    <tr><td><b>Station sensors</b></td><td>NFC and ECG work with Luis's board; oxygen, pressure, temperature and glucose are still entered by hand</td><td><span class="est sig">next</span></td></tr>
+    <tr><td><b>Clinical review</b></td><td>Protocols and thresholds need a medical advisor</td><td><span class="est par">to find</span></td></tr>
+    <tr><td><b>Flight computer</b></td><td>Measured on Apple Silicon; Jetson-class hardware is missing</td><td><span class="est sig">next</span></td></tr>
+  </table>
+  
+  <style>.cmp td{padding:5.5px 12px!important;line-height:1.38!important}.cmp th{padding:7px 12px!important}</style>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>50 / 58</span></div>
+</section>

@@ -1,0 +1,28 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">13</span>&nbsp;&nbsp;·&nbsp;&nbsp;The ship screen</div>
+  <h1 style="font-size:25pt;margin-top:10px">A screen for the crew, readable from two meters</h1>
+  <p class="lead">NOVA PC is the ship's desktop window (Tauri) and the same interface served by the link on <code>:8750</code>. It receives the F Prime core status once per second over SSE and shows it in eight views. The <b>Crew</b> view is the home view: the four crew members side by side, with NOVA on the right.</p>
+  <div class="cap" style="margin-top:16px"><img style="height:340px;object-fit:cover;object-position:top" src="img/capturas/pc2-crew.jpg" alt="NOVA PC Crew view with four crew members"></div>
+  <p class="capleg"><b>Crew view, Nov 14, 2026, mission day 220.</b> Pulse ring, rhythm and six vital signs per crew member. Kenji shows in amber for a mood of 2/5 in his check-in.</p>
+  <div class="g3" style="margin-top:14px">
+    <div class="tj">
+      <div class="k" style="color:var(--amb)"><lu n="triangle-alert"></lu>&nbsp; NOVA cards</div>
+      <p>Each warning comes from fixed rules, not the model: what changed, what to do and the source. Low pulse and pressure together open the fainting guide. <b>Acknowledge</b> mutes it 2 min if the level does not rise.</p>
+    </div>
+    <div class="tj">
+      <div class="k" style="color:var(--cian)"><lu n="maximize"></lu>&nbsp; Fills any window</div>
+      <p>Designed for 1800×1000, <code>escala.js</code> scales it by a factor of 0.68 to 1.35: text grows with the window and the grid shares out the rest. Works on a laptop or on the module screen.</p>
+    </div>
+    <div class="tj">
+      <div class="k" style="color:var(--lila)"><lu n="audio-lines"></lu>&nbsp; On-board voice and hearing</div>
+      <p>Speaks with Kokoro sentence by sentence; if it fails, it uses the system voice, also offline. Listens with whisper.cpp: cuts after 0.9 s of silence and does not hear itself.</p>
+    </div>
+  </div>
+  <table class="t" style="margin-top:14px">
+    <tr><th style="width:30%">View</th><th>What it shows</th><th style="width:16%">Status</th></tr>
+    <tr><td><b>Crew · Vitals · Body twin · Mind</b></td><td>Live · history and forecast (14) · 3D twin (15) · mental state (16)</td><td><span class="est ok">in use</span></td></tr>
+    <tr><td><b>Live body scan</b></td><td>The AR scan seen from the ship, with remote control of the viewer (part III)</td><td><span class="est ok">in use</span></td></tr>
+    <tr><td><b>Medical kit · Systems · Library</b></td><td>3D rack (20) · F Prime core (21) · library and reader (19)</td><td><span class="est ok">in use</span></td></tr>
+  </table>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>13 / 58</span></div>
+</section>

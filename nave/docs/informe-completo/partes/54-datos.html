@@ -1,0 +1,26 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">54</span>&nbsp;&nbsp;·&nbsp;&nbsp;Bibliografía y datos · Los datos</div>
+  <h1 style="font-size:25pt;margin-top:10px">Qué datos usa NOVA y de dónde vienen</h1>
+  <p class="lead">Lo medido de verdad, los datos públicos que usa la nave, los de la investigación del equipo y lo que se simula, que siempre se rotula en pantalla.</p>
+  <table class="t cmp" style="margin-top:14px;font-size:7.6pt;table-layout:fixed">
+    <tr><th style="width:178px">Datos</th><th>Para qué</th><th style="width:112px">Licencia</th><th style="width:114px">Tipo</th></tr>
+    <tr><td><b>Apps NOVA de la tripulación</b></td><td>Check-in de ánimo y energía, sueño, pasos, pulso en reposo, luz y ruido; solo si la persona comparte</td><td>Propios, con consentimiento</td><td><span class="est ok">medido</span></td></tr>
+    <tr><td><b>Estación de Luis (AD8232 · RC522)</b></td><td>ECG de una derivación a 250 Hz, pulso, RMSSD e identificación por tarjeta</td><td>Propios</td><td><span class="est ok">medido</span></td></tr>
+    <tr><td><b>Cámara del escáner</b></td><td>Pose, manos y cara con MediaPipe; nada se guarda salvo las medianas del Eye check</td><td>Propios</td><td><span class="est ok">medido</span></td></tr>
+    <tr><td><b>PhysioNet BIDMC</b> · Pimentel et al., 2016</td><td>Variabilidad real de pulso, respiración y SpO₂ en el simulador</td><td>ODC-By 1.0</td><td><span class="est par">simulador</span></td></tr>
+    <tr><td><b>MSL RAD</b> · Zeitlin 2013 · Hassler 2014</td><td>Tasa de radiación en crucero y en Marte hasta que exista el detector</td><td>Publicado</td><td><span class="est par">estimado</span></td></tr>
+    <tr><td><b>Elementos J2000 de Standish</b> · JPL</td><td>Posición de la Tierra y Marte, retraso de la luz y conjunción solar</td><td>Uso público</td><td><span class="est ok">calculado</span></td></tr>
+    <tr><td><b>NASA-STD-3001 y OCHMO</b></td><td>CO₂ de cabina, 600 mSv de carrera, 250 mSv por evento, refugio</td><td>Gob. EE. UU.</td><td><span class="est ok">límites</span></td></tr>
+    <tr><td><b>Reposo en cama NASA</b> · LSDA</td><td>29 sujetos, campañas 1, 3 y CFT70 (UTMB): rango esperado y pronóstico</td><td>NASA LSDA</td><td><span class="est sig">investigación</span></td></tr>
+    <tr><td><b>LifeSnaps</b> · Yfantidou et al., 2022</td><td>71 personas con Fitbit: pre-entrenamiento del PatchTST</td><td>CC BY 4.0</td><td><span class="est sig">investigación</span></td></tr>
+    <tr><td><b>Medición de Richardson</b> · 14 nov 2026</td><td>Suelo de ruido y MDC95 de las medidas del ojo</td><td>Propios</td><td><span class="est ok">medido</span></td></tr>
+    <tr><td><b>BodyParts3D 4.0 · HRA Organ Set v1.5</b></td><td>Anatomía del gemelo y del escáner (más silueta MakeHuman CC0)</td><td>CC BY 4.0</td><td><span class="est ok">modelo</span></td></tr>
+        <tr><td><b>Fotos del kit médico</b></td><td>42 fotos, licencia anotada por ítem en <code>kit/inicial.json</code></td><td>CC0 a CC BY-SA 4.0</td><td><span class="est ok">imagen</span></td></tr>
+    <tr><td><b>NASA: Apollo 17 «Blue Marble» · foto de Jessica Meir</b></td><td>Imagen de la Tierra en la web; cuerpo de prueba en una captura de RA (el resto son fotos del equipo en Space Apps)</td><td>Dominio público</td><td><span class="est ok">imagen</span></td></tr>
+    <tr><td><b>«RCP.ogv»</b> · Primerosauxilios, Wikimedia Commons</td><td>Afinar el conteo de compresiones de la RCP guiada</td><td>CC BY-SA 3.0</td><td><span class="est par">pruebas</span></td></tr>
+    <tr><td><b>Signos de quien no comparte</b></td><td>Lo que ni el teléfono ni la estación miden se simula y se rotula</td><td>—</td><td><span class="est par">simulado</span></td></tr>
+  </table>
+  <div class="tj" style="margin-top:12px;border-color:rgba(242,180,87,.35)"><div class="k" style="color:var(--amb)"><lu n="info"></lu>&nbsp; Lo que no se usó</div><p>OSDR y el atlas SOMA (Inspiration4, Gemelos) se revisaron para los rangos esperados en vuelo, pero publican análisis de días puntuales y no series diarias de signos vitales. Por eso <code>ESPERADO_VUELO</code> sigue pendiente y ningún umbral de NOVA sale de ellos.</p></div>
+  <style>.cmp td{padding:3.4px 10px!important;line-height:1.3!important}.cmp th{padding:6px 11px!important}</style>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>54 / 58</span></div>
+</section>

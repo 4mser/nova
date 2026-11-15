@@ -1,0 +1,29 @@
+<section class="page aire3 p3t">
+  <div class="kick"><span style="color:var(--mut)">28</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part III · Hologram by systems</div>
+  <h1 style="font-size:25pt;margin-top:10px">Six body systems, each with its own data</h1>
+  <p class="lead">In hologram style, the chosen system lights up in its color and the rest stays as a faint outline. A panel anchored to the organ shows the values and their curve over the last ten minutes, and says where each number comes from: measured, estimated or reported by the person.</p>
+
+  <div class="g3" style="margin-top:12px;gap:12px">
+    <div><div class="cap"><img src="img/propias/cardio-z.jpg" style="aspect-ratio:4/3;object-fit:cover" alt="Heart and rib cage on a team member"></div><p class="capleg"><b>Cardiovascular.</b> The heart highlighted inside the rib cage.</p></div>
+    <div><div class="cap"><img src="img/propias/resp-z.jpg" style="aspect-ratio:4/3;object-fit:cover" alt="Respiratory system with live SpO2 and breathing"></div><p class="capleg"><b>Respiratory.</b> Lungs with live SpO₂ and breaths per minute.</p></div>
+    <div><div class="cap"><img src="img/propias/oseo-z.jpg" style="aspect-ratio:4/3;object-fit:cover" alt="Skeletal system with estimated density"></div><p class="capleg"><b>Skeletal.</b> Skeleton with arms and estimated bone density (−2.1 %).</p></div>
+  </div>
+
+  <table class="t p3c" style="margin-top:12px">
+    <tr><th style="width:17%">System</th><th style="width:30%">What lights up</th><th>What it shows</th><th style="width:22%">Data origin</th></tr>
+    <tr><td><b>Cardiovascular</b></td><td>Heart, aorta and vena cava</td><td>Heart rate and systolic pressure</td><td><span class="est ok">measured · live</span></td></tr>
+    <tr><td><b>Respiratory</b></td><td>Lungs</td><td>SpO<sub>2</sub> and breaths per minute</td><td><span class="est ok">measured · live</span></td></tr>
+    <tr><td><b>Metabolic</b></td><td>Liver, pancreas, stomach, intestines</td><td>Glucose</td><td><span class="est ok">continuous sensor</span></td></tr>
+    <tr><td><b>Renal</b></td><td>Kidneys</td><td>Kidney stone risk</td><td><span class="est par">estimated · demo</span></td></tr>
+    <tr><td><b>Skeletal</b></td><td>Skeleton, skull and 8 arm and leg segments</td><td>Bone density −2.1 %</td><td><span class="est par">estimated · demo</span></td></tr>
+    <tr><td><b>Neurological</b></td><td>Brain</td><td>Mood from 1 to 5 and hours of sleep</td><td><span class="est sig">shared by the person</span></td></tr>
+  </table>
+
+  <div class="g3" style="margin-top:14px">
+    <div class="tj" style="padding:14px 16px"><div class="k" style="color:var(--mag)"><lu n="heart-pulse"></lu>&nbsp; Driven by the twin</div><p>The heart beats at the crew member's pulse and the lungs inflate at their breathing rate. It is the same live state as the rest of the ship.</p></div>
+    <div class="tj" style="padding:14px 16px"><div class="k" style="color:var(--amb)"><lu n="triangle-alert"></lu>&nbsp; Color by level</div><p>An organ with an out-of-range value pulses in its level's color: lilac to watch, amber for attention and magenta for an Earth notice, the same levels as the flight core.</p></div>
+    <div class="tj" style="padding:14px 16px"><div class="k" style="color:var(--cian)"><lu n="scan-line"></lu>&nbsp; Sweep on detection</div><p>When a body appears or you switch crew member, the hologram reveals itself from head to pelvis in 1.4 s. Curves are requested from <code>/v1/historia</code> every 5 s.</p></div>
+  </div>
+  <p style="margin-top:12px;font-size:8.4pt;color:var(--mut)">Renal and skeletal show fixed demo values for now: the ship does not yet receive urine tests or densitometry. The screen marks them as estimated.</p>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>28 / 58</span></div>
+</section>

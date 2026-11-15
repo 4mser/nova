@@ -1,0 +1,18 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">20</span>&nbsp;&nbsp;·&nbsp;&nbsp;Medical kit</div>
+  <h1 style="font-size:25pt;margin-top:10px">The medical kit as an object graph NOVA can walk through</h1>
+  <p class="lead">On Mars there is no resupply. The medical kit lives on the ship as a live inventory: each supply with its quantity, drawer, expiry and the protocols that use it. NOVA reads it before naming anything, so it says where it is and how many are left.</p>
+  <div class="cap" style="margin-top:16px"><img src="img/nuevas/kit-cajon.jpg" alt="Medical rack with drawer A open"></div>
+  <p class="capleg"><b>Drawer A open, day 221.</b> Advanced life support: the drawer slides out and releases its supplies as cards with their real photo; on the right, each supply with its quantity and expiry.</p>
+  <div class="g3" style="margin-top:14px">
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="box"></lu>&nbsp; 3D rack</div><p>Six drawers in the Space Station style. They slide out on touch and release their supplies as cards with a real photo: 42 free Wikimedia Commons photos, credited.</p></div>
+    <div class="tj"><div class="k" style="color:var(--mag)"><lu n="siren"></lu>&nbsp; Emergency mode</div><p>Choosing an emergency lights up only the drawers and supplies of that protocol, with a thread of light from each card to its drawer.</p></div>
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="calendar-clock"></lu>&nbsp; Autonomy</div><p>The day each supply runs out or expires, against day 259 (Mars) and 1,018 (return). Each use is logged in <code>kit.json</code>.</p></div>
+  </div>
+  <h2 style="margin-top:16px">Ask the rack in plain words</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+    <div class="tj"><div class="k" style="color:var(--lila)"><lu n="network"></lu>&nbsp; Scene graph</div><p>As in ConceptGraphs (Gu et al., 2023), <code>/v1/kit/buscar</code> passes the rack to the brain as a list of objects: what it is, what it is for, where it is and how many are left.</p></div>
+    <div class="tj"><div class="k" style="color:var(--ok)"><lu n="shield-check"></lu>&nbsp; The ship verifies</div><p>Only objects that exist in the rack count and the ship sets the real drawer. The screen opens it and NOVA says it out loud.</p></div>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>20 / 58</span></div>
+</section>

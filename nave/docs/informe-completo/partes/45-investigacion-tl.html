@@ -1,0 +1,25 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">45</span>&nbsp;&nbsp;·&nbsp;&nbsp;Investigación · Aprendizaje Tierra → espacio</div>
+  <h1 style="font-size:25pt;margin-top:10px">Aprender lo normal de cada persona en la Tierra y ajustarlo en vuelo</h1>
+  <p class="lead">Benjamín Campos probó si NOVA puede aprender la línea base de cada tripulante en la Tierra y adaptarse a su «nueva normalidad» con los primeros días de vuelo. Como no hay series diarias públicas de signos en vuelo, usó el análogo terrestre más estudiado: reposo en cama con la cabeza a −6° de la NASA.</p>
+  <table class="t cmp" style="margin-top:14px;font-size:8.3pt;table-layout:fixed">
+    <tr><th style="width:150px">Datos</th><th>Qué son</th><th style="width:120px">Licencia</th></tr>
+    <tr><td><b>Reposo en cama NASA</b></td><td>29 sujetos de las campañas 1 y 3 y del CFT70 (Flight Analogs, JSC y UTMB), signos medidos cada mañana por enfermería, publicados en el Life Sciences Data Archive</td><td>NASA LSDA</td></tr>
+    <tr><td><b>LifeSnaps</b></td><td>71 personas con reloj Fitbit durante unos 4 meses; pre-entrenamiento de la «Tierra»</td><td>CC BY 4.0</td></tr>
+  </table>
+  <div class="franja" style="margin-top:14px">
+    <div><b>1,9 kg</b><span>ancho del rango de peso adaptado, frente a 3,8 kg sin adaptar</span></div>
+    <div><b>26 %</b><span>escalones de 3 días detectados, frente a 10 %, con 5 % de falsas alarmas diarias</span></div>
+    <div><b>52 %</b><span>días normales en cama que el monitor de Tierra marca como raros</span></div>
+    <div><b>0,793</b><span>MAE relativo del PatchTST, frente a 0,807 del promedio de 7 días</span></div>
+  </div>
+  <div class="g2" style="margin-top:14px">
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="target"></lu>&nbsp; Rango esperado adaptado</div><p>Línea base personal + un corrector ridge aprendido de otros sujetos + los primeros 28 días en cama de esa persona. Es el resultado más fuerte: con la misma tasa de falsas alarmas, el rango de peso se reduce a la mitad.</p></div>
+    <div class="tj"><div class="k" style="color:var(--lila)"><lu n="trending-up"></lu>&nbsp; Pronóstico a 7 días</div><p>PatchTST (Hugging Face <code>transformers</code>, entrenado en Kaggle) gana por poco al promedio de 7 días. Si el pre-entrenamiento con datos de la Tierra ayuda sigue abierto. 27 pruebas pasan.</p></div>
+  </div>
+  <div class="g2" style="margin-top:12px">
+    <div class="tj"><div class="k" style="color:var(--ok)"><lu n="link"></lu>&nbsp; Cómo se conecta a la nave</div><p>Usa los nombres del contrato de la estación (<code>pulso</code>, <code>pa_sis</code>, <code>pa_dia</code>, <code>fr</code>, <code>temp</code>, <code>peso</code>). Está diseñado como un servicio local más, en el puerto 8793. El equipo decidió no proponerlo todavía para <code>ESPERADO_VUELO</code>: los umbrales fijos de emergencia no cambian.</p></div>
+    <div class="tj" style="border-color:rgba(242,180,87,.35)"><div class="k" style="color:var(--amb)"><lu n="info"></lu>&nbsp; Límites dichos</div><p>El reposo reproduce el desplazamiento de fluidos y la descarga del cuerpo, no la radiación, el CO₂ ni el aislamiento. No se valida con vuelo real. Run v4 (pulso y presión, 3 semillas, adaptación por persona) está decidido y sin correr. Informe en LaTeX de 65 páginas con 91 referencias.</p></div>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>45 / 58</span></div>
+</section>

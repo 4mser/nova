@@ -1,0 +1,63 @@
+<section class="page aire3 p3t">
+  <div class="kick"><span style="color:var(--mut)">25</span>&nbsp;&nbsp;·&nbsp;&nbsp;Parte III · Visión a bordo</div>
+  <h1 style="font-size:25pt;margin-top:10px">El teléfono mira, la nave piensa</h1>
+  <p class="lead">El escáner trabaja como un visor conectado a un computador. El teléfono muestra su propia cámara sin esperar a la red y manda cada cuadro a la nave, que corre los modelos pesados en su GPU y devuelve solo los puntos del cuerpo. Si la nave no responde, el teléfono hace la visión con modelos livianos y lo dice en pantalla.</p>
+
+  <svg class="dg" viewBox="0 0 674 318" style="margin-top:18px" role="img" aria-label="Recorrido de un cuadro entre el teléfono y la visión de a bordo">
+    <defs><marker id="fv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8fe6f5"/></marker>
+      <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#a898ff"/></marker></defs>
+    <g data-caja><rect x="1" y="10" width="186" height="150" rx="14" fill="rgba(70,200,232,.07)" stroke="rgba(143,230,245,.5)"/>
+      <text class="mc" x="16" y="32">01 · TELÉFONO O VISOR</text>
+      <text class="t" x="16" y="56">Cámara propia</text>
+      <text x="16" y="76">1280×720 hasta 60 fps</text>
+      <text x="16" y="92">se ve sin pasar por la red</text>
+      <text x="16" y="108">manda JPEG de 512 px</text>
+      <text class="m" x="16" y="146">MÁX. 2 CUADROS EN VUELO</text></g>
+    <g data-caja><rect x="244" y="10" width="186" height="150" rx="14" fill="rgba(70,200,232,.04)" stroke="rgba(143,230,245,.35)"/>
+      <text class="mc" x="259" y="32">02 · ENLACE DE LA NAVE</text>
+      <text class="t" x="259" y="56">Puente WebSocket</text>
+      <text x="259" y="76">/v1/vision/ws en axum</text>
+      <text x="259" y="92">HTTPS :8751, certificado</text>
+      <text x="259" y="108">propio de la nave</text>
+      <text class="m" x="259" y="146">RUST · TOKIO · RUSTLS</text></g>
+    <g data-caja><rect x="487" y="10" width="186" height="150" rx="14" fill="rgba(168,152,255,.08)" stroke="rgba(168,152,255,.55)"/>
+      <text class="ml" x="502" y="32">03 · VISIÓN DE A BORDO</text>
+      <text class="t" x="502" y="56">MediaPipe en la GPU</text>
+      <text x="502" y="76">Pose heavy + Hands</text>
+      <text x="502" y="92">Metal en el Mac de la nave</text>
+      <text x="502" y="108">solo escucha en 127.0.0.1</text>
+      <text class="ml" x="502" y="146">PYTHON · ~13 MS POR CUADRO</text></g>
+    <path d="M190 62 H238" stroke="#8fe6f5" stroke-width="1.5" marker-end="url(#fv)"/>
+    <path d="M433 62 H481" stroke="#8fe6f5" stroke-width="1.5" marker-end="url(#fv)"/>
+    <path d="M484 124 H436" stroke="#a898ff" stroke-width="1.5" marker-end="url(#fl)"/>
+    <path d="M241 124 H193" stroke="#a898ff" stroke-width="1.5" marker-end="url(#fl)"/>
+    <text class="m" x="337" y="190" text-anchor="middle">VUELVEN SOLO LOS RESULTADOS: 33 PUNTOS EN LA IMAGEN + 33 EN METROS, MÁSCARA DE 96 PX (1–3 KB), 21 PUNTOS POR MANO</text>
+    <g data-caja><rect x="1" y="210" width="329" height="104" rx="14" fill="rgba(242,180,87,.06)" stroke="rgba(242,180,87,.45)"/>
+      <text class="ma" x="16" y="232">RESPALDO EN EL TELÉFONO</text>
+      <text x="16" y="254">Si la nave no contesta, el teléfono corre Pose lite</text>
+      <text x="16" y="270">(full en un PC) y Hands en WebAssembly, con la imagen</text>
+      <text x="16" y="286">a 384 px. Los resultados entran por el mismo camino.</text></g>
+    <g data-caja><rect x="344" y="210" width="329" height="104" rx="14" fill="rgba(111,214,176,.06)" stroke="rgba(111,214,176,.45)"/>
+      <text class="mo" x="359" y="232">TIMEWARP EN EL TELÉFONO</text>
+      <text x="359" y="254">Cada resultado trae la hora de su cuadro. Los puntos</text>
+      <text x="359" y="270">se predicen al momento de mostrar (hasta 60 ms) y el</text>
+      <text x="359" y="286">giroscopio descuenta lo que giró el teléfono entretanto.</text></g>
+  </svg>
+
+  <div class="g2" style="margin-top:16px">
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="layers"></lu>&nbsp; Sin cola</div><p>La visión procesa siempre el cuadro más nuevo y descarta los viejos. Una respuesta para el cuadro N da por cerrados todos los anteriores, y un cuadro sin respuesta en 400 ms se da por perdido. El holograma nunca se atrasa acumulando trabajo.</p></div>
+    <div class="tj"><div class="k" style="color:var(--lila)"><lu n="users"></lu>&nbsp; El paciente primero</div><p>Con dos personas a la vista, el paciente es el de torso más horizontal: el de pie es el rescatista. Cada teléfono tiene su propio rastreador (hasta 4) para que dos cámaras no mezclen a la misma persona. La máscara se recorta solo al paciente.</p></div>
+    <div class="tj"><div class="k" style="color:var(--ok)"><lu n="rotate-3d"></lu>&nbsp; Giroscopio que se calibra solo</div><p>Los ejes del giroscopio cambian entre teléfonos. NOVA los aprende comparando el giro medido con cómo se movieron los puntos del cuerpo, y solo usa el signo cuando la relación es clara. Desde la estación se puede apagar.</p></div>
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="lock-keyhole"></lu>&nbsp; Página segura en la red de la nave</div><p>El navegador del teléfono solo entrega la cámara a una página segura. La nave genera su certificado con <code>rcgen</code> (localhost, nova.local y su IP), lo guarda en <code>~/.nova-pc/tls</code> y lo rehace si cambia la IP. La nave abre la visión, la vuelve a abrir si se cae y la visión se cierra si la nave muere.</p></div>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
+    <span class="chip"><si n="mediapipe"></si>&nbsp;MediaPipe Tasks 1.2.3 en la nave</span>
+    <span class="chip"><si n="python"></si>&nbsp;Python · websockets · OpenCV</span>
+    <span class="chip"><si n="rust"></si>&nbsp;axum · tokio-tungstenite · rustls</span>
+    <span class="chip"><si n="webassembly"></si>&nbsp;tasks-vision en el teléfono</span>
+    <span class="chip"><si n="apple"></si>&nbsp;GPU Metal</span>
+  </div>
+  <p style="margin-top:12px;font-size:8.4pt;color:var(--mut)">Medido el 14 nov en el Mac de desarrollo: ~13 ms por cuadro con los dos modelos (pose 4,8 ms en GPU, manos 8,0 ms), 25–47 ms de ida y vuelta mostrados en el visor. <span class="est par">sin medir en un teléfono real dentro de un visor</span></p>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>25 / 58</span></div>
+</section>

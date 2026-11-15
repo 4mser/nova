@@ -1,0 +1,21 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">33</span>&nbsp;&nbsp;·&nbsp;&nbsp;NOVA Station · Hojas y enlace</div>
+  <h1 style="font-size:25pt;margin-top:10px">Lo mismo que la pantalla grande, al alcance de la mano</h1>
+  <p class="lead">Cada botón del dock abre una hoja con las mismas piezas de NOVA PC: el rack 3D del kit, la misión con la luz real y el cerebro de la tripulación. La tablet no guarda nada propio: todo viene de la nave y vuelve a ella.</p>
+  <div class="g3 tab3" style="margin-top:14px;align-items:start">
+    <div><div class="tab"><img src="img/nuevas/st-kit.jpg" alt="Kit en NOVA Station"></div><p class="capleg"><b>Medical kit.</b> Rack 3D, insumos con foto y «Take 1» a nombre de la sesión.</p></div>
+    <div><div class="tab"><img src="img/nuevas/st-mision.jpg" alt="Misión en NOVA Station"></div><p class="capleg"><b>Mission.</b> Posición de la nave, día 221 de 1018 y 10 min de luz a la Tierra.</p></div>
+    <div><div class="tab"><img src="img/nuevas/st-mente.jpg" alt="Crew mind en NOVA Station"></div><p class="capleg"><b>Crew mind.</b> Ánimo, energía y sueño de quienes los comparten.</p></div>
+  </div>
+  <table class="t cmp" style="margin-top:12px;font-size:8.2pt;table-layout:fixed">
+    <tr><th style="width:120px">Pieza</th><th>Qué hace</th><th style="width:150px">Ruta</th></tr>
+    <tr><td><b>Tarjeta NFC</b></td><td>El lector manda el UID; la nave abre, cambia o cierra la sesión</td><td><code>/v1/nfc</code> · <code>/v1/sesion</code></td></tr>
+    <tr><td><b>QR personal</b></td><td>Código de un solo uso que vence a los 60 s; la app lo renueva cada 30 s, así una foto del QR deja de servir</td><td><code>/v1/qr</code> · <code>/v1/qr/entrar</code></td></tr>
+    <tr><td><b>Link a card</b></td><td>Cada tripulante asocia su propia tarjeta después de entrar con el QR</td><td><code>/v1/sesion/asignar</code></td></tr>
+    <tr><td><b>Espejo en el PC</b></td><td>La tablet publica qué muestra; el PC la sigue en la vista Hardware y en pantalla completa</td><td><code>/v1/station/pantalla</code></td></tr>
+    <tr><td><b>Radiación</b></td><td>Pastilla con tasa y dosis frente a 600 mSv; en tormenta, ámbar y guía del refugio</td><td><code>/v1/radiacion</code></td></tr>
+  </table>
+  <p style="margin-top:8px;font-size:8.2pt;color:var(--mut)">Si la app de la tablet es anterior a 0.2.0, avisa al escanear un QR. En el teléfono, el pase de NOVA Station vive en el perfil (modo misión) con el QR siempre a mano.</p>
+  <style>.cmp td{padding:4.6px 11px!important;line-height:1.34!important}.cmp th{padding:6px 11px!important}</style>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>33 / 58</span></div>
+</section>

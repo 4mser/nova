@@ -1,0 +1,13 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">39</span>&nbsp;&nbsp;·&nbsp;&nbsp;NOVA Station · Live ECG</div>
+  <h1 style="font-size:25pt;margin-top:10px">The heart of whoever is at the station, beat by beat</h1>
+  <p class="lead">The bridge detects each beat in the AD8232 wave, computes pulse, variability (RMSSD) and signal quality, and sends the wave to the ship every 0.2 s. The tablet and the PC draw it the same way; pulse and HRV go into that person’s record and into the F Prime core as real data.</p>
+  <div class="cap" style="margin-top:14px"><img src="img/nuevas/station-g_con.jpg" style="height:330px;object-fit:cover;object-position:top" alt="ECG sheet on the tablet"></div>
+  <p class="capleg"><b>One person’s ECG on the tablet.</b> Trace on ECG paper, pulse (72 bpm), RMSSD variability, signal quality and time measured. The instruction below says where each electrode goes.</p>
+  <div class="g2" style="margin-top:12px;align-items:start">
+    <div><div class="cap"><img src="img/nuevas/hw-corazon.jpg" style="height:250px;object-fit:cover;object-position:center" alt="Heart board info card"></div><p class="capleg"><b>Isolated part.</b> A click on the heart board leaves it alone with its info card: what it is, sampling, bridge and what it sends.</p></div>
+    <div class="tj"><div class="k" style="color:var(--ok)"><lu n="heart-pulse"></lu>&nbsp; First who, then their sheet</div><p>Without a session the wave is not shown. With a card, the dock’s ECG button is marked “live” and measuring starts when the sheet opens. A loose electrode shows in amber with a flat line. Pulse and HRV are saved only with the sheet open and clean beats (quality ≥ 0.5). Without electrodes, values can be entered by hand under that person.</p></div>
+  </div>
+  <div class="tj" style="margin-top:12px;border-color:rgba(242,180,87,.35)"><div class="k" style="color:var(--amb)"><lu n="info"></lu>&nbsp; What comes next</div><p>A networked board (ESP32) that talks straight to the ship with no PC in between, wave analysis inside the flight core (contract <code>onda</code> messages) and clinical-grade electrodes validated against a reference monitor.</p></div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>39 / 58</span></div>
+</section>

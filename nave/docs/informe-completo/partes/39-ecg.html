@@ -1,0 +1,13 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">39</span>&nbsp;&nbsp;·&nbsp;&nbsp;NOVA Station · ECG en vivo</div>
+  <h1 style="font-size:25pt;margin-top:10px">El corazón de quien está en la estación, latido a latido</h1>
+  <p class="lead">El puente detecta cada latido en la onda del AD8232, calcula el pulso, la variabilidad (RMSSD) y la calidad de la señal, y manda la onda a la nave cada 0,2 s. La tablet y el PC la dibujan igual; el pulso y la HRV entran al registro de esa persona y al núcleo F Prime como datos reales.</p>
+  <div class="cap" style="margin-top:14px"><img src="img/nuevas/station-g_con.jpg" style="height:330px;object-fit:cover;object-position:top" alt="Hoja ECG en la tablet"></div>
+  <p class="capleg"><b>ECG de una persona en la tablet.</b> Trazado en papel de ECG, pulso (72 lpm), variabilidad RMSSD, calidad de la señal y tiempo medido. La instrucción de abajo dice dónde va cada electrodo.</p>
+  <div class="g2" style="margin-top:12px;align-items:start">
+    <div><div class="cap"><img src="img/nuevas/hw-corazon.jpg" style="height:250px;object-fit:cover;object-position:center" alt="Ficha de la placa del corazón"></div><p class="capleg"><b>Pieza aislada.</b> Un clic en la placa del corazón la deja sola con su ficha: qué es, muestreo, puente y qué manda.</p></div>
+    <div class="tj"><div class="k" style="color:var(--ok)"><lu n="heart-pulse"></lu>&nbsp; Primero quién, después su hoja</div><p>Sin sesión no se muestra la onda. Con tarjeta, el botón ECG del dock se marca «live» y la medición parte al abrir la hoja. Un electrodo suelto se ve en ámbar con línea plana. El pulso y la HRV se guardan solo con la hoja abierta y latidos limpios (calidad ≥ 0,5). Sin electrodos se puede anotar a mano y queda a nombre de esa persona.</p></div>
+  </div>
+  <div class="tj" style="margin-top:12px;border-color:rgba(242,180,87,.35)"><div class="k" style="color:var(--amb)"><lu n="info"></lu>&nbsp; Lo que viene</div><p>Una placa con red (ESP32) que hable directo con la nave sin PC de por medio, el análisis de la onda dentro del núcleo de vuelo (mensajes <code>onda</code> del contrato) y electrodos de grado clínico validados contra un monitor de referencia.</p></div>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>39 / 58</span></div>
+</section>

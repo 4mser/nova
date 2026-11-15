@@ -1,0 +1,35 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">34</span>&nbsp;&nbsp;·&nbsp;&nbsp;NOVA Station · Arquitectura</div>
+  <h1 style="font-size:25pt;margin-top:10px">Tres capas y un solo camino: todo pasa por la nave</h1>
+  <p class="lead">NOVA Station junta una tablet, la estación física que diseñó y armó Luis González y un puente en un computador cercano. Ninguna de las tres guarda datos propios: la tablet muestra, el Arduino mide y el puente traduce. Lo que vale queda en la nave y en su núcleo F Prime.</p>
+  <svg class="dg" viewBox="0 0 674 360" style="margin-top:14px" role="img" aria-label="Arquitectura de NOVA Station">
+    <defs><marker id="fa" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="rgba(150,185,215,.7)"/></marker></defs>
+    <text class="mc" x="2" y="12">QUIÉN LO USA</text>
+    <rect x="2" y="20" width="214" height="78" rx="12" fill="#0a1018" stroke="rgba(143,230,245,.5)"/><text class="t" x="16" y="44">Tablet · NOVA Station</text><text x="16" y="62">app Expo 57 en modo quiosco</text><text x="16" y="76">WebView de station.html</text><text x="16" y="90">micrófono nativo → /v1/oir</text>
+    <rect x="230" y="20" width="214" height="78" rx="12" fill="#0a1018" stroke="rgba(168,152,255,.5)"/><text class="t" x="244" y="44">Teléfono del tripulante</text><text x="244" y="62">pase de NOVA Station</text><text x="244" y="76">QR de un solo uso, cada 30 s</text><text x="244" y="90">«Compartir mi día»</text>
+    <rect x="458" y="20" width="214" height="78" rx="12" fill="#0a1018" stroke="rgba(242,180,87,.5)"/><text class="t" x="472" y="44">NOVA PC</text><text x="472" y="62">vista Hardware en 3D</text><text x="472" y="76">espejo en vivo de la tablet</text><text x="472" y="90">ECG igual que en la tablet</text>
+    <path d="M109 98 V136 M337 98 V136 M565 98 V136" stroke="rgba(150,185,215,.5)" stroke-width="1.3" marker-end="url(#fa)"/>
+    <text class="m" x="116" y="122">HTTP + SSE</text><text class="m" x="344" y="122">POST /v1/qr</text><text class="m" x="572" y="122">/v1/flujo</text>
+    <rect x="2" y="140" width="670" height="74" rx="12" fill="#0f1722" stroke="rgba(143,230,245,.6)"/>
+    <text class="tg" x="16" y="164">Enlace de la nave · :8750 (HTTPS :8751)</text>
+    <text x="16" y="184">/v1/nfc · /v1/sesion · /v1/sesion/asignar · /v1/qr · /v1/qr/entrar · /v1/lote · /v1/estacion/onda</text>
+    <text x="16" y="200">/v1/station/pantalla · /v1/oir · /v1/preguntar · /v1/radiacion · /v1/kit · /v1/casa · tarjetas en ~/.nova-pc/tarjetas.json</text>
+    <path d="M200 252 V218 M565 214 V252" stroke="rgba(150,185,215,.5)" stroke-width="1.3" marker-end="url(#fa)"/>
+    <text class="m" x="207" y="240">POST /v1/nfc · /v1/lote · onda</text><text class="m" x="572" y="240">UDP 50050</text>
+    <text class="mo" x="2" y="246">LA ESTACIÓN FÍSICA</text>
+    <rect x="2" y="256" width="186" height="100" rx="12" fill="#0a1018" stroke="rgba(111,214,176,.55)"/><text class="t" x="16" y="280">Arduino Uno R3</text><text x="16" y="298">RC522 por SPI, cada 100 ms</text><text x="16" y="312">AD8232 en A0 a 250 Hz</text><text x="16" y="326">LO+ D2 · LO− D3</text><text class="m" x="16" y="346">estacion_nova.ino</text>
+    <path d="M188 306 H216" stroke="rgba(150,185,215,.5)" stroke-width="1.3" marker-end="url(#fa)"/><text class="m" x="190" y="298">USB</text>
+    <rect x="220" y="256" width="226" height="100" rx="12" fill="#0a1018" stroke="rgba(143,230,245,.45)"/><text class="t" x="234" y="280">Puente · lector_nova.py</text><text x="234" y="298">serie a 115200 (9600 de respaldo)</text><text x="234" y="312">latidos, pulso, RMSSD y calidad</text><text x="234" y="326">página de estado en :5000</text><text class="m" x="234" y="346">computador de la estación</text>
+    <rect x="460" y="256" width="212" height="100" rx="12" fill="#0a1018" stroke="rgba(236,106,168,.5)"/><text class="t" x="474" y="280">Núcleo F Prime</text><text x="474" y="298">componente Estacion</text><text x="474" y="312">MonitorSalud: umbrales</text><text x="474" y="326">y aviso a la Tierra</text><text class="m" x="474" y="346">pulso y VFC como datos reales</text>
+  </svg>
+  <table class="t cmp" style="margin-top:14px;font-size:8.1pt;table-layout:fixed">
+    <tr><th style="width:170px">Pieza de software</th><th>Qué hace</th><th style="width:150px">Dónde vive</th></tr>
+    <tr><td><b>station.html · .css · .js</b></td><td>La interfaz de la tablet: Órbita, gemelo, hojas, emergencia y NOVA flotante</td><td><code>nave/tripulacion/ui</code></td></tr>
+    <tr><td><b>App NOVA Station</b></td><td>Expo 57: quiosco, micrófono nativo, ajustes con 5 toques en la esquina; avisa si es anterior a 0.2.0</td><td><code>station/</code> · EAS</td></tr>
+    <tr><td><b>nfc.rs</b></td><td>Sesiones por lector (vencen a los 120 s), QR de un solo uso, «Link a card» y acciones a nombre de la sesión</td><td><code>src-tauri/src</code></td></tr>
+    <tr><td><b>lector_nova.py · estacion_nova.ino</b></td><td>El firmware del Arduino y el puente serie → nave</td><td><code>hardware/</code></td></tr>
+    <tr><td><b>estacion3d.mjs</b></td><td>La estación en 3D desde el ensamble STEP de Luis (estacion.glb), con la pantalla real encima</td><td><code>nave/tripulacion/ui</code></td></tr>
+  </table>
+  <style>.cmp td{padding:4.4px 11px!important;line-height:1.32!important}.cmp th{padding:6px 11px!important}</style>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>34 / 58</span></div>
+</section>

@@ -1,0 +1,18 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">20</span>&nbsp;&nbsp;·&nbsp;&nbsp;Kit médico</div>
+  <h1 style="font-size:25pt;margin-top:10px">El botiquín como un grafo de objetos que NOVA sabe recorrer</h1>
+  <p class="lead">En Marte no hay reabastecimiento. El kit médico vive en la nave como un inventario en vivo: cada insumo con su cantidad, su cajón, su vencimiento y los protocolos que lo usan. NOVA lo lee antes de nombrar algo, así dice dónde está y cuántos quedan.</p>
+  <div class="cap" style="margin-top:16px"><img src="img/nuevas/kit-cajon.jpg" alt="Rack médico con el cajón A abierto"></div>
+  <p class="capleg"><b>Cajón A abierto, día 221.</b> Soporte vital avanzado: el cajón se desliza y suelta sus insumos como tarjetas con su foto real; a la derecha, cada insumo con su cantidad y vencimiento.</p>
+  <div class="g3" style="margin-top:14px">
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="box"></lu>&nbsp; Rack en 3D</div><p>Seis cajones al estilo de la Estación Espacial. Se deslizan al tocarlos y sueltan sus insumos como tarjetas con foto real: 42 fotos libres de Wikimedia Commons, con autor.</p></div>
+    <div class="tj"><div class="k" style="color:var(--mag)"><lu n="siren"></lu>&nbsp; Modo emergencia</div><p>Al elegir una emergencia se encienden solo los cajones e insumos de ese protocolo, con un hilo de luz de cada tarjeta a su cajón.</p></div>
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="calendar-clock"></lu>&nbsp; Autonomía</div><p>El día en que cada insumo se acaba o vence, contra el 259 (Marte) y el 1.018 (regreso). Cada uso queda en <code>kit.json</code>.</p></div>
+  </div>
+  <h2 style="margin-top:16px">Pregúntale al rack en palabras simples</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+    <div class="tj"><div class="k" style="color:var(--lila)"><lu n="network"></lu>&nbsp; Grafo de escena</div><p>Como en ConceptGraphs (Gu et al., 2023), <code>/v1/kit/buscar</code> pasa el rack al cerebro como lista de objetos: qué es, para qué sirve, dónde está y cuántos quedan.</p></div>
+    <div class="tj"><div class="k" style="color:var(--ok)"><lu n="shield-check"></lu>&nbsp; La nave verifica</div><p>Solo valen objetos que existen en el rack y la nave pone el cajón real. La pantalla lo abre y NOVA lo dice en voz alta.</p></div>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>20 / 58</span></div>
+</section>

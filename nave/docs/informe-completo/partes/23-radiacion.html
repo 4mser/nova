@@ -1,0 +1,19 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">23</span>&nbsp;&nbsp;·&nbsp;&nbsp;Radiation</div>
+  <h1 style="font-size:25pt;margin-top:10px">La radiación, con su dosis, su límite y un refugio</h1>
+  <p class="lead">La radiación es una de las cinco amenazas del vuelo espacial del HRP y no se siente. <code>radiacion.rs</code> recibe la lectura del detector que diseñó Luis (<code>POST /v1/radiacion</code>). Mientras ese detector no exista, la nave estima la tasa con las mediciones de MSL RAD del Curiosity y lo dice en pantalla.</p>
+  <div class="cap" style="margin-top:14px"><img src="img/nuevas/radiacion.jpg" style="height:330px;object-fit:cover;object-position:top" alt="Vista Radiation"></div>
+  <p class="capleg"><b>Radiation, día 221.</b> Corte de la nave con casco de 20 g/cm² y refugio con 10 cm de agua extra (OCHMO, p. 10; ilustrativo). Tasa ahora 79 µSv/h simulada, 408 mSv acumulados, 68 % del límite de carrera.</p>
+  <table class="t cmp" style="margin-top:12px;font-size:8.3pt;table-layout:fixed">
+    <tr><th style="width:170px">Cifra</th><th>Cómo se calcula</th><th style="width:150px">Fuente</th></tr>
+    <tr><td><b>Tasa en crucero y en Marte</b></td><td>≈ 1,84 mSv/día en crucero y ≈ 0,64 mSv/día en la superficie, hasta que llegue el detector</td><td>Zeitlin 2013 · Hassler 2014</td></tr>
+    <tr><td><b>Dosis de la misión</b></td><td>Acumulada día a día; a este ritmo cruza 600 mSv el día ~452, ya en Marte, y termina en ~1.270 mSv</td><td>NASA-STD-3001 Vol. 1</td></tr>
+    <tr><td><b>Alerta de tormenta solar</b></td><td>Canal rápido del detector, o ≥ 500 µSv/h sostenidos 30 s; se registra el pico y la dosis del evento</td><td>Diseño del detector · HRP SPE</td></tr>
+    <tr><td><b>Límite por evento</b></td><td>Dosis del evento comparada con 250 mSv</td><td>NASA-STD-3001</td></tr>
+  </table>
+  <div class="g2" style="margin-top:12px;align-items:start">
+    <div class="tj" style="border-color:rgba(236,106,168,.35)"><div class="k" style="color:var(--mag)"><lu n="sun"></lu>&nbsp; Protocolo «tormenta_solar»</div><p>Letrero en todas las vistas, voz de NOVA y guía para toda la tripulación: ir al refugio, con la radiación en vivo. Cita OCHMO Radiation Protection (p. 1, 2, 4 y 10) y el informe HRP de síndromes por SPE (p. 10). Es el protocolo 13. NOVA se pone ámbar e inquieta y mira hacia el Sol.</p></div>
+    <div class="cap"><img src="img/nuevas/pc-tormenta.jpg" style="height:166px;object-fit:cover;object-position:left top" alt="Guía de tormenta solar en el PC"></div>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>23 / 58</span></div>
+</section>

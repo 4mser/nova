@@ -1,0 +1,50 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">53</span>&nbsp;&nbsp;·&nbsp;&nbsp;Annex · Start everything and glossary</div>
+  <h1 style="font-size:25pt;margin-top:10px">One command and the ship is running</h1>
+  <p class="lead">Since November 14 the ship starts and watches everything it needs on its own. What already runs is not duplicated, what crashes is restarted and each service writes its log to <code>~/.nova-pc/logs/</code>.</p>
+  <pre class="cod"><span class="c"># ship window + core, simulator, models, voice, hearing, search and vision</span>
+cd tripulacion &amp;&amp; npm install &amp;&amp; npm run dev
+<span class="c"># no window: the link at http://127.0.0.1:8750 and the scanner at https://&lt;ship&gt;:8751/escaner.html</span>
+cd tripulacion &amp;&amp; npm run enlace
+<span class="c"># with Luis's real station, or to start each piece by hand</span>
+NOVA_SIN_SIMULADOR=1 npm run enlace
+NOVA_SIN_SERVICIOS=1 npm run enlace
+<span class="c"># second test ship, without stopping the running one</span>
+NOVA_PUERTO_ENLACE=8760 ./src-tauri/target/debug/nova-tripulacion --sin-ventana
+<span class="c"># build the flight core (Python 3.12)</span>
+git submodule update --init --recursive
+cd vuelo &amp;&amp; python3.12 -m venv fprime-venv &amp;&amp; source fprime-venv/bin/activate
+pip install -r requirements.txt &amp;&amp; cd Nova/Nave &amp;&amp; fprime-util generate &amp;&amp; fprime-util build -j</pre>
+  <div class="g2" style="margin-top:16px;align-items:start">
+    <table class="t aire3" style="font-size:8.2pt">
+      <tr><th style="width:96px">Port</th><th>What flows</th></tr>
+      <tr><td style="white-space:nowrap"><b>UDP 50050</b></td><td>station, simulator and phones → core</td></tr>
+      <tr><td style="white-space:nowrap"><b>UDP 50051–53</b></td><td>core ↔ link · demo scenarios</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 50000</b></td><td>core ↔ fprime-gds (CCSDS)</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 5080</b></td><td>F Prime GDS: Systems view</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 8750</b></td><td>HTTP link: screens and phones</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 8751</b></td><td>the same link over HTTPS, for the camera</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 8081–84</b></td><td>language · voice · hearing · search</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 8792</b></td><td>vision, behind <code>/v1/vision/ws</code></td></tr>
+    </table>
+    <div class="tj" style="padding:14px 16px"><div class="k" style="color:var(--cian)">Glossary</div>
+      <div class="glos">
+        <p><b>F Prime.</b> JPL flight software framework, in C++, Apache 2.0.</p>
+        <p><b>GDS.</b> F Prime ground system: telemetry, events and commands.</p>
+        <p><b>CCSDS.</b> Space communications standard; frames and packets.</p>
+        <p><b>NDJSON.</b> One JSON object per line: how the station talks.</p>
+        <p><b>SSE.</b> The link pushes state to the screens without them asking.</p>
+        <p><b>ed25519.</b> Digital signature; the ship keeps only the public key.</p>
+        <p><b>LBS.</b> Bone blending that deforms the anatomy with the body.</p>
+        <p><b>Timewarp.</b> Correcting lag with the phone's gyroscope.</p>
+        <p><b>Evetts-Russomano.</b> Microgravity CPR with the legs over the patient's shoulders.</p>
+        <p><b>QCPR.</b> CPR quality: rate, depth and pauses.</p>
+      </div></div>
+  </div>
+  <style>
+    .cod{margin-top:16px;background:var(--s1);border:1px solid var(--l1);border-radius:14px;padding:14px 16px;font:400 8pt/1.62 'PM',monospace;color:var(--cian);white-space:pre-wrap}
+    .cod .c{color:var(--mut)}
+    .glos{display:grid;gap:5px;margin-top:8px}.glos p{font-size:8.4pt;line-height:1.45;margin:0}.glos b{color:var(--ink);font-weight:600}
+  </style>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>53 / 58</span></div>
+</section>

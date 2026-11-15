@@ -1,0 +1,30 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">18</span>&nbsp;&nbsp;·&nbsp;&nbsp;Ask NOVA</div>
+  <h1 style="font-size:25pt;margin-top:10px">An assistant that answers with ship data and cites its sources</h1>
+  <p class="lead">The crew asks NOVA in writing or by voice. The ship builds the answer in <code>/v1/preguntar</code>: it first decides whether it is an emergency, computes priorities with fixed rules and passes the model only what it needs. The model writes; it does not decide medical steps.</p>
+  <div style="display:grid;grid-template-columns:1fr 196px;gap:16px;margin-top:16px;align-items:start">
+    <svg class="dg" viewBox="0 0 462 380" role="img" aria-label="How a NOVA answer is built">
+      <rect x="1" y="1" width="460" height="378" rx="16" fill="#0a1018" stroke="rgba(150,185,215,.14)"/>
+      <g data-caja><rect x="16" y="16" width="130" height="50" rx="10" fill="rgba(143,230,245,.07)" stroke="rgba(143,230,245,.5)"/><text class="t" x="28" y="37">Question</text><text x="28" y="54">text or voice (whisper)</text></g>
+      <path d="M146 41 H178" stroke="#8fe6f5" stroke-width="1.4"/><path d="M178 41 l-6 -4 v8z" fill="#8fe6f5"/>
+      <g data-caja><rect x="182" y="16" width="264" height="50" rx="10" fill="rgba(236,106,168,.08)" stroke="rgba(236,106,168,.55)"/><text class="t" x="194" y="37">Emergency? rules in English and Spanish</text><text x="194" y="54">10 protocols; “why” or “what is” do not count</text></g>
+      <path d="M314 66 V92" stroke="#ec6aa8" stroke-width="1.4"/><text class="mm" x="320" y="84">YES</text>
+      <g data-caja><rect x="182" y="94" width="264" height="50" rx="10" fill="rgba(236,106,168,.05)" stroke="rgba(236,106,168,.4)"/><text class="t" x="194" y="115">Written protocol, no model</text><text x="194" y="132">+ where each supply is and how many are left</text></g>
+      <path d="M90 66 V176" stroke="#a898ff" stroke-width="1.4"/><text class="ml" x="96" y="160">NO</text>
+      <g data-caja><rect x="16" y="178" width="200" height="74" rx="10" fill="rgba(143,230,245,.06)" stroke="rgba(143,230,245,.4)"/><text class="t" x="28" y="199">Ship context</text><text x="28" y="216">priorities and threshold crossings</text><text x="28" y="230">computed on board, mission,</text><text x="28" y="244">live kit and uploads from Earth</text></g>
+      <g data-caja><rect x="246" y="178" width="200" height="74" rx="10" fill="rgba(111,214,176,.06)" stroke="rgba(111,214,176,.45)"/><text class="t" x="258" y="199">Medical library</text><text x="258" y="216">3 passages by meaning and</text><text x="258" y="230">keywords; none if it is</text><text x="258" y="244">a status question</text></g>
+      <path d="M116 252 V282 M346 252 V282 M116 282 H346 M231 282 V300" stroke="#a898ff" stroke-width="1.4" fill="none"/><path d="M231 302 l-4 -6 h8z" fill="#a898ff"/>
+      <g data-caja><rect x="16" y="304" width="430" height="60" rx="10" fill="rgba(168,152,255,.09)" stroke="rgba(168,152,255,.55)"/><text class="t" x="28" y="325">Language brain → hard length cut → voice</text><text x="28" y="342">max. 5 sentences (7 lines if a list), citations [1] [2] with page, saved</text><text x="28" y="356">in the history and the crew rates it: “Was this useful?”</text></g>
+    </svg>
+    <div><div class="tel" style="border-radius:16px;padding:4px"><img src="img/capturas/pc2-chat-panel.jpg" style="border-radius:12px" alt="Conversation with NOVA"></div>
+      <p class="capleg"><b>Answer with citations.</b> The numbers open the real page in the library.</p></div>
+  </div>
+  <h2 style="margin-top:20px">The brain can be swapped, and the screen always says which one</h2>
+  <table class="t" style="margin-top:10px">
+    <tr><th style="width:22%">Brain</th><th style="width:36%">What it is</th><th>When it is used</th><th style="width:13%">Status</th></tr>
+    <tr><td><b>Onboard</b><br><span style="font-size:7.6pt;color:var(--mut)">default</span></td><td>Qwen3 4B Instruct 2507 (Q4_K_M) on llama.cpp, <code>:8081</code>, with prefix cache: starts answering in ~1.5 s</td><td>Always. It is the flight architecture: no internet. The screen says “onboard · no internet”.</td><td><span class="est ok">in use</span></td></tr>
+    <tr><td><b>Demo</b></td><td>Claude Opus 5.5 via the Anthropic API, low effort, with automatic fallback</td><td>Only with <code>NOVA_CEREBRO=claude</code> and the key in the environment. The screen says “demo brain · Claude”; if it does not answer, it falls back to the onboard model.</td><td><span class="est sig">optional</span></td></tr>
+  </table>
+  <p style="margin-top:10px;font-size:8.6pt;color:var(--mut)">Emergencies never go through the model: in a test the small model denied a cardiac arrest the crew reported because the sensor did not show it. Since then, what a person reports rules and NOVA answers with the fixed protocol text.</p>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>18 / 58</span></div>
+</section>

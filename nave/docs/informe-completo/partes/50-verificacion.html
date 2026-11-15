@@ -1,0 +1,30 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">50</span>&nbsp;&nbsp;·&nbsp;&nbsp;Rigor · Cómo lo verificamos</div>
+  <h1 style="font-size:25pt;margin-top:10px">Lo que se probó, con qué y qué resultó</h1>
+  <p class="lead">Cada cifra sale de una prueba o de una medición sobre el sistema corriendo. Lo que falta probar va en la segunda tabla, con la razón.</p>
+  <table class="t aire3 cmp" style="margin-top:16px;font-size:8.4pt">
+    <tr><th style="width:160px">Prueba</th><th>Cómo</th><th style="width:118px">Resultado</th></tr>
+    <tr><td><b><lu n="flask-conical" style="color:var(--ok)"></lu>&nbsp; Pruebas del enlace</b></td><td><code>cargo test</code>: corte a 5 frases, detector de emergencias, idioma, firmas ed25519</td><td><span class="est ok">5 de 5 · 14 nov</span></td></tr>
+    <tr><td><b><lu n="radio" style="color:var(--ok)"></lu>&nbsp; Núcleo de vuelo</b></td><td>Simulador → núcleo → alertas, eventos y comandos en fprime-gds</td><td><span class="est ok">funciona</span></td></tr>
+    <tr><td><b><lu n="gamepad-2" style="color:var(--ok)"></lu>&nbsp; Control remoto del visor</b></td><td>Puppeteer: teléfono simulado en el visor y la estación cambiando 15 controles</td><td><span class="est ok">15 de 15 · 14 nov</span></td></tr>
+    <tr><td><b><lu n="scan-eye" style="color:var(--ok)"></lu>&nbsp; Escáner con cámara simulada</b></td><td>Cámara falsa de Chrome con una foto de la NASA como paciente</td><td><span class="est ok">60 fps · 12 fps a la estación</span></td></tr>
+    <tr><td><b><lu n="cpu" style="color:var(--ok)"></lu>&nbsp; Visión en la GPU</b></td><td><code>vision/bench.py</code>, 14 nov: Pose heavy 4,8 ms en GPU + manos 8,0 ms</td><td><span class="est ok">~13 ms por cuadro</span></td></tr>
+    <tr><td><b><lu n="heart-pulse" style="color:var(--ok)"></lu>&nbsp; Conteo de compresiones</b></td><td>Video real de RCP de Wikimedia Commons, 11 nov</td><td><span class="est par">8 de 11 · 0 falsas</span></td></tr>
+    <tr><td><b><lu n="timer" style="color:var(--ok)"></lu>&nbsp; Respuesta de NOVA</b></td><td>Primer token con el prompt fijo en caché y <code>-fa</code></td><td><span class="est ok">~1,5 s</span></td></tr>
+    <tr><td><b><lu n="smartphone" style="color:var(--ok)"></lu>&nbsp; App en modo misión</b></td><td>Puppeteer con sesión ficticia y red externa bloqueada</td><td><span class="est ok">funciona</span></td></tr>
+    <tr><td><b><lu n="book-open-check" style="color:var(--ok)"></lu>&nbsp; Biblioteca</b></td><td>Licencia de cada fuente revisada a mano</td><td><span class="est ok">41 de 42 indexadas</span></td></tr>
+    <tr><td><b><lu n="file-check-2" style="color:var(--ok)"></lu>&nbsp; Este informe</b></td><td><code>ambar check</code> y revisión a ojo de cada hoja</td><td><span class="est ok">sin errores</span></td></tr>
+  </table>
+  <h2 style="margin-top:14px">Lo que falta probar</h2>
+  <table class="t aire3 cmp" style="margin-top:10px;font-size:8.4pt">
+    <tr><th style="width:160px">Qué</th><th>Por qué no está probado</th><th style="width:118px">Cuándo</th></tr>
+    <tr><td><b>Latencia dentro del visor</b></td><td>El escáner y la RCP guiada se probaron en vivo en el hackathon; falta medir la latencia con el teléfono dentro del visor</td><td><span class="est sig">siguiente</span></td></tr>
+    <tr><td><b>Certificado en Chrome de Android</b></td><td>Hay que aceptar una vez el certificado de la nave</td><td><span class="est sig">pendiente</span></td></tr>
+    <tr><td><b>Sensores de la estación</b></td><td>NFC y ECG funcionan con la placa de Luis; oxígeno, presión, temperatura y glucosa todavía se anotan a mano</td><td><span class="est sig">siguiente</span></td></tr>
+    <tr><td><b>Revisión clínica</b></td><td>Protocolos y umbrales necesitan un médico asesor</td><td><span class="est par">por conseguir</span></td></tr>
+    <tr><td><b>Computador de vuelo</b></td><td>Medido en Apple Silicon; falta hardware clase Jetson</td><td><span class="est sig">siguiente</span></td></tr>
+  </table>
+  
+  <style>.cmp td{padding:5.5px 12px!important;line-height:1.38!important}.cmp th{padding:7px 12px!important}</style>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>50 / 58</span></div>
+</section>

@@ -1,0 +1,37 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">21</span>&nbsp;&nbsp;·&nbsp;&nbsp;Mission, Home and Systems</div>
+  <h1 style="font-size:25pt;margin-top:10px">The ship knows where it is, how long light takes and when each message arrives</h1>
+  <p class="lead"><code>mision.rs</code> propagates Earth and Mars with Standish's J2000 orbital elements (JPL), solves Kepler's equation and places the ship on a Hohmann transfer leaving April 8, 2026, with 500 days on Mars. That delay feeds everything that crosses to Earth.</p>
+  <div style="display:grid;grid-template-columns:290px 1fr;gap:16px;margin-top:14px;align-items:start">
+    <svg class="dg" viewBox="0 0 290 290" role="img" aria-label="Positions of Earth, Mars and the ship on November 14, 2026">
+      <rect x="1" y="1" width="288" height="288" rx="16" fill="#0a1018" stroke="rgba(150,185,215,.14)"/>
+      <circle cx="145" cy="150" r="74" fill="none" stroke="rgba(143,230,245,.28)" stroke-dasharray="2 5"/>
+      <circle cx="145" cy="150" r="113" fill="none" stroke="rgba(242,180,87,.28)" stroke-dasharray="2 5"/>
+      <path d="M71 150 A92 87 0 0 0 257 150" fill="none" stroke="rgba(168,152,255,.55)" stroke-width="1.3"/>
+      <circle cx="145" cy="150" r="7" fill="#f2b457"/>
+      <line x1="190" y1="92" x2="256" y2="151" stroke="#ec6aa8" stroke-width="1.2" stroke-dasharray="3 3"/>
+      <circle cx="190" cy="92" r="5" fill="#46c8e8"/><text class="mc" x="168" y="80">EARTH</text>
+      <circle cx="256" cy="151" r="4" fill="#eef3f8"/><text class="m" x="226" y="172">SHIP</text>
+      <circle cx="110" cy="35" r="4.5" fill="#f2b457"/><text class="ma" x="62" y="22">MARS</text>
+      <text class="m" x="14" y="276">COMPUTED ON BOARD · NOV 14, 2026</text>
+    </svg>
+    <div>
+      <table class="t">
+        <tr><th>Field in /v1/mision</th><th style="width:46%">Today</th></tr>
+        <tr><td><b>Mission day · phase</b></td><td>220 · cruise</td></tr>
+        <tr><td><b>Mars arrival</b></td><td>day 259, in 39 days</td></tr>
+        <tr><td><b>Distance to Earth</b></td><td>≈ 178 M km</td></tr>
+        <tr><td><b>Light delay</b></td><td>9.9 min each way</td></tr>
+        <tr><td><b>Solar conjunction</b></td><td>no · elongation 86.8°</td></tr>
+      </table>
+      <p style="margin-top:8px;font-size:8.4pt;color:var(--mut)">Below 2° of elongation there is solar conjunction and commands are suspended. With <code>NOVA_LANZAMIENTO</code> and <code>NOVA_ESTADIA_DIAS</code> any mission day can be rehearsed.</p>
+    </div>
+  </div>
+  <div class="g2" style="margin-top:16px">
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="house"></lu>&nbsp; Home: family also travels with light</div><p>Family texts and photos (<code>tierra/casa.py</code>) arrive with the light delay at the time of sending and only then appear on the phone and the “Home” widget. Replies wait for the next contact.</p></div>
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="cpu"></lu>&nbsp; Systems: the core in the crew's words</div><p><code>tierra.rs</code> reads the F Prime GDS (<code>:5080</code>) every second and translates it with the deployment dictionaries. A command from Earth waits out the light delay before entering the core.</p></div>
+  </div>
+  <div class="cap" style="margin-top:14px"><img src="img/nuevas/sistemas.jpg" style="height:282px;object-fit:cover;object-position:top" alt="Onboard systems view"></div>
+  <p class="capleg"><b>Onboard systems.</b> Core online, real-time health, medical station connected, F Prime events in plain language and the current thresholds set by the flight surgeon.</p>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>21 / 58</span></div>
+</section>

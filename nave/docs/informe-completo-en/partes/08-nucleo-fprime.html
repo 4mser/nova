@@ -1,0 +1,38 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">08</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part I · Architecture&nbsp;&nbsp;·&nbsp;&nbsp;Flight core</div><div style="display:flex;align-items:center;gap:18px;margin-top:10px"><div style="width:58px;height:54px;border-radius:14px;background:#f2f5f8;display:grid;place-items:center;flex:none"><img src="img/logos/fprime-logo.svg" style="width:40px;height:auto"></div><h1 style="font-size:25pt;margin:0">F Prime, the software that flew Ingenuity</h1></div>
+  <p class="lead">F Prime is JPL's flight software framework, open under the Apache 2.0 license. NOVA includes it as a submodule in <code>vuelo/lib/fprime</code> and adds its own deployment, <code>Nova/Nave</code>: the standard subsystems plus four custom components, joined by typed ports.</p>
+  <svg class="dg" viewBox="0 0 674 300" style="margin-top:16px" role="img" aria-label="Nova/Nave deployment topology">
+    <rect x="1" y="1" width="672" height="298" rx="18" fill="rgba(143,230,245,.04)" stroke="rgba(143,230,245,.35)"/>
+    <text class="mc" x="18" y="22">NOVA/NAVE DEPLOYMENT</text>
+    <rect x="18" y="38" width="150" height="62" rx="10" fill="rgba(111,214,176,.08)" stroke="rgba(111,214,176,.55)"/><text class="t" x="30" y="60">Estacion</text><text x="30" y="76">reads UDP 50050</text><text class="mo" x="30" y="91">NON-BLOCKING</text>
+    <rect x="262" y="38" width="150" height="62" rx="10" fill="rgba(236,106,168,.08)" stroke="rgba(236,106,168,.55)"/><text class="t" x="274" y="60">MonitorSalud</text><text x="274" y="76">two thresholds per side</text><text class="mm" x="274" y="91">HYSTERESIS 10 S</text>
+    <rect x="506" y="38" width="150" height="62" rx="10" fill="rgba(143,230,245,.08)" stroke="rgba(143,230,245,.55)"/><text class="t" x="518" y="60">Pantalla</text><text x="518" y="76">status and alerts</text><text class="mc" x="518" y="91">UDP 50051 / 50052</text>
+    <path d="M168 69H256" stroke="#46c8e8" stroke-width="1.5"/><path d="M250 65l7 4-7 4" fill="none" stroke="#46c8e8" stroke-width="1.5"/><text class="m" x="212" y="61" text-anchor="middle">NOVA.SIGNO</text>
+    <path d="M412 69H500" stroke="#46c8e8" stroke-width="1.5"/><path d="M494 65l7 4-7 4" fill="none" stroke="#46c8e8" stroke-width="1.5"/><text class="m" x="456" y="61" text-anchor="middle">STATUS</text>
+    <path d="M93 100V140M337 100V140M581 100V140" stroke="rgba(150,185,215,.3)" stroke-width="1.2" stroke-dasharray="3 4"/>
+    <rect x="18" y="140" width="638" height="40" rx="10" fill="#0f1722" stroke="rgba(150,185,215,.26)"/>
+    <text class="t" x="32" y="165">CdhCore</text><text x="96" y="165">commands · events · telemetry · health</text>
+    <text class="t" x="356" y="165">FileHandling</text><text x="440" y="165">parameters in prmDb · files</text>
+    <rect x="18" y="192" width="310" height="40" rx="10" fill="#0f1722" stroke="rgba(150,185,215,.26)"/><text class="t" x="32" y="217">ComCcsds</text><text x="104" y="217">CCSDS frames and packets</text>
+    <rect x="346" y="192" width="310" height="40" rx="10" fill="#0f1722" stroke="rgba(150,185,215,.26)"/><text class="t" x="360" y="217">rateGroupDriver</text><text x="470" y="217">1 · 0.5 · 0.25 Hz</text>
+    <path d="M173 232V258" stroke="#f2b457" stroke-width="1.4" stroke-dasharray="4 4"/>
+    <rect x="18" y="258" width="310" height="30" rx="9" fill="rgba(242,180,87,.08)" stroke="rgba(242,180,87,.5)"/><text class="t" x="32" y="278">fprime-gds</text><text class="ma" x="110" y="278">TCP 50000 · SYSTEMS IN NOVA PC</text>
+    <text class="m" x="346" y="278">SALUD = SHARED TYPES (FPP)</text>
+  </svg>
+  <table class="t" style="margin-top:18px">
+    <thead><tr><th style="width:120px">Component</th><th>What it does</th><th style="width:170px">Inputs and outputs</th></tr></thead>
+    <tbody>
+      <tr><td><b>Estacion</b></td><td>Reads the medical station each cycle without blocking and drops invalid JSON with the event <code>MENSAJE_INVALIDO</code>.</td><td><code>UDP 50050</code> to <code>Nova.Signo</code></td></tr>
+      <tr><td><b>MonitorSalud</b></td><td>Classifies each reading against the attention threshold and the Earth notice threshold. Warns if a sensor is silent 120 s.</td><td>31 parameters in <code>prmDb</code> · <code>WARNING_HI/LO</code></td></tr>
+      <tr><td><b>Pantalla</b></td><td>Publishes the full crew status at 1 Hz and each alert instantly.</td><td><code>UDP 50051 · 50052</code></td></tr>
+      <tr><td><b>Salud</b></td><td>Shared types: sensors, levels and the vital sign as a struct.</td><td>FPP</td></tr>
+    </tbody>
+  </table>
+  <div class="g3" style="margin-top:14px">
+    <div class="tj"><div class="k" style="color:var(--cian)">Rate</div><p>1 Hz to read and classify; 0.5 and 0.25 Hz for resources and the health of the system itself.</p></div>
+    <div class="tj"><div class="k" style="color:var(--amb)">From Earth</div><p>Thresholds change by dictionary command, are stored in <code>prmDb</code> and survive a restart.</p></div>
+    <div class="tj"><div class="k" style="color:var(--lila)">Systems view</div><p>fprime-gds with the NOVA interface: events, telemetry and commands decoded with the deployment dictionaries.</p></div>
+  </div>
+  <div class="franja"><div><b>v4.4.2</b><span>F Prime, as a submodule</span></div><div><b>31</b><span>flight parameters by command</span></div><div><b>3</b><span>rate groups: 1, 0.5 and 0.25 Hz</span></div><div><b>Apache 2.0</b><span>open license from JPL</span></div></div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>08 / 58</span></div>
+</section>

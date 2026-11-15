@@ -1,0 +1,63 @@
+<section class="page aire3 p3t">
+  <div class="kick"><span style="color:var(--mut)">25</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part III · Onboard vision</div>
+  <h1 style="font-size:25pt;margin-top:10px">The phone sees, the ship thinks</h1>
+  <p class="lead">The scanner works like a headset tethered to a computer. The phone shows its own camera without waiting on the network and sends each frame to the ship, which runs the heavy models on its GPU and returns only the body points. If the ship does not answer, the phone does the vision with light models and says so on screen.</p>
+
+  <svg class="dg" viewBox="0 0 674 318" style="margin-top:18px" role="img" aria-label="Path of a frame between the phone and onboard vision">
+    <defs><marker id="fv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8fe6f5"/></marker>
+      <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#a898ff"/></marker></defs>
+    <g data-caja><rect x="1" y="10" width="186" height="150" rx="14" fill="rgba(70,200,232,.07)" stroke="rgba(143,230,245,.5)"/>
+      <text class="mc" x="16" y="32">01 · PHONE OR HEADSET</text>
+      <text class="t" x="16" y="56">Own camera</text>
+      <text x="16" y="76">1280×720 up to 60 fps</text>
+      <text x="16" y="92">shown without the network</text>
+      <text x="16" y="108">sends 512 px JPEG</text>
+      <text class="m" x="16" y="146">MAX. 2 FRAMES IN FLIGHT</text></g>
+    <g data-caja><rect x="244" y="10" width="186" height="150" rx="14" fill="rgba(70,200,232,.04)" stroke="rgba(143,230,245,.35)"/>
+      <text class="mc" x="259" y="32">02 · SHIP LINK</text>
+      <text class="t" x="259" y="56">WebSocket bridge</text>
+      <text x="259" y="76">/v1/vision/ws on axum</text>
+      <text x="259" y="92">HTTPS :8751, the ship's</text>
+      <text x="259" y="108">own certificate</text>
+      <text class="m" x="259" y="146">RUST · TOKIO · RUSTLS</text></g>
+    <g data-caja><rect x="487" y="10" width="186" height="150" rx="14" fill="rgba(168,152,255,.08)" stroke="rgba(168,152,255,.55)"/>
+      <text class="ml" x="502" y="32">03 · ONBOARD VISION</text>
+      <text class="t" x="502" y="56">MediaPipe on the GPU</text>
+      <text x="502" y="76">Pose heavy + Hands</text>
+      <text x="502" y="92">Metal on the ship's Mac</text>
+      <text x="502" y="108">listens only on 127.0.0.1</text>
+      <text class="ml" x="502" y="146">PYTHON · ~13 MS PER FRAME</text></g>
+    <path d="M190 62 H238" stroke="#8fe6f5" stroke-width="1.5" marker-end="url(#fv)"/>
+    <path d="M433 62 H481" stroke="#8fe6f5" stroke-width="1.5" marker-end="url(#fv)"/>
+    <path d="M484 124 H436" stroke="#a898ff" stroke-width="1.5" marker-end="url(#fl)"/>
+    <path d="M241 124 H193" stroke="#a898ff" stroke-width="1.5" marker-end="url(#fl)"/>
+    <text class="m" x="337" y="190" text-anchor="middle">ONLY RESULTS RETURN: 33 POINTS IN THE IMAGE + 33 IN METERS, 96 PX MASK (1–3 KB), 21 POINTS PER HAND</text>
+    <g data-caja><rect x="1" y="210" width="329" height="104" rx="14" fill="rgba(242,180,87,.06)" stroke="rgba(242,180,87,.45)"/>
+      <text class="ma" x="16" y="232">FALLBACK ON THE PHONE</text>
+      <text x="16" y="254">If the ship does not answer, the phone runs Pose lite</text>
+      <text x="16" y="270">(full on a PC) and Hands in WebAssembly, with the image</text>
+      <text x="16" y="286">at 384 px. Results come in through the same path.</text></g>
+    <g data-caja><rect x="344" y="210" width="329" height="104" rx="14" fill="rgba(111,214,176,.06)" stroke="rgba(111,214,176,.45)"/>
+      <text class="mo" x="359" y="232">TIMEWARP ON THE PHONE</text>
+      <text x="359" y="254">Each result carries its frame's time. The points</text>
+      <text x="359" y="270">are predicted to display time (up to 60 ms) and the</text>
+      <text x="359" y="286">gyroscope subtracts how far the phone turned meanwhile.</text></g>
+  </svg>
+
+  <div class="g2" style="margin-top:16px">
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="layers"></lu>&nbsp; No queue</div><p>Vision always processes the newest frame and drops old ones. An answer for frame N closes all earlier ones, and a frame with no answer in 400 ms is counted as lost. The hologram never falls behind by piling up work.</p></div>
+    <div class="tj"><div class="k" style="color:var(--lila)"><lu n="users"></lu>&nbsp; The patient first</div><p>With two people in view, the patient is the one with the most horizontal torso: the one standing is the rescuer. Each phone has its own tracker (up to 4) so two cameras do not mix up the same person. The mask is cropped to the patient only.</p></div>
+    <div class="tj"><div class="k" style="color:var(--ok)"><lu n="rotate-3d"></lu>&nbsp; Self-calibrating gyroscope</div><p>Gyroscope axes differ between phones. NOVA learns them by comparing the measured rotation with how the body points moved, and only uses the sign when the relation is clear. It can be turned off from the station.</p></div>
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="lock-keyhole"></lu>&nbsp; Secure page on the ship network</div><p>The phone's browser only gives the camera to a secure page. The ship generates its certificate with <code>rcgen</code> (localhost, nova.local and its IP), stores it in <code>~/.nova-pc/tls</code> and remakes it if the IP changes. The ship starts vision, restarts it if it crashes, and vision shuts down if the ship dies.</p></div>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
+    <span class="chip"><si n="mediapipe"></si>&nbsp;MediaPipe Tasks 1.2.3 on the ship</span>
+    <span class="chip"><si n="python"></si>&nbsp;Python · websockets · OpenCV</span>
+    <span class="chip"><si n="rust"></si>&nbsp;axum · tokio-tungstenite · rustls</span>
+    <span class="chip"><si n="webassembly"></si>&nbsp;tasks-vision on the phone</span>
+    <span class="chip"><si n="apple"></si>&nbsp;Metal GPU</span>
+  </div>
+  <p style="margin-top:12px;font-size:8.4pt;color:var(--mut)">Measured Nov 14 on the development Mac: ~13 ms per frame with both models (pose 4.8 ms on GPU, hands 8.0 ms), 25–47 ms round trip shown in the headset. <span class="est par">not measured on a real phone inside a headset</span></p>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>25 / 58</span></div>
+</section>

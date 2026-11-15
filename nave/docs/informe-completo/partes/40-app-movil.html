@@ -1,0 +1,30 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">40</span>&nbsp;&nbsp;·&nbsp;&nbsp;Parte IV · El teléfono</div>
+  <h1 style="font-size:25pt;margin-top:10px">Cada tripulante, su propia app conectada a la nave</h1>
+  <p class="lead">La app NOVA tiene un modo misión. Con la dirección de la nave y el asiento (T1 a T4) configurados, el teléfono deja de usar servicios en la nube y habla solo con el enlace de la nave por la red local. Usa el mismo contrato de datos que la estación médica, así que para el núcleo un teléfono es una estación más.</p>
+  <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+    <span class="chip"><si n="expo" style="color:var(--ink)"></si>Expo SDK 57</span>
+    <span class="chip"><si n="react" style="color:#61dafb"></si>React Native 0.86</span>
+    <span class="chip"><lu n="route" style="color:var(--cian)"></lu>expo-router</span>
+    <span class="chip"><si n="android" style="color:#3ddc84"></si>widget de Android</span>
+    <span class="chip"><lu n="wifi" style="color:var(--ok)"></lu>solo red de la nave</span>
+  </div>
+  <div class="g3" style="margin-top:18px;gap:14px">
+    <div><div class="tel" style="width:112px;margin:0 auto"><img src="img/capturas/m-hoy.jpg" alt="Pantalla Hoy"></div><p class="capleg" style="text-align:center"><b>Hoy</b> · resumen de NOVA, botón de emergencia y signos que llegan de la nave</p></div>
+    <div><div class="tel" style="width:112px;margin:0 auto"><img src="img/capturas/m-hoy-abajo.jpg" alt="Hoy, más abajo"></div><p class="capleg" style="text-align:center"><b>Hoy, más abajo</b> · Casa, check-in y el plan del día en hora de la nave</p></div>
+    <div><div class="tel" style="width:112px;margin:0 auto"><img src="img/capturas/m-crew.jpg" alt="Crew"></div><p class="capleg" style="text-align:center"><b>Crew</b> · la tripulación en vivo desde la nave, con «Help David»</p></div>
+  </div>
+  <h2 style="margin-top:16px">Qué viaja entre el teléfono y la nave</h2>
+  <table class="t" style="margin-top:10px">
+    <thead><tr><th style="width:190px">Dato</th><th style="width:150px">Cada cuánto · ruta</th><th>Regla</th></tr></thead>
+    <tbody>
+      <tr><td><b>Pulso y VFC, SpO₂, pasos, luz y ruido</b></td><td><code>POST /v1/lote</code> cada 5 s</td><td>Solo números. El núcleo los valida igual que los de la estación.</td></tr>
+      <tr><td><b>Sueño de anoche y pulso en reposo</b></td><td>cada minuto, si cambió</td><td>Solo números.</td></tr>
+      <tr><td><b>Ánimo y energía del check-in</b></td><td>cada minuto, si cambió</td><td>Solo con «Compartir mi día». El texto del diario nunca sale del teléfono.</td></tr>
+      <tr><td><b>Estado de la tripulación</b></td><td><code>GET /v1/estado</code> cada 5 s</td><td>Alimenta Hoy, Crew y la tarjeta «La nave».</td></tr>
+      <tr><td><b>Misión, sistemas y Casa</b></td><td><code>/v1/mision</code>, <code>/v1/sistemas</code>, <code>/v1/casa</code> cada minuto</td><td>Casa queda guardada en el teléfono para verla sin enlace.</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:6px;font-size:7.6pt;color:var(--mut)">Código: <code>src/cuenta/nave.ts</code> y <code>naveEstado.ts</code> de nova-app. Capturas del 9 de noviembre.</p>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>40 / 58</span></div>
+</section>

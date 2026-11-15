@@ -1,0 +1,50 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">53</span>&nbsp;&nbsp;·&nbsp;&nbsp;Anexo · Levantar todo y glosario</div>
+  <h1 style="font-size:25pt;margin-top:10px">Un comando y la nave queda andando</h1>
+  <p class="lead">Desde el 14 de noviembre la nave abre y vigila sola todo lo que necesita. Lo que ya corre no se duplica, lo que se cae se vuelve a abrir y cada servicio deja su registro en <code>~/.nova-pc/logs/</code>.</p>
+  <pre class="cod"><span class="c"># ventana de la nave + núcleo, simulador, modelos, voz, oído, búsqueda y visión</span>
+cd tripulacion &amp;&amp; npm install &amp;&amp; npm run dev
+<span class="c"># sin ventana: el enlace en http://127.0.0.1:8750 y el escáner en https://&lt;nave&gt;:8751/escaner.html</span>
+cd tripulacion &amp;&amp; npm run enlace
+<span class="c"># con la estación real de Luis, o para abrir cada pieza a mano</span>
+NOVA_SIN_SIMULADOR=1 npm run enlace
+NOVA_SIN_SERVICIOS=1 npm run enlace
+<span class="c"># segunda nave de prueba, sin bajar la que está corriendo</span>
+NOVA_PUERTO_ENLACE=8760 ./src-tauri/target/debug/nova-tripulacion --sin-ventana
+<span class="c"># compilar el núcleo de vuelo (Python 3.12)</span>
+git submodule update --init --recursive
+cd vuelo &amp;&amp; python3.12 -m venv fprime-venv &amp;&amp; source fprime-venv/bin/activate
+pip install -r requirements.txt &amp;&amp; cd Nova/Nave &amp;&amp; fprime-util generate &amp;&amp; fprime-util build -j</pre>
+  <div class="g2" style="margin-top:16px;align-items:start">
+    <table class="t aire3" style="font-size:8.2pt">
+      <tr><th style="width:96px">Puerto</th><th>Qué pasa</th></tr>
+      <tr><td style="white-space:nowrap"><b>UDP 50050</b></td><td>estación, simulador y teléfonos → núcleo</td></tr>
+      <tr><td style="white-space:nowrap"><b>UDP 50051–53</b></td><td>núcleo ↔ enlace · escenarios de demo</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 50000</b></td><td>núcleo ↔ fprime-gds (CCSDS)</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 5080</b></td><td>GDS de F Prime: vista Systems</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 8750</b></td><td>enlace HTTP: pantallas y teléfonos</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 8751</b></td><td>el mismo enlace en HTTPS, para la cámara</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 8081–84</b></td><td>lenguaje · voz · oído · búsqueda</td></tr>
+      <tr><td style="white-space:nowrap"><b>TCP 8792</b></td><td>visión, detrás de <code>/v1/vision/ws</code></td></tr>
+    </table>
+    <div class="tj" style="padding:14px 16px"><div class="k" style="color:var(--cian)">Glosario</div>
+      <div class="glos">
+        <p><b>F Prime.</b> Marco de software de vuelo del JPL, en C++, Apache 2.0.</p>
+        <p><b>GDS.</b> Sistema de tierra de F Prime: telemetría, eventos y comandos.</p>
+        <p><b>CCSDS.</b> Estándar de comunicaciones espaciales; tramas y paquetes.</p>
+        <p><b>NDJSON.</b> Un objeto JSON por línea: así habla la estación.</p>
+        <p><b>SSE.</b> El enlace empuja el estado a las pantallas sin que pregunten.</p>
+        <p><b>ed25519.</b> Firma digital; la nave guarda solo la clave pública.</p>
+        <p><b>LBS.</b> Mezcla de huesos que deforma la anatomía con el cuerpo.</p>
+        <p><b>Timewarp.</b> Corregir el retraso con el giroscopio del teléfono.</p>
+        <p><b>Evetts-Russomano.</b> RCP en microgravedad con las piernas sobre los hombros del paciente.</p>
+        <p><b>QCPR.</b> Calidad de la RCP: ritmo, profundidad y pausas.</p>
+      </div></div>
+  </div>
+  <style>
+    .cod{margin-top:16px;background:var(--s1);border:1px solid var(--l1);border-radius:14px;padding:14px 16px;font:400 8pt/1.62 'PM',monospace;color:var(--cian);white-space:pre-wrap}
+    .cod .c{color:var(--mut)}
+    .glos{display:grid;gap:5px;margin-top:8px}.glos p{font-size:8.4pt;line-height:1.45;margin:0}.glos b{color:var(--ink);font-weight:600}
+  </style>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>53 / 58</span></div>
+</section>

@@ -1,0 +1,19 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">23</span>&nbsp;&nbsp;·&nbsp;&nbsp;Radiation</div>
+  <h1 style="font-size:25pt;margin-top:10px">Radiation, with its dose, its limit and a shelter</h1>
+  <p class="lead">Radiation is one of the HRP's five hazards of spaceflight and it cannot be felt. <code>radiacion.rs</code> receives the reading from the detector Luis designed (<code>POST /v1/radiacion</code>). Until that detector exists, the ship estimates the rate from Curiosity's MSL RAD measurements and says so on screen.</p>
+  <div class="cap" style="margin-top:14px"><img src="img/nuevas/radiacion.jpg" style="height:330px;object-fit:cover;object-position:top" alt="Radiation view"></div>
+  <p class="capleg"><b>Radiation, day 221.</b> Ship cutaway with a 20 g/cm² hull and a shelter with 10 cm of extra water (OCHMO, p. 10; illustrative). Current rate 79 µSv/h simulated, 408 mSv accumulated, 68 % of the career limit.</p>
+  <table class="t cmp" style="margin-top:12px;font-size:8.3pt;table-layout:fixed">
+    <tr><th style="width:170px">Figure</th><th>How it is computed</th><th style="width:150px">Source</th></tr>
+    <tr><td><b>Rate in cruise and on Mars</b></td><td>≈ 1.84 mSv/day in cruise and ≈ 0.64 mSv/day on the surface, until the detector arrives</td><td>Zeitlin 2013 · Hassler 2014</td></tr>
+    <tr><td><b>Mission dose</b></td><td>Accumulated day by day; at this rate it crosses 600 mSv on day ~452, already on Mars, and ends at ~1,270 mSv</td><td>NASA-STD-3001 Vol. 1</td></tr>
+    <tr><td><b>Solar storm alert</b></td><td>Detector fast channel, or ≥ 500 µSv/h sustained for 30 s; the peak and event dose are logged</td><td>Detector design · HRP SPE</td></tr>
+    <tr><td><b>Per-event limit</b></td><td>Event dose compared with 250 mSv</td><td>NASA-STD-3001</td></tr>
+  </table>
+  <div class="g2" style="margin-top:12px;align-items:start">
+    <div class="tj" style="border-color:rgba(236,106,168,.35)"><div class="k" style="color:var(--mag)"><lu n="sun"></lu>&nbsp; Protocol “tormenta_solar”</div><p>Banner on every view, NOVA's voice and a guide for the whole crew: go to the shelter, with live radiation. Cites OCHMO Radiation Protection (p. 1, 2, 4 and 10) and the HRP report on SPE syndromes (p. 10). It is protocol 13. NOVA turns amber and restless and looks toward the Sun.</p></div>
+    <div class="cap"><img src="img/nuevas/pc-tormenta.jpg" style="height:166px;object-fit:cover;object-position:left top" alt="Solar storm guide on the PC"></div>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>23 / 58</span></div>
+</section>

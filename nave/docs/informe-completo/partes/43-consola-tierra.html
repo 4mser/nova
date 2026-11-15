@@ -1,0 +1,22 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">43</span>&nbsp;&nbsp;·&nbsp;&nbsp;Parte IV · La Tierra</div>
+  <h1 style="font-size:25pt;margin-top:10px">Mission Control: lo que ve el cirujano de vuelo, siempre con minutos de retraso</h1>
+  <p class="lead">La consola de Tierra (<code>ui/tierra/</code>) la sirve el mismo enlace en <code>/tierra/</code>. Representa el lado de la Tierra: todo lo que muestra viene de la nave con el retraso de la luz y todo lo que envía viaja con ese mismo retraso, calculado por la misión. Hoy, día 220, son 9,9 minutos en cada sentido.</p>
+  <div class="cap" style="margin:12px auto 0;width:480px"><img src="img/capturas/pc-tierra.jpg" alt="Consola de Tierra"></div>
+  <p class="capleg" style="width:480px;margin-left:auto;margin-right:auto"><b>Consola de Tierra</b> · estado de la tripulación «as received», alertas de 24 h e informe de la noche. Captura del 9 de noviembre; después se sumó el panel «Teach NOVA» de la página siguiente.</p>
+  <div class="g3" style="margin-top:14px">
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="clock-arrow-down"></lu>&nbsp; Lo que llega</div><p>El estado que la nave mandó hace 9,9 min (<code>/v1/tierra/estado</code>). Antes de cumplirse el primer retraso, la consola lo dice: «first signal since link start».</p></div>
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="file-text"></lu>&nbsp; Informe de la noche</div><p>Resumen de 24 h por persona, alertas, guías de emergencia con su bitácora, preguntas a NOVA con sus fuentes, resúmenes privados con consentimiento y lo que NOVA necesita mejorar.</p></div>
+    <div class="tj"><div class="k" style="color:var(--mag)"><lu n="send"></lu>&nbsp; Lo que sube</div><p>Cambios de límites del núcleo con su motivo, paquetes firmados para NOVA y mensajes de las familias. Cada uno con su hora de llegada a la nave.</p></div>
+  </div>
+  <table class="t" style="margin-top:14px">
+    <thead><tr><th style="width:150px">Acción</th><th style="width:170px">Ruta del enlace</th><th>Efecto en la nave</th></tr></thead>
+    <tbody>
+      <tr><td><b>Leer el informe</b></td><td><code>GET /v1/tierra/informe</code></td><td>24 h de resumen, alertas, guías, conversaciones y datos privados con consentimiento.</td></tr>
+      <tr><td><b>Cambiar un umbral</b></td><td><code>POST /v1/sistemas/comando</code></td><td>Solo nombres del diccionario del despliegue. Viaja como <code>en_vuelo</code> → <code>entregando</code> → <code>entregado</code> y se aplica como <code>*_PRM_SET</code>.</td></tr>
+      <tr><td><b>Enseñar a NOVA</b></td><td><code>POST /v1/tierra/actualizar</code></td><td>Hasta 10 notas y 10 respuestas validadas, firmadas en la Tierra (página 44).</td></tr>
+      <tr><td><b>Mensaje de casa</b></td><td><code>POST /v1/casa/subida</code></td><td>Llega al teléfono y al widget con el retraso.</td></tr>
+    </tbody>
+  </table>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>43 / 58</span></div>
+</section>

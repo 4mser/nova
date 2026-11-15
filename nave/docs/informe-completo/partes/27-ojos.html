@@ -1,0 +1,19 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">27</span>&nbsp;&nbsp;·&nbsp;&nbsp;Escáner · Eyes</div>
+  <h1 style="font-size:25pt;margin-top:10px">Los ojos, medidos con la cámara y comparados con uno mismo</h1>
+  <p class="lead">El síndrome neuro-ocular del vuelo espacial (SANS) y el cansancio se notan en los ojos. El escáner suma el sistema Eyes con el método de visión ocular de Nicolás Richardson: MediaPipe Face Landmarker en el mismo dispositivo, a resolución completa, con el mismo modelo que él midió (sha256 verificado).</p>
+  <div class="cap" style="margin-top:14px"><img src="img/propias/ojos-2.jpg" style="height:300px;object-fit:cover;object-position:center 30%" alt="Sistema Eyes sobre un integrante del equipo"></div>
+  <p class="capleg"><b>Eyes en vivo.</b> Apertura de cada ojo, párpado superior e inferior a la pupila, parpadeos por minuto, distancia, quietud de la cabeza y nivel de alerta. Probado sobre un integrante del equipo en Space Apps, mirando el punto rojo del Eye check.</p>
+  <div class="g2" style="margin-top:12px">
+    <div class="tj">
+      <div class="k" style="color:var(--cian)"><lu n="ruler"></lu>&nbsp; Medidas y su ruido</div>
+      <p>Los milímetros suponen un iris de 11,7 mm. Hay una puerta de quietud y se excluyen los parpadeos. El «Eye check» de 20 s mirando un punto rojo guarda la mediana en la nave (<code>/v1/ojos</code>) y la compara con la línea base de esa persona y esa cámara. Solo pide seguimiento si el cambio supera el mínimo detectable (MDC95) que midió Richardson: 1,8 mm en apertura, 1,2 mm en párpado superior y 0,9 mm en el inferior.</p>
+    </div>
+    <div class="tj">
+      <div class="k" style="color:var(--amb)"><lu n="moon"></lu>&nbsp; Cansancio, no emociones</div>
+      <p>PERCLOS del último minuto (ojos ≥ 80 % cerrados; Dinges y Grace, 1998): desde 7,5 % «algunos signos», desde 15 % «cansado». Suma duración de parpadeos, cierres de 0,5 s o más y bostezos. Un Eye check con cansancio en las últimas 12 h aparece en Mind con su razón. NOVA sabe que no lee emociones de la cara.</p>
+    </div>
+  </div>
+  <div class="tj" style="margin-top:12px;border-color:rgba(242,180,87,.35)"><div class="k" style="color:var(--amb)"><lu n="info"></lu>&nbsp; Lo que no hace</div><p>No diagnostica SANS: avisa un cambio y sugiere repetir al día siguiente y anotar una cartilla de visión cercana. La distancia pupila–ceja no se usa porque su MDC (3,3 mm) todavía no permite ver cambios útiles. Está medido con una cámara y una persona; la validación clínica queda pendiente.</p></div>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>27 / 58</span></div>
+</section>

@@ -1,0 +1,24 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">46</span>&nbsp;&nbsp;·&nbsp;&nbsp;Research · Eye vision and radiation detector</div>
+  <h1 style="font-size:25pt;margin-top:10px">Two tracks that already changed the ship</h1>
+  <p class="lead">The team's work lives in <code>research/</code> in the public repository. Each track states its status; the connections to the ship named here exist in the code.</p>
+  <div class="tj" style="margin-top:16px">
+    <div class="k" style="color:var(--cian)"><lu n="eye"></lu>&nbsp; Eye health with computer vision · Nicolás Richardson</div>
+    <p>Eye monitoring with a camera only: blinking, PERCLOS, lower eyelid position and distance to the screen, compared with each person's baseline. A follow-up notice, never a diagnosis. Includes a background review with primary sources and verification tags, a phased plan and pytest tests.</p>
+    <table class="t cmp" style="margin-top:10px;font-size:8.2pt;table-layout:fixed">
+      <tr><th>Spike measurement (640×480 webcam, one person)</th><th style="width:150px">Result</th></tr>
+      <tr><td><b>MediaPipe Face Landmarker</b> · 478 points, iris included</td><td>100 % detection</td></tr>
+      <tr><td><b>Median latency</b></td><td>7.76 ms</td></tr>
+      <tr><td><b>Minimum detectable change (MDC95, with repositioning)</b></td><td>~1.8 to 2.2 mm of aperture</td></tr>
+      <tr><td><b>Pupil–brow distance</b> · target ≤ 2.3 mm</td><td>3.3 mm: not usable yet</td></tr>
+    </table>
+    <p style="margin-top:8px"><b style="color:var(--ink)">On the ship:</b> his method, model and MDCs are the basis of the scanner's Eyes system (page 27). His phases 1 to 3 (own module, measurements and quality control) are still pending.</p>
+  </div>
+  <div class="tj" style="margin-top:12px">
+    <div class="k" style="color:var(--amb)"><lu n="radiation"></lu>&nbsp; Active radiation detector · Luis González</div>
+    <p>Conceptual design (9-page proposal) with seven changes to make it viable in flight: ⁶LiF/ZnS:Ag screens for neutrons instead of ³He, a single Bonner sphere with detectors at six radii, CsI(Tl) or GAGG:Ce instead of NaI(Tl), a ΔE-E telescope for protons, a silicon LET spectrometer for heavy ions (no LET, no dose equivalent), a fast solar alert channel in the FPGA and SiPM handling under radiation. Budget of ~15–25 kg and 10–25 W, a simulation (Geant4, FLUKA, MCNP) and calibration plan, and a four-phase roadmap up to a demo flight in low Earth orbit.</p>
+    <p style="margin-top:8px"><b style="color:var(--ink)">On the ship:</b> the station contract already defines its message (<code>tasa_usv_h</code>, <code>alerta_spe</code>, <code>let_kev_um</code>, <code>neutrones_usv_h</code>, <code>protones_cm2_s</code>) and the Radiation view shows each channel “waiting for hardware”. It is not built. Suggested physics review: Daniella Mora.</p>
+  </div>
+  <div class="tj" style="margin-top:12px;border-color:rgba(111,214,176,.35)"><div class="k" style="color:var(--ok)"><lu n="github"></lu>&nbsp; Public repository</div><p>On November 15, <code>github.com/4mser/nova</code> was published with a clean history and English documentation: a README per module, a GIF of the real system, <code>research/</code> with these tracks and <code>hardware/</code> with Luis's station. Each contribution keeps its authorship in the commits.</p></div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>46 / 58</span></div>
+</section>

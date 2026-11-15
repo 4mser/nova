@@ -1,0 +1,29 @@
+<section class="page aire3 p3t">
+  <div class="kick"><span style="color:var(--mut)">26</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part III · Body scan</div>
+  <h1 style="font-size:25pt;margin-top:10px">The anatomy fits the body in front of you</h1>
+  <p class="lead">You point the phone at a crew member and NOVA overlays their reference anatomy, sized to that person, turned the way they stand and at their distance. The organs beat and breathe with the live values of their twin.</p>
+
+  <div class="cap" style="margin-top:14px;height:282px"><img style="height:100%;object-fit:cover;object-position:50% 45%" src="img/propias/esqueleto.jpg" alt="Scan with the full skeleton fitted on a team member at Space Apps"></div>
+  <p class="capleg"><b>Live at Space Apps Santiago, Nov 15.</b> The full skeleton fitted on a team member, arms included, with estimated bone density and the vitals strip below. Top left, what it measured: 46 cm torso at 1.3 m. Demo crew data.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 140px;gap:16px;margin-top:12px;align-items:start">
+    <div class="lista" style="gap:7px">
+      <div class="it" style="font-size:9pt"><i style="background:var(--cian)"></i><p style="font-size:9pt;line-height:1.5"><b>Where it is.</b> Position comes from a least-squares fit of MediaPipe's 3D points against the same points in the image, with a perspective camera (67° field of view on the phone, 60° on a PC, adjustable from the station). This gives the real distance.</p></div>
+      <div class="it" style="font-size:9pt"><i style="background:var(--lila)"></i><p style="font-size:9pt;line-height:1.5"><b>How big it is.</b> Shoulder width (MediaPipe × 1.18, calibrated) and torso length are averaged over the first frames. The anatomy is scaled between 0.85 and 1.35 times the reference, and length does not change if the hips leave the frame.</p></div>
+      <div class="it" style="font-size:9pt"><i style="background:var(--amb)"></i><p style="font-size:9pt;line-height:1.5"><b>How it bends.</b> Three bones (pelvis, chest and head) are blended by height in the shader, like an animation skeleton. Arms and legs have one rigid bone per segment, and are drawn only if their joints are visible in the frame.</p></div>
+      <div class="it" style="font-size:9pt"><i style="background:var(--mag)"></i><p style="font-size:9pt;line-height:1.5"><b>A window inside.</b> The torso outline is projected, clipped to the person's silhouette and darkened like a cavity. Hands passing in front cover the hologram.</p></div>
+      <div class="it" style="font-size:9pt"><i style="background:var(--ok)"></i><p style="font-size:9pt;line-height:1.5"><b>Three styles.</b> Hologram (glowing edges, the default), clinical (shaded, solid organs) and X-ray (bright bone, faint tissue). They switch live from the station.</p></div>
+    </div>
+    <div>
+      <div class="tel" style="border-radius:18px;padding:4px"><img src="img/propias/wa-2.jpg" alt="The ship screen following the live scan at Space Apps" style="border-radius:14px"></div>
+      <p class="capleg"><b>At the hackathon.</b> The ship screen follows what the headset sees.</p>
+    </div>
+  </div>
+
+  <div class="g3" style="margin-top:10px">
+    <div class="tj" style="padding:13px 15px"><div class="k" style="color:var(--cian)">Atlas</div><p>BodyParts3D 4.0 (male) with the liver from the Human Reference Atlas (HuBMAP), CC BY 4.0. 689 parts, 9.6 MB compressed.</p></div>
+    <div class="tj" style="padding:13px 15px"><div class="k" style="color:var(--lila)">Render</div><p>three.js with custom shaders over the camera image, at the phone's screen refresh rate.</p></div>
+    <div class="tj" style="padding:13px 15px"><div class="k" style="color:var(--amb)">What it is not</div><p>An estimate from proportions, not an image of the inside. The start screen says so before beginning.</p></div>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>26 / 58</span></div>
+</section>

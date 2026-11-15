@@ -1,0 +1,38 @@
+<style>.p3c td{padding:5px 10px!important;font-size:8.3pt;line-height:1.36}.p3c th{padding:6px 10px!important}.p3t .tj p{font-size:8.7pt;line-height:1.5}.p3t .tj{padding:13px 15px!important}.p3t p.capleg{font-size:7.8pt;line-height:1.4;margin-top:5px}</style>
+<section class="page aire3 p3t">
+  <div class="kick"><span style="color:var(--mut)">24</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part III · Emergencies</div>
+  <h1 style="font-size:25pt;margin-top:10px">Thirteen fixed protocols, with the source in view</h1>
+  <p class="lead">When someone writes or says an emergency, the ship answers with the written protocol, without going through the language model. The step-by-step guide asks, measures and decides with the crew member's real values, in English or Spanish.</p>
+
+  <div class="franja">
+    <div><b>13</b><span>protocols in <code>ui/protocolos.json</code> v0.2</span></div>
+    <div><b>87</b><span>branching steps in the 11 step-by-step guides</span></div>
+    <div><b>7</b><span>protocols with cited source and page</span></div>
+    <div><b>0</b><span>language model decisions in an emergency</span></div>
+  </div>
+
+  <table class="t p3c" style="margin-top:14px">
+    <tr><th style="width:30%">Protocol</th><th style="width:10%">Guide</th><th>Source and page</th><th style="width:24%">Earth notice</th></tr>
+    <tr><td><b>Cardiac arrest in microgravity</b></td><td>10 steps</td><td>DGLRM/ESAM, CPR in microgravity · p. 2, 4–6, 8</td><td>Always, immediately</td></tr>
+    <tr><td><b>Possible fainting (syncope)</b></td><td>8 steps</td><td class="t3" style="color:var(--mut)">No page cited yet</td><td>Always</td></tr>
+    <tr><td><b>Low blood sugar</b></td><td>6 steps</td><td style="color:var(--mut)">No page cited yet</td><td>Below 54 mg/dL or if it recurs</td></tr>
+    <tr><td><b>Fever</b></td><td>5 steps</td><td style="color:var(--mut)">No page cited yet</td><td>From 39.5 °C</td></tr>
+    <tr><td><b>Low oxygen saturation</b></td><td>7 steps</td><td style="color:var(--mut)">No page cited yet</td><td>Below 90 % sustained</td></tr>
+    <tr><td><b>Severe allergic reaction</b></td><td>9 steps</td><td>WHO, Basic Emergency Care (BEC) · p. 119, 202, 235</td><td>Always</td></tr>
+    <tr><td><b>Choking</b></td><td>8 steps</td><td>WHO, BEC · p. 155 · CPR guide · p. 4</td><td>In the nightly report</td></tr>
+    <tr><td><b>Severe bleeding</b></td><td>8 steps</td><td>WHO, Basic Emergency Care · p. 169–170</td><td>With tourniquet or if it won't stop</td></tr>
+    <tr><td><b>Seizure</b></td><td>8 steps</td><td>WHO, Basic Emergency Care · p. 141–142</td><td>Always</td></tr>
+    <tr><td><b>Decompression sickness</b></td><td>10 steps</td><td>NASA HRP, DCS and hypoxia · p. 52 · OCHMO · p. 6, 12</td><td>Always; immediately if type 2</td></tr>
+    <tr><td><b>Solar particle storm</b></td><td>8 steps</td><td>OCHMO, Radiation Protection · p. 1, 2, 10 · HRP SPE · p. 10</td><td>Always: the event dose when it ends</td></tr>
+    <tr><td><b>Rising cabin CO<sub>2</sub></b></td><td>List</td><td style="color:var(--mut)">Cabin steps</td><td>Above the notice limit</td></tr>
+    <tr><td><b>Little sleep, low mood or energy</b></td><td>List</td><td style="color:var(--mut)">Self-care steps</td><td>Never on its own: the person decides</td></tr>
+  </table>
+
+  <div class="g3" style="margin-top:12px">
+    <div class="tj"><div class="k" style="color:var(--mag)"><lu n="shield-alert"></lu>&nbsp; Fixed text</div><p>The ship recognizes the emergency (<code>nova::emergencia</code>) and returns the written steps and where the needed items are in the kit. What the crew reports overrides a sensor.</p></div>
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="git-branch"></lu>&nbsp; Branching guide</div><p>Question, action, wait or close. Waits read the twin against the protocol thresholds. During compressions a metronome plays at 110 per minute.</p></div>
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="notebook-pen"></lu>&nbsp; Log</div><p>Each answer is logged with a time and the Earth console reads it at <code>/v1/bitacora</code>. The fainting guide opens on its own if pulse and pressure drop together.</p></div>
+  </div>
+  <p style="margin-top:10px;font-size:8.2pt;color:var(--mut)">Status: <span class="est par">demo · pending flight surgeon review</span>. Licenses: CC BY 4.0, CC BY-NC-SA 3.0 IGO and NASA public use.</p>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>24 / 58</span></div>
+</section>

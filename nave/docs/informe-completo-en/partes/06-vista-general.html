@@ -1,0 +1,73 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">06</span>&nbsp;&nbsp;·&nbsp;&nbsp;Part I · Architecture&nbsp;&nbsp;·&nbsp;&nbsp;Overview</div><h1 style="font-size:25pt;margin-top:10px">Everything lives inside the ship</h1>
+  <p class="lead">The dotted turquoise border is the hull: everything inside works without Earth. The only thing that crosses is a slow link, with light delay, that sends a report down and signed packages up.</p>
+  <svg class="dg" viewBox="0 0 674 800" style="margin-top:16px" role="img" aria-label="Full NOVA architecture">
+    <rect x="1" y="1" width="672" height="640" rx="22" fill="rgba(70,200,232,.035)" stroke="rgba(143,230,245,.32)" stroke-dasharray="5 6"/>
+    <text class="mc" x="20" y="24">THE SHIP · ALL ON BOARD</text>
+    <!-- row 1: where the data comes from -->
+    <text class="m" x="20" y="50">WHERE THE DATA COMES FROM</text>
+    <rect x="20" y="60" width="200" height="74" rx="12" fill="rgba(111,214,176,.08)" stroke="rgba(111,214,176,.55)"/>
+    <text class="t" x="34" y="82">Medical station</text><text x="34" y="99">ECG, SpO<tspan dy="2.5" font-size="7.5">2</tspan><tspan dy="-2.5">,</tspan> pressure, temperature,</text><text x="34" y="113">breathing, glucose, mass</text><text class="mo" x="34" y="127">USB SERIAL OR UDP · NDJSON</text>
+    <rect x="237" y="60" width="200" height="74" rx="12" fill="rgba(111,214,176,.08)" stroke="rgba(111,214,176,.55)"/>
+    <text class="t" x="251" y="82">Crew phones</text><text x="251" y="99">watch pulse, sleep,</text><text x="251" y="113">mood only if shared</text><text class="mo" x="251" y="127">EVERY 5 S · /V1/LOTE</text>
+    <rect x="454" y="60" width="200" height="74" rx="12" fill="#0f1722" stroke="rgba(150,185,215,.26)"/>
+    <text class="t" x="468" y="82">Simulator</text><text x="468" y="99">scenarios: fainting, hypoglycemia,</text><text x="468" y="113">fever, hypoxia, CO<tspan dy="2.5" font-size="7.5">2</tspan></text><text class="m" x="468" y="127">REAL VARIABILITY · BIDMC</text>
+    <!-- arrows to the core -->
+    <path d="M120 134V158H300M337 134V158M554 134V158H374" fill="none" stroke="#46c8e8" stroke-width="1.4"/><path d="M337 158V170" stroke="#46c8e8" stroke-width="1.4"/><path d="M332 165l5 7 5-7" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <!-- row 2: F Prime core -->
+    <rect x="20" y="176" width="634" height="104" rx="14" fill="rgba(143,230,245,.07)" stroke="rgba(143,230,245,.55)"/>
+    <text class="mc" x="36" y="198">FLIGHT CORE · F PRIME V4.4.2 · C++</text>
+    <rect x="36" y="210" width="140" height="34" rx="8" fill="#0f1722" stroke="rgba(150,185,215,.26)"/><text class="t" x="48" y="231">Estacion</text><text class="m" x="128" y="231">50050</text>
+    <path d="M176 227h18" stroke="#46c8e8" stroke-width="1.4"/><path d="M189 223l6 4-6 4" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <rect x="196" y="210" width="170" height="34" rx="8" fill="#0f1722" stroke="rgba(236,106,168,.5)"/><text class="t" x="208" y="231">MonitorSalud</text><text class="mm" x="300" y="231">THRESHOLDS</text>
+    <path d="M366 227h18" stroke="#46c8e8" stroke-width="1.4"/><path d="M379 223l6 4-6 4" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <rect x="386" y="210" width="140" height="34" rx="8" fill="#0f1722" stroke="rgba(150,185,215,.26)"/><text class="t" x="398" y="231">Pantalla</text><text class="m" x="478" y="231">50051</text>
+    <rect x="540" y="210" width="98" height="34" rx="8" fill="#0f1722" stroke="rgba(150,185,215,.26)"/><text class="t" x="552" y="231">GDS</text><text class="m" x="590" y="231">CCSDS</text>
+    <text class="m" x="36" y="266">CDHCORE · COMCCSDS · FILEHANDLING · PRMDB · RATE GROUPS 1 / 0.5 / 0.25 HZ</text>
+    <path d="M456 280V300" stroke="#46c8e8" stroke-width="1.4"/><path d="M451 295l5 7 5-7" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <!-- row 3: link + AI -->
+    <rect x="20" y="306" width="300" height="168" rx="14" fill="rgba(236,106,168,.07)" stroke="rgba(236,106,168,.5)"/>
+    <text class="mm" x="36" y="328">ON-BOARD INTELLIGENCE</text>
+    <text class="t" x="36" y="350">Qwen3 4B · llama.cpp</text><text class="m" x="200" y="350">:8081 LANGUAGE</text>
+    <text class="t" x="36" y="374">nomic embed v2</text><text class="m" x="200" y="374">:8084 SEARCH</text>
+    <text class="t" x="36" y="398">whisper.cpp</text><text class="m" x="200" y="398">:8083 HEARING</text>
+    <text class="t" x="36" y="422">Kokoro</text><text class="m" x="200" y="422">:8082 VOICE</text>
+    <text class="t" x="36" y="446">MediaPipe Pose + Hands</text><text class="m" x="200" y="446">:8792 VISION</text>
+    <text class="m" x="36" y="464">ALL ON THE SHIP COMPUTER</text>
+    <rect x="338" y="306" width="316" height="168" rx="14" fill="rgba(143,230,245,.07)" stroke="rgba(143,230,245,.55)"/>
+    <text class="mc" x="354" y="328">SHIP LINK · RUST (TAURI + AXUM)</text>
+    <text class="tg" x="354" y="352">NOVA PC</text>
+    <text x="354" y="372">HTTP :8750 · HTTPS :8751 · 39 routes /v1/…</text>
+    <text x="354" y="388">live stream (SSE) and status every 5 s</text>
+    <text x="354" y="404">1 Hz history, log, kit, library</text>
+    <text x="354" y="420">protocols, home, mission and light delay</text>
+    <text x="354" y="436">starts and watches the 7 on-board services</text>
+    <text class="m" x="354" y="462">BRAIN: ON BOARD BY DEFAULT · OPTIONAL DEMO</text>
+    <path d="M320 390h18" stroke="#ec6aa8" stroke-width="1.4"/>
+    <path d="M496 474V494" stroke="#46c8e8" stroke-width="1.4"/><path d="M496 494H110V506M496 494V506M560 494V506" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <!-- row 4: interfaces -->
+    
+    <rect x="20" y="510" width="200" height="72" rx="12" fill="rgba(168,152,255,.09)" stroke="rgba(168,152,255,.55)"/>
+    <text class="t" x="34" y="532">Station (large screen)</text><text x="34" y="549">Crew, Vitals, Body twin, Mind,</text><text x="34" y="563">Kit, Library, Live scan, Systems</text>
+    <rect x="237" y="510" width="200" height="72" rx="12" fill="rgba(168,152,255,.09)" stroke="rgba(168,152,255,.55)"/>
+    <text class="t" x="251" y="532">NOVA app (mission mode)</text><text x="251" y="549">Today, Crew, Body, Mind, Log,</text><text x="251" y="563">Emergency, From home, widget</text>
+    <rect x="454" y="510" width="200" height="72" rx="12" fill="rgba(168,152,255,.09)" stroke="rgba(168,152,255,.55)"/>
+    <text class="t" x="468" y="532">Body scan (AR)</text><text x="468" y="549">phone camera, anatomy</text><text x="468" y="563">fitted, steps over the body</text>
+    <text class="m" x="20" y="606">THE SHIP STORES: 1 HZ HISTORY · 41 SOURCES · 13 PROTOCOLS</text><text class="m" x="20" y="622">42-ITEM KIT · LOG · EARTH'S PUBLIC KEY</text>
+    <!-- link with Earth -->
+    <path d="M600 474V488" stroke="none"/>
+    <path d="M654 390H668V672" fill="none" stroke="#f2b457" stroke-width="1.4" stroke-dasharray="5 5"/>
+    <path d="M662 676V410H654" fill="none" stroke="#ec6aa8" stroke-width="1.4" stroke-dasharray="5 5"/>
+    <rect x="1" y="676" width="672" height="122" rx="22" fill="rgba(242,180,87,.045)" stroke="rgba(242,180,87,.36)" stroke-dasharray="5 6"/>
+    <text class="ma" x="20" y="700">EARTH · 9.9 LIGHT MINUTES TODAY (MISSION DAY 220)</text>
+    <rect x="20" y="712" width="200" height="72" rx="12" fill="rgba(242,180,87,.08)" stroke="rgba(242,180,87,.55)"/>
+    <text class="t" x="34" y="734">Mission Control</text><text x="34" y="751">surgeon console: report,</text><text x="34" y="765">thresholds, messages from home</text>
+    <rect x="237" y="712" width="200" height="72" rx="12" fill="rgba(168,152,255,.09)" stroke="rgba(168,152,255,.55)"/>
+    <text class="t" x="251" y="734">Parent model</text><text x="251" y="751">learns from the reports,</text><text x="251" y="765">distills a child model</text>
+    <rect x="454" y="712" width="146" height="72" rx="12" fill="rgba(236,106,168,.08)" stroke="rgba(236,106,168,.55)"/>
+    <text class="t" x="468" y="734">ed25519 signature</text><text x="468" y="751">the private key</text><text x="468" y="765">lives only here</text>
+    
+    <text class="ma" x="480" y="664" text-anchor="end">DOWNLINK REPORT</text><text class="mm" x="650" y="664" text-anchor="end">UPLINK PACKAGE</text>
+  </svg>
+  <div class="pie"><span><b>NOVA</b> · Full technical report</span><span>06 / 58</span></div>
+</section>
