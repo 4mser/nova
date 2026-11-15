@@ -21,8 +21,8 @@ planeada, no corrida. El informe lo dice así en cada caso.
 
 ## Compilar
 
-Necesitas LuaLaTeX, biber y latexmk (MiKTeX o TeX Live), más las fuentes Libertinus Serif, Libertinus Sans y Source
-Code Pro.
+Necesitas LuaLaTeX, biber y latexmk (MiKTeX o TeX Live), más las fuentes Libertinus Serif, Libertinus Sans,
+Libertinus Math y Source Code Pro.
 
 ```
 latexmk -lualatex informe
@@ -41,17 +41,23 @@ cd herramientas
 python construir_cifras.py .. ../../transfer-learning
 ```
 
-`fuentes/` no está en git, porque trae datos de personas y pesos de modelos. Así se arma:
+`fuentes/` no está en git, porque trae las tablas completas de los sujetos y los pesos de los modelos. Así se arma:
 
 | Archivo | De dónde sale |
 |---|---|
 | `metricas.json`, `log.txt`, `rango_esperado*.csv`, `placebo_pre.csv`, `pronostico*.csv`, `desplazamiento_reposo.csv`, `ruido_por_variable.json`, `corrector_poblacion.json` | salida del tercer run: `kaggle kernels output benjacampos/nova-transfer-learning` |
 | `reposo_largo.parquet`, `reposo_covariables.parquet`, `tierra_largo.parquet` | entrada del kernel, preparada con `python -m nova_tl.datos` (ver el README de `../transfer-learning/`) |
-| `nova-tierra.safetensors`, `nova-espacio.safetensors`, `config_patchtst.json` | el `model.safetensors` y el `config.json` de `Benjjaman/nova-tierra` y `Benjjaman/nova-espacio` en Hugging Face (privados por ahora); el kernel también los deja en su carpeta `pesos/` |
+| `nova-tierra.safetensors`, `nova-espacio.safetensors` | el `model.safetensors` de `Benjjaman/nova-tierra` y `Benjjaman/nova-espacio` en Hugging Face (privados por ahora) |
+| `config_patchtst.json` | la configuración del PatchTST, en el formato del `config.json` que el kernel escribe con `save_pretrained` en `pesos/` |
 | `datos_auditoria.json` | el script de la auditoría del 14-11, que no está en el repositorio |
 
-Los sha256 de esos archivos están en el apéndice de reproducibilidad del informe (tablas de trazabilidad y de datos de
-entrada).
+Los sha256 de los datos de entrada, de los pesos y de los archivos de resultados están en el apéndice de
+reproducibilidad del informe.
+
+Hay datos de una persona en un solo lugar: la figura del capítulo 5 (`generado/fig_ilustracion.tex` y el PDF). Dibuja
+el peso diario de un sujeto del reposo, identificado con su código de sujeto (`C3_6043`), que es el mismo tipo de
+código que ya trae `resultados/metricas.json` en `../transfer-learning/`. Si el repositorio se hace público, hay que
+revisar esa figura.
 
 ## Bibliografía
 
