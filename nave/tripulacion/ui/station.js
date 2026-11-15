@@ -17,6 +17,8 @@ const $ = id => document.getElementById(id);
 const P = new URLSearchParams(location.search);
 const LECTOR = (P.get('lector') || 'station').replace(/[^a-zA-Z0-9-]/g, '').slice(0, 40) || 'station';
 const APP = !!window.ReactNativeWebView;
+// ?mudo: espejo de la tablet dentro de NOVA PC (vista hardware): misma sesión, sin voz ni micrófono, para no hablar dos veces
+const MUDO = P.has('mudo');
 const esc = s => String(s ?? '').replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[m]);
 const api = async (ruta, o = {}) => {
   const r = await fetch(BASE + ruta, { cache: 'no-store', ...o, headers: { ...(o.body ? { 'content-type': 'application/json' } : {}), ...(o.headers || {}) } });
@@ -37,7 +39,7 @@ const REGM = {
   glucosa: { n: 'Blood sugar', u: 'mg/dL', r: [[20, 600]], como: '<b>Clean the fingertip</b> and use the second drop of blood. Note if you ate in the last 2 hours.' },
   temp: { n: 'Temperature', u: '°C', r: [[30, 43]], dec: true, como: '<b>Under the tongue</b>, mouth closed, for one minute.' },
   spo2: { n: 'Oxygen', u: '%', r: [[50, 100]], como: '<b>Warm, still finger.</b> Wait until the number holds for 10 seconds.' },
-  pulso: { n: 'Heart rate', u: 'bpm', r: [[20, 250]], como: '<b>Count the beats</b> at the wrist for 30 seconds and double it.' },
+  pulso: { n: 'Heart rate', u: 'bpm', r: [[20, 250]], como: '<b>By hand:</b> count the beats at the wrist for 30 seconds and double it.' },
   fr: { n: 'Breathing', u: '/min', r: [[4, 60]], como: '<b>Count breaths for 30 seconds</b> without telling the person, then double it.' },
 };
 window.REG = REGM; // el gemelo muestra «Log …» para estas mediciones
@@ -67,6 +69,9 @@ function conectar() {
     if (d.tipo === 'tripulacion') { cargarBase().then(() => { pintarComun(); if (sesion && window.pintarGemelo) window.pintarGemelo(); }); return; }
     if (d.trip && Array.isArray(d.trip)) ponerEstado(d);
     if (d.tipo === 'kit') leerKit();
+    if (d.tipo === 'pantalla' && MUDO && d.lector === LECTOR) espejo(d.foto);
+    if (d.tipo === 'onda' && d.lector === LECTOR) ecgRecibir(d);
+    if (d.tipo === 'radiacion') { radStation(!!d.spe); leerRadStation(); }
   };
   es.onerror = () => { es.close(); setTimeout(conectar, 2000); };
 }
@@ -199,13 +204,13 @@ if (P.has('demo')) {
 }
 
 /* ── hojas ── */
-let hojaTipo = null;
+let hojaTipo = null, hojaArg = null;
 // el rack y el cerebro 3D viven en contenedores que se mueven a la hoja (se montan una sola vez)
 const cajaKit = Object.assign(document.createElement('div'), { className: 'kit3d' });
 const cajaCerebro = Object.assign(document.createElement('div'), { className: 'cerebro' });
 cajaCerebro.innerHTML = '<div data-cerebro3d></div><div class="est" id="mEst"></div>';
 function abrirHoja(tipo, arg) {
-  hojaTipo = tipo; $('hoja').hidden = false; cerrarCharla();
+  hojaTipo = tipo; hojaArg = arg ?? null; $('hoja').hidden = false; cerrarCharla();
   const poner = (kick, tit, html) => { $('hojaKick').textContent = kick; $('hojaTit').textContent = tit; $('hojaCuerpo').innerHTML = html; $('hojaCuerpo').scrollTop = 0; };
   if (tipo === 'kit') { window.cambiarVista('kit'); poner('Medical rack · live inventory', 'Medical kit', ''); hojaKit(); }
   else if (tipo === 'mente') { poner('Conceptual model · live signals', 'Crew mind', ''); hojaMente(arg); }
@@ -214,12 +219,13 @@ function abrirHoja(tipo, arg) {
   else if (tipo === 'mision') { poner('Ship position · real light delay', 'Mission', ''); hojaMision(); }
   else if (tipo === 'tri') { const c = crew[arg]; poner(`${c.rol} · shared with the crew`, c.nombre, ''); hojaTri(arg); }
   else if (tipo === 'check') { poner('Your day · shared only if you send it', 'Check-in', ''); pintarCheck(); }
-  else if (tipo === 'medir') { if (arg && REGM[arg]) { medS = arg; medV = ['', '']; medI = 0; } poner('Logged with your name', 'Log a measurement', ''); pintarMedir(); }
+  else if (tipo === 'medir') { if (arg && REGM[arg]) { medS = arg; medV = ['', '']; medI = 0; } const n = nombreSesion(); poner(n ? `Saved to ${n}'s record` : 'Tap your card first', n ? `${n} · log a measurement` : 'Log a measurement', ''); pintarMedir(); }
   else if (tipo === 'casa') { poner('Messages arrive with the real light delay', 'Home', ''); pintarCasa(); }
+  else if (tipo === 'ecg') { poner('AD8232 heart board · live', 'ECG', ''); hojaEcg(); }
 }
 function cerrarHoja() {
   const eraKit = hojaTipo === 'kit';
-  $('hoja').hidden = true; hojaTipo = null;
+  $('hoja').hidden = true; hojaTipo = null; hojaArg = null;
   // el rack 3D solo corre con la vista «kit»; al cerrarlo vuelve a correr el gemelo (o nada, en la órbita)
   if (eraKit) {
     if (sesion) { const i = crew.findIndex(c => c.id === sesion.trip); if (i >= 0 && window.abrirGemelo) window.abrirGemelo(i); }
@@ -227,7 +233,8 @@ function cerrarHoja() {
   }
 }
 $('hojaX').onclick = cerrarHoja;
-window.stationMedir = s => abrirHoja('medir', s);
+window.stationMedir = s => abrirHoja(s === 'pulso' ? 'ecg' : 'medir', s);   // el pulso: primero la placa del corazón
+const nombreSesion = () => sesion ? (sesion.persona?.corto || sesion.persona?.nombre || sesion.trip) : '';
 
 /* kit: el rack 3D de la nave + la lista; con tarjeta, retirar queda a tu nombre */
 let kPack = null, kItem = null, filtroKit = '';
@@ -359,8 +366,12 @@ function pintarCheck() {
 let medS = 'pa', medV = ['', ''], medI = 0;
 function pintarMedir() {
   const d = REGM[medS], val = i => `<span class="${medI === i ? 'cur' : ''}">${medV[i] || '–'}</span>`;
+  const vivo = performance.now() - ecg.t < 3000 && ecg.contacto && ecg.bpm;
+  const sensor = medS !== 'pulso' ? '' : `<div class="caja ecgaviso"><div><b>${vivo ? `The heart board is reading you: ${Math.round(ecg.bpm)} bpm` : 'The heart board measures this for you'}</b>
+      <span>${vivo ? 'Open the live ECG and it is saved to your record while you watch it. No need to type it.' : 'Put on the electrodes and open the live ECG: NOVA reads your pulse and its variability, saved with your name.'}</span></div>
+      <button class="pri" data-abrir-ecg>Open live ECG</button></div>`;
   $('hojaCuerpo').innerHTML = `<div class="chipsel">${Object.entries(REGM).map(([k, r]) => `<button data-s="${k}" class="${k === medS ? 'on' : ''}">${r.n}</button>`).join('')}</div>
-    <div class="caja"><div class="valor">${val(0)}${d.dos ? ` / ${val(1)}` : ''}<small>${d.u}</small></div><p class="como">${d.como}</p>
+    ${sensor}<div class="caja"><div class="valor">${val(0)}${d.dos ? ` / ${val(1)}` : ''}<small>${d.u}</small></div><p class="como">${d.como}</p>
       <div class="teclado">${['1', '2', '3', '4', '5', '6', '7', '8', '9', d.dec ? '.' : '', '0', '⌫'].map(k => `<button data-t="${k}" ${k ? '' : 'disabled style="visibility:hidden"'}>${k}</button>`).join('')}</div></div>
     <div class="fila"><button class="pri" id="guardarMed">Save</button></div>`;
 }
@@ -490,13 +501,14 @@ async function preguntar(q) {
 }
 function decirNova(texto, nuevo = true) {
   if (!texto) return;
-  try { hablar(texto, { nuevo }); } catch {}
+  if (!MUDO) { try { hablar(texto, { nuevo }); } catch {} }
   if (!document.body.classList.contains('personal')) { $('dice').innerHTML = esc(texto); decirHasta = performance.now() + Math.max(5000, texto.length * 80); }
 }
 
 /* micrófono: en la APK lo maneja Android; en un navegador seguro, la página (WAV a /v1/oir) */
 let micOn = false, micStream = null, micCtx = null, micBuf = [], micHz = 16000, tVoz = 0, hayVoz = false;
 async function escuchar() {
+  if (MUDO) return;
   abrirCharla();
   if (micOn) { pararMic(true); return; }
   try { callar(); } catch {}
@@ -551,6 +563,7 @@ window.novaApp = msg => {
 
 /* ── NOVA: al centro de la órbita o al lado de tu cuerpo; se arrastra, se levanta, salta y vuelve a su lugar ── */
 const CARAS = ['feliz', 'sorprendida', 'pensativa', 'triste', 'dormida', 'normal'];
+let radNova = 0, radSpe = false;   // radSpe: hay tormenta solar (lo marca radStation)   // tormenta solar: NOVA pasa a ámbar e inquieta, de a poco
 const nova = (() => {
   const el = $('nova'), svg = $('novaSvg'), toque = $('novaToque'), R = 100;
   svg.setAttribute('viewBox', `${-R * 2.4} ${-R * 2.4} ${R * 4.8} ${R * 4.8}`);
@@ -604,10 +617,13 @@ const nova = (() => {
     const ahora = performance.now();
     const alerta = estado?.trip?.some(tt => tt.nivel === 'aviso_tierra') ? 1 : 0;
     const hablaV = typeof hablandoVoz === 'function' && hablandoVoz() ? Math.min(1, nivelVoz * 1.6) : 0;
-    const expr = ahora < tExpr && exprTmp ? exprTmp : piensa ? 'pensativa' : oye ? 'sorprendida' : hablaV > .05 ? 'feliz' : 'normal';
-    const m = ahora < tMira ? mira : [Math.sin(t * .4) * .25, .15];
+    radNova += ((radSpe ? 1 : 0) - radNova) * .03;
+    const inquieta = radNova > .5;
+    const expr = ahora < tExpr && exprTmp ? exprTmp : inquieta ? 'inquieta' : piensa ? 'pensativa' : oye ? 'sorprendida' : hablaV > .05 ? 'feliz' : 'normal';
+    // inquieta: de vez en cuando mira hacia el Sol (a la izquierda) y vuelve
+    const m = ahora < tMira ? mira : inquieta && (t % 4.6) < .8 ? [-.9, -.15] : [Math.sin(t * .4) * .25, .15];
     const velP = arrastre ? [Math.max(-1, Math.min(1, (arrastre.hist.at(-1)[1] - arrastre.hist[0][1]) / 120)), Math.max(-1, Math.min(1, (arrastre.hist.at(-1)[2] - arrastre.hist[0][2]) / 120))] : [vx / 30, vy / 30];
-    svg.innerHTML = mascotaOrbes({ x: 0, y: 0, R, t, expr, orbes: 6, mira: m, parpadeo: (t % 3.7) < .13 ? 1 : 0, habla: Math.max(hablaV, oye ? api.nivelMic * .6 : 0), vel: velP, estira: salto * Math.sin(t * 20) * .6, alerta });
+    svg.innerHTML = mascotaOrbes({ x: 0, y: 0, R, t, expr, orbes: 6, mira: m, parpadeo: (t % 3.7) < .13 ? 1 : 0, habla: Math.max(hablaV, oye ? api.nivelMic * .6 : 0), vel: velP, estira: salto * Math.sin(t * 20) * .6, alerta, radiacion: radNova });
   }
   requestAnimationFrame(cuadro);
   return api;
@@ -673,3 +689,137 @@ setInterval(() => { if (sesion) cargarCasa(); }, 60000);
 setTimeout(lazos, 300);
 nativo({ tipo: 'lista', lector: LECTOR });
 window.__station = { get sesion() { return sesion; }, nova, abrirHoja };
+
+/* ── espejo en vivo: la tablet de verdad cuenta qué muestra y la copia del PC (station.html?mudo) muestra lo mismo ──
+   La sesión (quién entró con su tarjeta) ya es de la nave; esto agrega lo que se abre encima: la hoja (kit, check-in,
+   medir, biblioteca, misión, un tripulante, casa), la charla con NOVA y la guía de emergencia. */
+const HTML_HOJA = new Set(['check', 'medir', 'biblio']);   // hojas que cambian al tocarlas: viaja su contenido
+function fotoPantalla() {
+  const charlaAbierta = !$('charlaCaja').hidden, guiaAbierta = !$('guia').hidden;
+  return {
+    hoja: hojaTipo, arg: hojaArg, scroll: hojaTipo ? Math.round($('hojaCuerpo').scrollTop) : 0,
+    html: hojaTipo && HTML_HOJA.has(hojaTipo) ? $('hojaCuerpo').innerHTML.slice(0, 40000) : null,
+    charla: charlaAbierta ? { tit: $('charlaTit').textContent, m: charla.slice(-10).map(m => ({ yo: !!m.yo, texto: m.texto || '', fuentes: m.fuentes || '' })) } : null,
+    guia: guiaAbierta ? $('guiaCaja').innerHTML.slice(0, 20000) : null,
+  };
+}
+if (!MUDO) {
+  let ultimaFoto = '', enviando = false;
+  setInterval(async () => {
+    if (enviando) return;
+    const f = JSON.stringify(fotoPantalla()); if (f === ultimaFoto) return;
+    enviando = true;
+    try { await postJ('/v1/station/pantalla', { lector: LECTOR, foto: JSON.parse(f) }); ultimaFoto = f; } catch {}
+    enviando = false;
+  }, 350);
+}
+function espejo(f) {
+  if (!f) return;
+  if (f.hoja !== hojaTipo || JSON.stringify(f.arg ?? null) !== JSON.stringify(hojaArg)) { if (f.hoja) abrirHoja(f.hoja, f.arg ?? undefined); else if (hojaTipo) cerrarHoja(); }
+  if (f.hoja && f.html != null && $('hojaCuerpo').innerHTML !== f.html) $('hojaCuerpo').innerHTML = f.html;
+  if (f.hoja) $('hojaCuerpo').scrollTop = f.scroll || 0;
+  if (f.charla) {
+    $('charlaCaja').hidden = false; $('charlaTit').textContent = f.charla.tit || '';
+    charla.length = 0; f.charla.m.forEach(m => charla.push(m)); pintarCharla();
+  } else if (!$('charlaCaja').hidden) $('charlaCaja').hidden = true;
+  if (f.guia) { $('guia').hidden = false; if ($('guiaCaja').innerHTML !== f.guia) $('guiaCaja').innerHTML = f.guia; }
+  else if (!$('guia').hidden) $('guia').hidden = true;
+}
+if (MUDO) api(`/v1/station/pantalla?lector=${LECTOR}`).then(r => setTimeout(() => espejo(r.foto), 1500)).catch(() => {});
+
+/* ── electrocardiograma de la estación (AD8232 de Luis, por su puente: POST /v1/estacion/onda) ──
+   Solo existe dentro del espacio de una persona (con su tarjeta o QR): el botón ECG del dock marca «live» cuando hay
+   señal y la medición empieza al entrar a la hoja. El puente guarda el pulso a nombre de esa persona cada 2 s solo
+   mientras esta hoja está abierta (lo sabe por /v1/station/pantalla). */
+const ecg = { buf: [], fs: 250, t: 0, bpm: null, rmssd: null, calidad: null, contacto: true, trip: null, lo: 0, hi: 1023, corre: false, desde: 0 };
+function ecgRecibir(d) {
+  const ahora = performance.now();
+  if (ahora - ecg.t > 3000 || (d.trip || null) !== ecg.trip) { ecg.buf.length = 0; ecg.bpm = ecg.rmssd = ecg.calidad = null; }
+  ecg.fs = d.fs || 250; ecg.t = ahora; ecg.contacto = d.contacto !== false; ecg.trip = d.trip || null;
+  if (d.bpm) ecg.bpm = d.bpm; if (d.rmssd) ecg.rmssd = d.rmssd; if (d.calidad != null) ecg.calidad = d.calidad;
+  // electrodo suelto (o el AD8232 pegado a 0 o al tope de 10 bits mientras se suelta): línea plana, no el ruido
+  for (const v of d.muestras) ecg.buf.push(ecg.contacto && v > 4 && v < 1019 ? v : null);
+  const max = Math.round(ecg.fs * 8); if (ecg.buf.length > max) ecg.buf.splice(0, ecg.buf.length - max);
+  // nada se abre solo: el dock marca «live» y la medición empieza al entrar a la hoja ECG
+  $('ecgN').hidden = !(sesion && ecg.contacto);
+  if (sesion && hojaTipo === 'ecg') pintarEcgDatos();
+}
+function hojaEcg() {
+  const p = sesion?.persona || {}, nombre = p.corto || p.nombre || sesion?.trip || '';
+  $('hojaTit').textContent = nombre ? `${nombre}'s ECG` : 'ECG';
+  ecg.desde = performance.now();   // la medición empieza al entrar
+  $('hojaCuerpo').innerHTML = `<div class="ecgh"><div class="ecgest" id="ecgEst"><i></i><span id="ecgEstTxt"></span></div><canvas id="ecgLienzo"></canvas></div>
+    <div class="signos cuatro">
+      <div class="signo"><em>Pulse</em><b id="ecgBpm">—<small>bpm</small></b><span>from the time between beats</span></div>
+      <div class="signo"><em>Variability (RMSSD)</em><b id="ecgVfc">—<small>ms</small></b><span>beat to beat · stress and recovery</span></div>
+      <div class="signo"><em>Signal</em><b id="ecgCal">—</b><span id="ecgCalTxt">waiting</span></div>
+      <div class="signo"><em>Recording</em><b id="ecgTiempo">0:00</b><span>saved to ${esc(nombre)}'s record while this is open</span></div>
+    </div>
+    <p class="ecgguia">Sit still and breathe normally. Electrodes: right arm (RA), left arm (LA) and right leg or lower ribs (RL).
+      <button class="sec ecgmano" data-medir-mano>No electrodes? Enter it by hand</button></p>`;
+  pintarEcgDatos();
+  if (!ecg.corre) { ecg.corre = true; requestAnimationFrame(ecgDibujar); }
+}
+function pintarEcgDatos() {
+  const est = $('ecgEst'); if (!est) return;
+  const hay = performance.now() - ecg.t < 3000;
+  est.className = 'ecgest' + (!hay ? ' espera' : !ecg.contacto ? ' suelto' : '');
+  $('ecgEstTxt').textContent = !hay ? 'Put on the electrodes · waiting for the heart board' : !ecg.contacto ? 'Check the electrodes · one is not touching the skin' : 'Live from the heart board';
+  const vivo = hay && ecg.contacto;
+  $('ecgBpm').innerHTML = `${vivo && ecg.bpm ? Math.round(ecg.bpm) : '—'}<small>bpm</small>`;
+  $('ecgVfc').innerHTML = `${vivo && ecg.rmssd ? Math.round(ecg.rmssd) : '—'}<small>ms</small>`;
+  const q = vivo ? ecg.calidad : null;
+  $('ecgCal').textContent = q == null ? '—' : q >= .8 ? 'Good' : q >= .5 ? 'Fair' : 'Noisy';
+  $('ecgCalTxt').textContent = q == null ? (hay ? 'finding the beats' : 'waiting') : q >= .5 ? 'regular beats' : 'stay still, it is not saving';
+  const s = hay && ecg.contacto ? Math.floor((performance.now() - ecg.desde) / 1000) : 0;
+  if (!(hay && ecg.contacto)) ecg.desde = performance.now();   // cuenta solo con los electrodos puestos
+  $('ecgTiempo').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+function ecgDibujar() {
+  const cv = $('ecgLienzo');
+  if (hojaTipo !== 'ecg' || !cv) { ecg.corre = false; return; }
+  requestAnimationFrame(ecgDibujar);
+  if (performance.now() - ecg.t > 3000 && ecg.buf.length) { ecg.buf.length = 0; pintarEcgDatos(); }
+  const r = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== Math.round(w * r)) { cv.width = Math.round(w * r); cv.height = Math.round(h * r); }
+  const x = cv.getContext('2d'); x.setTransform(r, 0, 0, r, 0, 0); x.clearRect(0, 0, w, h);
+  // papel de ECG: una línea cada 0,2 s y otra fuerte cada segundo
+  for (let i = 1; i < 40; i++) { const gx = i * w / 40; x.strokeStyle = i % 5 ? 'rgba(236,106,168,.08)' : 'rgba(236,106,168,.2)'; x.beginPath(); x.moveTo(gx, 0); x.lineTo(gx, h); x.stroke(); }
+  for (let i = 1; i < 8; i++) { const gy = i * h / 8; x.strokeStyle = 'rgba(236,106,168,.08)'; x.beginPath(); x.moveTo(0, gy); x.lineTo(w, gy); x.stroke(); }
+  const b = ecg.buf; if (b.length < 2) return;
+  let lo = Infinity, hi = -Infinity; for (const v of b) { if (v == null) continue; if (v < lo) lo = v; if (v > hi) hi = v; }
+  if (lo === Infinity) { lo = ecg.lo; hi = ecg.hi; }
+  ecg.lo += (lo - ecg.lo) * .1; ecg.hi += (hi - ecg.hi) * .1; const rango = Math.max(40, ecg.hi - ecg.lo);
+  const n = Math.round(ecg.fs * 8), x0 = w * (1 - b.length / n);
+  x.strokeStyle = ecg.contacto ? '#ec6aa8' : '#f2b457'; x.lineWidth = 2.2; x.lineJoin = 'round'; x.shadowColor = x.strokeStyle; x.shadowBlur = 8;
+  x.beginPath();
+  b.forEach((v, i) => { const px = x0 + i * w / n, py = v == null ? h / 2 : h - 12 - (v - ecg.lo) / rango * (h - 24); i ? x.lineTo(px, py) : x.moveTo(px, py); });
+  x.stroke(); x.shadowBlur = 0;
+}
+setInterval(() => { $('ecgN').hidden = !(sesion && ecg.contacto && performance.now() - ecg.t < 3000); if (hojaTipo === 'ecg') pintarEcgDatos(); }, 1000);
+
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-abrir-ecg]')) abrirHoja('ecg');
+  else if (e.target.closest('[data-medir-mano]')) abrirHoja('medir', 'pulso');
+});
+
+/* ── tormenta solar: la nave avisa por el flujo; la tablet abre la guía del refugio para toda la tripulación ── */
+function radStation(spe) {
+  if (spe && !radSpe) {
+    if (!MUDO) { proc = new Procedimiento(PROTOCOLOS, 'tormenta_solar', { id: 'TODOS', corto: 'whole crew', nombre: 'The crew', rol: '' }, t => decirNova(t), (tipo, texto) => postJ('/v1/bitacora', { tipo: 'emergencias', datos: { protocolo: 'tormenta_solar', trip: 'TODOS', tipo, texto, desde: 'station', lector: LECTOR } }).catch(() => {}));
+      procQuien = { id: 'TODOS', corto: 'whole crew' }; $('guia').hidden = false; pintarGuia(); }
+    nativo({ tipo: 'vibrar' });
+  } else if (!spe && radSpe) avisar('Solar event over · you can leave the shelter', 'bien');
+  radSpe = spe;
+}
+// la pastilla de radiación de la cabecera: tasa y dosis de la misión; en una tormenta, ámbar y vuelve a abrir la guía
+async function leerRadStation() {
+  let r; try { r = await api('/v1/radiacion'); } catch { return; }
+  if (!r) return;
+  if (r.spe?.activa !== radSpe) radStation(!!r.spe?.activa);
+  const c = $('radChip'); c.hidden = false; c.classList.toggle('spe', !!r.spe?.activa);
+  c.innerHTML = r.spe?.activa ? `<i></i><b>Solar storm</b> · stay in the shelter · ${Math.round(r.tasa_usv_h).toLocaleString('en')} µSv/h`
+    : `<i></i>Radiation <b>${Math.round(r.tasa_usv_h)} µSv/h</b> · mission ${Math.round(r.mision.msv)}/600 mSv`;
+}
+$('radChip').onclick = () => { if (radSpe) { radSpe = false; radStation(true); } };
+leerRadStation(); setInterval(leerRadStation, 10000);

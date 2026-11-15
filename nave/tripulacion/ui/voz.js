@@ -84,7 +84,8 @@ function callar() {
   if (vozFuente) { try { vozFuente.onended = null; vozFuente.stop(); } catch {} vozFuente = null; }
 }
 
-const hablandoVoz = () => vozPadre ? vozPadre.hablandoVoz() : vozSonando || !!vozFuente;
+// hablandoVoz es const en la ventana principal (no queda en window): si el padre no la expone, se mide aquí
+const hablandoVoz = () => vozPadre && typeof vozPadre.hablandoVoz === 'function' ? vozPadre.hablandoVoz() : vozSonando || !!vozFuente;
 
 /* nivel de la voz para animar la boca (se llama en cada cuadro) */
 const vozDatos = new Uint8Array(256);

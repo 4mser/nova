@@ -62,6 +62,11 @@ body.visor #proc,body.visor #sugiere,body.visor #hoja,body.visor #qcpr{display:n
 .sugiere i{width:8px;height:8px;border-radius:50%;background:#f4b860}
 .sugiere b{color:#fff;font-weight:600}
 .sugiere button{height:34px;padding:0 14px;border-radius:17px;background:#f4b860;color:#1a1206;font:600 13px SG}
+.ojres{display:flex;flex-direction:column;gap:10px;padding:6px}.ojres b{font:600 18px SG}.ojres span,.ojres small{font:400 12.5px/1.45 SG;color:var(--t3,#8b95a3)}
+.ojres p{font:400 14.5px/1.5 SG;margin:0;padding:10px 12px;border-radius:14px;background:rgba(143,230,245,.08)}.ojres p.aviso{background:rgba(242,180,87,.12);color:#f6d7a1}
+.ojres table{border-collapse:collapse;font:400 13px SG}.ojres th{font:500 11px SG;color:var(--t3,#8b95a3);text-align:right;padding:4px 6px}.ojres th:first-child,.ojres td:first-child{text-align:left}
+.ojres td{padding:6px;text-align:right;border-top:1px solid rgba(255,255,255,.08)}.ojres td small{display:block;font-size:11px}.ojres tr.fuera td{color:#f2b457}
+.b.ojo{border-color:rgba(143,230,245,.5)}
 .hoja{position:fixed;right:16px;top:16px;bottom:90px;width:min(380px,calc(100% - 32px));overflow:auto;padding:12px;border-radius:22px;background:rgba(6,9,14,.86);border:1px solid var(--l2);backdrop-filter:blur(14px)}
 .hcab{display:flex;align-items:center;justify-content:space-between;font:600 12px SG;letter-spacing:.12em;text-transform:uppercase;color:var(--t2);padding:6px 8px 10px}
 .hcab button{font:400 22px SG;color:var(--t2)}
@@ -94,7 +99,7 @@ body.visor #proc,body.visor #sugiere,body.visor #hoja,body.visor #qcpr{display:n
   <div class="grupo" id="gTrip"></div>
   <div class="grupo solo-angosto"><button class="b on" id="bTrip" title="Next crew member">Crew</button></div>
   <div class="grupo" id="gSis">
-    <button class="b sis on" data-sis="cardio">Cardio</button><button class="b sis" data-sis="resp">Resp</button><button class="b sis" data-sis="metab">Metabolic</button><button class="b sis" data-sis="renal">Renal</button><button class="b sis" data-sis="oseo">Skeletal</button><button class="b sis" data-sis="neuro">Neuro</button>
+    <button class="b sis on" data-sis="cardio">Cardio</button><button class="b sis" data-sis="resp">Resp</button><button class="b sis" data-sis="metab">Metabolic</button><button class="b sis" data-sis="renal">Renal</button><button class="b sis" data-sis="oseo">Skeletal</button><button class="b sis" data-sis="neuro">Neuro</button><button class="b sis" data-sis="ojos">Eyes</button>
   </div>
   <div class="grupo">
     <button class="b on" data-capa="organos">Hologram</button>
@@ -105,6 +110,7 @@ body.visor #proc,body.visor #sugiere,body.visor #hoja,body.visor #qcpr{display:n
     <button class="b g" id="bTec" hidden title="Microgravity CPR technique">Evetts-Russomano</button>
   </div>
   <div class="grupo">
+    <button class="b ojo" id="bOjo" hidden title="20-second guided eye check">Eye check</button>
     <button class="b emer" id="bEmer" title="Medical procedures">Procedures</button>
   </div>
   <div class="grupo">
@@ -132,6 +138,6 @@ body.visor #proc,body.visor #sugiere,body.visor #hoja,body.visor #qcpr{display:n
 <script src="voz.js"></script>
 <script src="lib/mascota-base.js"></script>
 <script src="lib/mascota-orbes.js"></script>
-<script type="module" src="escaner.js?v=13"></script>
+<script type="module" src="escaner.js?v=17"></script>
 </body>
 </html>

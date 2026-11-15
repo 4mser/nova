@@ -24,6 +24,8 @@ const FORMAS = {
   sorprendida: { base: .7,  lob: [[-90, .36, .38], [-4, .34, .32], [184, .34, .32], [58, .14, .5], [122, .14, .5]] },
   enojada:     { base: .7,  lob: [[-62, .44, .19], [-118, .44, .19], [8, .32, .24], [172, .32, .24], [90, .16, .4]] },
   triste:      { base: .72, lob: [[112, .34, .34], [68, .34, .34], [180, .2, .42], [0, .2, .42], [-90, .08, .5]] },
+  // inquieta: el cuerpo se recoge (lóbulos cortos y pegados), como cuando algo inquieta sin asustar del todo
+  inquieta:    { base: .7,  lob: [[-72, .3, .34], [-108, .3, .34], [12, .2, .4], [168, .2, .4], [90, .1, .5]] },
   dormida:     { base: .66, lob: [[0, .42, .5], [180, .42, .5], [-90, .06, .5], [60, .1, .5], [120, .1, .5]] },
 };
 /* mezcla de formas: pesos {expr: w}; más un estirón según la velocidad (cola hacia atrás) */
@@ -89,6 +91,11 @@ function mascota(o){
     ojos = [-1, 1].map(s => { const cx = ex + s * sep, top = ey - hgt / 2 + hgt * .1, bot = ey + hgt / 2, inc = hgt * .38;
       const yIn = top, yOut = top + inc * 1.3, xi = cx - s * w / 2, xo = cx + s * w / 2;
       return `<path d="M${xi} ${yIn + w * .3} L${xi} ${bot - w / 2} Q${xi} ${bot} ${cx} ${bot} Q${xo} ${bot} ${xo} ${bot - w / 2} L${xo} ${yOut} Z" stroke-linejoin="round"/>`; }).join('');
+  }
+  else if (expr === 'inquieta'){ // ojos algo más abiertos, el borde de arriba apenas bajando hacia afuera (preocupación, no llanto)
+    ojos = [-1, 1].map(s => { const cx = ex + s * sep, alto = hgt * 1.12, top = ey - alto / 2, bot = ey + alto / 2, inc = alto * .36;
+      const xi = cx - s * w / 2, xo = cx + s * w / 2;
+      return `<path d="M${xi} ${top + w * .3} L${xi} ${bot - w / 2} Q${xi} ${bot} ${cx} ${bot} Q${xo} ${bot} ${xo} ${bot - w / 2} L${xo} ${top + inc} Z" stroke-linejoin="round"/>`; }).join('');
   }
   else if (expr === 'sorprendida') ojos = ojoPill(ex - sep, hgt * 1.15) + ojoPill(ex + sep, hgt * 1.15);
   else if (expr === 'pensativa') ojos = ojoPill(ex - sep, hgt * .85) + ojoPill(ex + sep, hgt);

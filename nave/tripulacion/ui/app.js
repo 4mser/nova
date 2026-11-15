@@ -245,10 +245,16 @@ function cambiarVista(v) {
   $('mente').hidden = v !== 'mente';
   $('kit').hidden = v !== 'kit';
   $('scan').hidden = v !== 'escaner';
+  $('hardware').hidden = v !== 'hardware';
+  $('panorama').hidden = v !== 'panorama';
+  $('radiacion').hidden = v !== 'radiacion';
+  if (v === 'radiacion' && window.abrirRadiacion) window.abrirRadiacion();
+  if (v === 'panorama' && window.abrirPanorama) window.abrirPanorama();
+  if (v === 'hardware' && window.abrirHardware) window.abrirHardware();
   if (v === 'sistemas') abrirSistemas();
   if (v === 'biblioteca') abrirBiblioteca();
   document.querySelectorAll('.ico[data-vista]').forEach(b => b.classList.toggle('on', b.dataset.vista === v));
-  $('titulo').textContent = { crew: 'Crew', vitals: 'Vitals', biblioteca: 'Medical library', sistemas: 'Onboard systems', gemelo: 'Body twin', mente: 'Mind', kit: 'Medical kit', escaner: 'Live body scan' }[v];
+  $('titulo').textContent = { crew: 'Crew', vitals: 'Vitals', biblioteca: 'Medical library', sistemas: 'Onboard systems', gemelo: 'Body twin', mente: 'Mind', kit: 'Medical kit', escaner: 'Live body scan', hardware: 'NOVA Station hardware', panorama: 'Mission', radiacion: 'Radiation' }[v];
   document.querySelector('#ultimas').previousElementSibling.firstElementChild.textContent = ({ crew: 'Latest', gemelo: 'Watch closely', mente: 'Patterns I noticed', kit: 'Low or expiring', escaner: 'Latest' })[v] || 'What changed';
   firmaTarjetas = '';
   refrescarNova();
@@ -309,19 +315,21 @@ function conectar() {
 }
 
 /* ── animación: NOVA y ritmos ── */
-let estadoNova = 'inicio', tAnt = performance.now();
+let estadoNova = 'inicio', tAnt = performance.now(), radNova = 0;   // radNova: tormenta solar → NOVA ámbar e inquieta, de a poco
 function cuadro(ahora) {
   const dt = Math.min(.1, (ahora - tAnt) / 1000); tAnt = ahora;
   const t = ahora / 1000;
-  const expr = estadoNova === 'urgente' ? 'sorprendida' : estadoNova === 'atento' ? 'pensativa' : 'normal';
+  radNova += ((window.RAD?.d?.spe?.activa ? 1 : 0) - radNova) * Math.min(1, dt * 1.6);
+  const inquieta = radNova > .5, miraRad = inquieta && (t % 4.6) < .8 ? [-.9, -.15] : null;   // de vez en cuando mira hacia el Sol
+  const expr = inquieta ? 'inquieta' : estadoNova === 'urgente' ? 'sorprendida' : estadoNova === 'atento' ? 'pensativa' : 'normal';
   const nv = medirVoz(), habla = hablandoVoz() ? Math.min(1, nv * 1.6) : 0;
   if (typeof enVoz !== 'undefined' && enVoz) {
     // modo voz: NOVA al centro con su órbita; escucha mirando hacia ti, piensa, o habla con la luz de su voz
     const piensa = faseVoz === 'pensando' || faseVoz === 'transcribiendo';
-    $('novaP').innerHTML = orbitaVoz(150, 110, t) + mascotaOrbes({ x: 150, y: 110, R: 62, t, expr: piensa ? 'pensativa' : habla ? 'feliz' : 'normal', orbes: 5, mira: habla ? [-.3, .1] : [0, .3], parpadeo: (t % 3.7) < .13 ? 1 : 0, habla: luzVoz() });
+    $('novaP').innerHTML = orbitaVoz(150, 110, t) + mascotaOrbes({ x: 150, y: 110, R: 62, t, expr: inquieta ? 'inquieta' : piensa ? 'pensativa' : habla ? 'feliz' : 'normal', orbes: 5, mira: miraRad || (habla ? [-.3, .1] : [0, .3]), parpadeo: (t % 3.7) < .13 ? 1 : 0, habla: luzVoz(), radiacion: radNova });
   } else
-  $('novaP').innerHTML = mascotaOrbes({ x: 150, y: 110, R: 62, t, expr: habla ? 'feliz' : expr, orbes: 6, mira: [-.5, .1], parpadeo: (t % 3.7) < .13 ? 1 : 0, alerta: estadoNova === 'urgente' ? 1 : 0, habla });
-  $('marca').innerHTML = `<svg viewBox="0 0 52 52">${mascotaOrbes({ x: 26, y: 27, R: 15, t, expr: 'normal', orbes: 0, sinHalo: true, fluido: .6, alerta: estadoNova === 'urgente' ? 1 : 0 })}</svg>`;
+  $('novaP').innerHTML = mascotaOrbes({ x: 150, y: 110, R: 62, t, expr: habla && !inquieta ? 'feliz' : expr, orbes: 6, mira: miraRad || [-.5, .1], parpadeo: (t % 3.7) < .13 ? 1 : 0, alerta: estadoNova === 'urgente' && !inquieta ? 1 : 0, habla, radiacion: radNova });
+  $('marca').innerHTML = `<svg viewBox="0 0 52 52">${mascotaOrbes({ x: 26, y: 27, R: 15, t, expr: inquieta ? 'inquieta' : 'normal', orbes: 0, sinHalo: true, fluido: .6, alerta: estadoNova === 'urgente' && !inquieta ? 1 : 0, radiacion: radNova })}</svg>`;
   const vivo = recibido && Date.now() - recibido < 3500;
   $('vivo').className = 'vivo' + (vivo ? '' : ' off');
   $('vivo').lastElementChild.textContent = vivo ? 'Live from the onboard core' : ultimo ? 'No signal from the core' : 'Waiting for the core';

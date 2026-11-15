@@ -1,213 +1,211 @@
-# Preguntas abiertas · transfer learning Tierra → espacio
+# Open questions · Earth → space transfer learning
 
-Fecha: 14-11-2026. Uso el mismo formato que el catálogo de datos NASA de Benja (`datos/catalogo_nasa/CATALOGO.md` en su
-carpeta local del proyecto, que no está en este repo): cada pregunta dice qué decisión es, qué destraba y qué se hace si
-no hay respuesta. No repito las 12 preguntas de ese catálogo.
+Date: 14-11-2026. I use the same format as Benja's NASA data catalog (`datos/catalogo_nasa/CATALOGO.md` in his local
+project folder, which is not in this repo): each question states what decision it is, what it unblocks and what is done
+if there is no answer. I do not repeat the 12 questions of that catalog.
 
-**Respuestas del 14-11-2026.** Benja respondió las 22 y se sumaron 4 (de la 23 a la 26), que salieron de la auditoría
-del tercer run. Cada pregunta lleva su **Respuesta**; el *Si no respondes* queda como registro de la opción por
-defecto. Lo que se decidió para la próxima corrida está resumido en el README, en «Siguiente corrida (v4)».
+**Answers of 14-11-2026.** Benja answered all 22 and 4 more were added (23 to 26), which came out of the audit of the
+third run. Each question carries its **Answer**; the *If you don't answer* stays as a record of the default option.
+What was decided for the next run is summarized in the README, under "Next run (v4)".
 
-Las cifras de LifeSnaps las medí hoy sobre su tabla diaria (`daily`, 7.410 filas).
+I measured the LifeSnaps figures today on its daily table (`daily`, 7,410 rows).
 
-## A. Las 8 variables y los datos de Tierra
+## A. The 8 variables and the Earth data
 
-> **Actualización (14-11, tarde).** Benja pidió sacar los datos de `datos/enviado_whatsapp/`. La tanda 3 trae signos
-> vitales diarios de 29 sujetos de reposo en cama de la NASA, el análogo terrestre de la microgravedad. Con eso
-> cambian las preguntas 1, 2, 4, 5 y 6. La versión anterior, que simulaba el espacio con las 8 variables de un reloj,
-> se descartó.
+> **Update (14-11, afternoon).** Benja asked to take the data from `datos/enviado_whatsapp/`. Batch 3 brings daily
+> vital signs of 29 NASA bed-rest subjects, the Earth analog of microgravity. With that, questions 1, 2, 4, 5 and 6
+> change. The previous version, which simulated space with the 8 variables of a watch, was discarded.
 
-1. **Resuelta: las 8 variables son las del reposo en cama.** Son `pulso`, `pa_sis`, `pa_dia`, `fr`, `temp`, `peso`,
-   `diuresis` y `agua`, medidas cada mañana por enfermería. Las seis primeras están en el contrato y en
-   `nave/docs/umbrales.md`. La SpO₂, la VFC, el sueño y el ánimo quedan fuera porque el reposo no los trae. Ojo: el
-   agua sigue una meta diaria del protocolo, así que es la más débil de las 8. ¿La cambiamos? *Si no respondes:* se
-   queda.
+1. **Resolved: the 8 variables are those of bed rest.** They are `pulso`, `pa_sis`, `pa_dia`, `fr`, `temp`, `peso`,
+   `diuresis` and `agua`, measured every morning by nursing staff. The first six are in the contract and in
+   `nave/docs/umbrales.md`. SpO₂, HRV, sleep and mood are left out because bed rest does not include them. Note: water
+   follows a daily protocol target, so it is the weakest of the 8. Do we change it? *If you don't answer:* it stays.
 
-   **Respuesta:** por ahora, solo pulso y presión arterial (`pulso`, `pa_sis` y `pa_dia`), con los datos reales del
-   reposo. La v4 deja fuera las otras cinco; sus resultados del tercer run siguen en el README como referencia.
+   **Answer:** for now, only pulse and blood pressure (`pulso`, `pa_sis` and `pa_dia`), with the real bed-rest data.
+   v4 leaves out the other five; their results from the third run stay in the README as a reference.
 
-2. **¿Qué aporta LifeSnaps?** Pre-entrena la dinámica diaria del modelo de pronóstico: 71 personas y 7.410 días de
-   reloj (CC BY 4.0). Solo comparte con el reposo el pulso, la respiración y la temperatura, y medidos con otro
-   instrumento: el reloj, no la enfermería. Por eso el control del gráfico 1 se hace dentro del reposo (pre-reposo
-   contra reposo, mismas personas) y no contra LifeSnaps. La presión, el peso y los fluidos solo aparecen en Tierra a
-   través del pre-reposo de cada sujeto. *Si no respondes:* queda así.
+2. **What does LifeSnaps contribute?** It pre-trains the daily dynamics of the forecasting model: 71 people and 7,410
+   watch days (CC BY 4.0). It shares with bed rest only pulse, respiration and temperature, and measured with a
+   different instrument: the watch, not nursing staff. That is why the control for plot 1 is done within bed rest
+   (pre-bed-rest vs. bed rest, same people) and not against LifeSnaps. Pressure, weight and fluids appear on Earth only
+   through each subject's pre-bed-rest period. *If you don't answer:* it stays as is.
 
-   **Respuesta:** se mantiene, y la v4 mide cuánto aporta. Sus ocho canales siguen en el pre-entrenamiento compartido;
-   de las tres variables de la v4, solo el pulso (`resting_hr`) está también en LifeSnaps. La presión en Tierra sale
-   del pre-reposo de cada sujeto.
+   **Answer:** it stays, and v4 measures how much it contributes. Its eight channels stay in the shared pre-training;
+   of the three v4 variables, only pulse (`resting_hr`) is also in LifeSnaps. Earth blood pressure comes from each
+   subject's pre-bed-rest period.
 
-3. **¿Granularidad diaria u horaria?** El reposo es diario (una toma por mañana), así que queda diaria: 14 días de
-   contexto y 7 de horizonte.
+3. **Daily or hourly granularity?** Bed rest is daily (one measurement per morning), so it stays daily: 14 days of
+   context and 7 of horizon.
 
-## B. Datos del espacio
+## B. Space data
 
-4. **Resuelta: el espacio es el reposo en cama a −6°, con datos reales.** Son las campañas 1 y 3 y el CFT70 de la UTMB
-   (NLSP/LSDA, datos públicos de la NASA): 10 a 21 días de pre-reposo, 42 a 91 en cama (días con pulso medido) y hasta
-   14 de post-reposo. Nada se simula salvo las anomalías inyectadas para medir la detección, y esas se declaran.
+4. **Resolved: space is −6° bed rest, with real data.** They are campaigns 1 and 3 and the CFT70 at UTMB (NLSP/LSDA,
+   public NASA data): 10 to 21 pre-bed-rest days, 42 to 91 in bed (days with measured pulse) and up to 14
+   post-bed-rest. Nothing is simulated except the anomalies injected to measure detection, and those are declared.
 
-   **Respuesta:** los escalones sintéticos se mantienen, declarados.
+   **Answer:** the synthetic steps are kept, declared.
 
-5. **¿Hay datos de vuelo de verdad en el resto de la carpeta?** La tanda 2 (frecuencia cardíaca y presión de NLSP)
-   trae sobre todo resúmenes: gráficos, medias y PDFs de Apollo, Shuttle y Mir, no series individuales diarias. En la
-   tanda 1, `04_OSDR_astronautas_datanasa.zip` trae los análisis de sangre y orina de Inspiration4 (4 tripulantes, en
-   L-92, L-44, L-3, R+1, R+45, R+82 y R+194) y estudios de hueso en roedores: tampoco hay signos vitales diarios en
-   vuelo. Para validar con vuelo real habría que pedirlos a LSDA (pregunta 3 del catálogo). *Si no respondes:* el
-   análogo queda como la única fuente de «espacio».
+5. **Is there real flight data in the rest of the folder?** Batch 2 (NLSP heart rate and blood pressure) mostly brings
+   summaries: plots, means and PDFs from Apollo, Shuttle and Mir, not individual daily series. In batch 1,
+   `04_OSDR_astronautas_datanasa.zip` brings the Inspiration4 blood and urine tests (4 crew members, at L-92, L-44,
+   L-3, R+1, R+45, R+82 and R+194) and bone studies in rodents: no daily in-flight vital signs either. To validate with
+   real flight data they would have to be requested from LSDA (question 3 of the catalog). *If you don't answer:* the
+   analog remains the only "space" source.
 
-   **Respuesta:** no se piden; el reposo en cama basta como análogo.
+   **Answer:** they are not requested; bed rest is enough as an analog.
 
-6. **¿Cuánto dura la «misión»?** La que tenga cada campaña: 60 o 90 días en cama (42 a 70 en el CFT70). En la
-   presentación se cuenta como los primeros 2 a 3 meses de una misión, no como un vuelo de 6 meses.
+6. **How long is the "mission"?** Whatever each campaign has: 60 or 90 days in bed (42 to 70 in the CFT70). In the
+   presentation it is told as the first 2 to 3 months of a mission, not as a 6-month flight.
 
-   **Respuesta:** los primeros 2 a 3 meses de una misión.
+   **Answer:** the first 2 to 3 months of a mission.
 
-## C. Modelo y transfer learning
+## C. Model and transfer learning
 
-7. **Resuelta: PatchTST propio como base y Chronos-2 como referencia.** El PatchTST de `transformers` se entrena en
-   Tierra (LifeSnaps y el pre-reposo) y se adapta al reposo. Chronos-2 (`amazon/chronos-2`) corre sin adaptar, solo
-   como referencia. Los baselines son persistencia y media de los últimos 7 días. Si el baseline le gana a la red, se
-   reporta tal cual (ver el README).
+7. **Resolved: our own PatchTST as the base and Chronos-2 as a reference.** The PatchTST from `transformers` is trained
+   on Earth (LifeSnaps and the pre-bed-rest period) and adapted to bed rest. Chronos-2 (`amazon/chronos-2`) runs
+   without adaptation, only as a reference. The baselines are persistence and the mean of the last 7 days. If the
+   baseline beats the network, it is reported as is (see the README).
 
-8. **¿Hasta dónde llega la adaptación?** Sigo el orden de NOVA_CONTEXT §6.2. Están hechos el corrector residual (el
-   que va a la demo), la última capa con el backbone congelado y el ajuste completo. Falta LoRA (`peft`). *Si no
-   respondes:* LoRA queda fuera, porque el ajuste completo no le gana a la media de 7 días.
+8. **How far does adaptation go?** I follow the order of the project brief §6.2. Done: the residual corrector (the one
+   that goes into the demo), the last layer with the backbone frozen, and full fine-tuning. Missing: LoRA (`peft`).
+   *If you don't answer:* LoRA stays out, because full fine-tuning does not beat the 7-day mean.
 
-   **Respuesta:** LoRA va después de la v4, y solo si el ajuste completo sigue ganándole al modelo desde cero con las
-   3 semillas. Corrección: el motivo del *Si no respondes* estaba mal. El ajuste completo sí le gana a la media de
-   7 días (−0,014 [−0,019; −0,008]); lo que falta saber es si le gana al modelo entrenado desde cero.
+   **Answer:** LoRA comes after v4, and only if full fine-tuning still beats the from-scratch model with the 3 seeds.
+   Correction: the reason in the *If you don't answer* was wrong. Full fine-tuning does beat the 7-day mean (−0.014
+   [−0.019; −0.008]); what remains to be known is whether it beats the model trained from scratch.
 
-9. **¿Qué variable protagoniza la demo?** NOVA_CONTEXT sugería pulso + VFC, pero la VFC no está en el reposo. El peso es
-   la que más se mueve (−1,3 kg, unas dos veces su variación de un día a otro). *Si no respondes:* peso + pulso.
+9. **Which variable leads the demo?** The project brief suggested pulse + HRV, but HRV is not in bed rest. Weight is the
+   one that moves the most (−1.3 kg, about twice its day-to-day variation). *If you don't answer:* weight + pulse.
 
-   **Respuesta:** presión + pulso. Primero fue peso + pulso, pero el peso quedó fuera de la v4. Ojo: en el tercer run,
-   el pulso y la presión cambian con el reposo bastante menos que el peso (ver la tabla del README).
+   **Answer:** blood pressure + pulse. It was weight + pulse at first, but weight was left out of v4. Note: in the third
+   run, pulse and pressure change with bed rest considerably less than weight (see the README table).
 
-10. **¿La radiación entra al corrector como covariable o solo como análisis de correlación?** Ya estaba abierta en
-    NOVA_CONTEXT §11 y depende de lo que entregue Daniella (pregunta 20). En el reposo en cama no hay radiación ni CO₂
-    de nave, así que con estos datos no se puede probar. *Si no respondes:* queda diseñada como covariable (dosis
-    diaria) para cuando haya datos de la nave, sin construir.
+10. **Does radiation enter the corrector as a covariate or only as a correlation analysis?** This was already open in
+    the project brief §11 and depends on what Daniella delivers (question 20). In bed rest there is no radiation and no
+    spacecraft CO₂, so it cannot be tested with this data. *If you don't answer:* it stays designed as a covariate
+    (daily dose) for when there is ship data, not built.
 
-    **Respuesta:** diseñada como entrada del corrector, sin construir.
+    **Answer:** designed as an input to the corrector, not built.
 
-## D. Kaggle y Hugging Face
+## D. Kaggle and Hugging Face
 
-11. **Resuelta por defecto: ¿cómo llega el token de Hugging Face a Kaggle?** Tu token de HF es de grano fino y puede escribir en los
-    repos de `Benjjaman` (lo comprobé hoy). La CLI de Kaggle (2.2.4) no tiene ningún comando para secretos, así que hay
-    dos caminos:
-    - **a.** Agregas tú, una sola vez, un secreto `HF_TOKEN` en Kaggle (Add-ons → Secrets), y el notebook sube los pesos
-      por su cuenta.
-    - **b.** El notebook deja los pesos en su salida y yo los subo a HF desde el PC con `kaggle kernels output`. En el PC
-      solo se copian archivos, no corre ninguna red.
+11. **Resolved by default: how does the Hugging Face token reach Kaggle?** Your HF token is fine-grained and can write
+    to the `Benjjaman` repos (I checked today). The Kaggle CLI (2.2.4) has no command for secrets, so there are two
+    paths:
+    - **a.** You add, once, an `HF_TOKEN` secret in Kaggle (Add-ons → Secrets), and the notebook uploads the weights on
+      its own.
+    - **b.** The notebook leaves the weights in its output and I upload them to HF from the PC with
+      `kaggle kernels output`. On the PC only files are copied; no network runs.
 
-    *Si no respondes:* (b).
+    *If you don't answer:* (b).
 
-12. **¿Los repos de HF son privados o públicos?** Son `Benjjaman/nova-tierra` (modelo base) y
-    `Benjjaman/nova-espacio` (adaptado). Ya no hay dataset sintético. *Si no respondes:* privados.
+12. **Are the HF repos private or public?** They are `Benjjaman/nova-tierra` (base model) and `Benjjaman/nova-espacio`
+    (adapted). There is no synthetic dataset anymore. *If you don't answer:* private.
 
-    **Respuesta:** privados por ahora y públicos al final del hackatón, después de corregir sus fichas con lo que
-    encontró la auditoría.
+    **Answer:** private for now and public at the end of the hackathon, after correcting their model cards with what
+    the audit found.
 
-## E. Cómo encaja en NOVA
+## E. How it fits into NOVA
 
-13. **¿Dónde corre el modelo a bordo?** NOVA funciona sin internet y ya levanta sus modelos como servicios locales:
-    lenguaje en el :8081, voz en el :8082, oído en el :8083, búsqueda en el :8084 y visión en el :8792, todos vigilados
-    por `servicios.rs`. Hay dos opciones:
-    - **a.** Un servicio Python más, el de pronóstico (por ejemplo en el :8793), que lee `/v1/historia` y devuelve
-      predicciones.
-    - **b.** Exportar el modelo a ONNX y correrlo dentro del enlace, en Rust.
+13. **Where does the model run on board?** NOVA works without internet and already brings up its models as local
+    services: language on :8081, voice on :8082, hearing on :8083, search on :8084 and vision on :8792, all supervised
+    by `servicios.rs`. There are two options:
+    - **a.** One more Python service, the forecasting one (for example on :8793), which reads `/v1/historia` and returns
+      predictions.
+    - **b.** Export the model to ONNX and run it inside the link, in Rust.
 
-    Cualquiera de las dos cambia `nave/`, que integra Nicolás Moreno. *Si no respondes:* (a), diseñado y documentado en
-    esta rama. El cambio en `nave/` va en un PR aparte, después de conversarlo con él.
+    Either one changes `nave/`, which Nicolás Moreno integrates. *If you don't answer:* (a), designed and documented in
+    this branch. The change to `nave/` goes in a separate PR, after discussing it with him.
 
-    **Respuesta:** (a), un servicio Python local en el :8793.
+    **Answer:** (a), a local Python service on :8793.
 
-14. **¿La adaptación se hace a bordo o en la Tierra?** El corrector residual son unos pocos coeficientes y se puede
-    reajustar cada día a bordo, sin esperar a la Tierra. El modelo base se mejora en la Tierra con los reportes nocturnos
-    y vuelve a la nave como paquete firmado con ed25519 (`aprende.rs`), que hoy solo trae notas y respuestas corregidas.
-    Es la «destilación Tierra → nave» que tu carpeta y el pitch dejan como pendiente.
-    *Si no respondes:* el corrector se reajusta a bordo cada día y los pesos del base llegan por paquete firmado. Esto
-    último queda diseñado, no construido hoy.
+14. **Is adaptation done on board or on Earth?** The residual corrector is a few coefficients and can be refitted every
+    day on board, without waiting for Earth. The base model is improved on Earth with the nightly reports and returns to
+    the ship as a package signed with ed25519 (`aprende.rs`), which today only carries notes and corrected answers. It
+    is the "Earth → ship distillation" that your folder and the pitch leave as pending.
+    *If you don't answer:* the corrector is refitted on board every day and the base weights arrive by signed package.
+    The latter stays designed, not built today.
 
-    **Respuesta:** el corrector se reajusta a bordo y el modelo base llega desde la Tierra, como en la opción por
-    defecto.
+    **Answer:** the corrector is refitted on board and the base model arrives from Earth, as in the default option.
 
-15. **¿El modelo adaptado define el rango `ESPERADO_VUELO`?** `umbrales.md` deja pendiente marcar cuándo un cambio es lo
-    esperable en microgravedad. La «nueva normalidad» del modelo adaptado (la predicción con su intervalo) puede ser ese
-    rango: si una variable sale del intervalo N días seguidos, se marca atención. Los umbrales fijos de emergencia no se
-    tocan, porque la regla del repo dice que lo crítico vive en reglas fijas.
-    *Si no respondes:* sí, como propuesta para revisar con Nicolás Moreno.
+15. **Does the adapted model define the `ESPERADO_VUELO` range?** `umbrales.md` leaves pending how to mark when a change
+    is what is expected in microgravity. The "new normal" of the adapted model (the prediction with its interval) could
+    be that range: if a variable leaves the interval N consecutive days, attention is flagged. The fixed emergency
+    thresholds are not touched, because the repo rule says that critical logic lives in fixed rules.
+    *If you don't answer:* yes, as a proposal to review with Nicolás Moreno.
 
-    **Respuesta:** no por ahora. El rango adaptado no se propone como `ESPERADO_VUELO`.
+    **Answer:** not for now. The adapted range is not proposed as `ESPERADO_VUELO`.
 
-16. **¿El pronóstico reemplaza el cono de Vitals?** *Si no respondes:* no toco `vitals.js`. El pronóstico diario va
-    aparte, como una tendencia a 7 días.
+16. **Does the forecast replace the Vitals cone?** *If you don't answer:* I do not touch `vitals.js`. The daily forecast
+    goes separately, as a 7-day trend.
 
-    **Respuesta:** no; va aparte.
+    **Answer:** no; it goes separately.
 
-17. **¿Qué le pasamos a Ask NOVA?** La capa de explicación de NOVA_CONTEXT §6.4 recibe un JSON con predicciones,
-    anomalías y covariables. Ask NOVA ya existe (`nova.rs`, `cerebro.rs`). *Si no respondes:* dejo el formato del JSON en
-    esta rama y Ask NOVA lo lee más adelante, sin tocar su código hoy.
+17. **What do we pass to Ask NOVA?** The explanation layer of the project brief §6.4 receives a JSON with predictions,
+    anomalies and covariates. Ask NOVA already exists (`nova.rs`, `cerebro.rs`). *If you don't answer:* I leave the
+    JSON format in this branch and Ask NOVA reads it later, without touching its code today.
 
-    **Respuesta:** la conexión con Ask NOVA la hace Nicolás Moreno.
+    **Answer:** the connection with Ask NOVA is done by Nicolás Moreno.
 
-18. **¿Agregamos `diuresis` y `agua` al contrato?** El contrato no las tiene y dice que un sensor nuevo «se agrega a esta
-    tabla antes de usarlo». Propuesta: `diuresis` (`g/dia`) y `agua` (`g/dia`), registradas por la tripulación en la
-    app. *Si no respondes:* las uso con esos nombres en esta rama y las propongo a Nicolás Moreno en el PR, sin tocar el
-    contrato.
+18. **Do we add `diuresis` and `agua` to the contract?** The contract does not have them and says that a new sensor "is
+    added to this table before using it". Proposal: `diuresis` (`g/dia`) and `agua` (`g/dia`), logged by the crew in
+    the app. *If you don't answer:* I use them with those names in this branch and propose them to Nicolás Moreno in the
+    PR, without touching the contract.
 
-    **Respuesta:** por ahora no hace falta. La v4 usa solo `pulso`, `pa_sis` y `pa_dia`, que ya están en el contrato.
+    **Answer:** not needed for now. v4 uses only `pulso`, `pa_sis` and `pa_dia`, which are already in the contract.
 
-## F. Equipo
+## F. Team
 
-19. **Luis: ¿cuáles de las 8 variables mide la estación física?** Decide qué llega por la estación (contrato NDJSON) y
-    qué por el teléfono y el reloj. *Si no respondes:* lo que la estación ya mide (pulso y temperatura) llega por ella;
-    presión, respiración, peso, diuresis y agua se registran en el teléfono.
+19. **Luis: which of the 8 variables does the physical station measure?** Decides what arrives through the station
+    (NDJSON contract) and what through the phone and the watch. *If you don't answer:* what the station already
+    measures (pulse and temperature) arrives through it; pressure, respiration, weight, urine output and water are
+    logged on the phone.
 
-    **Respuesta:** lo define Nicolás Moreno.
+    **Answer:** Nicolás Moreno defines it.
 
-20. **Daniella: ¿qué serie de radiación usamos y en qué unidad?** Para la covariable hace falta la dosis diaria (mGy/día
-    o mSv/día) y una marca de evento solar. *Si no respondes:* uso la dosis estimada que ya calcula la nave
-    (`dosisMision()` en `vitals.js`) más los eventos de DONKI 2024 (pregunta 4 del catálogo).
+20. **Daniella: which radiation series do we use and in which unit?** The covariate needs the daily dose (mGy/day or
+    mSv/day) and a solar event flag. *If you don't answer:* I use the estimated dose the ship already computes
+    (`dosisMision()` in `vitals.js`) plus the DONKI 2024 events (question 4 of the catalog).
 
-    **Respuesta:** hay que preguntarle a Luis, que es quien ve la radiación. Queda pendiente; no frena la v4, porque la
-    covariable está diseñada y no construida (pregunta 10).
+    **Answer:** Luis has to be asked, since he is the one who handles radiation. It stays pending; it does not block
+    v4, because the covariate is designed and not built (question 10).
 
-21. **Ambar: ¿el ánimo puede entrar al modelo?** En NOVA el ánimo solo sale del teléfono si la persona comparte su día,
-    así que el modelo tiene que funcionar sin él. LifeSnaps sí lo trae, con consentimiento de sus participantes; el
-    reposo en cama no. *Si no respondes:* queda fuera de las 8 y se propone como variable opcional más adelante.
+21. **Ambar: can mood enter the model?** In NOVA, mood only comes from the phone if the person shares their day, so the
+    model has to work without it. LifeSnaps does include it, with its participants' consent; bed rest does not. *If you
+    don't answer:* it stays out of the 8 and is proposed as an optional variable later.
 
-    **Respuesta:** fuera, como variable opcional más adelante.
+    **Answer:** out, as an optional variable later.
 
-## G. Entrega
+## G. Delivery
 
-22. **¿Subo la rama y abro el PR a `4mser/nova`?** El repo es de 4mser y lo integra Nicolás Moreno, así que yo no
-    mergeo. *Si no respondes:* no subo nada hasta que me lo digas.
+22. **Do I push the branch and open the PR to `4mser/nova`?** The repo belongs to 4mser and Nicolás Moreno integrates
+    it, so I do not merge. *If you don't answer:* I push nothing until you tell me.
 
-    **Respuesta:** la rama se subió el 14-11-2026 y el PR a `main` se abre con el README ya corregido. Lo integra
-    Nicolás Moreno; yo no mergeo. La v4 va en un PR aparte.
+    **Answer:** the branch was pushed on 14-11-2026 and the PR to `main` is opened with the README already corrected.
+    Nicolás Moreno integrates it; I do not merge. v4 goes in a separate PR.
 
-## H. Lo que dejó la auditoría del tercer run
+## H. What the audit of the third run left
 
-23. **¿Se repite el pronóstico con varias semillas?** Con una sola semilla, el ajuste completo le gana al modelo desde
-    cero por −0,0038 [−0,0064; −0,0011], pero los modelos se entrenaron en condiciones distintas. Los de desde cero
-    usaron lr 1e-3 y tope de 60 épocas. El ajuste completo usó lr 2e-4 y tope de 30, y «solo la cabeza», lr 1e-3 y tope
-    de 30. A «solo la cabeza» la cortó el tope en 3 de 5 folds.
+23. **Is the forecast repeated with several seeds?** With a single seed, full fine-tuning beats the from-scratch model
+    by −0.0038 [−0.0064; −0.0011], but the models were trained under different conditions. The from-scratch ones used
+    lr 1e-3 and a 60-epoch cap. Full fine-tuning used lr 2e-4 and a 30-epoch cap, and "head only", lr 1e-3 and a
+    30-epoch cap. "Head only" was cut off by the cap in 3 of 5 folds.
 
-    **Respuesta:** sí, en la v4, con 3 semillas y todos los modelos en igualdad de condiciones: mismo lr y presupuesto,
-    y un tope de 60 épocas o más para «solo la cabeza».
+    **Answer:** yes, in v4, with 3 seeds and all models under equal conditions: same lr and budget, and a cap of 60
+    epochs or more for "head only".
 
-24. **¿«Solo la cabeza» congela de verdad el backbone?** `congelar_backbone` apaga los gradientes, pero el modelo
-    entrena en modo `train()`: BatchNorm se recalcula con el reposo y el dropout sigue activo. Entre `nova-tierra` y
-    `nova-espacio` cambian 20 de 71 tensores, 18 de ellos de BatchNorm.
+24. **Does "head only" really freeze the backbone?** `congelar_backbone` turns off the gradients, but the model trains
+    in `train()` mode: BatchNorm is recomputed on bed rest and dropout stays active. Between `nova-tierra` and
+    `nova-espacio`, 20 of 71 tensors change, 18 of them BatchNorm.
 
-    **Respuesta:** congelar de verdad (backbone en `eval()`) y compararlo con la versión actual.
+    **Answer:** truly freeze it (backbone in `eval()`) and compare it with the current version.
 
-25. **¿El pronóstico se adapta a cada persona?** Hoy se adapta al reposo de los sujetos de entrenamiento; el sujeto
-    evaluado no aporta sus propios días.
+25. **Is the forecast adapted to each person?** Today it is adapted to the bed rest of the training subjects; the
+    evaluated subject contributes none of their own days.
 
-    **Respuesta:** sí, con sus primeros k = 7, 14 y 28 días en cama.
+    **Answer:** yes, with their first k = 7, 14 and 28 days in bed.
 
-26. **¿El ancho del rango es uno para toda la población o uno por persona?** Hoy el 5 % de falsas alarmas se cumple en
-    promedio: en el peso, 18 de 29 personas no tienen ninguna y una llega a 40,7 %.
+26. **Is the range width one for the whole population or one per person?** Today the 5 % false-alarm rate holds on
+    average: for weight, 18 of 29 people have none and one reaches 40.7 %.
 
-    **Respuesta:** probar un ancho por persona y compararlo con el poblacional.
+    **Answer:** try a per-person width and compare it with the population width.

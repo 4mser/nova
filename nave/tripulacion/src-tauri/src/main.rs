@@ -20,6 +20,9 @@ mod kit;
 mod fuentes;
 mod mision;
 mod nfc;
+mod ojos;
+mod diario;
+mod radiacion;
 mod nova;
 mod servicios;
 mod tierra;
@@ -208,6 +211,11 @@ async fn lote(State(nave): State<Nave>, h: HeaderMap, Json(c): Json<Value>) -> R
     if c["persona"].is_object() && nave.crew.reclamar(trip, &c["persona"]) {
         tripulacion::avisar(&nave);
     }
+    // el diario de la persona (check-in y sueño por día), aparte del historial del núcleo
+    let nombre = c["persona"]["nombre"].as_str().map(String::from)
+        .or_else(|| nave.crew.lista().into_iter().find(|p| p["id"] == trip && p["real"] == true).and_then(|p| p["nombre"].as_str().map(String::from)))
+        .unwrap_or_default();
+    diario::anotar_lote(trip, &nombre, &c);
     let Some(lista) = c["mediciones"].as_array() else {
         return (StatusCode::BAD_REQUEST, "faltan mediciones").into_response();
     };
@@ -411,7 +419,7 @@ async fn preguntar(State(nave): State<Nave>, Json(c): Json<Value>) -> Response {
     let mis = mision::estado(&nave.mision, ahora as f64);
     let estado: Option<Value> = nave.ultimo.lock().ok().and_then(|u| u.clone()).and_then(|t| serde_json::from_str(&t).ok());
     let datos = match nave.historia.lock() {
-        Ok(h) => nova::contexto(estado.as_ref(), &h, &mis, &nave.crew.lista(), &pregunta, ahora),
+        Ok(h) => nova::contexto(estado.as_ref(), &h, &mis, &nave.crew.lista(), &pregunta, ahora) + "\n" + &radiacion::resumen(&mis) + "\n",
         Err(_) => String::new(),
     };
     // emergencia reconocida por la nave: se responde con el protocolo escrito, sin modelo de lenguaje.
@@ -846,7 +854,7 @@ async fn vigilar_tierra(nave: Nave) {
 /// Bitácoras para la consola de Tierra: /v1/bitacora?tipo=emergencias&dias=2&n=200
 async fn bitacora_leer(State(nave): State<Nave>, Query(q): Query<HashMap<String, String>>) -> Response {
     let tipo = q.get("tipo").map(String::as_str).unwrap_or("");
-    if !matches!(tipo, "emergencias" | "conversaciones" | "privado-cirujano" | "ingresos") {
+    if !matches!(tipo, "emergencias" | "conversaciones" | "privado-cirujano" | "ingresos" | "radiacion") {
         return (StatusCode::BAD_REQUEST, "tipo inválido").into_response();
     }
     let dias = q.get("dias").and_then(|x| x.parse().ok()).unwrap_or(2u64).clamp(1, 30);
@@ -1011,6 +1019,7 @@ fn carpeta_ui() -> PathBuf {
 
 async fn servir(nave: Nave) {
     tokio::spawn(vigilar_tierra(nave.clone()));
+    tokio::spawn(radiacion::vigilar(nave.clone()));
     tokio::spawn(entregar_paquetes(nave.clone()));
     let app = Router::new()
         .route("/v1/flujo", get(flujo))
@@ -1063,6 +1072,12 @@ async fn servir(nave: Nave) {
         .route("/v1/sesion/asignar", post(nfc::asignar))
         .route("/v1/sesion/cerrar", post(nfc::cerrar))
         .route("/v1/sesion/accion", post(nfc::accion))
+        .route("/v1/station/pantalla", get(nfc::pantalla_ver).post(nfc::pantalla_poner))
+        .route("/v1/estacion/onda", post(nfc::onda))
+        .route("/v1/ojos", get(ojos::ver).post(ojos::guardar))
+        .route("/v1/diario", get(diario::ver))
+        .route("/v1/radiacion", get(radiacion::ver).post(radiacion::leer))
+        .route("/v1/radiacion/demo", post(radiacion::demo))
         .route("/v1/vision/ws", get(escaner::vision_ws))
         // la pantalla siempre revisa si hay una versión nueva (sin esto el navegador usa archivos viejos)
         .fallback_service(ServeDir::new(carpeta_ui()))

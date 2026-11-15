@@ -37,7 +37,7 @@ pub struct Historia {
     carpeta: PathBuf,
 }
 
-fn dia_de(t: u64) -> String {
+pub fn dia_de(t: u64) -> String {
     // fecha UTC AAAA-MM-DD sin dependencias (algoritmo civil de Howard Hinnant)
     let z = (t / 86400) as i64 + 719468;
     let era = if z >= 0 { z } else { z - 146096 } / 146097;

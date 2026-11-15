@@ -1,29 +1,57 @@
-# CV - Salud Ocular
+<div align="center">
 
-**Área:** visión artificial · **Responsable:** Nicolás Richardson · **Rama:** `computer-vision-ocular`
+# CV · Eye Health
 
-Salud ocular de NOVA con computer vision pura (sin soft sensors), pensada para integrarse al escáner RA del teléfono
-(`nave/tripulacion/ui/escaner.js`) y al puente de visión de la nave (`nave/vision/`, `/v1/vision/ws`, puerto 8792).
-La cámara mira la cara, mide parpadeo, párpado inferior y distancia a la pantalla, lo compara con la línea base de cada
-persona y emite una **alerta de seguimiento**. NOVA no diagnostica ni nombra «SANS».
+**Research by Nicolás Richardson ([@xSempiternus](https://github.com/xSempiternus)) · computer vision**
 
-## Estado
-Solo diseño y una medición del instrumento (spike). **No hay código integrado a la nave ni a la app todavía.**
-Todo está medido con una persona, una webcam de 640×480 y buena luz; no hay validación en astronautas.
+![Python](https://img.shields.io/badge/Python-3-3776ab?style=for-the-badge&logo=python&logoColor=white)
+![MediaPipe](https://img.shields.io/badge/MediaPipe-Face_Landmarker-0097a7?style=for-the-badge)
+![OpenCV](https://img.shields.io/badge/OpenCV-5-5c3ee8?style=for-the-badge&logo=opencv&logoColor=white)
+![Status](https://img.shields.io/badge/status-design_%2B_spike-f0ad4e?style=for-the-badge)
 
-## Contenido
-| Ruta | Qué es |
+</div>
+
+Branch `computer-vision-ocular`.
+
+Eye health for NOVA using pure computer vision (no soft sensors), designed to integrate with the phone's AR scanner
+(`nave/tripulacion/ui/escaner.js`) and the ship's vision bridge (`nave/vision/`, `/v1/vision/ws`, port 8792). The
+camera looks at the face, measures blinking, the lower eyelid and the distance to the screen, compares them with each
+person's baseline and issues a **follow-up alert**. NOVA does not diagnose and does not name "SANS".
+
+## Status
+
+Design and one measurement of the instrument (spike) only. **No code is integrated into the ship or the app yet.**
+Everything was measured with one person, a 640×480 webcam and good lighting; there is no validation on astronauts.
+
+Key spike results (details in [`docs/spike-resultados.md`](docs/spike-resultados.md) and
+[`docs/plan.md`](docs/plan.md)):
+
+- MediaPipe Face Landmarker v1 spike: 478 landmarks, iris present, 90/90 detections, 7.76 ms; at 512 px with JPEG,
+  100 % detection and an iris of 17 px.
+- Detection and iris at 100 % across 31 conditions; after fixing the stillness gate, 100 % of windows pass with the
+  person still.
+- Noise floor over 3 sessions (2, 3 and 4): minimum detectable change (MDC) of eye opening ~1.8 to 2.2 mm [INF].
+- Noise floor with eyebrow (sessions 5-7): PTB_inf MDC 3.3 mm [INF], which fails the ≤ 2.3 mm target; MRD2n 0.7-0.9 mm.
+  The eyebrow control test did not detect subtle changes, so PTB_inf is not usable for subtle changes with this webcam
+  (large gestures are detected).
+- Pupil measurement is deferred: at 512 px the iris is ~17 px and the pupil ~3 to 6 px.
+
+## Contents
+
+| Path | What it is |
 |---|---|
-| `docs/nova-vision-ocular.pdf` · `.html` | Diseño visual: arquitectura, guía de pruebas, resultados, plan |
-| `docs/plan.md` | Plan por fases, con lo hecho y lo pendiente |
-| `docs/soft-sensors-antecedentes.md` | Antecedentes con fuentes primarias y marcas [V] verificado, [P] parcial, [NV] no verificado, [INF] inferencia |
-| `docs/spike-resultados.md` | Resultados de las mediciones con webcam |
-| `scripts/spike_*.py` | Spike: mide MediaPipe Face Landmarker (barrido de condiciones, suelo de ruido, diagnóstico de quietud, vista en vivo) |
-| `tests/` | Pruebas automáticas (80) |
-| `src/vision/` | Reservado para el módulo (fase 1) |
-| `data/` | Sesiones propias con consentimiento; no se versiona su contenido |
+| `docs/nova-vision-ocular.pdf` · `.html` | Visual design: architecture, test guide, results, plan (in Spanish) |
+| [`docs/plan.md`](docs/plan.md) | Phased plan, with what is done and what is pending |
+| [`docs/soft-sensors-antecedentes.md`](docs/soft-sensors-antecedentes.md) | Background with primary sources and tags [V] verified, [P] partial, [NV] not verified, [INF] inference |
+| [`docs/spike-resultados.md`](docs/spike-resultados.md) | Results of the webcam measurements |
+| [`docs/guia-pruebas.md`](docs/guia-pruebas.md) | Step-by-step test guide |
+| `scripts/spike_*.py` | Spike: measures MediaPipe Face Landmarker (condition sweep, noise floor, stillness diagnosis, live view) |
+| `tests/` | Automated tests (pytest; 111 test functions) |
+| `src/vision/` | Reserved for the module (phase 1) |
+| `data/` | Own sessions, with consent; their content is not versioned |
 
-## Cómo correr el spike (Windows, PowerShell, desde esta carpeta)
+## Running the spike (Windows, PowerShell, from this folder)
+
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -35,13 +63,19 @@ python -m pytest tests -q
 python scripts\spike_face_landmarker.py --smoke          # sin cámara
 python scripts\spike_face_landmarker.py --gate-diagnose --facing front   # con webcam
 ```
-La guía de qué hacer en cada prueba está en `docs/nova-vision-ocular.pdf`.
-Para regenerar el PDF: `bash scripts/build_pdf.sh` (necesita Chrome).
 
-## Privacidad
-No se guardan imágenes ni video. Los puntos de la cara son datos biométricos y solo se guardan con `--save-landmarks`
-(en `data/`, que no se versiona).
+The model (3.76 MB, not versioned) goes in `models/face_landmarker.task`. `--smoke` runs without a camera;
+`--gate-diagnose --facing front` uses the webcam.
 
-## Reglas (de NOVA)
-Sin evidencia no hay afirmación. No es dispositivo médico. Español neutro. Sin secretos en git.
-Modelo: MediaPipe Face Landmarker (Apache 2.0), ficha técnica en la sección 12 de los antecedentes.
+The guide for what to do in each test is in `docs/nova-vision-ocular.pdf` (and in
+[`docs/guia-pruebas.md`](docs/guia-pruebas.md)). To regenerate the PDF: `bash scripts/build_pdf.sh` (requires Chrome).
+
+## Privacy
+
+No images or video are stored. Face landmarks are biometric data and are only stored with `--save-landmarks` (in
+`data/`, which is not versioned).
+
+## Rules (from NOVA)
+
+No evidence, no claim. Not a medical device. Neutral Spanish in the product. No secrets in git.
+Model: MediaPipe Face Landmarker (Apache 2.0), model card in section 12 of the background document.

@@ -1,59 +1,59 @@
-# Resultados spike Face Landmarker
+# Face Landmarker spike results
 
-## Check con webcam (2026-11-14 15:13)
+## Webcam check (2026-11-14 15:13)
 
-- Plataforma: Windows-11-10.0.26200-SP0, Python 3.13.12, mediapipe 1.2.3, opencv 5.0.0
-- Cuadros capturados: 90
-- Tasa de deteccion de cara: 100.0% (90/90)
-- Landmarks por cara: [478] (esperado 478)
-- Indices de iris 468-477 presentes: si
-- Latencia mediana: 7.76 ms
-- Latencia p95: 8.97 ms
-- Dispositivo: CPU (delegate CPU de MediaPipe Tasks)
+- Platform: Windows-11-10.0.26200-SP0, Python 3.13.12, mediapipe 1.2.3, opencv 5.0.0
+- Frames captured: 90
+- Face detection rate: 100.0% (90/90)
+- Landmarks per face: [478] (expected 478)
+- Iris indices 468-477 present: yes
+- Median latency: 7.76 ms
+- p95 latency: 8.97 ms
+- Device: CPU (MediaPipe Tasks CPU delegate)
 
-## Check comparativo: ancho 512 px, JPEG calidad 80 (2026-11-14 15:21)
+## Comparative check: width 512 px, JPEG quality 80 (2026-11-14 15:21)
 
-- Plataforma: Windows-11-10.0.26200-SP0, Python 3.13.12, mediapipe 1.2.3, opencv 5.0.0
-- Calidad JPEG 80: SUPUESTO (la real del escaner AR no se conoce). Ruta simulada: reducir con INTER_AREA, imencode/imdecode JPEG, inferir.
-- Diametro del iris: promedio de pares opuestos 469-471, 470-472, 474-476, 475-477. Jitter: desv. estandar del centro (468/473) en ventana de 30 cuadros, px, promedio de ambos ojos.
+- Platform: Windows-11-10.0.26200-SP0, Python 3.13.12, mediapipe 1.2.3, opencv 5.0.0
+- JPEG quality 80: ASSUMPTION (the actual value used by the AR scanner is unknown). Simulated pipeline: downscale with INTER_AREA, imencode/imdecode JPEG, run inference.
+- Iris diameter: mean of opposite pairs 469-471, 470-472, 474-476, 475-477. Jitter: standard deviation of the center (468/473) over a 30-frame window, px, mean of both eyes.
 
-| Metrica | Completa | 512 px |
+| Metric | Full | 512 px |
 |---|---|---|
-| Tasa de deteccion de cara | 100.0% (90/90) | 100.0% (90/90) |
-| Cuadros con iris OK (10 puntos) | 90/90 | 90/90 |
-| Diametro del iris, mediana | 21.2 px | 17.0 px |
-| Jitter del centro del iris, mediana | 7.97 px | 6.35 px |
-| Latencia de inferencia, mediana | 8.09 ms | 7.70 ms |
-| Latencia de inferencia, p95 | 8.63 ms | 8.19 ms |
+| Face detection rate | 100.0% (90/90) | 100.0% (90/90) |
+| Frames with iris OK (10 points) | 90/90 | 90/90 |
+| Iris diameter, median | 21.2 px | 17.0 px |
+| Iris center jitter, median | 7.97 px | 6.35 px |
+| Inference latency, median | 8.09 ms | 7.70 ms |
+| Inference latency, p95 | 8.63 ms | 8.19 ms |
 
-## Check v2 con barrido (2026-11-14 15:43)
+## Check v2 with sweep (2026-11-14 15:43)
 
-**Registro**
+**Record**
 
-- Fecha: 2026-11-14T15:43:40; commit: `96e3282`
-- frame.shape real: (480, 640, 3)
-- Resolucion pedida vs obtenida: [None, None] vs [640, 480]
-- FPS medido con timestamps: 30.0 (mediana instantanea 31.17); CAP_PROP_FPS: 30.0
-- Backend: MSMF (solicitado: default); indice de camara: 0; facing: front
-- Espejo: no aplicado (cuadro tal como lo entrega la camara)
-- Notas: luz de escritorio, sin lentes, 50 cm; sujeto: S01
+- Date: 2026-11-14T15:43:40; commit: `96e3282`
+- Actual frame.shape: (480, 640, 3)
+- Requested vs obtained resolution: [None, None] vs [640, 480]
+- FPS measured from timestamps: 30.0 (instantaneous median 31.17); CAP_PROP_FPS: 30.0
+- Backend: MSMF (requested: default); camera index: 0; facing: front
+- Mirroring: not applied (frame as delivered by the camera)
+- Notes: desk lighting, no glasses, 50 cm; subject: S01
 - Python 3.13.12, mediapipe 1.2.3, opencv 5.0.0, numpy 2.5.4
-- Modelo sha256: `64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff`
-- Running mode: IMAGE y VIDEO (un landmarker por condicion y modo)
-- Iris asignado por cercania a las comisuras: {'R': 468, 'L': 473}
-- Umbrales del gate (PROPUESTA): ventana 1.0 s, velocidad < 0.5 % IOD/cuadro (cuantil 0.5), roll < 2.0 grados, IOD < 2.0 %, yaw/pitch < 3.0 grados
-- Parpadeo: EAR < 0,6 x mediana abierta durante >= 2 cuadros. Suelo de ruido: excluye EAR < 0,75 x mediana y +-3 cuadros. Euler: Y-X-Z intrinseco, R normalizada por columnas; solo se usan rangos de yaw/pitch
+- Model sha256: `64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff`
+- Running mode: IMAGE and VIDEO (one landmarker per condition and mode)
+- Iris assigned by proximity to the eye corners: {'R': 468, 'L': 473}
+- Gate thresholds (PROPOSAL): window 1.0 s, speed < 0.5 % IOD/frame (quantile 0.5), roll < 2.0 degrees, IOD < 2.0 %, yaw/pitch < 3.0 degrees
+- Blink: EAR < 0.6 x open-eye median for >= 2 frames. Noise floor: excludes EAR < 0.75 x median and +-3 frames. Euler: intrinsic Y-X-Z, R normalized by columns; only yaw/pitch ranges are used
 
-Cuadros: 240 capturados una sola vez en RAM; todas las condiciones se aplican a los mismos cuadros (comparacion pareada). Ruta: degradar a resolucion nativa, rotar (centro de la cara, borde reflejado), reducir con INTER_AREA, JPEG. Roll COMPENSADO: se estima con los ojos del resultado crudo, se contrarrota el JPEG decodificado y se reinfiere (sin deteccion cruda se arrastra el ultimo roll). Latencia = reduccion + JPEG + inferencia (+ contrarrotacion y la inferencia cruda en la compensada).
-MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidades normalizadas: A, MRD en diametros de iris (escala S_t = IOD_t x mediana(D)/mediana(IOD)), u/v en anchos de ojo, EAR y D/IOD sin unidad. Los mm son [INF] (iris 11,7 mm).
+Frames: 240 captured once into RAM; every condition is applied to the same frames (paired comparison). Pipeline: degrade at native resolution, rotate (face center, reflected border), downscale with INTER_AREA, JPEG. COMPENSATED roll: estimated from the eyes in the raw result, the decoded JPEG is counter-rotated and inference is rerun (without a raw detection, the last roll is carried forward). Latency = downscale + JPEG + inference (+ counter-rotation and the raw inference in the compensated case).
+MRD1n/MRD2n are proxies: the iris center replaces the corneal light reflex. Normalized units: A, MRD in iris diameters (scale S_t = IOD_t x median(D)/median(IOD)), u/v in eye widths, EAR and D/IOD unitless. The mm values are [INF] (iris 11.7 mm).
 
-### Tabla 1 por condicion
+### Table 1 by condition
 
-#### Modo IMAGE
+#### IMAGE mode
 
-**Tabla 1a (IMAGE): deteccion, gate, tamano y latencia**
+**Table 1a (IMAGE): detection, gate, size and latency**
 
-| Condicion | n | % deteccion | % iris OK | % gate | IOD px | D px | lat. mediana ms | lat. p95 ms |
+| Condition | n | % detection | % iris OK | % gate | IOD px | D px | median lat. ms | p95 lat. ms |
 |---|---|---|---|---|---|---|---|---|
 | REF | 240 | 100.0 | 100.0 | 0.0 | 80.6 | 15.2 | 10.96 | 12.36 |
 | nativo_sin_jpeg | 240 | 100.0 | 100.0 | 0.0 | 101.1 | 19.0 | 8.87 | 9.95 |
@@ -86,9 +86,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 240 | 100.0 | 100.0 | 0.0 | 81.7 | 15.0 | 11.80 | 14.29 |
 | roll45_comp | 240 | 100.0 | 100.0 | 0.0 | 80.8 | 15.2 | 23.56 | 27.87 |
 
-**Tabla 1b (IMAGE): ruido de alta frecuencia sigma_hf (x1e-3, promedio de ambos ojos) y validacion con mediana movil de 7 (cociente med7/hf)**
+**Table 1b (IMAGE): high-frequency noise sigma_hf (x1e-3, mean of both eyes) and validation with a 7-point moving median (med7/hf ratio)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | cociente med7/hf (EAR) |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | med7/hf ratio (EAR) |
 |---|---|---|---|---|---|---|---|
 | REF | 6.95 | 18.13 | 9.24 | 7.37 | 4.10 | 1.70 | 1.04 |
 | nativo_sin_jpeg | 5.83 | 15.65 | 9.14 | 8.19 | 4.70 | 1.51 | 1.10 |
@@ -121,9 +121,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 7.11 | 17.46 | 10.32 | 8.71 | 6.62 | 1.88 | 0.71 |
 | roll45_comp | 6.37 | 15.59 | 9.66 | 8.43 | 4.80 | 1.60 | 0.74 |
 
-**Tabla 1c (IMAGE): MDC95 entre medias de bloques de 1 s (x1e-3, promedio de ambos ojos; * = sin gate o < 3 bloques) y residuo de Procrustes (RMS, % de IOD)**
+**Table 1c (IMAGE): MDC95 between 1 s block means (x1e-3, mean of both eyes; * = no gate or < 3 blocks) and Procrustes residual (RMS, % of IOD)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | MDC A (mm) [INF] | Procrustes iris | Procrustes parpados | Procrustes malla |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | MDC A (mm) [INF] | Procrustes iris | Procrustes eyelids | Procrustes mesh |
 |---|---|---|---|---|---|---|---|---|---|---|
 | REF | 66.65* | 169.18* | 65.69* | 32.91* | 17.41* | 6.24* | 1.979 | 2.390 | 2.470 | 2.861 |
 | nativo_sin_jpeg | 64.28* | 177.46* | 67.66* | 36.68* | 12.46* | 7.94* | 2.076 | 2.405 | 2.441 | 2.802 |
@@ -156,9 +156,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 78.14* | 184.17* | 85.36* | 48.22* | 17.22* | 6.46* | 2.155 | 2.392 | 2.672 | 2.749 |
 | roll45_comp | 71.23* | 178.66* | 78.54* | 29.43* | 18.38* | 8.02* | 2.090 | 2.406 | 2.479 | 2.860 |
 
-**Tabla 1d (IMAGE): sesgo pareado contra REF, mediana de la diferencia (x1e-3, promedio de ambos ojos; Procrustes iris en % de IOD)**
+**Table 1d (IMAGE): paired bias against REF, median of the difference (x1e-3, mean of both eyes; Procrustes iris in % of IOD)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | Procrustes iris (cuadro) |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | Procrustes iris (frame) |
 |---|---|---|---|---|---|---|---|
 | REF | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.000 |
 | nativo_sin_jpeg | -4.97 | -6.42 | -0.55 | 0.52 | 0.85 | -0.12 | -0.006 |
@@ -191,11 +191,11 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 18.70 | 70.12 | 28.25 | -0.96 | -9.27 | -6.12 | -0.031 |
 | roll45_comp | 6.19 | 11.88 | 3.97 | 0.26 | -1.28 | 0.21 | 0.048 |
 
-#### Modo VIDEO
+#### VIDEO mode
 
-**Tabla 1a (VIDEO): deteccion, gate, tamano y latencia**
+**Table 1a (VIDEO): detection, gate, size and latency**
 
-| Condicion | n | % deteccion | % iris OK | % gate | IOD px | D px | lat. mediana ms | lat. p95 ms |
+| Condition | n | % detection | % iris OK | % gate | IOD px | D px | median lat. ms | p95 lat. ms |
 |---|---|---|---|---|---|---|---|---|
 | REF | 240 | 100.0 | 100.0 | 0.0 | 82.7 | 15.7 | 9.64 | 10.93 |
 | nativo_sin_jpeg | 240 | 100.0 | 100.0 | 0.0 | 103.2 | 19.7 | 7.94 | 9.09 |
@@ -228,9 +228,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 240 | 100.0 | 100.0 | 0.0 | 82.2 | 15.5 | 10.57 | 13.21 |
 | roll45_comp | 240 | 100.0 | 100.0 | 12.9 | 82.6 | 15.7 | 20.69 | 25.32 |
 
-**Tabla 1b (VIDEO): ruido de alta frecuencia sigma_hf (x1e-3, promedio de ambos ojos) y validacion con mediana movil de 7 (cociente med7/hf)**
+**Table 1b (VIDEO): high-frequency noise sigma_hf (x1e-3, mean of both eyes) and validation with a 7-point moving median (med7/hf ratio)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | cociente med7/hf (EAR) |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | med7/hf ratio (EAR) |
 |---|---|---|---|---|---|---|---|
 | REF | 2.92 | 6.82 | 3.91 | 3.20 | 1.35 | 0.77 | 0.45 |
 | nativo_sin_jpeg | 2.65 | 6.66 | 3.73 | 3.28 | 1.19 | 0.71 | 0.45 |
@@ -263,9 +263,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 2.41 | 6.88 | 4.54 | 2.45 | 1.65 | 0.72 | 0.69 |
 | roll45_comp | 2.79 | 7.17 | 3.21 | 2.88 | 1.53 | 0.77 | 0.42 |
 
-**Tabla 1c (VIDEO): MDC95 entre medias de bloques de 1 s (x1e-3, promedio de ambos ojos; * = sin gate o < 3 bloques) y residuo de Procrustes (RMS, % de IOD)**
+**Table 1c (VIDEO): MDC95 between 1 s block means (x1e-3, mean of both eyes; * = no gate or < 3 blocks) and Procrustes residual (RMS, % of IOD)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | MDC A (mm) [INF] | Procrustes iris | Procrustes parpados | Procrustes malla |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | MDC A (mm) [INF] | Procrustes iris | Procrustes eyelids | Procrustes mesh |
 |---|---|---|---|---|---|---|---|---|---|---|
 | REF | 61.67* | 159.21* | 111.35* | 37.80* | 32.17* | 5.56* | 1.863 | 2.788 | 3.059 | 2.838 |
 | nativo_sin_jpeg | 58.30* | 157.57* | 98.11* | 45.66* | 23.34* | 5.13* | 1.844 | 2.758 | 3.022 | 2.822 |
@@ -298,9 +298,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 37.22* | 101.43* | 37.85* | 30.11* | 18.77* | 5.07* | 1.187 | 2.546 | 2.807 | 2.595 |
 | roll45_comp | 76.00* | 206.29* | 115.49* | 43.26* | 16.35* | 6.50* | 2.414 | 2.791 | 3.070 | 2.807 |
 
-**Tabla 1d (VIDEO): sesgo pareado contra REF, mediana de la diferencia (x1e-3, promedio de ambos ojos; Procrustes iris en % de IOD)**
+**Table 1d (VIDEO): paired bias against REF, median of the difference (x1e-3, mean of both eyes; Procrustes iris in % of IOD)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | Procrustes iris (cuadro) |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | Procrustes iris (frame) |
 |---|---|---|---|---|---|---|---|
 | REF | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.000 |
 | nativo_sin_jpeg | -2.82 | -7.36 | -3.16 | 0.67 | 0.58 | 0.32 | -0.031 |
@@ -333,107 +333,107 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 2.87 | 8.83 | 6.47 | 0.22 | 11.95 | -0.04 | -0.324 |
 | roll45_comp | 5.18 | 7.05 | 3.09 | -1.10 | -2.54 | -0.27 | -0.003 |
 
-**Aceptacion**
+**Acceptance**
 
-- Resolucion impresa y registrada: SI
-- Prueba de invariancia a similitud (tol 1e-6): PASA (max dif 2.3e-15)
-- REF 512 px q80, IMAGE: deteccion 100.0 % e iris OK 100.0 % (>= 95 %): CUMPLE; gate 0.0 % (>= 80 %): NO CUMPLE
-- REF 512 px q80, VIDEO: deteccion 100.0 % e iris OK 100.0 % (>= 95 %): CUMPLE; gate 0.0 % (>= 80 %): NO CUMPLE
+- Resolution printed and recorded: YES
+- Similarity invariance test (tol 1e-6): PASSES (max diff 2.3e-15)
+- REF 512 px q80, IMAGE: detection 100.0 % and iris OK 100.0 % (>= 95 %): PASSES; gate 0.0 % (>= 80 %): FAILS
+- REF 512 px q80, VIDEO: detection 100.0 % and iris OK 100.0 % (>= 95 %): PASSES; gate 0.0 % (>= 80 %): FAILS
 
-### Que se puede afirmar / que NO
+### What can be claimed / what CANNOT
 
-**Se puede afirmar:** el cambio minimo detectable (MDC) de ESTA persona, ESTA camara y ESTA luz, y la caida de deteccion con roll sin compensar.
+**What can be claimed:** the minimal detectable change (MDC) for THIS person, THIS camera and THIS lighting, and the drop in detection with uncompensated roll.
 
-**NO se puede afirmar:** precision en mm (no hay verdad de referencia; los mm son [INF] suponiendo iris de 11,7 mm); generalizacion a otras personas; validez clinica; edema; SANS; desempeno del escaner real; camara trasera; microgravedad; ni que la poca luz simulada equivalga a poca luz real. MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal.
-
-
-## Diagnostico del gate de quietud (2026-11-14 15:56)
+**What CANNOT be claimed:** accuracy in mm (there is no ground truth; the mm values are [INF] assuming an 11.7 mm iris); generalization to other people; clinical validity; edema; SANS; performance of the real scanner; rear camera; microgravity; or that simulated low light is equivalent to real low light. MRD1n/MRD2n are proxies: the iris center replaces the corneal light reflex.
 
 
-Registro: 640x480, ruta 512 px q80, modo VIDEO, sin espejo, git 50611a6. Notas: luz de escritorio, sin lentes, 50 cm.
-150 cuadros a 30.6 FPS, ventana 1 s, 120 ventanas. Deteccion de cara 100.0 %, iris OK 100.0 %. **Matriz de transformacion disponible: 100.0 %** de los cuadros con cara.
+## Stillness gate diagnostic (2026-11-14 15:56)
 
-| Criterio | umbral actual | mediana | p80 | p95 | max | % ventanas que pasan | % total si se quita solo este |
+
+Record: 640x480, 512 px q80 pipeline, VIDEO mode, no mirroring, git 50611a6. Notes: desk lighting, no glasses, 50 cm.
+150 frames at 30.6 FPS, window 1 s, 120 windows. Face detection 100.0 %, iris OK 100.0 %. **Transformation matrix available: 100.0 %** of frames with a face.
+
+| Criterion | current threshold | median | p80 | p95 | max | % windows passing | % total if only this one is removed |
 |---|---|---|---|---|---|---|---|
-| velocidad (mediana, % IOD/cuadro) | < 0.500 | 0.124 | 0.215 | 0.272 | 0.272 | 100.0 | 100.0 |
-| rango de roll (grados) | < 2.00 | 0.30 | 0.44 | 0.44 | 0.57 | 100.0 | 100.0 |
-| rango de IOD (%) | < 2.00 | 0.93 | 1.18 | 1.23 | 1.61 | 100.0 | 100.0 |
-| rango de yaw (grados) | < 3.00 | 0.42 | 0.50 | 0.54 | 0.61 | 100.0 | 100.0 |
-| rango de pitch (grados) | < 3.00 | 0.38 | 0.44 | 0.56 | 1.06 | 100.0 | 100.0 |
-| perdida de cara (% cuadros de la ventana) | = 0 | 0.0 | 0.0 | 0.0 | 0.0 | 100.0 | 100.0 |
+| speed (median, % IOD/frame) | < 0.500 | 0.124 | 0.215 | 0.272 | 0.272 | 100.0 | 100.0 |
+| roll range (degrees) | < 2.00 | 0.30 | 0.44 | 0.44 | 0.57 | 100.0 | 100.0 |
+| IOD range (%) | < 2.00 | 0.93 | 1.18 | 1.23 | 1.61 | 100.0 | 100.0 |
+| yaw range (degrees) | < 3.00 | 0.42 | 0.50 | 0.54 | 0.61 | 100.0 | 100.0 |
+| pitch range (degrees) | < 3.00 | 0.38 | 0.44 | 0.56 | 1.06 | 100.0 | 100.0 |
+| face loss (% of frames in window) | = 0 | 0.0 | 0.0 | 0.0 | 0.0 | 100.0 | 100.0 |
 
-**Ventanas que pasan TODOS los criterios: 100.0 %.** Cuello de botella: **speed** (criterio con menos ventanas aprobadas).
+**Windows that pass ALL criteria: 100.0 %.** Bottleneck: **speed** (criterion with the fewest passing windows).
 
-Umbrales sugeridos (p80 observado; calibrado con esta persona y sesion: propuesta, decide el usuario): speed < 0.215; roll < 0.44; iod < 1.18; yaw < 0.50; pitch < 0.44.
+Suggested thresholds (observed p80; calibrated on this person and session: a proposal, the user decides): speed < 0.215; roll < 0.44; iod < 1.18; yaw < 0.50; pitch < 0.44.
 
-## Diagnostico del gate de quietud (2026-11-14 16:10)
+## Stillness gate diagnostic (2026-11-14 16:10)
 
 
-Registro: 640x480, ruta 512 px q80, modo VIDEO, sin espejo, espera de quietud: quietud lograda tras 2.0 s de espera, git a8bd774. Notas: luz de escritorio, sin lentes, 50 cm.
-150 cuadros a 30.1 FPS, ventana 1 s, 121 ventanas. Deteccion de cara 99.3 %, iris OK 99.3 %. **Matriz de transformacion disponible: 100.0 %** de los cuadros con cara.
+Record: 640x480, 512 px q80 pipeline, VIDEO mode, no mirroring, stillness wait: stillness reached after 2.0 s of waiting, git a8bd774. Notes: desk lighting, no glasses, 50 cm.
+150 frames at 30.1 FPS, window 1 s, 121 windows. Face detection 99.3 %, iris OK 99.3 %. **Transformation matrix available: 100.0 %** of frames with a face.
 
-| Criterio | umbral actual | mediana | p80 | p95 | max | % ventanas que pasan | % total si se quita solo este |
+| Criterion | current threshold | median | p80 | p95 | max | % windows passing | % total if only this one is removed |
 |---|---|---|---|---|---|---|---|
-| velocidad (mediana, % IOD/cuadro) | < 0.500 | 0.426 | 5.369 | 6.341 | 6.341 | 52.1 | 37.2 |
-| rango de roll (grados) | < 2.00 | 1.71 | 3.63 | 5.69 | 9.08 | 44.6 | 37.2 |
-| rango de IOD (%) | < 2.00 | 2.12 | 48.27 | 71.60 | 82.62 | 37.2 | 43.8 |
-| rango de yaw (grados) | < 3.00 | 1.27 | 41.56 | 50.77 | 55.88 | 43.8 | 37.2 |
-| rango de pitch (grados) | < 3.00 | 1.11 | 3.76 | 7.07 | 7.78 | 45.5 | 37.2 |
-| perdida de cara (% cuadros de la ventana) | = 0 | 0.0 | 3.3 | 3.3 | 3.3 | 75.2 | 37.2 |
+| speed (median, % IOD/frame) | < 0.500 | 0.426 | 5.369 | 6.341 | 6.341 | 52.1 | 37.2 |
+| roll range (degrees) | < 2.00 | 1.71 | 3.63 | 5.69 | 9.08 | 44.6 | 37.2 |
+| IOD range (%) | < 2.00 | 2.12 | 48.27 | 71.60 | 82.62 | 37.2 | 43.8 |
+| yaw range (degrees) | < 3.00 | 1.27 | 41.56 | 50.77 | 55.88 | 43.8 | 37.2 |
+| pitch range (degrees) | < 3.00 | 1.11 | 3.76 | 7.07 | 7.78 | 45.5 | 37.2 |
+| face loss (% of frames in window) | = 0 | 0.0 | 3.3 | 3.3 | 3.3 | 75.2 | 37.2 |
 
-**Ventanas que pasan TODOS los criterios: 37.2 %.** Cuello de botella: **iod** (criterio con menos ventanas aprobadas).
+**Windows that pass ALL criteria: 37.2 %.** Bottleneck: **iod** (criterion with the fewest passing windows).
 
-Umbrales sugeridos (p80 observado; calibrado con esta persona y sesion: propuesta, decide el usuario): speed < 5.369; roll < 3.63; iod < 48.27; yaw < 41.56; pitch < 3.76.
+Suggested thresholds (observed p80; calibrated on this person and session: a proposal, the user decides): speed < 5.369; roll < 3.63; iod < 48.27; yaw < 41.56; pitch < 3.76.
 
-## Diagnostico del gate de quietud (2026-11-14 16:11)
+## Stillness gate diagnostic (2026-11-14 16:11)
 
 
-Registro: 640x480, ruta 512 px q80, modo VIDEO, sin espejo, espera de quietud: quietud lograda tras 1.6 s de espera, git a8bd774+cambios_sin_commit. Notas: luz de escritorio, sin lentes, 50 cm.
-150 cuadros a 30.6 FPS, ventana 1 s, 120 ventanas. Deteccion de cara 100.0 %, iris OK 100.0 %. **Matriz de transformacion disponible: 100.0 %** de los cuadros con cara.
+Record: 640x480, 512 px q80 pipeline, VIDEO mode, no mirroring, stillness wait: stillness reached after 1.6 s of waiting, git a8bd774+uncommitted_changes. Notes: desk lighting, no glasses, 50 cm.
+150 frames at 30.6 FPS, window 1 s, 120 windows. Face detection 100.0 %, iris OK 100.0 %. **Transformation matrix available: 100.0 %** of frames with a face.
 
-| Criterio | umbral actual | mediana | p80 | p95 | max | % ventanas que pasan | % total si se quita solo este |
+| Criterion | current threshold | median | p80 | p95 | max | % windows passing | % total if only this one is removed |
 |---|---|---|---|---|---|---|---|
-| velocidad (mediana, % IOD/cuadro) | < 0.500 | 0.115 | 0.216 | 0.308 | 0.308 | 100.0 | 100.0 |
-| rango de roll (grados) | < 2.00 | 0.32 | 0.42 | 0.57 | 0.58 | 100.0 | 100.0 |
-| rango de IOD (%) | < 2.00 | 0.78 | 0.91 | 1.08 | 1.55 | 100.0 | 100.0 |
-| rango de yaw (grados) | < 3.00 | 0.41 | 0.53 | 0.65 | 0.87 | 100.0 | 100.0 |
-| rango de pitch (grados) | < 3.00 | 0.53 | 1.01 | 1.11 | 1.24 | 100.0 | 100.0 |
-| perdida de cara (% cuadros de la ventana) | = 0 | 0.0 | 0.0 | 0.0 | 0.0 | 100.0 | 100.0 |
+| speed (median, % IOD/frame) | < 0.500 | 0.115 | 0.216 | 0.308 | 0.308 | 100.0 | 100.0 |
+| roll range (degrees) | < 2.00 | 0.32 | 0.42 | 0.57 | 0.58 | 100.0 | 100.0 |
+| IOD range (%) | < 2.00 | 0.78 | 0.91 | 1.08 | 1.55 | 100.0 | 100.0 |
+| yaw range (degrees) | < 3.00 | 0.41 | 0.53 | 0.65 | 0.87 | 100.0 | 100.0 |
+| pitch range (degrees) | < 3.00 | 0.53 | 1.01 | 1.11 | 1.24 | 100.0 | 100.0 |
+| face loss (% of frames in window) | = 0 | 0.0 | 0.0 | 0.0 | 0.0 | 100.0 | 100.0 |
 
-**Ventanas que pasan TODOS los criterios: 100.0 %.** Cuello de botella: **speed** (criterio con menos ventanas aprobadas).
+**Windows that pass ALL criteria: 100.0 %.** Bottleneck: **speed** (criterion with the fewest passing windows).
 
-Umbrales sugeridos (p80 observado; calibrado con esta persona y sesion: propuesta, decide el usuario): speed < 0.216; roll < 0.42; iod < 0.91; yaw < 0.53; pitch < 1.01.
+Suggested thresholds (observed p80; calibrated on this person and session: a proposal, the user decides): speed < 0.216; roll < 0.42; iod < 0.91; yaw < 0.53; pitch < 1.01.
 
-## Check v2 con barrido (2026-11-14 16:22)
+## Check v2 with sweep (2026-11-14 16:22)
 
-**Registro**
+**Record**
 
-- Fecha: 2026-11-14T16:22:44; commit: `a499113`
-- frame.shape real: (480, 640, 3)
-- Resolucion pedida vs obtenida: [None, None] vs [640, 480]
-- FPS medido con timestamps: 30.0 (mediana instantanea 31.33); CAP_PROP_FPS: 30.0
-- Backend: MSMF (solicitado: default); indice de camara: 0; facing: front
-- Espejo: no aplicado (cuadro tal como lo entrega la camara)
-- Notas: luz de escritorio, sin lentes, 50 cm; sujeto: S01
+- Date: 2026-11-14T16:22:44; commit: `a499113`
+- Actual frame.shape: (480, 640, 3)
+- Requested vs obtained resolution: [None, None] vs [640, 480]
+- FPS measured from timestamps: 30.0 (instantaneous median 31.33); CAP_PROP_FPS: 30.0
+- Backend: MSMF (requested: default); camera index: 0; facing: front
+- Mirroring: not applied (frame as delivered by the camera)
+- Notes: desk lighting, no glasses, 50 cm; subject: S01
 - Python 3.13.12, mediapipe 1.2.3, opencv 5.0.0, numpy 2.5.4
-- Modelo sha256: `64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff`
-- Running mode: IMAGE y VIDEO (un landmarker por condicion y modo)
-- Iris asignado por cercania a las comisuras: {'R': 468, 'L': 473}
-- Espera de quietud antes de grabar: ['quietud lograda tras 1.5 s de espera']
-- Quietud durante la captura (reintento si < 80.0 %, hasta 2 reintentos): barrido: 1 intento(s), quietud 100.0 % (minimo 80 %)
-- Umbrales del gate (PROPUESTA): ventana 1.0 s, velocidad < 0.5 % IOD/cuadro (cuantil 0.5), roll < 2.0 grados, IOD < 2.0 %, yaw/pitch < 3.0 grados
-- Parpadeo: EAR < 0,6 x mediana abierta durante >= 2 cuadros. Suelo de ruido: excluye EAR < 0,75 x mediana y +-3 cuadros. Euler: Y-X-Z intrinseco, R normalizada por columnas; solo se usan rangos de yaw/pitch
+- Model sha256: `64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff`
+- Running mode: IMAGE and VIDEO (one landmarker per condition and mode)
+- Iris assigned by proximity to the eye corners: {'R': 468, 'L': 473}
+- Stillness wait before recording: ['stillness reached after 1.5 s of waiting']
+- Stillness during capture (retry if < 80.0 %, up to 2 retries): sweep: 1 attempt(s), stillness 100.0 % (minimum 80 %)
+- Gate thresholds (PROPOSAL): window 1.0 s, speed < 0.5 % IOD/frame (quantile 0.5), roll < 2.0 degrees, IOD < 2.0 %, yaw/pitch < 3.0 degrees
+- Blink: EAR < 0.6 x open-eye median for >= 2 frames. Noise floor: excludes EAR < 0.75 x median and +-3 frames. Euler: intrinsic Y-X-Z, R normalized by columns; only yaw/pitch ranges are used
 
-Cuadros: 240 capturados una sola vez en RAM; todas las condiciones se aplican a los mismos cuadros (comparacion pareada). Ruta: degradar a resolucion nativa, rotar (centro de la cara, borde reflejado), reducir con INTER_AREA, JPEG. Roll COMPENSADO: se estima con los ojos del resultado crudo, se contrarrota el JPEG decodificado y se reinfiere (sin deteccion cruda se arrastra el ultimo roll). Latencia = reduccion + JPEG + inferencia (+ contrarrotacion y la inferencia cruda en la compensada).
-MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidades normalizadas: A, MRD en diametros de iris (escala S_t = IOD_t x mediana(D)/mediana(IOD)), u/v en anchos de ojo, EAR y D/IOD sin unidad. Los mm son [INF] (iris 11,7 mm).
+Frames: 240 captured once into RAM; every condition is applied to the same frames (paired comparison). Pipeline: degrade at native resolution, rotate (face center, reflected border), downscale with INTER_AREA, JPEG. COMPENSATED roll: estimated from the eyes in the raw result, the decoded JPEG is counter-rotated and inference is rerun (without a raw detection, the last roll is carried forward). Latency = downscale + JPEG + inference (+ counter-rotation and the raw inference in the compensated case).
+MRD1n/MRD2n are proxies: the iris center replaces the corneal light reflex. Normalized units: A, MRD in iris diameters (scale S_t = IOD_t x median(D)/median(IOD)), u/v in eye widths, EAR and D/IOD unitless. The mm values are [INF] (iris 11.7 mm).
 
-### Tabla 1 por condicion
+### Table 1 by condition
 
-#### Modo IMAGE
+#### IMAGE mode
 
-**Tabla 1a (IMAGE): deteccion, gate, tamano y latencia**
+**Table 1a (IMAGE): detection, gate, size and latency**
 
-| Condicion | n | % deteccion | % iris OK | % gate | IOD px | D px | lat. mediana ms | lat. p95 ms |
+| Condition | n | % detection | % iris OK | % gate | IOD px | D px | median lat. ms | p95 lat. ms |
 |---|---|---|---|---|---|---|---|---|
 | REF | 240 | 100.0 | 100.0 | 84.6 | 82.2 | 16.1 | 10.45 | 11.63 |
 | nativo_sin_jpeg | 240 | 100.0 | 100.0 | 93.3 | 102.9 | 20.2 | 8.86 | 9.88 |
@@ -466,9 +466,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 240 | 100.0 | 100.0 | 100.0 | 82.9 | 15.6 | 10.85 | 12.05 |
 | roll45_comp | 240 | 100.0 | 100.0 | 100.0 | 82.4 | 16.2 | 20.46 | 22.72 |
 
-**Tabla 1b (IMAGE): ruido de alta frecuencia sigma_hf (x1e-3, promedio de ambos ojos) y validacion con mediana movil de 7 (cociente med7/hf)**
+**Table 1b (IMAGE): high-frequency noise sigma_hf (x1e-3, mean of both eyes) and validation with a 7-point moving median (med7/hf ratio)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | cociente med7/hf (EAR) |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | med7/hf ratio (EAR) |
 |---|---|---|---|---|---|---|---|
 | REF | 5.52 | 12.96 | 7.38 | 6.34 | 3.18 | 0.78 | 1.00 |
 | nativo_sin_jpeg | 5.96 | 14.53 | 6.77 | 6.79 | 2.94 | 1.03 | 1.01 |
@@ -501,9 +501,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 4.26 | 10.55 | 7.75 | 6.75 | 4.77 | 1.21 | 0.99 |
 | roll45_comp | 5.50 | 13.42 | 8.05 | 5.89 | 4.21 | 0.90 | 1.13 |
 
-**Tabla 1c (IMAGE): MDC95 entre medias de bloques de 1 s (x1e-3, promedio de ambos ojos; * = sin gate o < 3 bloques) y residuo de Procrustes (RMS, % de IOD)**
+**Table 1c (IMAGE): MDC95 between 1 s block means (x1e-3, mean of both eyes; * = no gate or < 3 blocks) and Procrustes residual (RMS, % of IOD)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | MDC A (mm) [INF] | Procrustes iris | Procrustes parpados | Procrustes malla |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | MDC A (mm) [INF] | Procrustes iris | Procrustes eyelids | Procrustes mesh |
 |---|---|---|---|---|---|---|---|---|---|---|
 | REF | 4.66 | 28.35 | 12.30 | 8.59 | 3.74 | 0.87 | 0.332 | 0.719 | 0.718 | 0.776 |
 | nativo_sin_jpeg | 12.59 | 41.71 | 14.26 | 7.65 | 3.58 | 1.44 | 0.488 | 0.601 | 0.600 | 0.691 |
@@ -536,9 +536,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 10.10 | 36.84 | 11.58 | 6.24 | 3.69 | 2.09 | 0.431 | 0.845 | 0.773 | 0.834 |
 | roll45_comp | 8.31 | 29.66 | 6.13 | 6.05 | 6.43 | 0.99 | 0.347 | 0.697 | 0.724 | 0.813 |
 
-**Tabla 1d (IMAGE): sesgo pareado contra REF, mediana de la diferencia (x1e-3, promedio de ambos ojos; Procrustes iris en % de IOD)**
+**Table 1d (IMAGE): paired bias against REF, median of the difference (x1e-3, mean of both eyes; Procrustes iris in % of IOD)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | Procrustes iris (cuadro) |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | Procrustes iris (frame) |
 |---|---|---|---|---|---|---|---|
 | REF | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.000 |
 | nativo_sin_jpeg | -5.25 | -10.73 | -2.75 | 0.76 | 1.10 | -0.17 | -0.093 |
@@ -571,11 +571,11 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 20.24 | 83.11 | 29.53 | 1.31 | -1.44 | -7.77 | 0.065 |
 | roll45_comp | 13.04 | 31.65 | 5.59 | -1.58 | 3.86 | 0.18 | 0.011 |
 
-#### Modo VIDEO
+#### VIDEO mode
 
-**Tabla 1a (VIDEO): deteccion, gate, tamano y latencia**
+**Table 1a (VIDEO): detection, gate, size and latency**
 
-| Condicion | n | % deteccion | % iris OK | % gate | IOD px | D px | lat. mediana ms | lat. p95 ms |
+| Condition | n | % detection | % iris OK | % gate | IOD px | D px | median lat. ms | p95 lat. ms |
 |---|---|---|---|---|---|---|---|---|
 | REF | 240 | 100.0 | 100.0 | 100.0 | 83.1 | 16.3 | 9.35 | 10.15 |
 | nativo_sin_jpeg | 240 | 100.0 | 100.0 | 100.0 | 103.7 | 20.4 | 7.80 | 8.53 |
@@ -608,9 +608,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 240 | 100.0 | 100.0 | 100.0 | 83.2 | 16.4 | 10.01 | 11.13 |
 | roll45_comp | 240 | 100.0 | 100.0 | 100.0 | 83.6 | 16.5 | 18.51 | 20.24 |
 
-**Tabla 1b (VIDEO): ruido de alta frecuencia sigma_hf (x1e-3, promedio de ambos ojos) y validacion con mediana movil de 7 (cociente med7/hf)**
+**Table 1b (VIDEO): high-frequency noise sigma_hf (x1e-3, mean of both eyes) and validation with a 7-point moving median (med7/hf ratio)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | cociente med7/hf (EAR) |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | med7/hf ratio (EAR) |
 |---|---|---|---|---|---|---|---|
 | REF | 0.47 | 1.21 | 0.63 | 0.68 | 0.28 | 0.13 | 0.76 |
 | nativo_sin_jpeg | 0.46 | 1.06 | 0.58 | 0.60 | 0.26 | 0.13 | 0.79 |
@@ -643,9 +643,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 0.54 | 1.36 | 0.98 | 0.54 | 0.39 | 0.15 | 0.77 |
 | roll45_comp | 0.44 | 1.02 | 0.59 | 0.55 | 0.23 | 0.14 | 0.96 |
 
-**Tabla 1c (VIDEO): MDC95 entre medias de bloques de 1 s (x1e-3, promedio de ambos ojos; * = sin gate o < 3 bloques) y residuo de Procrustes (RMS, % de IOD)**
+**Table 1c (VIDEO): MDC95 between 1 s block means (x1e-3, mean of both eyes; * = no gate or < 3 blocks) and Procrustes residual (RMS, % of IOD)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | MDC A (mm) [INF] | Procrustes iris | Procrustes parpados | Procrustes malla |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | MDC A (mm) [INF] | Procrustes iris | Procrustes eyelids | Procrustes mesh |
 |---|---|---|---|---|---|---|---|---|---|---|
 | REF | 5.25 | 20.54 | 8.08 | 5.57 | 4.18 | 0.76 | 0.240 | 0.413 | 0.363 | 0.452 |
 | nativo_sin_jpeg | 4.64 | 16.31 | 5.93 | 6.42 | 3.41 | 1.23 | 0.191 | 0.386 | 0.347 | 0.440 |
@@ -678,9 +678,9 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 11.61 | 41.11 | 19.84 | 5.22 | 4.79 | 0.77 | 0.481 | 0.642 | 0.645 | 0.656 |
 | roll45_comp | 4.89 | 13.34 | 6.51 | 4.61 | 4.61 | 1.05 | 0.156 | 0.415 | 0.354 | 0.462 |
 
-**Tabla 1d (VIDEO): sesgo pareado contra REF, mediana de la diferencia (x1e-3, promedio de ambos ojos; Procrustes iris en % de IOD)**
+**Table 1d (VIDEO): paired bias against REF, median of the difference (x1e-3, mean of both eyes; Procrustes iris in % of IOD)**
 
-| Condicion | EAR | A | MRD2n | u | v | D/IOD | Procrustes iris (cuadro) |
+| Condition | EAR | A | MRD2n | u | v | D/IOD | Procrustes iris (frame) |
 |---|---|---|---|---|---|---|---|
 | REF | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.000 |
 | nativo_sin_jpeg | -3.55 | -7.20 | -2.47 | -0.30 | 0.20 | 0.55 | -0.034 |
@@ -713,157 +713,157 @@ MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal. Unidad
 | roll45_bruto | 4.73 | 9.31 | 0.25 | -2.79 | 11.81 | 1.60 | -0.028 |
 | roll45_comp | 9.06 | 12.45 | 2.14 | -3.56 | 1.75 | 0.83 | 0.012 |
 
-**Aceptacion**
+**Acceptance**
 
-- Resolucion impresa y registrada: SI
-- Prueba de invariancia a similitud (tol 1e-6): PASA (max dif 2.3e-15)
-- REF 512 px q80, IMAGE: deteccion 100.0 % e iris OK 100.0 % (>= 95 %): CUMPLE; gate 84.6 % (>= 80 %): CUMPLE
-- REF 512 px q80, VIDEO: deteccion 100.0 % e iris OK 100.0 % (>= 95 %): CUMPLE; gate 100.0 % (>= 80 %): CUMPLE
+- Resolution printed and recorded: YES
+- Similarity invariance test (tol 1e-6): PASSES (max diff 2.3e-15)
+- REF 512 px q80, IMAGE: detection 100.0 % and iris OK 100.0 % (>= 95 %): PASSES; gate 84.6 % (>= 80 %): PASSES
+- REF 512 px q80, VIDEO: detection 100.0 % and iris OK 100.0 % (>= 95 %): PASSES; gate 100.0 % (>= 80 %): PASSES
 
-### Que se puede afirmar / que NO
+### What can be claimed / what CANNOT
 
-**Se puede afirmar:** el cambio minimo detectable (MDC) de ESTA persona, ESTA camara y ESTA luz, y la caida de deteccion con roll sin compensar.
+**What can be claimed:** the minimal detectable change (MDC) for THIS person, THIS camera and THIS lighting, and the drop in detection with uncompensated roll.
 
-**NO se puede afirmar:** precision en mm (no hay verdad de referencia; los mm son [INF] suponiendo iris de 11,7 mm); generalizacion a otras personas; validez clinica; edema; SANS; desempeno del escaner real; camara trasera; microgravedad; ni que la poca luz simulada equivalga a poca luz real. MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal.
+**What CANNOT be claimed:** accuracy in mm (there is no ground truth; the mm values are [INF] assuming an 11.7 mm iris); generalization to other people; clinical validity; edema; SANS; performance of the real scanner; rear camera; microgravity; or that simulated low light is equivalent to real low light. MRD1n/MRD2n are proxies: the iris center replaces the corneal light reflex.
 
 
-## Suelo de ruido y MDC (2026-11-14 17:39)
+## Noise floor and MDC (2026-11-14 17:39)
 
-**Registro**
+**Record**
 
-- Fecha: 2026-11-14T17:38:51; commit: `5367e19`
-- frame.shape real: (480, 640, 3)
-- Resolucion pedida vs obtenida: [None, None] vs [640, 480]
-- FPS medido con timestamps: 30.0 (mediana instantanea 30.0); CAP_PROP_FPS: 30.0
-- Backend: MSMF (solicitado: default); indice de camara: 0; facing: front
-- Espejo: no aplicado (cuadro tal como lo entrega la camara)
-- Notas: luz de escritorio, sin lentes, 50 cm, mirando punto rojo; sujeto: S01
+- Date: 2026-11-14T17:38:51; commit: `5367e19`
+- Actual frame.shape: (480, 640, 3)
+- Requested vs obtained resolution: [None, None] vs [640, 480]
+- FPS measured from timestamps: 30.0 (instantaneous median 30.0); CAP_PROP_FPS: 30.0
+- Backend: MSMF (requested: default); camera index: 0; facing: front
+- Mirroring: not applied (frame as delivered by the camera)
+- Notes: desk lighting, no glasses, 50 cm, looking at a red dot; subject: S01
 - Python 3.13.12, mediapipe 1.2.3, opencv 5.0.0, numpy 2.5.4
-- Modelo sha256: `64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff`
+- Model sha256: `64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff`
 - Running mode: VIDEO
-- Iris asignado por cercania a las comisuras: {'R': 468, 'L': 473}
-- Espera de quietud antes de grabar: ['quietud lograda tras 1.5 s de espera', 'quietud lograda tras 19.7 s de espera', 'quietud lograda tras 5.1 s de espera', 'quietud lograda tras 12.3 s de espera', 'quietud lograda tras 9.5 s de espera']
-- Quietud durante la captura (reintento si < 80.0 %, hasta 2 reintentos): bloque 1: 1 intento(s), quietud 90.2 % (minimo 80 %); bloque 2: 1 intento(s), quietud 85.0 % (minimo 80 %); bloque 3: 3 intento(s), quietud 95.3 % (minimo 80 %)
-- Umbrales del gate (PROPUESTA): ventana 1.0 s, velocidad < 0.5 % IOD/cuadro (cuantil 0.5), roll < 2.0 grados, IOD < 2.0 %, yaw/pitch < 3.0 grados
-- Parpadeo: EAR < 0,6 x mediana abierta durante >= 2 cuadros. Suelo de ruido: excluye EAR < 0,75 x mediana y +-3 cuadros. Euler: Y-X-Z intrinseco, R normalizada por columnas; solo se usan rangos de yaw/pitch
+- Iris assigned by proximity to the eye corners: {'R': 468, 'L': 473}
+- Stillness wait before recording: ['stillness reached after 1.5 s of waiting', 'stillness reached after 19.7 s of waiting', 'stillness reached after 5.1 s of waiting', 'stillness reached after 12.3 s of waiting', 'stillness reached after 9.5 s of waiting']
+- Stillness during capture (retry if < 80.0 %, up to 2 retries): block 1: 1 attempt(s), stillness 90.2 % (minimum 80 %); block 2: 1 attempt(s), stillness 85.0 % (minimum 80 %); block 3: 3 attempt(s), stillness 95.3 % (minimum 80 %)
+- Gate thresholds (PROPOSAL): window 1.0 s, speed < 0.5 % IOD/frame (quantile 0.5), roll < 2.0 degrees, IOD < 2.0 %, yaw/pitch < 3.0 degrees
+- Blink: EAR < 0.6 x open-eye median for >= 2 frames. Noise floor: excludes EAR < 0.75 x median and +-3 frames. Euler: intrinsic Y-X-Z, R normalized by columns; only yaw/pitch ranges are used
 
-Sesiones agregadas: 3 (ids [2, 3, 4]). Cada sesion: 3 bloques de ~20 s, mirada fija, cabeza apoyada; solo cuadros que pasan el gate, sin parpadeos (EAR < 0,75 x mediana) ni +-3 cuadros. sigma_w = 1,4826 x MAD de las medias de bloques de 1 s dentro de la sesion (mancomunada entre sesiones, RMS). sigma_b = desv. estandar (ddof=1) de las medias de sesion. MDC95 = 1,96 x raiz(2) x sigma sobre medias de 1 s (no sigma/raiz(N): el modo VIDEO autocorrelaciona los cuadros); el valor con reposicionamiento usa raiz(sigma_w^2 + sigma_b^2). Los mm son [INF] (iris 11,7 mm). El reposicionamiento entre sesiones no se puede verificar desde el codigo.
+Sessions aggregated: 3 (ids [2, 3, 4]). Each session: 3 blocks of ~20 s, fixed gaze, head supported; only frames that pass the gate, excluding blinks (EAR < 0.75 x median) and +-3 frames around them. sigma_w = 1.4826 x MAD of the 1 s block means within the session (pooled across sessions, RMS). sigma_b = standard deviation (ddof=1) of the session means. MDC95 = 1.96 x sqrt(2) x sigma over 1 s means (not sigma/sqrt(N): VIDEO mode autocorrelates frames); the value with repositioning uses sqrt(sigma_w^2 + sigma_b^2). The mm values are [INF] (iris 11.7 mm). Repositioning between sessions cannot be verified from the code.
 
-### Tabla 2: suelo de ruido y MDC
+### Table 2: noise floor and MDC
 
-| Metrica | Ojo | media | sigma_w | sigma_b | MDC95 intra-sesion | MDC95 con reposicionamiento | MDC95 repos. (mm) [INF] |
+| Metric | Eye | mean | sigma_w | sigma_b | MDC95 within-session | MDC95 with repositioning | MDC95 repos. (mm) [INF] |
 |---|---|---|---|---|---|---|---|
 | EAR | R | 0.2758 | 0.02341 | 0.01218 | 0.06489 | 0.07315 | - |
 | EAR | L | 0.2936 | 0.02357 | 0.00962 | 0.06532 | 0.07055 | - |
-| A (diam. iris) | R | 0.7031 | 0.06148 | 0.02881 | 0.17041 | 0.18820 | 2.202 |
-| A (diam. iris) | L | 0.6987 | 0.05193 | 0.01995 | 0.14394 | 0.15419 | 1.804 |
-| MRD2n proxy (diam. iris) | R | 0.4108 | 0.03536 | 0.02578 | 0.09802 | 0.12130 | 1.419 |
-| MRD2n proxy (diam. iris) | L | 0.4035 | 0.02573 | 0.02269 | 0.07131 | 0.09509 | 1.113 |
-| MRD1n proxy (diam. iris) | R | 0.2923 | 0.02935 | 0.00987 | 0.08134 | 0.08582 | 1.004 |
-| MRD1n proxy (diam. iris) | L | 0.2953 | 0.02486 | 0.00432 | 0.06892 | 0.06995 | 0.818 |
-| u (ancho de ojo) | R | -0.0085 | 0.02287 | 0.02945 | 0.06338 | 0.10335 | - |
-| u (ancho de ojo) | L | 0.0547 | 0.01970 | 0.02331 | 0.05460 | 0.08459 | - |
-| v (ancho de ojo) | R | -0.0498 | 0.00757 | 0.00323 | 0.02098 | 0.02281 | - |
-| v (ancho de ojo) | L | -0.0511 | 0.00645 | 0.00435 | 0.01788 | 0.02156 | - |
+| A (iris diam.) | R | 0.7031 | 0.06148 | 0.02881 | 0.17041 | 0.18820 | 2.202 |
+| A (iris diam.) | L | 0.6987 | 0.05193 | 0.01995 | 0.14394 | 0.15419 | 1.804 |
+| MRD2n proxy (iris diam.) | R | 0.4108 | 0.03536 | 0.02578 | 0.09802 | 0.12130 | 1.419 |
+| MRD2n proxy (iris diam.) | L | 0.4035 | 0.02573 | 0.02269 | 0.07131 | 0.09509 | 1.113 |
+| MRD1n proxy (iris diam.) | R | 0.2923 | 0.02935 | 0.00987 | 0.08134 | 0.08582 | 1.004 |
+| MRD1n proxy (iris diam.) | L | 0.2953 | 0.02486 | 0.00432 | 0.06892 | 0.06995 | 0.818 |
+| u (eye width) | R | -0.0085 | 0.02287 | 0.02945 | 0.06338 | 0.10335 | - |
+| u (eye width) | L | 0.0547 | 0.01970 | 0.02331 | 0.05460 | 0.08459 | - |
+| v (eye width) | R | -0.0498 | 0.00757 | 0.00323 | 0.02098 | 0.02281 | - |
+| v (eye width) | L | -0.0511 | 0.00645 | 0.00435 | 0.01788 | 0.02156 | - |
 | D/IOD | - | 0.1905 | 0.00315 | 0.00310 | 0.00872 | 0.01225 | - |
 
-### Que se puede afirmar / que NO
+### What can be claimed / what CANNOT
 
-**Se puede afirmar:** el cambio minimo detectable (MDC) de ESTA persona, ESTA camara y ESTA luz, y la caida de deteccion con roll sin compensar.
+**What can be claimed:** the minimal detectable change (MDC) for THIS person, THIS camera and THIS lighting, and the drop in detection with uncompensated roll.
 
-**NO se puede afirmar:** precision en mm (no hay verdad de referencia; los mm son [INF] suponiendo iris de 11,7 mm); generalizacion a otras personas; validez clinica; edema; SANS; desempeno del escaner real; camara trasera; microgravedad; ni que la poca luz simulada equivalga a poca luz real. MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal.
+**What CANNOT be claimed:** accuracy in mm (there is no ground truth; the mm values are [INF] assuming an 11.7 mm iris); generalization to other people; clinical validity; edema; SANS; performance of the real scanner; rear camera; microgravity; or that simulated low light is equivalent to real low light. MRD1n/MRD2n are proxies: the iris center replaces the corneal light reflex.
 
 
-## Suelo de ruido y MDC (2026-11-14 19:32)
+## Noise floor and MDC (2026-11-14 19:32)
 
-**Registro**
+**Record**
 
-- Fecha: 2026-11-14T19:32:32; commit: `d3df026`
-- frame.shape real: (480, 640, 3)
-- Resolucion pedida vs obtenida: [None, None] vs [640, 480]
-- FPS medido con timestamps: 29.69 (mediana instantanea 29.69); CAP_PROP_FPS: 30.0
-- Backend: MSMF (solicitado: default); indice de camara: 0; facing: front
-- Espejo: no aplicado (cuadro tal como lo entrega la camara)
-- Notas: luz de escritorio, sin lentes, 50 cm, mirando punto rojo; sujeto: S01
+- Date: 2026-11-14T19:32:32; commit: `d3df026`
+- Actual frame.shape: (480, 640, 3)
+- Requested vs obtained resolution: [None, None] vs [640, 480]
+- FPS measured from timestamps: 29.69 (instantaneous median 29.69); CAP_PROP_FPS: 30.0
+- Backend: MSMF (requested: default); camera index: 0; facing: front
+- Mirroring: not applied (frame as delivered by the camera)
+- Notes: desk lighting, no glasses, 50 cm, looking at a red dot; subject: S01
 - Python 3.13.12, mediapipe 1.2.3, opencv 5.0.0, numpy 2.5.4
-- Modelo sha256: `64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff`
+- Model sha256: `64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff`
 - Running mode: VIDEO
-- Iris asignado por cercania a las comisuras: {'R': 468, 'L': 473}
-- Espera de quietud antes de grabar: ['quietud lograda tras 1.6 s de espera', 'quietud lograda tras 2.7 s de espera', 'quietud lograda tras 2.9 s de espera']
-- Quietud durante la captura (reintento si < 80.0 %, hasta 2 reintentos): bloque 1: 1 intento(s), quietud 99.8 % (minimo 80 %); bloque 2: 1 intento(s), quietud 92.2 % (minimo 80 %); bloque 3: 1 intento(s), quietud 93.1 % (minimo 80 %)
-- Umbrales del gate (PROPUESTA): ventana 1.0 s, velocidad < 0.5 % IOD/cuadro (cuantil 0.5), roll < 2.0 grados, IOD < 2.0 %, yaw/pitch < 3.0 grados
-- Parpadeo: EAR < 0,6 x mediana abierta durante >= 2 cuadros. Suelo de ruido: excluye EAR < 0,75 x mediana y +-3 cuadros. Euler: Y-X-Z intrinseco, R normalizada por columnas; solo se usan rangos de yaw/pitch
+- Iris assigned by proximity to the eye corners: {'R': 468, 'L': 473}
+- Stillness wait before recording: ['stillness reached after 1.6 s of waiting', 'stillness reached after 2.7 s of waiting', 'stillness reached after 2.9 s of waiting']
+- Stillness during capture (retry if < 80.0 %, up to 2 retries): block 1: 1 attempt(s), stillness 99.8 % (minimum 80 %); block 2: 1 attempt(s), stillness 92.2 % (minimum 80 %); block 3: 1 attempt(s), stillness 93.1 % (minimum 80 %)
+- Gate thresholds (PROPOSAL): window 1.0 s, speed < 0.5 % IOD/frame (quantile 0.5), roll < 2.0 degrees, IOD < 2.0 %, yaw/pitch < 3.0 degrees
+- Blink: EAR < 0.6 x open-eye median for >= 2 frames. Noise floor: excludes EAR < 0.75 x median and +-3 frames. Euler: intrinsic Y-X-Z, R normalized by columns; only yaw/pitch ranges are used
 
-Sesiones agregadas: 3 (ids [5, 6, 7]). Cada sesion: 3 bloques de ~20 s, mirada fija, cabeza apoyada; solo cuadros que pasan el gate, sin parpadeos (EAR < 0,75 x mediana) ni +-3 cuadros. sigma_w = 1,4826 x MAD de las medias de bloques de 1 s dentro de la sesion (mancomunada entre sesiones, RMS). sigma_b = desv. estandar (ddof=1) de las medias de sesion. MDC95 = 1,96 x raiz(2) x sigma sobre medias de 1 s (no sigma/raiz(N): el modo VIDEO autocorrelaciona los cuadros); el valor con reposicionamiento usa raiz(sigma_w^2 + sigma_b^2). Los mm son [INF] (iris 11,7 mm). El reposicionamiento entre sesiones no se puede verificar desde el codigo.
+Sessions aggregated: 3 (ids [5, 6, 7]). Each session: 3 blocks of ~20 s, fixed gaze, head supported; only frames that pass the gate, excluding blinks (EAR < 0.75 x median) and +-3 frames around them. sigma_w = 1.4826 x MAD of the 1 s block means within the session (pooled across sessions, RMS). sigma_b = standard deviation (ddof=1) of the session means. MDC95 = 1.96 x sqrt(2) x sigma over 1 s means (not sigma/sqrt(N): VIDEO mode autocorrelates frames); the value with repositioning uses sqrt(sigma_w^2 + sigma_b^2). The mm values are [INF] (iris 11.7 mm). Repositioning between sessions cannot be verified from the code.
 
-### Tabla 2: suelo de ruido y MDC
+### Table 2: noise floor and MDC
 
-| Metrica | Ojo | media | sigma_w | sigma_b | MDC95 intra-sesion | MDC95 con reposicionamiento | MDC95 repos. (mm) [INF] | MDC95 repos. SIN filtro ceja (mm) [INF] | % cuadros excl. por ceja | pendiente PTB-pitch (mm/grado) [INF] |
+| Metric | Eye | mean | sigma_w | sigma_b | MDC95 within-session | MDC95 with repositioning | MDC95 repos. (mm) [INF] | MDC95 repos. WITHOUT brow filter (mm) [INF] | % frames excl. by brow | PTB-pitch slope (mm/degree) [INF] |
 |---|---|---|---|---|---|---|---|---|---|---|
 | EAR | R | 0.2602 | 0.01743 | 0.01536 | 0.04832 | 0.06441 | - | - | - | - |
 | EAR | L | 0.2748 | 0.01800 | 0.01192 | 0.04990 | 0.05985 | - | - | - | - |
-| A (diam. iris) | R | 0.6801 | 0.04094 | 0.03813 | 0.11347 | 0.15506 | 1.814 | - | - | - |
-| A (diam. iris) | L | 0.6523 | 0.04147 | 0.01563 | 0.11495 | 0.12284 | 1.437 | - | - | - |
-| MRD2n proxy (diam. iris) | R | 0.3925 | 0.02405 | 0.01045 | 0.06665 | 0.07268 | 0.850 | - | - | - |
-| MRD2n proxy (diam. iris) | L | 0.3774 | 0.02072 | 0.00810 | 0.05744 | 0.06167 | 0.721 | - | - | - |
-| MRD1n proxy (diam. iris) | R | 0.2876 | 0.02059 | 0.02991 | 0.05708 | 0.10067 | 1.178 | - | - | - |
-| MRD1n proxy (diam. iris) | L | 0.2749 | 0.02503 | 0.01419 | 0.06937 | 0.07975 | 0.933 | - | - | - |
-| u (ancho de ojo) | R | -0.0299 | 0.00893 | 0.00908 | 0.02475 | 0.03530 | - | - | - | - |
-| u (ancho de ojo) | L | 0.0480 | 0.01229 | 0.00895 | 0.03406 | 0.04214 | - | - | - | - |
-| v (ancho de ojo) | R | -0.0451 | 0.00668 | 0.01179 | 0.01850 | 0.03756 | - | - | - | - |
-| v (ancho de ojo) | L | -0.0541 | 0.00496 | 0.00869 | 0.01375 | 0.02774 | - | - | - | - |
-| PTB_inf = pupila a ceja INF (diam. iris) PRINCIPAL | R | 1.6350 | 0.09883 | 0.02449 | 0.27393 | 0.28222 | 3.302 | 3.298 | 0.8 | -0.383 bloques / -0.156 sesiones |
-| PTB_inf = pupila a ceja INF (diam. iris) PRINCIPAL | L | 1.5177 | 0.08659 | 0.05265 | 0.24003 | 0.28091 | 3.287 | 3.302 | 0.8 | -0.383 bloques / -0.156 sesiones |
-| PTB_sup = pupila a ceja SUP (diam. iris) | R | 2.1407 | 0.09692 | 0.04414 | 0.26864 | 0.29519 | 3.454 | 3.445 | 0.8 | - |
-| PTB_sup = pupila a ceja SUP (diam. iris) | L | 2.0078 | 0.08680 | 0.06510 | 0.24059 | 0.30074 | 3.519 | 3.512 | 0.8 | - |
-| brow_fis = parpado a ceja INF (diam. iris) | R | 1.3476 | 0.09642 | 0.04149 | 0.26726 | 0.29095 | 3.404 | 3.477 | 0.8 | - |
-| brow_fis = parpado a ceja INF (diam. iris) | L | 1.2430 | 0.09677 | 0.06120 | 0.26824 | 0.31738 | 3.713 | 3.714 | 0.8 | - |
-| brow_th = SUP - INF, grosor (diam. iris) | R | 0.5056 | 0.00937 | 0.02062 | 0.02596 | 0.06278 | 0.735 | 0.731 | 0.8 | - |
-| brow_th = SUP - INF, grosor (diam. iris) | L | 0.4901 | 0.01202 | 0.01982 | 0.03332 | 0.06425 | 0.752 | 0.749 | 0.8 | - |
-| PTB_inf landmark unico 52/282 (control) | R | 1.6677 | 0.09573 | 0.01700 | 0.26536 | 0.26951 | 3.153 | 3.151 | 0.8 | - |
-| PTB_inf landmark unico 52/282 (control) | L | 1.5458 | 0.08537 | 0.04844 | 0.23662 | 0.27206 | 3.183 | 3.170 | 0.8 | - |
-| PTB_sup landmark unico 105/334 (control) | R | 2.1591 | 0.09549 | 0.03507 | 0.26469 | 0.28197 | 3.299 | 3.298 | 0.8 | - |
-| PTB_sup landmark unico 105/334 (control) | L | 2.0117 | 0.08417 | 0.05795 | 0.23330 | 0.28325 | 3.314 | 3.309 | 0.8 | - |
-| PTB_inf lateral 46/276 (opcional) | R | 1.0768 | 0.05995 | 0.03651 | 0.16618 | 0.19458 | 2.277 | 2.273 | 0.8 | - |
-| PTB_inf lateral 46/276 (opcional) | L | 1.0024 | 0.04974 | 0.03667 | 0.13786 | 0.17129 | 2.004 | 1.993 | 0.8 | - |
-| PTB_inf medial 55/285 (opcional) | R | 1.2418 | 0.06873 | 0.05207 | 0.19052 | 0.23901 | 2.796 | 2.811 | 0.8 | - |
-| PTB_inf medial 55/285 (opcional) | L | 1.1913 | 0.05949 | 0.06064 | 0.16490 | 0.23547 | 2.755 | 2.750 | 0.8 | - |
+| A (iris diam.) | R | 0.6801 | 0.04094 | 0.03813 | 0.11347 | 0.15506 | 1.814 | - | - | - |
+| A (iris diam.) | L | 0.6523 | 0.04147 | 0.01563 | 0.11495 | 0.12284 | 1.437 | - | - | - |
+| MRD2n proxy (iris diam.) | R | 0.3925 | 0.02405 | 0.01045 | 0.06665 | 0.07268 | 0.850 | - | - | - |
+| MRD2n proxy (iris diam.) | L | 0.3774 | 0.02072 | 0.00810 | 0.05744 | 0.06167 | 0.721 | - | - | - |
+| MRD1n proxy (iris diam.) | R | 0.2876 | 0.02059 | 0.02991 | 0.05708 | 0.10067 | 1.178 | - | - | - |
+| MRD1n proxy (iris diam.) | L | 0.2749 | 0.02503 | 0.01419 | 0.06937 | 0.07975 | 0.933 | - | - | - |
+| u (eye width) | R | -0.0299 | 0.00893 | 0.00908 | 0.02475 | 0.03530 | - | - | - | - |
+| u (eye width) | L | 0.0480 | 0.01229 | 0.00895 | 0.03406 | 0.04214 | - | - | - | - |
+| v (eye width) | R | -0.0451 | 0.00668 | 0.01179 | 0.01850 | 0.03756 | - | - | - | - |
+| v (eye width) | L | -0.0541 | 0.00496 | 0.00869 | 0.01375 | 0.02774 | - | - | - | - |
+| PTB_inf = pupil to brow INF (iris diam.) PRIMARY | R | 1.6350 | 0.09883 | 0.02449 | 0.27393 | 0.28222 | 3.302 | 3.298 | 0.8 | -0.383 blocks / -0.156 sessions |
+| PTB_inf = pupil to brow INF (iris diam.) PRIMARY | L | 1.5177 | 0.08659 | 0.05265 | 0.24003 | 0.28091 | 3.287 | 3.302 | 0.8 | -0.383 blocks / -0.156 sessions |
+| PTB_sup = pupil to brow SUP (iris diam.) | R | 2.1407 | 0.09692 | 0.04414 | 0.26864 | 0.29519 | 3.454 | 3.445 | 0.8 | - |
+| PTB_sup = pupil to brow SUP (iris diam.) | L | 2.0078 | 0.08680 | 0.06510 | 0.24059 | 0.30074 | 3.519 | 3.512 | 0.8 | - |
+| brow_fis = eyelid to brow INF (iris diam.) | R | 1.3476 | 0.09642 | 0.04149 | 0.26726 | 0.29095 | 3.404 | 3.477 | 0.8 | - |
+| brow_fis = eyelid to brow INF (iris diam.) | L | 1.2430 | 0.09677 | 0.06120 | 0.26824 | 0.31738 | 3.713 | 3.714 | 0.8 | - |
+| brow_th = SUP - INF, thickness (iris diam.) | R | 0.5056 | 0.00937 | 0.02062 | 0.02596 | 0.06278 | 0.735 | 0.731 | 0.8 | - |
+| brow_th = SUP - INF, thickness (iris diam.) | L | 0.4901 | 0.01202 | 0.01982 | 0.03332 | 0.06425 | 0.752 | 0.749 | 0.8 | - |
+| PTB_inf single landmark 52/282 (control) | R | 1.6677 | 0.09573 | 0.01700 | 0.26536 | 0.26951 | 3.153 | 3.151 | 0.8 | - |
+| PTB_inf single landmark 52/282 (control) | L | 1.5458 | 0.08537 | 0.04844 | 0.23662 | 0.27206 | 3.183 | 3.170 | 0.8 | - |
+| PTB_sup single landmark 105/334 (control) | R | 2.1591 | 0.09549 | 0.03507 | 0.26469 | 0.28197 | 3.299 | 3.298 | 0.8 | - |
+| PTB_sup single landmark 105/334 (control) | L | 2.0117 | 0.08417 | 0.05795 | 0.23330 | 0.28325 | 3.314 | 3.309 | 0.8 | - |
+| PTB_inf lateral 46/276 (optional) | R | 1.0768 | 0.05995 | 0.03651 | 0.16618 | 0.19458 | 2.277 | 2.273 | 0.8 | - |
+| PTB_inf lateral 46/276 (optional) | L | 1.0024 | 0.04974 | 0.03667 | 0.13786 | 0.17129 | 2.004 | 1.993 | 0.8 | - |
+| PTB_inf medial 55/285 (optional) | R | 1.2418 | 0.06873 | 0.05207 | 0.19052 | 0.23901 | 2.796 | 2.811 | 0.8 | - |
+| PTB_inf medial 55/285 (optional) | L | 1.1913 | 0.05949 | 0.06064 | 0.16490 | 0.23547 | 2.755 | 2.750 | 0.8 | - |
 | D/IOD | - | 0.1926 | 0.00337 | 0.00458 | 0.00934 | 0.01577 | - | - | - | - |
 
-### Que se puede afirmar / que NO
+### What can be claimed / what CANNOT
 
-**Se puede afirmar:** el cambio minimo detectable (MDC) de ESTA persona, ESTA camara y ESTA luz, y la caida de deteccion con roll sin compensar.
+**What can be claimed:** the minimal detectable change (MDC) for THIS person, THIS camera and THIS lighting, and the drop in detection with uncompensated roll.
 
-**NO se puede afirmar:** precision en mm (no hay verdad de referencia; los mm son [INF] suponiendo iris de 11,7 mm); generalizacion a otras personas; validez clinica; edema; SANS; desempeno del escaner real; camara trasera; microgravedad; ni que la poca luz simulada equivalga a poca luz real. MRD1n/MRD2n son proxies: el centro del iris reemplaza al reflejo corneal.
-
-
-### Criterios de aceptacion de PTB_inf (umbrales PROVISORIOS; mm [INF], iris 11,7 mm)
-
-- MDC95 con reposicionamiento de PTB_inf (peor ojo): **NO CUMPLE**: R 3.30, L 3.29 mm [INF] -> 3.30 mm > 2.3 mm: NO USABLE para detectar +2,3 mm; SIN filtro de ceja: R 3.30, L 3.30 mm
-- sigma_w de brow_th comparable a MRD1n: **CUMPLE**: sigma_w brow_th 0.01078 vs MRD1n 0.02292 diam. iris (cociente 0.47; 'comparable' = <= 2, [SUPUESTO])
-- pendiente PTB_inf-pitch < 0.1 mm/grado [SUPUESTO]: **NO CUMPLE**: entre bloques -0.383 mm/grado (9 bloques), entre sesiones -0.156 mm/grado (3 sesiones); n/a = pitch casi constante (< 0,05 grados) o < 3 puntos
-- exclusion por ceja activa < 30 %: **CUMPLE**: por sesion: 1.1 %, 0.8 %, 0.3 %
-- control positivo detectado: **SIN DATOS**: no hay --brow-control registrado
-
-### Ceja (PTB): que se puede afirmar / que NO
-
-**Se puede afirmar:** el cambio minimo detectable de la distancia pupila-ceja (PTB, pupila a borde INFERIOR de la ceja segun Karlin 2021) de ESTA persona, ESTA camara y ESTA luz, en diametros de iris, con y sin el filtro de expresion, y si un gesto de ceja grande (control positivo) se detecta.
-
-**NO se puede afirmar:** precision en mm (los mm son [INF], iris 11,7 mm, sin verdad de referencia); edema ni SANS; validez en astronautas ni en otras personas; poca luz; microgravedad. La ceja esta ~10 mm [SUPUESTO] por delante del iris: hay paralaje con el pitch. Los indices de ceja son SUPUESTOS hasta confirmarlos con --brow-check. Los umbrales de ceja activa son PROVISORIOS.
+**What CANNOT be claimed:** accuracy in mm (there is no ground truth; the mm values are [INF] assuming an 11.7 mm iris); generalization to other people; clinical validity; edema; SANS; performance of the real scanner; rear camera; microgravity; or that simulated low light is equivalent to real low light. MRD1n/MRD2n are proxies: the iris center replaces the corneal light reflex.
 
 
-## Control positivo de ceja (2026-11-14 19:36)
+### PTB_inf acceptance criteria (PROVISIONAL thresholds; mm [INF], iris 11.7 mm)
 
-Referencia: MDC95 con reposicionamiento de 3 sesiones; MDC95 PTB_inf R 0.2822, L 0.2809 diam. iris (3.30 / 3.29 mm [INF])
-Neutral: PTB_inf R 1.838, L 1.723 diam. iris, 212 cuadros utiles
-CEJAS ALZADAS: cambio PTB_inf R 0.283, L 0.165 diam. iris (3.31 / 1.92 mm [INF]) = 1.0 / 0.6 x MDC -> NO detectado (> 3 x MDC en ambos ojos); signo esperado; blendshapes: ceja activa en 94 % de los cuadros -> marcado; cambio de pitch -0.8 grados
-CENO FRUNCIDO: cambio PTB_inf R -0.767, L -0.814 diam. iris (-8.97 / -9.52 mm [INF]) = 2.7 / 2.9 x MDC -> NO detectado (> 3 x MDC en ambos ojos); signo esperado; blendshapes: ceja activa en 100 % de los cuadros -> marcado; cambio de pitch 7.7 grados
-  ! el pitch cambio > 1 grado: parte del cambio puede ser paralaje, no la ceja
-CONTROL POSITIVO: NO DETECTADO
+- MDC95 with repositioning of PTB_inf (worse eye): **FAILS**: R 3.30, L 3.29 mm [INF] -> 3.30 mm > 2.3 mm: NOT USABLE to detect +2.3 mm; WITHOUT brow filter: R 3.30, L 3.30 mm
+- sigma_w of brow_th comparable to MRD1n: **PASSES**: sigma_w brow_th 0.01078 vs MRD1n 0.02292 iris diam. (ratio 0.47; 'comparable' = <= 2, [ASSUMPTION])
+- PTB_inf-pitch slope < 0.1 mm/degree [ASSUMPTION]: **FAILS**: between blocks -0.383 mm/degree (9 blocks), between sessions -0.156 mm/degree (3 sessions); n/a = pitch nearly constant (< 0.05 degrees) or < 3 points
+- exclusion due to active brow < 30 %: **PASSES**: per session: 1.1 %, 0.8 %, 0.3 %
+- positive control detected: **NO DATA**: no --brow-control recorded
 
-### Ceja (PTB): que se puede afirmar / que NO
+### Brow (PTB): what can be claimed / what CANNOT
 
-**Se puede afirmar:** el cambio minimo detectable de la distancia pupila-ceja (PTB, pupila a borde INFERIOR de la ceja segun Karlin 2021) de ESTA persona, ESTA camara y ESTA luz, en diametros de iris, con y sin el filtro de expresion, y si un gesto de ceja grande (control positivo) se detecta.
+**What can be claimed:** the minimal detectable change in pupil-to-brow distance (PTB, pupil to the LOWER edge of the brow, following Karlin 2021) for THIS person, THIS camera and THIS lighting, in iris diameters, with and without the expression filter, and whether a large brow gesture (positive control) is detected.
 
-**NO se puede afirmar:** precision en mm (los mm son [INF], iris 11,7 mm, sin verdad de referencia); edema ni SANS; validez en astronautas ni en otras personas; poca luz; microgravedad. La ceja esta ~10 mm [SUPUESTO] por delante del iris: hay paralaje con el pitch. Los indices de ceja son SUPUESTOS hasta confirmarlos con --brow-check. Los umbrales de ceja activa son PROVISORIOS.
+**What CANNOT be claimed:** accuracy in mm (the mm values are [INF], iris 11.7 mm, no ground truth); edema or SANS; validity in astronauts or in other people; low light; microgravity. The brow sits ~10 mm [ASSUMPTION] in front of the iris: there is parallax with pitch. The brow indices are ASSUMPTIONS until confirmed with --brow-check. The active-brow thresholds are PROVISIONAL.
+
+
+## Brow positive control (2026-11-14 19:36)
+
+Reference: MDC95 with repositioning from 3 sessions; MDC95 PTB_inf R 0.2822, L 0.2809 iris diam. (3.30 / 3.29 mm [INF])
+Neutral: PTB_inf R 1.838, L 1.723 iris diam., 212 usable frames
+RAISED BROWS: change PTB_inf R 0.283, L 0.165 iris diam. (3.31 / 1.92 mm [INF]) = 1.0 / 0.6 x MDC -> NOT detected (> 3 x MDC in both eyes); expected sign; blendshapes: active brow in 94 % of frames -> flagged; pitch change -0.8 degrees
+FROWN: change PTB_inf R -0.767, L -0.814 iris diam. (-8.97 / -9.52 mm [INF]) = 2.7 / 2.9 x MDC -> NOT detected (> 3 x MDC in both eyes); expected sign; blendshapes: active brow in 100 % of frames -> flagged; pitch change 7.7 degrees
+  ! pitch changed > 1 degree: part of the change may be parallax, not the brow
+POSITIVE CONTROL: NOT DETECTED
+
+### Brow (PTB): what can be claimed / what CANNOT
+
+**What can be claimed:** the minimal detectable change in pupil-to-brow distance (PTB, pupil to the LOWER edge of the brow, following Karlin 2021) for THIS person, THIS camera and THIS lighting, in iris diameters, with and without the expression filter, and whether a large brow gesture (positive control) is detected.
+
+**What CANNOT be claimed:** accuracy in mm (the mm values are [INF], iris 11.7 mm, no ground truth); edema or SANS; validity in astronauts or in other people; low light; microgravity. The brow sits ~10 mm [ASSUMPTION] in front of the iris: there is parallax with pitch. The brow indices are ASSUMPTIONS until confirmed with --brow-check. The active-brow thresholds are PROVISIONAL.
 

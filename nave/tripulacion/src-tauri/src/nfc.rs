@@ -47,6 +47,7 @@ struct Estado {
     lecturas: HashMap<String, (String, Instant)>,   // lector → última tarjeta leída (rebote)
     vinculando: HashMap<String, (String, Instant)>, // lector → tripulante que pidió «vincular la próxima tarjeta»
     qr: HashMap<String, (String, Instant)>,         // código QR de un solo uso → tripulante
+    pantallas: HashMap<String, Value>,              // lector → lo que muestra su tablet ahora (para el espejo del PC)
 }
 
 /// un QR personal vale este tiempo (la app lo cambia antes) y una sola vez
@@ -77,7 +78,10 @@ fn guardar(t: &HashMap<String, String>) {
 }
 
 /// UID tal como lo imprimen los lectores («04:a1:b2:c3», «04 A1 B2 C3», «04a1b2c3») → «04A1B2C3»
+/// Si viene con rótulo («Card UID: 04 A1 B2 C3», como imprime el ejemplo DumpInfo del MFRC522), se toma lo que va después,
+/// porque las letras de «Card» también son hexadecimales.
 fn normalizar_uid(s: &str) -> String {
+    let s = s.to_ascii_uppercase().rfind("UID").map(|i| &s[i + 3..]).unwrap_or(s);
     s.chars().filter(|c| c.is_ascii_hexdigit()).map(|c| c.to_ascii_uppercase()).take(32).collect()
 }
 
@@ -370,4 +374,50 @@ pub async fn qr_entrar(State(nave): State<crate::Nave>, Json(c): Json<Value>) ->
     abrir(&nave, &mut e, &lector, &trip);
     anotar(&nave, json!({"t": crate::ahora_seg(), "lector": lector, "trip": trip, "evento": "qr"}));
     Json(json!({"ok": true, "trip": trip, "sesion": "abierta"})).into_response()
+}
+
+/// POST /v1/station/pantalla {"lector":"station","foto":{hoja, arg, charla, guia…}}: la tablet de verdad cuenta qué está
+/// mostrando y la nave lo reparte por el flujo, para que el espejo del PC (station.html?mudo) muestre lo mismo en vivo.
+pub async fn pantalla_poner(State(nave): State<crate::Nave>, h: HeaderMap, Json(c): Json<Value>) -> Response {
+    if !nave.autorizado(&h) {
+        return (StatusCode::UNAUTHORIZED, "token de la nave inválido").into_response();
+    }
+    let lector = normalizar_lector(c["lector"].as_str());
+    let foto = c["foto"].clone();
+    if !foto.is_object() || foto.to_string().len() > 64_000 {
+        return (StatusCode::BAD_REQUEST, "foto inválida").into_response();
+    }
+    if let Ok(mut e) = nave.nfc.0.lock() {
+        e.pantallas.insert(lector.clone(), foto.clone());
+    }
+    let _ = nave.tx.send(json!({"tipo": "pantalla", "lector": lector, "foto": foto}).to_string());
+    Json(json!({"ok": true})).into_response()
+}
+
+/// GET /v1/station/pantalla?lector=station → la última foto (el espejo la pide al abrir)
+pub async fn pantalla_ver(State(nave): State<crate::Nave>, Query(q): Query<HashMap<String, String>>) -> Response {
+    let lector = normalizar_lector(q.get("lector").map(String::as_str));
+    let foto = nave.nfc.0.lock().ok().and_then(|e| e.pantallas.get(&lector).cloned()).unwrap_or(Value::Null);
+    Json(json!({"lector": lector, "foto": foto})).into_response()
+}
+
+/// POST /v1/estacion/onda {"lector":"station","trip":"T1"|null,"fs":250,"muestras":[…],"bpm":72,"contacto":true}:
+/// el electrocardiograma en vivo de la estación (AD8232 de Luis vía su puente). No se guarda: la nave lo reparte por el
+/// flujo para que la tablet y el PC lo dibujen. El pulso que sale de esta onda entra por /v1/lote como dato real.
+pub async fn onda(State(nave): State<crate::Nave>, h: HeaderMap, Json(c): Json<Value>) -> Response {
+    if !nave.autorizado(&h) {
+        return (StatusCode::UNAUTHORIZED, "token de la nave inválido").into_response();
+    }
+    let Some(m) = c["muestras"].as_array() else { return (StatusCode::BAD_REQUEST, "faltan muestras").into_response() };
+    if m.len() > 400 || !m.iter().all(|v| v.is_number()) {
+        return (StatusCode::BAD_REQUEST, "muestras inválidas").into_response();
+    }
+    let lector = normalizar_lector(c["lector"].as_str());
+    let trip = c["trip"].as_str().filter(|t| t.len() <= 8).map(|t| json!(t)).unwrap_or(Value::Null);
+    let _ = nave.tx.send(json!({
+        "tipo": "onda", "lector": lector, "trip": trip, "fs": c["fs"].as_f64().unwrap_or(250.0).clamp(20.0, 1000.0),
+        "muestras": m, "bpm": c["bpm"].as_f64(), "contacto": c["contacto"].as_bool().unwrap_or(true),
+        "rmssd": c["rmssd"].as_f64(), "calidad": c["calidad"].as_f64(),
+    }).to_string());
+    Json(json!({"ok": true})).into_response()
 }

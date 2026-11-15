@@ -40,12 +40,15 @@ function formaFluida(pesos, t, vel, f = 1, habla = 0){
 }
 /* o: lo mismo que mascota() + { orbes: 0..6 (cuántos), apertura: 1 (radio de órbita), pal, estado: 0..1 alerta (magenta) } */
 function mascotaOrbes(o){
-  const { x, y, R, t, expr = 'normal', mira = [0, 0], parpadeo = 0, op = 1, estira: est0 = 0, pesos = { [expr]: 1 }, vel = [0, 0],
-          orbes = 6, apertura = 1, pal = PAL_TURQ, alerta = 0, sinOjos = false, fluido = 1, sinHalo = false, habla = 0 } = o;
+  const { y, R, t, expr = 'normal', mira = [0, 0], parpadeo = 0, op = 1, estira: est0 = 0, pesos = { [expr]: 1 }, vel = [0, 0],
+          orbes = 6, apertura: ap0 = 1, pal = PAL_TURQ, alerta = 0, sinOjos = false, fluido = 1, sinHalo = false, habla = 0, radiacion = 0 } = o;
+  // radiación fuerte (tormenta solar): ámbar, órbitas recogidas y un temblor apenas perceptible
+  const apertura = ap0 * (1 - .24 * radiacion), x = o.x + Math.sin(t * 29) * R * .01 * radiacion;
   if (R < 1) return '';
   const estira = est0;
   const id = 'mo' + (_oid++), P = {};
   for (const k in pal) P[k] = pal[k];
+  if (radiacion > 0){ P.borde = mezcla(P.borde, '#ffd27a', radiacion); P.medio = mezcla(P.medio, '#c98500', radiacion); P.hondo = mezcla(P.hondo, '#4a3006', radiacion); P.halo = mezcla(P.halo, '#f2b457', radiacion); P.ojo = mezcla(P.ojo, '#fff1cc', radiacion); P.claro = mezcla(P.claro, '#ffe9b8', radiacion); }
   if (alerta > 0){ P.borde = mezcla(P.borde, '#ff8cc4', alerta); P.medio = mezcla(P.medio, '#c23a7e', alerta); P.halo = mezcla(P.halo, P.alerta, alerta); P.ojo = mezcla(P.ojo, '#ffd0e6', alerta); }
   const dy = Math.sin(t * 1.6) * R * .03, cy = y + dy;
   const vv = Math.min(.3, Math.hypot(vel[0], vel[1]) / 1500);

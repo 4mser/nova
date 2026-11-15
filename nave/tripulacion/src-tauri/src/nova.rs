@@ -151,6 +151,19 @@ pub fn contexto(estado: Option<&Value>, historia: &Historia, mision: &Value, cre
         } else {
             c += &(partes.join("; ") + "\n");
         }
+        // la última revisión de ojos del escáner (cámara): cansancio medido, no emociones
+        if let Some(o) = crate::ojos::ultima(&id) {
+            let horas = ahora.saturating_sub(o["t"].as_u64().unwrap_or(0) / 1000) / 3600;
+            if horas <= 72 {
+                let alerta = match o["alerta"].as_str() { Some("cansado") => "tired", Some("algo") => "some signs of tiredness", Some("alerta") => "alert", _ => "not measured" };
+                c += &format!(
+                    "  Eye check with the body scan camera {} h ago: eye opening about {:.1} mm (estimated), {} blinks/min, alertness {alerta}{}. Camera measures of sleepiness only; NOVA does not read emotions from faces.\n",
+                    horas, (o["A_R"].as_f64().unwrap_or(0.0) + o["A_L"].as_f64().unwrap_or(0.0)) / 2.0 * 11.7,
+                    o["parpadeos_min"].as_f64().map(|v| format!("{v:.0}")).unwrap_or("—".into()),
+                    o["perclos"].as_f64().map(|v| format!(" (eyes closed {v:.1}% of the last minute, PERCLOS)")).unwrap_or_default()
+                );
+            }
+        }
         // historia: última hora y 24 h, solo de quien importa para esta pregunta
         let q = pregunta.to_lowercase();
         let nombrada = crew.iter().any(|p| ["corto", "nombre"].iter().any(|k| p[*k].as_str().map(|n| q.contains(&n.to_lowercase())).unwrap_or(false)));

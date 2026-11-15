@@ -78,7 +78,7 @@ async function ordenar(orden) {
   } catch { errOrden = 'link down'; }
   pintarControl(true);
 }
-const SIS = [['cardio', 'Cardio'], ['resp', 'Resp'], ['metab', 'Metabolic'], ['renal', 'Renal'], ['oseo', 'Skeletal'], ['neuro', 'Neuro']];
+const SIS = [['cardio', 'Cardio'], ['resp', 'Resp'], ['metab', 'Metabolic'], ['renal', 'Renal'], ['oseo', 'Skeletal'], ['neuro', 'Neuro'], ['ojos', 'Eyes']];
 const GRAV = [['auto', 'Mission'], ['tierra', 'Earth 1 g'], ['marte', 'Mars 0.38 g'], ['micro', '0 g']];
 const TEC = [['er', 'Evetts-Russomano'], ['rbh', 'Reverse bear hug'], ['hs', 'Handstand'], ['sujeto', 'Restrained']];
 const EST = [['holo', 'Hologram'], ['clinico', 'Clinical'], ['rx', 'X-ray']];

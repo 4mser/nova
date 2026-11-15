@@ -20,6 +20,7 @@
 import * as THREE from './lib/three.module.min.js';
 import { FilesetResolver, PoseLandmarker, HandLandmarker } from './lib/mediapipe/vision_bundle.mjs';
 import { AR as AR_PASOS, Procedimiento, corregir, NOMBRE_VITAL } from './procedimientos.js';
+import { ojos, cargarOjos, medirOjos, pintarOjos, pintarFijacion, panelOjos, empezarRevision, terminarRevision } from './ojos.mjs?v=4';
 
 const $ = id => document.getElementById(id);
 const P = new URLSearchParams(location.search);
@@ -82,6 +83,8 @@ const SISTEMAS = {
   renal:  { n: 'Renal',          col: '#d99cff', grupos: ['rinones'], ancla: 'rinones', est: ['Stone risk', 'usual', 'estimated from bone loss · no urine test logged'] },
   oseo:   { n: 'Skeletal',       col: '#cfeeff', grupos: ['esqueleto', 'craneo', ...Object.keys({ brazoI: 1, brazoD: 1, antebrazoI: 1, antebrazoD: 1, musloI: 1, musloD: 1, piernaI: 1, piernaD: 1 })], ancla: 'esqueleto', est: ['Bone density', '−2.1%', 'estimated · NASA loss rates, exercise on plan'] },
   neuro:  { n: 'Neurological',   col: '#b9a9ff', grupos: ['cerebro'], ancla: 'cerebro', vit: [['animo', 'Mood', '/5', 0], ['sueno_h', 'Sleep', 'h', 1]] },
+  // ojos: no usa el cuerpo; mide la cara con Face Landmarker en este dispositivo (ojos.mjs, método de N. Richardson)
+  ojos:   { n: 'Eyes',           col: '#8fe6f5', grupos: [], ancla: 'cerebro', cara: true },
 };
 let sistema = P.get('sistema') && SISTEMAS[P.get('sistema')] ? P.get('sistema') : 'cardio';
 const histSis = {}; let tHist = 0;
@@ -1565,7 +1568,7 @@ function hudFino(c, W, H, k, t, hayCuerpo, reg, gA) {
   texto(c, m + 36 * k, m + 10 * k, 'NOVA  ·  BODY SCAN', { f: 10.5 * k, col: '#8fe6f5', esp: 2 * k });
   texto(c, m, m + 34 * k, angosto || visor ? (cm.corto || '') : `${cm.nombre || ''}`, { f: 18 * k, w: 500 });
   if (!angosto && !visor) texto(c, m, m + 54 * k, cm.rol || '', { f: 12.5 * k, col: TENUE });
-  if (hayCuerpo && ajuste?.tresD && !visor) // the anatomy is fitted to this body: say what was measured
+  if (hayCuerpo && ajuste?.tresD && !visor && sistema !== 'ojos') // the anatomy is fitted to this body: say what was measured
     texto(c, m, m + (angosto ? 56 : 76) * k, `anatomy fitted to this body · torso ${Math.round(medidas.torso * 100)} cm · ${medidas.dist.toFixed(1)} m away`, { f: 11.5 * k, w: 400, col: 'rgba(191,238,250,.8)' });
   const vivo = Date.now() - ultimoEnvioOk < 2000, mac = fuenteObs === 'mac' && performance.now() - vis.tUlt < 800;
   const der = W - m;
@@ -1601,7 +1604,10 @@ function hudFino(c, W, H, k, t, hayCuerpo, reg, gA) {
     texto(c, W / 2, yy + 22 * k, proc.herida === null && proc.ar.herida ? 'Mark the wound on NOVA Station' : `${op}  —  answer on NOVA Station`, { f: 11.5 * k, col: TENUE, alin: 'center' });
     y = y - alto - 10 * k;
   }
-  if (!hayCuerpo) texto(c, W / 2, y, 'Show Nova the torso, shoulders to hips', { f: 16 * k, alin: 'center', col: 'rgba(244,247,250,.85)' });
+  if (sistema === 'ojos') {
+    if (!ojos.revision) panelOjos(c, { W, H, k, texto, nombre: cm.corto, angosto, yPie: y });
+    if (!ojos.cara && !ojos.revision) texto(c, W / 2, y - (angosto ? 330 : 0) * k, ojos.error ? 'The face model could not start on this device' : ojos.modelo ? 'Bring the face close · eyes level with the camera' : 'Loading the face model…', { f: 16 * k, alin: 'center', col: 'rgba(244,247,250,.85)' });
+  } else if (!hayCuerpo) texto(c, W / 2, y, 'Show Nova the torso, shoulders to hips', { f: 16 * k, alin: 'center', col: 'rgba(244,247,250,.85)' });
   else if (!visor && !proc && !(panelAbajo && ESTILO === 'holo' && capas.has('organos') && !capas.has('rcp'))) {
     // live vitals, like a monitor: label above, number below, colored only when out of range
     const cols = [['HEART RATE', `${f1(d?.pulso)}`, 'bpm', 'pulso'], ['SpO₂', `${f1(d?.spo2)}`, '%', 'spo2'], ['BLOOD PRESSURE', `${f1(d?.pa_sis)}/${f1(d?.pa_dia)}`, 'mmHg', 'pa_sis'], ['RESP', `${f1(d?.fr)}`, '/min', 'fr'], ['GLUCOSE', `${f1(d?.glucosa)}`, 'mg/dL', 'glucosa'], ['TEMP', `${f1(d?.temp, 1)}`, '°C', 'temp']];
@@ -1661,6 +1667,8 @@ function cuadro(ahora) {
     else if (localListo) visionLocal(localListo, ahora);
   }
 
+  const conOjos = sistema === 'ojos';
+  if (conOjos) { if (!ojos.modelo) cargarOjos().catch(() => {}); else medirOjos(video, ahora, HFOV); }
   const o = observar(ahora);
   const nuevo = o ? (P.has('plano') ? null : calzar3D(o, W, H)) || calzar(o, W, H) : null;
   if (nuevo) { ajuste = nuevo; tAjuste = t; } else if (ajuste && t - tAjuste > .7) { ajuste = null; huesos.suave = null; pacPrev = null; }
@@ -1677,7 +1685,7 @@ function cuadro(ahora) {
   mctx.save(); espejar(mctx); mctx.drawImage(video, sx, sy, sw, sh, 0, 0, W, H); mctx.restore();
   // a light scrim over the camera: the overlay and its text read on any room, bright or dark
   mctx.fillStyle = ESTILO === 'rx' ? 'rgba(4,10,18,.42)' : ESTILO === 'clinico' ? 'rgba(4,10,18,.12)' : 'rgba(4,10,18,.26)'; mctx.fillRect(0, 0, W, H);
-  if (ajuste && listo3d) {
+  if (ajuste && listo3d && !conOjos) {
     let camara = cam;
     if (ajuste.tresD) {
       cuerpo.matrix.identity(); cabeza.matrix.identity(); uniComun.tresD.value = 1;
@@ -1724,6 +1732,11 @@ function cuadro(ahora) {
     refrescarNova(t); novaHabla = typeof vozSonando !== 'undefined' && vozSonando ? .5 + .5 * Math.sin(t * 18) : 0;
     coach(reg, t);
   } else { foco = null; pintarQcpr(t, dt, null); }
+  if (conOjos) {
+    pintarOjos(mctx, { W, H, k, t, recorte, frente, texto });
+    pintarFijacion(mctx, { W, k, t, texto, frente });
+    if (ojos.revision && ahora - ojos.revision.t0 >= 20000) terminarRevision(BASE, TOKEN).then(mostrarRevision);
+  }
   hudFino(mctx, W, H, k, t, !!ajuste, reg, gA);
 
   mostrar();
@@ -1807,6 +1820,7 @@ addEventListener('resize', () => pintarBarra());
 function sincronizarBotones() {
   document.querySelectorAll('[data-capa]').forEach(x => x.classList.toggle('on', capas.has(x.dataset.capa)));
   document.querySelectorAll('[data-sis]').forEach(x => x.classList.toggle('on', x.dataset.sis === sistema));
+  $('bOjo').hidden = sistema !== 'ojos';
   document.querySelectorAll('[data-trip]').forEach((x, i) => x.classList.toggle('on', i === tripI));
   $('bVisor').classList.toggle('on', visor);
 }
@@ -1910,6 +1924,7 @@ async function empezar(conVisor) {
     $('inicio').hidden = true; if (!conVisor) $('barra').hidden = false;
     document.querySelectorAll('[data-capa]').forEach(b => b.classList.toggle('on', capas.has(b.dataset.capa)));
     document.querySelectorAll('[data-sis]').forEach(b => b.classList.toggle('on', b.dataset.sis === sistema));
+    $('bOjo').hidden = sistema !== 'ojos';
     pintarBarra(); despierto();
     requestAnimationFrame(cuadro);
     await cargarAnatomia();
@@ -1933,3 +1948,31 @@ if (P.has('auto')) empezar(P.has('visor'));
 window.__escaner = { get sonda() { return sonda; }, video, capaVen, capaCav, capaOrg, get ajuste() { return ajuste; }, get foco() { return foco; }, get fps() { return fps; },
   get vision() { return { fuente: fuenteObs, rtt: Math.round(vis.rtt), ms: Math.round(vis.ms), listoMac: vis.listoMac, local: !!localListo, cod: modoCod, msCod: Math.round(msCod) }; },
   get gravedad() { return { ...gravedadActiva(), med: grav.med }; }, get deriva() { return deriva.v; }, get comp() { return { cuenta: comp.cuenta, manos: comp.manos }; }, capas, grupos, get listo() { return listo3d; } };
+
+/* ── Eyes: revisión guiada de 20 s y su resultado (ojos.mjs) ── */
+$('bOjo').addEventListener('click', () => {
+  if (ojos.revision) return;
+  const c = CREW[tripI]; if (!c) return;
+  $('hoja').hidden = true;
+  empezarRevision(c.id, frente ? 'frontal' : 'trasera');
+  decir(frente ? 'Look at the red dot and keep your head still for twenty seconds.' : 'Hold the phone steady. Ask them to look at the camera for twenty seconds.');
+});
+function mostrarRevision(r) {
+  if (!r) return;
+  const h = $('hoja'), c = CREW[tripI] || {};
+  if (r.error) { h.innerHTML = `<div class="ojres"><b>Eye check · ${c.corto || ''}</b><p>${r.error}</p><button class="b" data-cerrar-ojos>Close</button></div>`; h.hidden = false; decir(r.error); return; }
+  const mm = v => v == null ? '—' : v.toFixed(1);
+  const filas = r.filas.map(f => `<tr class="${f.fuera ? 'fuera' : ''}"><td>${f.n}<small>${f.ojo}</small></td><td>${mm(f.mm)}</td><td>${f.base == null ? '—' : mm(f.base)}</td><td>${f.dif == null ? '—' : (f.dif > 0 ? '+' : '') + mm(f.dif)}</td></tr>`).join('');
+  const estado = r.previas < 3 ? `Building ${c.corto || 'their'}'s baseline: ${r.previas + 1} of 3 checks with this camera. Comparisons start at 3; the method recommends 7 days.`
+    : r.seguimiento ? 'A change larger than this camera can tell apart from noise. Follow-up suggested: repeat tomorrow and log a near-vision chart. This is not a diagnosis.'
+    : 'Within the usual range for this person and this camera.';
+  h.innerHTML = `<div class="ojres"><b>Eye check · ${c.corto || ''}</b><span>${r.rec.camara === 'frontal' ? 'front camera' : 'back camera'} · ${Math.round(r.rec.quietud * 100)}% steady · ${r.rec.parpadeos_min ?? '—'} blinks/min · ${Math.round(r.rec.dist_cm)} cm</span>
+    <p class="${r.seguimiento ? 'aviso' : ''}">${estado}</p>
+    ${r.rec.alerta ? `<p class="${r.rec.alerta === 'alerta' ? '' : 'aviso'}">Alertness: <b>${{ alerta: 'alert', algo: 'some signs of tiredness', cansado: 'tired' }[r.rec.alerta]}</b> · eyes closed ${r.rec.perclos}% of the last minute (PERCLOS)${r.rec.dur_parpadeo_ms ? ` · blinks ${r.rec.dur_parpadeo_ms} ms` : ''}${r.rec.bostezos ? ` · ${r.rec.bostezos} yawns` : ''}. ${r.rec.alerta === 'cansado' ? 'Consider rest before a critical task.' : ''}</p>` : ''}
+    <table><tr><th>mm (est.)</th><th>now</th><th>usual</th><th>change</th></tr>${filas}</table>
+    <small>mm assume an 11.7 mm iris. A change counts only if it is bigger than the smallest change this method can detect (MDC95, measured by N. Richardson): opening ${(0.155 * 11.7).toFixed(1)} mm, upper lid ${(0.101 * 11.7).toFixed(1)} mm, lower lid ${(0.073 * 11.7).toFixed(1)} mm.${r.guardada ? ' Saved to the ship.' : ' Could not reach the ship: not saved.'}</small>
+    <button class="b" data-cerrar-ojos>Close</button></div>`;
+  h.hidden = false;
+  decir(r.previas < 3 ? 'Eye check saved. I need a few more to learn what is usual for you.' : r.seguimiento ? 'Eye check saved. Something changed more than usual. Repeat it tomorrow.' : 'Eye check saved. Everything within your usual range.');
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-cerrar-ojos]')) $('hoja').hidden = true; });

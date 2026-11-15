@@ -76,8 +76,15 @@ const REGIONES = [
     funcion: 'Vision. The optic nerve carries the image to the brain.',
     espacio: 'Pressure from the fluid shift can swell the optic disc and fold the back of the eye (SANS). NASA sees signs of it in about 70% of long-duration crews. It can blur near vision.',
     fuente: 'NASA HRP · Risk of spaceflight associated neuro-ocular syndrome (SANS)',
-    hoy() { return { nivel: 'vigilar', valor: 'Not measured', texto: 'No OCT, fundus or ultrasound result logged on this mission yet' }; },
-    accion: 'Weekly check: near-vision chart, then OCT or eye ultrasound. Log the result so Nova can follow it.',
+    // la última revisión de ojos del escáner (sistema Eyes: apertura, párpados, parpadeo; método de N. Richardson)
+    hoy(i) {
+      const id = (typeof CREW !== 'undefined' ? CREW : [])[i]?.id, r = id && window.ojosUltimas?.[id];
+      if (!r) return { nivel: 'vigilar', valor: 'Not measured', texto: 'No eye check with the body scan yet · no OCT, fundus or ultrasound logged on this mission' };
+      const dias = Math.floor((Date.now() - r.t) / 864e5), cuando = dias < 1 ? 'today' : dias === 1 ? 'yesterday' : `${dias} days ago`;
+      const mm = ((r.A_R + r.A_L) / 2 * 11.7).toFixed(1);
+      return { nivel: dias > 7 ? 'vigilar' : 'normal', valor: `${mm} mm`, texto: `Eye check ${cuando} · eye opening (est.)${r.parpadeos_min != null ? ` · ${r.parpadeos_min} blinks/min` : ''} · OCT still due`, vivo: dias < 1 };
+    },
+    accion: 'Weekly: the 20-second eye check in the body scan (Eyes), a near-vision chart, then OCT or eye ultrasound. Nova follows changes against each person\'s own baseline.',
   },
   {
     id: 'cuello', n: 'Neck veins',
@@ -134,3 +141,10 @@ const REGIONES = [
     accion: 'Moisturize daily and check any wound every day. Fever over 38 °C opens the fever protocol.',
   },
 ];
+
+/* últimas revisiones de ojos por tripulante (/v1/ojos), para la región Eyes */
+(function leerOjos() {
+  const base = typeof BASE !== 'undefined' ? BASE : '';
+  fetch(base + '/v1/ojos', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => { if (d) window.ojosUltimas = d.ultimas || {}; }).catch(() => {});
+  setTimeout(leerOjos, 60000);
+})();

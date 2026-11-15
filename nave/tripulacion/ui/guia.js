@@ -107,12 +107,21 @@ function medicionNueva(s) {
 function pintarGuia() {
   if (!guia || !ultimo) return;
   const s = pasoActual(), c = CREW[guia.i], tr = ultimo.trip[guia.i];
+  document.querySelector('.em-ritmo').hidden = guia.p.id === 'tormenta_solar';   // el ritmo de una persona no aplica a toda la tripulación
+  if (guia.p.id === 'tormenta_solar') {   // toda la tripulación; lo que se mira es la radiación, no los signos de alguien
+    const r = window.RAD?.d, spe = r?.spe || {};
+    $('emQuien').innerHTML = `<div class="av" style="background:#c98500">SPE</div><div><b>Whole crew</b><span>to the storm shelter</span></div>`;
+    $('emProto').textContent = guia.p.titulo; $('emTiempo').textContent = mmss((Date.now() - guia.inicio) / 1000);
+    $('emSignos').innerHTML = !r ? '' : `<div class="foco"><span>Radiation now</span><b>${Math.round(r.tasa_usv_h).toLocaleString('en')}<small>µSv/h</small></b><em>${r.simulada ? 'simulated' : 'onboard detector'}</em></div>
+      <div><span>Event peak</span><b>${Math.round(spe.pico_usv_h || 0).toLocaleString('en')}<small>µSv/h</small></b><em>${spe.activa ? 'alert on' : 'alert over'}</em></div>
+      <div><span>Event dose</span><b>${(spe.dosis_msv || 0).toFixed(2)}<small>mSv</small></b><em>limit 250 per event</em></div>`;
+  } else
   $('emQuien').innerHTML = `<div class="av" style="background:${c.col}">${c.ini}</div><div><b>${c.nombre}</b><span>${c.rol}</span></div>`;
   $('emProto').textContent = guia.p.titulo;
   $('emTiempo').textContent = mmss((Date.now() - guia.inicio) / 1000);
   // signos en vivo
   const ks = [...new Set(['pulso', 'spo2', 'pa_sis', 'fr', ...(s.mira || [])])].filter(k => k !== 'pa_dia');
-  $('emSignos').innerHTML = ks.map(k => {
+  if (guia.p.id !== 'tormenta_solar') $('emSignos').innerHTML = ks.map(k => {
     const tiene = tr.edades[k] > 0, n = tr.niveles[k] || 'sin_dato';
     const val = !tiene ? '—' : k === 'pa_sis' ? `${fmt('pa_sis', tr.pa_sis)}/${fmt('pa_dia', tr.pa_dia)}` : fmt(k, tr[k]);
     return `<div class="${(s.mira || []).includes(k) || (k === 'pa_sis' && (s.mira || []).includes('pa_dia')) ? 'foco' : ''}"><span>${k === 'pa_sis' ? 'Blood pressure' : NOMBRE[k][0].toUpperCase() + NOMBRE[k].slice(1)}</span><b class="lv-${tiene ? n : ''}">${val}<small>${k === 'pa_sis' ? 'mmHg' : UNIDAD[k]}</small></b><em>${tiene ? (tr.edades[k] <= 3 ? 'live' : hace(tr.edades[k])) : 'no reading'}</em></div>`;

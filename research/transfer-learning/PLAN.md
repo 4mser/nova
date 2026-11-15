@@ -1,116 +1,115 @@
-# Plan · transfer learning Tierra → espacio
+# Plan · Earth → space transfer learning
 
-Estado al 14-11-2026, versión 2: Benja dio el OK y pidió sacar los datos de `datos/enviado_whatsapp/`, en su carpeta
-local del proyecto. Ahí están las tablas de reposo en cama de la NASA. Esta versión reemplaza a la primera, que
-simulaba el espacio y usaba las 8 variables de un reloj.
+Status as of 14-11-2026, version 2: Benja gave the OK and asked to take the data from `datos/enviado_whatsapp/`, in his
+local project folder. That is where NASA's bed-rest tables are. This version replaces the first one, which simulated
+space and used the 8 variables of a watch.
 
-## Objetivo
+## Goal
 
-Construir un modelo que sepa cómo es cada astronauta en la Tierra y que aprenda, con pocos días de datos, su «nueva
-normalidad» en microgravedad. Al final tiene que poder mostrar los tres gráficos de `NOVA_CONTEXT.md` §8:
+Build a model that knows what each astronaut is like on Earth and that learns, with a few days of data, their "new
+normal" in microgravity. At the end it must be able to show the three plots of the project brief §8:
 
-1. El modelo de Tierra falla en el espacio.
-2. La adaptación lo arregla.
-3. Cuántos días necesita NOVA para ser confiable.
+1. The Earth model fails in space.
+2. Adaptation fixes it.
+3. How many days NOVA needs to be reliable.
 
-## Datos
+## Data
 
-| Rol | Fuente | Qué trae |
+| Role | Source | What it provides |
 |---|---|---|
-| Espacio (análogo) | NASA NLSP/LSDA, reposo en cama con inclinación de −6° en la UTMB: campañas 1 y 3, CFT70 (tanda 3 de `enviado_whatsapp`) | 29 sujetos; signos vitales de cada mañana durante 10 a 21 días de pre-reposo, 60 a 92 días en cama (42 a 91 con pulso medido) y hasta 14 de post-reposo; diuresis y agua diarias en 24 y 23 sujetos |
-| Tierra | LifeSnaps (Yfantidou et al. 2022, doi:10.1038/s41597-022-01764-x, CC BY 4.0), 71 personas | pulso en reposo, respiración y temperatura de piel del reloj, más VFC, SpO₂, sueño, actividad y estrés |
-| Tierra personal | el pre-reposo de cada sujeto | su línea base antes de «despegar» |
+| Space (analog) | NASA NLSP/LSDA, −6° head-down bed rest at UTMB: campaigns 1 and 3, CFT70 (batch 3 of `enviado_whatsapp`) | 29 subjects; morning vital signs for 10 to 21 pre-bed-rest days, 60 to 92 days in bed (42 to 91 with measured pulse) and up to 14 post-bed-rest days; daily urine output and water in 24 and 23 subjects |
+| Earth | LifeSnaps (Yfantidou et al. 2022, doi:10.1038/s41597-022-01764-x, CC BY 4.0), 71 people | resting pulse, respiration and skin temperature from the watch, plus HRV, SpO₂, sleep, activity and stress |
+| Personal Earth | each subject's pre-bed-rest period | their baseline before "launch" |
 
-El reposo en cama es el análogo terrestre estándar de la microgravedad y **no es un vuelo**. En la presentación se
-presenta como «análogo terrestre (reposo en cama a −6°)».
+Bed rest is the standard Earth analog of microgravity and **is not a flight**. In the presentation it is presented as
+"Earth analog (−6° bed rest)".
 
-Las 8 variables, con el nombre del contrato de la nave:
+The 8 variables, with the name used in the ship's contract:
 
-| Variable | Unidad | ¿En el contrato? |
+| Variable | Unit | In the contract? |
 |---|---|---|
-| `pulso` | lpm | sí |
-| `pa_sis` | mmHg | sí |
-| `pa_dia` | mmHg | sí |
-| `fr` | rpm | sí |
-| `temp` | °C | sí |
-| `peso` | kg | sí |
-| `diuresis` | g/día | no (pregunta 18) |
-| `agua` | g/día | no (pregunta 18) |
+| `pulso` | bpm | yes |
+| `pa_sis` | mmHg | yes |
+| `pa_dia` | mmHg | yes |
+| `fr` | rpm | yes |
+| `temp` | °C | yes |
+| `peso` | kg | yes |
+| `diuresis` | g/day | no (question 18) |
+| `agua` | g/day | no (question 18) |
 
-La ingesta de agua sigue una meta diaria del protocolo, así que es la más débil como «fisiología».
+Water intake follows a daily protocol target, so it is the weakest one as "physiology".
 
-## Lo que mostró la comprobación (pandas, en el PC)
+## What the check showed (pandas, on the PC)
 
-- **Hay cambio.** En las mismas personas, y desde el día 28 en cama, el pulso sube 2,6 lpm (±1,8) y el peso baja
-  1,3 kg (±0,5). El resto cambia poco. En el post-reposo el pulso queda 7,8 lpm sobre la línea base.
-- **No encontramos que el pronóstico a corto plazo empeore en el reposo.** Un promedio de 7 días tiene un error
-  parecido en el reposo y en el pre-reposo. Esa comparación no es pareada: las ventanas del pre-reposo caen en los
-  primeros días de ingreso y tienen el contexto incompleto. Por eso el gráfico 1 no se cuenta como error de pronóstico
-  sino como **rango esperado**: el monitor de Tierra, armado con la línea base personal, marca como anormal lo que en
-  el reposo es normal.
+- **There is a change.** Within the same people, and from day 28 in bed, pulse rises 2.6 bpm (±1.8) and weight drops
+  1.3 kg (±0.5). The rest changes little. In post-bed-rest, pulse stays 7.8 bpm above baseline.
+- **We did not find that short-term forecasting gets worse in bed rest.** A 7-day mean has a similar error in bed rest
+  and in pre-bed-rest. That comparison is not paired: the pre-bed-rest windows fall in the first days after admission
+  and have incomplete context. That is why plot 1 is not framed as forecast error but as **expected range**: the Earth
+  monitor, built with the personal baseline, flags as abnormal what is normal in bed rest.
 
-## Experimento
+## Experiment
 
-La validación es por sujetos, en 5 grupos estratificados por campaña: los sujetos de prueba nunca entran al ajuste.
-Se reporta por variable, y la campaña 3 aporta 23 de los 29 sujetos. Las cifras llevan IC 95 % por bootstrap de
-sujetos (se remuestrean personas, no días).
+Validation is subject-wise, in 5 folds stratified by campaign: test subjects never enter the fitting. Results are
+reported per variable, and campaign 3 contributes 23 of the 29 subjects. The numbers carry 95 % CIs from a subject
+bootstrap (people are resampled, not days).
 
-**Tarea 1 · Rango esperado** (`nova_tl/expectativa.py`; es el modelo residual de NOVA_CONTEXT §6.2):
-- `tierra`: la media del pre-reposo ± 1,96 desviaciones del pre-reposo.
-- `tierra+poblacion`: le suma un corrector ridge en función del día en cama, aprendido con OTROS sujetos.
-- `+personal(k)`: le suma la media contraída del residuo de sus primeros k días en cama, con k = 3, 7, 14, 21 y 28.
-- Centro y ancho se separan. Los modelos adaptados usan un ancho calibrado al 5 % con residuos fuera de muestra
-  (validación cruzada por sujetos dentro de los de entrenamiento). Para no atribuirle al centro lo que es solo
-  calibración, hay dos cruces: `tierra (ancho calibrado)`, con el centro de Tierra y el ancho calibrado, y
-  `adaptado (ancho de Tierra)`, con el centro adaptado y ±1,96·sd.
-- Placebo: la regla de Tierra aplicada dentro del propio pre-reposo, dejando fuera el día evaluado. Es el piso de
-  falsas alarmas de esa regla sin ningún efecto del reposo.
-- Se evalúa sobre los días en cama desde el día 28, con MAE, % de falsas alarmas, ancho del intervalo y detección de
-  escalones inyectados de 3 días (anomalías sintéticas sobre datos reales, declaradas como tales). Los escalones tienen
-  signo al azar, y falsas alarmas y detección se miden con la misma regla («≥ 2 de 3 días seguidos fuera»).
-- Constantes fijadas a mano, sin barrido: el día 28, KAPPA = 3, el alpha del ridge y la magnitud de los escalones.
+**Task 1 · Expected range** (`nova_tl/expectativa.py`; it is the residual model of the project brief §6.2):
+- `tierra`: the pre-bed-rest mean ± 1.96 pre-bed-rest standard deviations.
+- `tierra+poblacion`: adds a ridge corrector as a function of the day in bed, learned from OTHER subjects.
+- `+personal(k)`: adds the shrunken mean of the residual of their first k days in bed, with k = 3, 7, 14, 21 and 28.
+- Center and width are separated. The adapted models use a width calibrated to 5 % with out-of-sample residuals
+  (subject-wise cross-validation within the training subjects). To avoid crediting the center with what is only
+  calibration, there are two crossed models: `tierra (ancho calibrado)`, with the Earth center and the calibrated
+  width, and `adaptado (ancho de Tierra)`, with the adapted center and ±1.96·sd.
+- Placebo: the Earth rule applied within the pre-bed-rest period itself, leaving out the evaluated day. It is the
+  false-alarm floor of that rule without any bed-rest effect.
+- It is evaluated on the days in bed from day 28 onwards, with MAE, % false alarms, interval width and detection of
+  injected 3-day steps (synthetic anomalies on real data, declared as such). The steps have random sign, and false
+  alarms and detection are measured with the same rule ("≥ 2 of 3 consecutive days outside").
+- Hand-set constants, with no sweep: day 28, KAPPA = 3, the ridge alpha and the step magnitude.
 
-**Tarea 2 · Pronóstico a 7 días** (`nova_tl/modelo.py`): PatchTST de `transformers`, univariado y compartido entre
-variables, con 14 días de contexto y pérdida con máscara.
-- Se entrena en Tierra con LifeSnaps y el pre-reposo de los sujetos de entrenamiento, un modelo por fold: el
-  pre-reposo de los sujetos de prueba nunca entra.
-- Se compara contra persistencia, media de 7 días, el modelo de Tierra sin adaptar, un modelo «solo espacio» desde
-  cero, un modelo «solo reposo» desde cero con el pre-reposo y la cama pero sin LifeSnaps (aísla el aporte de
-  LifeSnaps), Tierra→espacio ajustando solo la cabeza o todo, y Chronos-2 sin adaptar.
-- La métrica es el MAE relativo a persistencia (no es el MASE de Hyndman), promediado sin el agua. Las diferencias
-  entre modelos llevan IC 95 % pareado por bootstrap de sujetos.
-- La presión, el peso y los fluidos solo aparecen en Tierra a través del pre-reposo. El pulso, la respiración y la
-  temperatura de LifeSnaps vienen de otro instrumento (el reloj, no la enfermería).
+**Task 2 · 7-day forecast** (`nova_tl/modelo.py`): PatchTST from `transformers`, univariate and shared across
+variables, with 14 days of context and a masked loss.
+- It is trained on Earth with LifeSnaps and the pre-bed-rest data of the training subjects, one model per fold: the
+  pre-bed-rest data of the test subjects never enters.
+- It is compared against persistence, the 7-day mean, the non-adapted Earth model, a "space only" model from scratch, a
+  "bed rest only" model from scratch with pre-bed-rest and bed data but without LifeSnaps (isolates the contribution
+  of LifeSnaps), Earth→space tuning only the head or everything, and Chronos-2 not adapted.
+- The metric is MAE relative to persistence (it is not Hyndman's MASE), averaged excluding water. Differences between
+  models carry paired 95 % CIs from a subject bootstrap.
+- Pressure, weight and fluids appear on Earth only through the pre-bed-rest period. LifeSnaps pulse, respiration and
+  temperature come from a different instrument (the watch, not nursing staff).
 
-## Dónde corre
+## Where it runs
 
-- **PC:** pandas, pytest y el ridge de la tarea 1 para la prueba rápida. Ninguna red neuronal.
-- **Kaggle:** el kernel `benjacampos/nova-transfer-learning` (GPU T4) corre todo con el dataset privado
-  `benjacampos/nova-tl`, que contiene el código y tres parquet.
-- **Hugging Face:** los pesos `nova-tierra` y `nova-espacio` se suben como privados. El kernel solo puede subirlos si
-  tiene el secreto `HF_TOKEN`; si no, se suben desde el PC.
+- **PC:** pandas, pytest and the task 1 ridge for the quick test. No neural network.
+- **Kaggle:** the kernel `benjacampos/nova-transfer-learning` (T4 GPU) runs everything with the private dataset
+  `benjacampos/nova-tl`, which contains the code and three parquet files.
+- **Hugging Face:** the `nova-tierra` and `nova-espacio` weights are uploaded as private. The kernel can only upload
+  them if it has the `HF_TOKEN` secret; otherwise, they are uploaded from the PC.
 
-## Qué prueba que quedó listo
+## What proves it is done
 
-- pytest en verde.
-- El kernel COMPLETE con `metricas.json`, `rango_esperado.csv`, `pronostico.csv` y los gráficos 1 a 4.
-- Los pesos en HF.
-- La revisión de `ecc:python-reviewer` y `ecc:mle-reviewer`.
+- pytest green.
+- The kernel COMPLETE with `metricas.json`, `rango_esperado.csv`, `pronostico.csv` and plots 1 to 4.
+- The weights on HF.
+- The review by `ecc:python-reviewer` and `ecc:mle-reviewer`.
 
-## Pasos
+## Steps
 
-1. ✅ `datos.py` con sus tests: armoniza los tres formularios, usa un eje de días único, aplica los rangos del contrato
-   y suma los fluidos.
-2. ✅ `ventanas.py`, `baselines.py` y `expectativa.py` con sus tests.
-3. ✅ `modelo.py` y `kaggle/correr.py`. Tres runs en Kaggle: el primero tenía rota la escala de la pérdida; el
-   segundo pasó a `ecc:python-reviewer` y `ecc:mle-reviewer`; el tercero corrige lo que encontraron (fuga del
-   pre-reposo en el pronóstico, comparación de anchos, ancho calibrado dentro de muestra, días de calendario).
-4. Los resultados en el README, los pesos en HF.
-5. *(opcional)* LoRA, la rotación de semillas, la curva de detección según el tamaño del escalón y la variante con
-   ventana móvil de los k días.
-6. *(opcional)* El PR a `4mser/nova`, con tu OK.
+1. ✅ `datos.py` with its tests: harmonizes the three forms, uses a single day axis, applies the contract ranges and
+   adds up the fluids.
+2. ✅ `ventanas.py`, `baselines.py` and `expectativa.py` with their tests.
+3. ✅ `modelo.py` and `kaggle/correr.py`. Three runs on Kaggle: the first had a broken loss scale; the second went to
+   `ecc:python-reviewer` and `ecc:mle-reviewer`; the third fixes what they found (pre-bed-rest leak in the forecast,
+   width comparison, width calibrated in-sample, calendar days).
+4. The results in the README, the weights on HF.
+5. *(optional)* LoRA, seed rotation, the detection curve as a function of step size, and the variant with a moving
+   window of the k days.
+6. *(optional)* The PR to `4mser/nova`, with your OK.
 
-## Reproducir
+## Reproduce
 
 ```
 python -m nova_tl.datos --reposo <carpeta nlsp_tablas> --lifesnaps <daily .csv|.parquet> --salida <carpeta>

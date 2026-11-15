@@ -1,84 +1,84 @@
-# Plan de trabajo: salud ocular en NOVA con computer vision
+# Work plan: eye health in NOVA with computer vision
 
-Actualizado: 14 nov 2026. Marca cada ítem al avanzar. Estado: `[x]` hecho, `[~]` en curso, `[ ]` pendiente.
+Updated: 14 Nov 2026. Mark each item as you progress. Status: `[x]` done, `[~]` in progress, `[ ]` pending.
 
-## Objetivo
-Integrar salud ocular al escáner AR de NOVA usando **solo computer vision** (sin soft sensors). El teléfono mira la cara, mide parpadeo, párpado inferior y distancia, compara con la línea base de cada persona y emite una **alerta de seguimiento**, nunca un diagnóstico ni "SANS". Todo a bordo, sin internet.
+## Goal
+Integrate eye health into NOVA's AR scanner using **computer vision only** (no soft sensors). The phone looks at the face, measures blinking, the lower eyelid and distance, compares them with each person's baseline and issues a **follow-up alert**, never a diagnosis or "SANS". Everything on board, without internet.
 
-## Decisiones tomadas
-- Solo teléfono y webcam. Instrumentos de la misión (OCT, fondo de ojo, tonómetro) entran como dato opcional por el contrato de la estación médica.
-- Cámara conmutable: frontal (autochequeo) y trasera (otra persona escanea). Línea base por cámara.
-- Agudeza y rejilla de Amsler se incluyen, asistidas por la cámara (Amsler exploratoria).
-- Pupila: diferida. A 512 px el iris mide ~17 px y la pupila ~3 a 6 px; hace falta una imagen mayor.
-- El ojo es un sistema más del holograma del escáner AR.
-- Modos autónomo y supervisado. El umbral de alerta de agudeza lo define Niko.
-- Modelo: MediaPipe Face Landmarker. El módulo corre dentro del puente `/v1/vision/ws`.
-- Todo dato científico con fuente primaria; lo no verificado [NV] no se cita.
-- Por ahora no se toca el pitch.
+## Decisions made
+- Phone and webcam only. Mission instruments (OCT, fundus, tonometer) come in as optional data through the medical station contract.
+- Switchable camera: front (self-check) and rear (another person scans). Baseline per camera.
+- Visual acuity and the Amsler grid are included, assisted by the camera (Amsler exploratory).
+- Pupil: deferred. At 512 px the iris measures ~17 px and the pupil ~3 to 6 px; a larger image is needed.
+- The eye is one more system in the AR scanner's hologram.
+- Autonomous and supervised modes. The acuity alert threshold is defined by Niko.
+- Model: MediaPipe Face Landmarker. The module runs inside the `/v1/vision/ws` bridge.
+- All scientific data with a primary source; anything not verified [NV] is not cited.
+- The pitch is not touched for now.
 
-## Fases
+## Phases
 
-### Fase 0 · Spike (rama `nico/vision-spike`)
-- [x] Investigación y antecedentes verificados (`docs/soft-sensors-antecedentes.md`)
-- [x] Repo `hackaton-vision` en GitHub (privado), página de diseño publicada
-- [x] Spike v1 con webcam: 478 puntos, iris presente, 90/90 detecciones, 7,76 ms
-- [x] Prueba a 512 px con JPEG: detección 100 %, iris 17 px
-- [x] Documentación del modelo (sección 12)
-- [x] Spike v2 programado (diseño de `cv-arquitecto`, código de `impl-python`): 22 pruebas automáticas y prueba de humo pasan; falta correrlo con webcam
-- [x] Correr `--check --sweep` con tu webcam: detección e iris al 100 % en 31 condiciones; el gate de quietud aprobó 0 % (hay que arreglarlo)
-- [x] Gate de quietud corregido y diagnosticado: con la persona quieta pasa el 100 % de las ventanas (matriz de orientación en el 100 % de los cuadros)
-- [x] Interfaz en vivo con espera de quietud: probada en la webcam (100 % de quietud quieto, 37 % moviéndose)
-- [x] Reintento automático si te mueves (probado con simulaciones)
-- [x] Barrido repetido con el gate corregido: aceptación cumplida (quietud 84,6 %, MDC de A ~0,33 mm [INF])
-- [x] Suelo de ruido, 3 sesiones (2, 3 y 4): MDC de la apertura ~1,8 a 2,2 mm [INF]; reposicionarse suma poco
-- [x] Anotar resultados y el cambio mínimo detectable en los docs (sección 17)
+### Phase 0 · Spike (branch `nico/vision-spike`)
+- [x] Research and verified background (`docs/soft-sensors-antecedentes.md`)
+- [x] `hackaton-vision` repo on GitHub (private), design page published
+- [x] Spike v1 with webcam: 478 points, iris present, 90/90 detections, 7.76 ms
+- [x] Test at 512 px with JPEG: 100 % detection, iris 17 px
+- [x] Model documentation (section 12)
+- [x] Spike v2 programmed (design by `cv-arquitecto`, code by `impl-python`): 22 automated tests and the smoke test pass; still needs to run with a webcam
+- [x] Run `--check --sweep` with your webcam: detection and iris at 100 % in 31 conditions; the stillness gate approved 0 % (needs fixing)
+- [x] Stillness gate fixed and diagnosed: with the person still, 100 % of windows pass (orientation matrix in 100 % of frames)
+- [x] Live interface with wait-for-stillness: tested on the webcam (100 % stillness when still, 37 % when moving)
+- [x] Automatic retry if you move (tested with simulations)
+- [x] Sweep repeated with the fixed gate: acceptance met (stillness 84.6 %, MDC of A ~0.33 mm [INF])
+- [x] Noise floor, 3 sessions (2, 3 and 4): MDC of eye opening ~1.8 to 2.2 mm [INF]; repositioning adds little
+- [x] Record results and the minimum detectable change in the docs (section 17)
 
-### Fase 1 · Base (`nico/vision-base`) · agente `impl-python`
-- [ ] Módulo de landmarks con registro de cámara, espejo y resolución
-- [ ] Puerta de calidad (luz, nitidez, pose, oclusión); se abstiene si la imagen es mala
-- [ ] Línea base personal por persona y por cámara (mediana y MAD, mínimo 7 días válidos)
-- [ ] Contrato de salida en `docs/contrato.md` (valor, calidad, incertidumbre, estado, fuente, versión)
-- [ ] Demo con webcam y botón de voltear cámara
+### Phase 1 · Base (`nico/vision-base`) · agent `impl-python`
+- [ ] Landmark module with camera, mirror and resolution registry
+- [ ] Quality gate (light, sharpness, pose, occlusion); abstains if the image is bad
+- [ ] Personal baseline per person and per camera (median and MAD, minimum 7 valid days)
+- [ ] Output contract in `docs/contrato.md` (value, quality, uncertainty, status, source, version)
+- [ ] Demo with webcam and a flip-camera button
 
-### Fase 2 · Mediciones, en paralelo (agentes `impl-python`)
-- [ ] 2a `nico/vision-parpadeo-periocular`: parpadeo, PERCLOS, apertura del párpado y MRD2 como cambio contra la línea base
-- [ ] 2b `nico/vision-distancia`: distancia por iris y fijación para agudeza y Amsler
-- [ ] Pupila: diferida hasta tener imagen mayor o procesamiento en el teléfono
+### Phase 2 · Measurements, in parallel (agents `impl-python`)
+- [ ] 2a `nico/vision-parpadeo-periocular`: blinking, PERCLOS, eyelid opening and MRD2 as change against the baseline
+- [ ] 2b `nico/vision-distancia`: distance from the iris and fixation for acuity and Amsler
+- [ ] Pupil: deferred until there is a larger image or on-phone processing
 
-### Fase 3 · Cierre
-- [ ] QA con webcam real (agente `qa`): lentes, poca luz, ojos marrones, cabeza inclinada, otra persona
-- [ ] Especificación de entrega para quien mantiene `nova-pc`: puente `/v1/vision/ws`, overlay AR y el ojo como sistema del holograma
-- [ ] Revisión por oftalmología y cirujano de vuelo
+### Phase 3 · Wrap-up
+- [ ] QA with a real webcam (agent `qa`): glasses, low light, brown eyes, tilted head, another person
+- [ ] Handover specification for whoever maintains `nova-pc`: `/v1/vision/ws` bridge, AR overlay and the eye as a hologram system
+- [ ] Review by ophthalmology and a flight surgeon
 
-## Depende de otras personas o de datos que faltan
-- [ ] FPS real del escáner. Con menos de ~15 fps, parpadeo y PERCLOS no son viables por esa ruta.
-- [ ] Calidad JPEG real del escáner y si el teléfono recorta la imagen antes de enviarla.
-- [ ] Qué cámara usa el escáner hoy.
-- [ ] Si las 689 estructuras anatómicas incluyen el ojo (BodyParts3D lo trae; retina y nervio óptico no).
-- [ ] Cambio mínimo clínicamente relevante: literatura o cirujano de vuelo.
-- [ ] Umbral de alerta de agudeza (Niko).
-- [ ] Protocolo de lesión ocular: no existe entre los 12; candidato a sumar.
-- [ ] Licencia de BodyParts3D: el PDF dice CC BY 4.0 y su README dice CC BY-SA 2.1 Japón.
+## Depends on other people or on missing data
+- [ ] Actual FPS of the scanner. Below ~15 fps, blinking and PERCLOS are not viable through that route.
+- [ ] Actual JPEG quality of the scanner and whether the phone crops the image before sending it.
+- [ ] Which camera the scanner uses today.
+- [ ] Whether the 689 anatomical structures include the eye (BodyParts3D has it; retina and optic nerve do not).
+- [ ] Minimum clinically relevant change: literature or flight surgeon.
+- [ ] Acuity alert threshold (Niko).
+- [ ] Eye injury protocol: does not exist among the 12; candidate to add.
+- [ ] BodyParts3D license: the PDF says CC BY 4.0 and its README says CC BY-SA 2.1 Japan.
 
-## Pendientes de orden
-- [ ] Borrar el repo de GitHub `aura-modelos` (`gh auth refresh -h github.com -s delete_repo`, o Settings en la web)
-- [ ] Borrar las copias duplicadas de `Antecedentes/` y editar solo en `hackaton-vision/docs/`
-- [ ] Revisar la carpeta `NASA-datos-salud/` que apareció en el proyecto
+## Housekeeping
+- [ ] Delete the GitHub repo `aura-modelos` (`gh auth refresh -h github.com -s delete_repo`, or Settings on the web)
+- [ ] Delete the duplicate copies of `Antecedentes/` and edit only in `hackaton-vision/docs/`
+- [ ] Review the `NASA-datos-salud/` folder that appeared in the project
 
-## Quién hace qué
-| Tarea | Agente | Modelo |
+## Who does what
+| Task | Agent | Model |
 |---|---|---|
-| Decisiones de visión y metodología | `cv-arquitecto` | el más capaz |
-| Implementación de módulos | `impl-python` | gama media |
-| Investigación con fuentes | `investigador` | gama media |
-| Verificar con webcam real | `qa` | gama media |
-| Si un modelo falla dos veces | subir un nivel | |
+| Vision and methodology decisions | `cv-arquitecto` | the most capable |
+| Module implementation | `impl-python` | mid-range |
+| Research with sources | `investigador` | mid-range |
+| Verify with a real webcam | `qa` | mid-range |
+| If a model fails twice | go up one level | |
 
-## Reglas
-- Sin evidencia no hay afirmación. NOVA no es dispositivo médico ni diagnostica.
-- Imágenes nunca se guardan. Los landmarks crudos son datos biométricos y solo se guardan con una bandera explícita.
-- Commits sin atribución de IA. Ramas `nico/<tema>`.
+## Rules
+- No evidence, no claim. NOVA is not a medical device and does not diagnose.
+- Images are never saved. Raw landmarks are biometric data and are only saved with an explicit flag.
+- Commits without AI attribution. Branches `nico/<topic>`.
 
-- [x] Suelo de ruido con ceja (sesiones 5-7): PTB_inf MDC 3,3 mm [INF], no cumple ≤ 2,3 mm; MRD2n 0,7-0,9 mm
-- [x] Control de cejas (--brow-control): NO detectado (alzadas 1,0/0,6 veces el MDC; fruncido 2,7/2,9). PTB_inf no es usable para cambios sutiles con esta webcam (los gestos grandes sí se detectan)
-- [ ] Decidir qué detectores se quedan (MRD2 y apertura como tendencia, parpadeo/PERCLOS; PTB no usable para cambios sutiles; la ceja sí sirve para gestos grandes, ceja caída y asimetría [por investigar])
+- [x] Noise floor with eyebrow (sessions 5-7): PTB_inf MDC 3.3 mm [INF], does not meet ≤ 2.3 mm; MRD2n 0.7-0.9 mm
+- [x] Eyebrow control (--brow-control): NOT detected (raised 1.0/0.6 times the MDC; frown 2.7/2.9). PTB_inf is not usable for subtle changes with this webcam (large gestures are detected)
+- [ ] Decide which detectors stay (MRD2 and eye opening as a trend, blinking/PERCLOS; PTB not usable for subtle changes; the eyebrow does work for large gestures, drooping eyebrow and asymmetry [to be investigated])

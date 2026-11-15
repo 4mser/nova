@@ -106,6 +106,7 @@ class Simulador:
         self.lock = threading.Lock()
         self.reales = {}  # trip → set de sensores que ya llegan de verdad (no se simulan)
         self.vacios = set()  # asientos sin nadie cuando hay tripulación real: no se les inventa nada
+        self.personas = set()  # asientos de personas reales: su check-in y su sueño solo vienen de su app, nunca se inventan
 
     # ---- lo real manda ----
     def mirar_fuentes(self, enlace):
@@ -124,11 +125,14 @@ class Simulador:
                 with self.lock:
                     self.reales = reales
                 with urllib.request.urlopen(enlace.rstrip("/") + "/tripulacion.json", timeout=3) as r:
-                    vacios = {c["id"] for c in json.loads(r.read().decode()) if c.get("vacio")}
+                    crew = json.loads(r.read().decode())
+                vacios = {c["id"] for c in crew if c.get("vacio")}
+                personas = {c["id"] for c in crew if c.get("real")}
                 if vacios != self.vacios:
                     print(f"  asientos sin tripulación (no se simulan): {', '.join(sorted(vacios)) or 'ninguno'}", flush=True)
                 with self.lock:
                     self.vacios = vacios
+                    self.personas = personas
             except Exception:
                 pass  # sin enlace: se simula todo
             time.sleep(5)
@@ -145,6 +149,8 @@ class Simulador:
     def medir(self, trip, sensor, valor, unidad, **extra):
         if self.real(trip, sensor):
             return
+        if sensor in ("animo", "energia", "sueno_h") and trip in self.personas:
+            return  # lo personal de alguien real no se inventa: sin su app, no hay dato
         self.enviar(tipo="medicion", trip=trip, sensor=sensor, valor=round(valor, 2), unidad=unidad, calidad=0.97, **extra)
 
     # ---- escenarios ----

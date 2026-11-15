@@ -22,8 +22,15 @@ async function pedirDias() {
   const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
   const t0 = hoy.getTime() / 1000 - 13 * 86400;
   const serie = (trip, k) => fetch(`${BASE}/v1/historia?trip=${trip}&k=${k}&seg=${15 * 86400}&puntos=400`).then(x => x.json()).catch(() => ({ t: [], v: [] }));
-  const res = await Promise.all(CREW.flatMap(c => ['animo', 'sueno_h', 'energia'].map(k => serie(c.id, k))));
+  // las personas reales: su diario (lo que compartieron desde su app, día por día); la demostración: el historial
+  const fecha = j => { const d = new Date(hoy.getTime() - (13 - j) * 864e5); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+  const diarios = await Promise.all(CREW.map(c => c.real ? fetch(`${BASE}/v1/diario?trip=${c.id}`).then(x => x.json()).catch(() => ({ dias: [] })) : null));
+  const res = await Promise.all(CREW.flatMap(c => ['animo', 'sueno_h', 'energia'].map(k => c.real ? null : serie(c.id, k))));
   mDias = CREW.map((c, i) => {
+    if (diarios[i]) {
+      const porFecha = Object.fromEntries((diarios[i].dias || []).map(d => [d.fecha, d]));
+      return Object.fromEntries(['animo', 'sueno_h', 'energia'].map(k => [k, Array.from({ length: 14 }, (_, j) => porFecha[fecha(j)]?.[k] ?? null)]));
+    }
     const o = {};
     ['animo', 'sueno_h', 'energia'].forEach((k, j) => {
       const s = res[i * 3 + j], d = Array(14).fill(null);
@@ -54,6 +61,11 @@ function estadoMente(i) {
   if (z > 1.1) return { k: 'estres', por };
   const hoy = tr.edades.animo > 0 ? tr : null;
   if (hoy && tr.animo <= 2) return { k: 'estres', por: [...por, `Mood ${Math.round(tr.animo)}/5 in today's check-in`, ...(tr.edades.sueno_h > 0 && tr.sueno_h < 6.5 ? [`Slept ${tr.sueno_h.toFixed(1)} h`] : [])] };
+  // cansancio medido por la cámara en el último Eye check del escáner (PERCLOS; hoy, en las últimas 12 h)
+  const oj = window.ojosUltimas?.[CREW[i]?.id], ojHoy = oj && oj.alerta && Date.now() - oj.t < 12 * 3600e3 ? oj : null;
+  const ojTxt = ojHoy ? `Eye check: eyes closed ${oj.perclos}% of the minute (PERCLOS)${oj.bostezos ? `, ${oj.bostezos} yawns` : ''}` : null;
+  if (ojHoy && oj.alerta === 'cansado') return { k: 'fatiga', nombre: 'Tired', por: [...por, ojTxt, ...(tr.edades.sueno_h > 0 ? [`Slept ${tr.sueno_h.toFixed(1)} h`] : [])] };
+  if (ojHoy && oj.alerta === 'algo') por.push(ojTxt);
   if (tr.edades.sueno_h > 0 && tr.sueno_h < 6) return { k: 'fatiga', por: [...por, `Slept ${tr.sueno_h.toFixed(1)} h last night`] };
   if (z < -.8) return { k: 'calma', por };
   return { k: 'basal', por: por.length ? por : ['Heart, breathing and variability close to the usual'] };

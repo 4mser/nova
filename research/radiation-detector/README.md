@@ -1,25 +1,31 @@
-# Detector activo de radiación para la nave
+# Active radiation detector for the ship
 
-**Autor:** Luis González · **Estado:** diseño conceptual (no construido)
+**Author:** Luis González · **Status:** conceptual design (not built)
 
-`Propuesta_Deteccion_radiacion.pdf` (9 páginas): idea original de cuatro canales (neutrones, betas, gammas y
-alfas/protones leídos con fibras WLS y SiPM) y siete modificaciones para que sea factible en vuelo:
+[`Propuesta_Deteccion_radiacion.pdf`](Propuesta_Deteccion_radiacion.pdf) (9 pages, in Spanish): the original idea of
+four channels (neutrons, betas, gammas and alphas/protons read through WLS fibers and SiPMs) and seven modifications
+to make it feasible in flight:
 
-1. Neutrones con pantallas ⁶LiF/ZnS:Ag en lugar de ³He (sin gas a presión, muy insensible a gammas).
-2. Una sola esfera de Bonner con detectores a seis radios (~9-11 kg) en lugar de seis esferas (~17-22 kg).
-3. CsI(Tl) o GAGG:Ce en lugar de NaI(Tl) (no higroscópicos, robustos al lanzamiento).
-4. Telescopio ΔE-E para protones de decenas a cientos de MeV.
-5. Espectrómetro de LET en silicio para iones pesados: sin LET no hay dosis equivalente (Sv).
-6. Canal rápido de alerta de partículas solares (SPE) en la FPGA: respuesta en segundos para ir al refugio.
-7. Gestión de los SiPM en radiación: enfriamiento, coincidencias, redundancia y ensayos en haz.
+1. Neutrons with ⁶LiF/ZnS:Ag screens instead of ³He (no pressurized gas, very insensitive to gammas).
+2. A single Bonner sphere with detectors at six radii (~9–11 kg) instead of six spheres (~17–22 kg).
+3. CsI(Tl) or GAGG:Ce instead of NaI(Tl) (not hygroscopic, robust to launch).
+4. A ΔE-E telescope for protons from tens to hundreds of MeV.
+5. A silicon LET spectrometer for heavy ions: without LET there is no equivalent dose (Sv).
+6. A fast solar particle event (SPE) alert channel in the FPGA: a response within seconds to reach the shelter.
+7. SiPM management under radiation: cooling, coincidences, redundancy and beam tests.
 
-Incluye presupuesto de masa (~15-25 kg) y potencia (10-25 W), plan de simulación y calibración (Geant4/FLUKA/MCNP,
-fuentes Am-Be y Cf-252, haces en NSRL o HIMAC), riesgos y hoja de ruta en cuatro fases hasta un vuelo de
-demostración en órbita baja. Las cifras son de orden de magnitud y se validan con simulación y prototipos.
+It includes a mass budget (~15–25 kg) and a power budget (10–25 W), a simulation and calibration plan
+(Geant4/FLUKA/MCNP, Am-Be and Cf-252 sources, beams at NSRL or HIMAC), risks, and a four-phase roadmap up to a
+demonstration flight in low Earth orbit. The figures are orders of magnitude, to be validated with simulation and
+prototypes.
 
-## Cómo se conecta con NOVA
+## How it connects to NOVA
 
-La nave ya está lista para recibirlo: el detector manda su lectura a `POST /v1/radiacion` (contrato en
-`nave/estacion/CONTRATO.md`, sección «Radiación»). Mientras no exista, NOVA simula la tasa con las mediciones de MSL RAD
-y lo dice. Con la alerta de partículas solares, NOVA avisa a todas las pantallas y guía a la tripulación al refugio
-(protocolo «tormenta_solar», con fuentes de la NASA). Revisión física sugerida: Daniella Mora.
+The ship is ready to receive it. The detector sends its reading to `POST /v1/radiacion` on the ship link (contract in
+[`nave/estacion/CONTRATO.md`](../../nave/estacion/CONTRATO.md), section "Radiation"; implementation in
+[`nave/tripulacion/src-tauri/src/radiacion.rs`](../../nave/tripulacion/src-tauri/src/radiacion.rs)). Until the
+detector exists, NOVA simulates the rate from MSL RAD measurements (cruise ~1.84 mSv/day, Zeitlin et al. 2013; Mars
+surface ~0.64 mSv/day, Hassler et al. 2014) and says so. With the solar particle alert, or a rate of at least
+500 µSv/h held for 30 s, NOVA warns every screen and guides the crew to the shelter (the `tormenta_solar` protocol,
+with NASA sources), and logs the peak and the dose of the event against the 250 mSv per-event and 600 mSv career
+limits of NASA-STD-3001. Suggested physics review: Daniella Mora.

@@ -698,3 +698,165 @@ input{font:inherit;color:inherit}
 .cres div{background:var(--s2);padding:10px 14px}.cres small{display:block;font:500 12px SG;color:var(--t3)}.cres b{font:500 24px SG}.cres b span{font-size:13px;color:var(--t3)}
 .cvacio{font:400 15px SG;color:var(--t3);padding:30px 0;text-align:center}
 .cpriv{font:500 14px SG;color:var(--t2)}.cley{font:400 13px SG;color:var(--t3)}
+
+/* NOVA Station · hardware: la estación física en 3D con su pantalla viva */
+.hardware{flex:1;margin:0 48px 40px;display:flex;min-height:0}
+.hwesc{position:relative;flex:1;border-radius:28px;overflow:hidden;border:1px solid var(--l1);
+  background:radial-gradient(ellipse 55% 60% at 50% 52%,rgba(70,200,232,.12),transparent 70%),linear-gradient(rgba(143,230,245,.035) 1px,transparent 1px) 0 0/44px 44px,linear-gradient(90deg,rgba(143,230,245,.035) 1px,transparent 1px) 0 0/44px 44px,#05080d}
+.hw3d{position:absolute;inset:0}.hw3d canvas{position:absolute;inset:0;display:block;z-index:2;pointer-events:none}
+.hwcss{position:absolute!important;inset:0;cursor:grab;z-index:1}
+.hwlin{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.hwetqs{position:absolute;inset:0;pointer-events:none;z-index:4}.hwetq{pointer-events:auto;cursor:pointer;transition:background .2s}.hwetq:hover{background:rgba(14,22,32,.95)}
+.hwetq{position:absolute;width:260px;padding:10px 14px;border-radius:16px;background:rgba(6,10,15,.86);border:1px solid var(--l2);backdrop-filter:blur(8px)}
+.hwetq i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px}
+.hwetq b{font:600 14px SG}.hwetq span{display:block;font:400 12.5px/1.4 SG;color:var(--t2);margin-top:3px}.hwetq span b{color:var(--t1);font-weight:600;font-size:12.5px}
+.hwcarga{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:500 15px SG;color:var(--t2);z-index:2}
+.hwbarra{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;gap:8px;padding:6px;border-radius:24px;background:rgba(6,10,15,.8);border:1px solid var(--l2);z-index:5}
+.hwb{height:40px;padding:0 18px;border-radius:20px;font:500 14px SG;color:var(--t2)}.hwb.on{background:var(--s2);color:var(--t1)}
+.hwsello{position:absolute;right:20px;bottom:20px;z-index:5;display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:10px 14px;border:1px solid rgba(191,238,250,.25);border-radius:12px;background:rgba(6,10,15,.7)}
+.hwsello b{font:600 12px SG;letter-spacing:.16em;color:#cfeef6}.hwsello span{font:400 11.5px SG;color:var(--t3)}
+.hwgrande{position:absolute;right:24px;top:24px;bottom:84px;aspect-ratio:850/1000;z-index:6;border-radius:24px;overflow:hidden;border:1px solid var(--l2);background:#04070b}
+.hwgrande iframe{width:100%;height:100%;border:0}
+
+.hwficha{position:absolute;top:20px;right:20px;bottom:20px;width:340px;z-index:6;overflow:auto;padding:20px 22px;border-radius:22px;background:rgba(6,10,15,.88);border:1px solid color-mix(in srgb,var(--ac) 40%,transparent);backdrop-filter:blur(10px);display:flex;flex-direction:column;gap:12px}
+.hwficha small{font:600 11px SG;letter-spacing:.14em;text-transform:uppercase;color:var(--ac)}
+.hwficha h3{font:600 26px SG;letter-spacing:-.02em;margin:-6px 0 0}
+.hwficha p{font:400 14px/1.5 SG;color:var(--t2);margin:0}
+.hwficha .hwvivo{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.04);font-size:13px}
+.hwficha .hwvivo i{width:8px;height:8px;border-radius:50%;background:var(--ac);flex:none}
+.hwficha .hwvivo b{color:var(--t1)}
+.hwficha dl{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:2px 0 0;padding-top:12px;border-top:1px solid var(--l1)}
+.hwficha dt{font:500 12px SG;color:var(--t3)}.hwficha dd{font:400 13px/1.4 SG;color:var(--t1);margin:0}
+.hwvolver{align-self:flex-start;font:500 13px SG;color:var(--t2);background:none;border:1px solid var(--l2);border-radius:14px;padding:6px 12px;cursor:pointer}
+.hwvolver:hover{color:var(--t1);border-color:var(--ac)}
+.hwotras{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:12px;border-top:1px solid var(--l1)}
+.hwotras button{font:500 12px SG;color:var(--t2);background:rgba(255,255,255,.03);border:1px solid var(--l1);border-radius:12px;padding:5px 10px;cursor:pointer}
+.hwotras button:hover{color:var(--t1);border-color:var(--ac)}
+.hwpie{font:400 11px SG;color:var(--t3)}
+.hwpista{position:absolute;left:50%;bottom:74px;transform:translateX(-50%);z-index:5;font:400 12px SG;color:var(--t3);pointer-events:none;margin:0}
+
+/* Mind · Constellations: todos en un cielo */
+.cnfiltros{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.cnseg{display:flex;padding:3px;border-radius:14px;background:var(--s2);border:1px solid var(--l2)}
+.cnseg button{height:32px;padding:0 14px;border-radius:11px;font:500 13px SG;color:var(--t2)}.cnseg button.on{background:var(--s3);color:var(--t1);box-shadow:inset 0 0 0 1px var(--l3)}
+.cnchips{display:flex;flex-wrap:wrap;gap:6px}
+.cnchips button{display:flex;align-items:center;gap:8px;height:34px;padding:0 13px;border-radius:17px;border:1px solid var(--l2);font:500 13px SG;color:var(--t3)}
+.cnchips button .cnllave{opacity:.35;margin-right:0}.cnchips button.on{color:var(--t1);border-color:var(--l3)}.cnchips button.on .cnllave{opacity:1}
+.cntabla{margin-left:auto;height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--l2);font:500 13px SG;color:var(--t2)}.cntabla.on{color:var(--t1);border-color:var(--l3)}
+.cnpanel{position:relative}
+.cnlienzo{position:relative;margin-top:6px}
+.cnsvg{display:block;width:100%;height:auto;outline:none;cursor:crosshair}
+.cnsvg .cnserie{cursor:pointer;transition:opacity .2s}
+.cneje{font:400 12px SG;fill:#6d7786}.cnnom{font:500 13px SG;fill:#c2ccd8}
+.cntip{position:absolute;top:10px;min-width:210px;padding:12px 14px;border-radius:14px;background:rgba(10,15,21,.96);border:1px solid var(--l3);pointer-events:none;display:flex;flex-direction:column;gap:7px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.cntipf{font:500 12px SG;color:var(--t3)}
+.cntipr{display:grid;grid-template-columns:22px auto 1fr;align-items:baseline;column-gap:8px}.cntipr i{width:12px;height:2px;border-radius:1px;align-self:center}
+.cntipr strong{font:600 17px SG;color:var(--t1)}.cntipr span{font:400 13px SG;color:var(--t2)}.cntipr small{grid-column:2/4;font:400 11.5px SG;color:var(--t3)}
+.cntipr.on strong{text-decoration:underline;text-underline-offset:3px}
+.cntabw{overflow-x:auto;margin-top:10px;border:1px solid var(--l1);border-radius:12px}
+.cntab{min-width:100%;border-collapse:collapse;font:400 13px SG;white-space:nowrap}.cntab th{font:500 11.5px SG;color:var(--t3);text-align:right;padding:6px}.cntab td{padding:7px 6px;text-align:right;border-top:1px solid var(--l1);color:var(--t1)}
+.cntab td:first-child,.cntab th:first-child{text-align:left;position:sticky;left:0;background:var(--s1);padding-left:12px}.cntab th:last-child,.cntab td:last-child{padding-right:12px}
+.cnresumen{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.cncard{padding:14px 16px;border-radius:18px;background:var(--s1);border:1px solid var(--l2);cursor:pointer;transition:border-color .2s}.cncard:hover,.cncard.on{border-color:var(--l3)}
+.cncard h4{display:flex;align-items:center;gap:8px;font:600 15px SG;margin:0 0 10px}.cncard h4 i{width:14px;height:2px;border-radius:1px}.cncard h4 span{margin-left:auto;font:400 11.5px SG;color:var(--t3)}
+.cnfilas{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cnfilas small{display:block;font:500 11.5px SG;color:var(--t3)}
+.cnfilas b{display:block;font:500 21px SG;color:var(--t1)}.cnfilas b em{font:400 12px SG;color:var(--t3);font-style:normal;margin-left:2px}
+.cnfilas span{font:500 12px SG}.cnig{color:var(--t3)}.cnsube{color:#8fe6f5}.cnbaja{color:#f2b457}
+
+.cnllave{width:22px;height:6px;flex:none;display:inline-block;vertical-align:middle;margin-right:8px}
+.cncard h4 .cnllave{margin-right:0}.cntipr .cnllave{margin-right:0}
+.cons .cntip{min-width:150px}
+.cnestrella{cursor:pointer}
+.cntit{animation:cnTit 4.2s ease-in-out infinite}.cntit1{animation-delay:-1.4s}.cntit2{animation-delay:-2.8s}
+@keyframes cnTit{0%,100%{opacity:.2}50%{opacity:.45}}
+@media (prefers-reduced-motion:reduce){.cntit{animation:none;opacity:.3}}
+
+/* Each person: cuatro constelaciones en dos filas, sin scroll */
+#mConst .cgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#mConst .cons{padding:14px 16px 12px}
+#mConst .cons h3{font-size:15px}
+#mConst .cons .csvg{margin-top:2px}
+#mConst .cres{margin-top:6px;border-radius:12px}
+#mConst .cres div{padding:6px 12px}#mConst .cres small{font-size:11px}#mConst .cres b{font-size:18px}#mConst .cres b span{font-size:11.5px}
+.cnpoco{margin:4px 0 0;font:400 12px SG;color:var(--t3)}
+
+/* Mission: la misión y la tripulación en una pantalla */
+.panorama{flex:1;margin:0 48px 28px;display:grid;grid-template-rows:minmax(400px,1fr) auto;gap:14px;overflow:auto;min-height:0}
+.panorama .panel{padding:14px 16px}
+.panhero{position:relative;overflow:hidden;padding:0!important;background:radial-gradient(60% 75% at 35% 45%,rgba(18,32,48,.95),rgba(5,8,12,.98))}
+.panhero canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+.panleyenda{position:absolute;left:18px;top:14px;display:flex;gap:14px;font:400 12px SG;color:var(--t3)}
+.panleyenda i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}.panleyenda i.lin{width:16px;height:0;border-radius:0;border-top:1px dashed #8fe6f5;vertical-align:middle}
+.pankpis{position:absolute;right:14px;top:14px;width:min(440px,42%);display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pankpi{padding:10px 12px!important;display:flex;flex-direction:column;gap:1px;background:rgba(8,13,19,.72)!important;border-color:rgba(255,255,255,.08)!important;backdrop-filter:blur(8px);border-radius:16px!important}
+.pankpi small{font:500 11px SG;color:var(--t3)}.pankpi b{font:500 24px SG;letter-spacing:-.02em;line-height:1.15}.pankpi b em{font:400 12px SG;color:var(--t3);font-style:normal;margin-left:4px}
+.pankpi span{font:400 11.5px/1.3 SG;color:var(--t2)}
+.pankpi.ancho{grid-column:1/-1}.pankpi.conanillo{flex-direction:row;align-items:center;gap:10px}.pankpi.conanillo>div{display:flex;flex-direction:column;gap:1px}.panring{width:48px;height:48px;flex:none}
+.panco2{display:block;width:100%;height:22px;margin:3px 0 2px}
+.pandot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+.pantl{position:absolute;left:14px;right:14px;bottom:12px;padding:10px 14px 8px;border-radius:16px;background:rgba(8,13,19,.72);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(8px)}
+.panlcab{display:flex;align-items:center;gap:10px;margin-bottom:8px}.panlcab span{flex:1;font:400 13px SG;color:var(--t2)}.panlcab span b{color:var(--t1)}
+.panlcab button{height:28px;padding:0 12px;border-radius:14px;border:1px solid var(--l2);font:500 12px SG;color:var(--t2)}.panlcab button:hover{color:var(--t1);border-color:var(--l3)}
+.panconj{color:#f2b457!important}
+.panfases{position:relative;display:flex;gap:3px;height:26px;margin-bottom:16px}
+.panfases>div{border-radius:7px;background:color-mix(in srgb,var(--c) 16%,transparent);border-top:2px solid var(--c);padding:0 8px;display:flex;justify-content:space-between;align-items:center;overflow:hidden}
+.panfases>div span{font:500 11.5px SG;white-space:nowrap}.panfases>div small{font:400 10.5px SG;color:var(--t3);white-space:nowrap}
+.panhoy,.panver{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;border-radius:1px}.panver{background:#8fe6f5}
+.panhoy em{position:absolute;top:calc(100% + 1px);left:50%;transform:translateX(-50%);font:500 10px SG;font-style:normal;color:var(--t2);white-space:nowrap}
+#panDia{width:100%;margin:0;accent-color:#8fe6f5}
+.pantip,.pantip2{position:absolute;z-index:3;min-width:180px;max-width:260px;padding:10px 12px;border-radius:12px;background:rgba(10,15,21,.96);border:1px solid var(--l3);pointer-events:none;display:flex;flex-direction:column;gap:3px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.pantip b,.pantip2 b{font:600 13px SG}.pantip span,.pantip2 span{font:400 12.5px SG;color:var(--t2)}.pantip2 small{font:400 11.5px SG;color:var(--t3)}
+.panbajo{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr);gap:14px;align-items:stretch}
+.panbajo h3{font-size:15px}.panbajo h3 span{font-size:11.5px}
+.panmatriz{position:relative}
+.panmw{overflow-x:auto;margin-top:4px}
+.panm{width:100%;border-collapse:collapse;font:400 13px SG;white-space:nowrap}
+.panm th{font:500 11px SG;color:var(--t3);text-align:left;padding:5px 8px}
+.panm td{padding:7px 8px;border-top:1px solid var(--l1);color:var(--t1)}.panm td i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px}
+.panm td sup{font:500 9px SG;color:var(--t3);margin-left:3px}
+.panm tr[data-pi]{cursor:pointer}.panm tr[data-pi]:hover td,.panm tr[data-pi]:hover th{background:rgba(255,255,255,.03)}
+.panm tr[data-pi] th{border-top:1px solid var(--l1);font:600 13px SG;color:var(--t1)}.panm tr[data-pi] th small{display:block;font:400 10.5px SG;color:var(--t3)}
+.panley{margin:6px 0 0;font:400 11px SG;color:var(--t3)}.panley i{display:inline-block;width:7px;height:7px;border-radius:50%;margin:0 4px 0 6px}
+.panapps h4{display:flex;justify-content:space-between;font:600 12px SG;margin:8px 0 4px}.panapps h4 small{font:400 11px SG;color:var(--t3)}
+.panbar{display:grid;grid-template-columns:70px 1fr 54px;align-items:center;gap:8px;margin:4px 0}
+.panbar span{font:400 12px SG;color:var(--t2);overflow:hidden;text-overflow:ellipsis}.panbar b{font:500 12px SG;text-align:right}
+.panbar div{position:relative;height:7px;border-radius:4px;background:rgba(255,255,255,.05)}.panbar div i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:#8fe6f5}
+.panbar div u{position:absolute;top:-3px;bottom:-3px;width:1px;background:rgba(255,255,255,.45)}
+
+/* radiación: letrero de tormenta solar en todas las vistas */
+.radbanner{position:fixed;left:50%;top:14px;transform:translate(-50%,-140%);z-index:60;display:flex;align-items:center;gap:14px;max-width:min(860px,calc(100vw - 40px));padding:12px 14px 12px 18px;border-radius:20px;background:rgba(40,22,6,.94);border:1px solid rgba(242,180,87,.7);box-shadow:0 14px 40px rgba(0,0,0,.5),0 0 40px rgba(242,180,87,.18);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.radbanner.on{transform:translate(-50%,0)}
+.radbanner i{width:12px;height:12px;border-radius:50%;background:#f2b457;flex:none;animation:radLat 1.1s ease-in-out infinite}
+@keyframes radLat{0%,100%{box-shadow:0 0 0 0 rgba(242,180,87,.6)}50%{box-shadow:0 0 0 8px rgba(242,180,87,0)}}
+.radbanner b{display:block;font:600 15px SG;color:#ffe2b0}.radbanner span{display:block;font:400 12.5px SG;color:#e9cf9f;margin-top:2px}
+.radbanner button{flex:none;height:34px;padding:0 14px;border-radius:17px;background:#f2b457;color:#1a1004;font:600 13px SG}
+.radbanner.fin{background:rgba(8,24,22,.94);border-color:rgba(111,214,176,.6)}.radbanner.fin i{background:#6fd6b0;animation:none}.radbanner.fin b{color:#c9f3e4}.radbanner.fin span{color:#9fd8c4}
+.pankpi.rad.spe{border-color:rgba(242,180,87,.75)!important;background:rgba(40,22,6,.8)!important}.pankpi .radbar{position:relative;height:5px;border-radius:3px;background:rgba(255,255,255,.08);margin:4px 0 3px}.pankpi .radbar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:#8fe6f5}
+
+/* Radiation */
+.radvista{flex:1;margin:0 48px 28px;display:grid;grid-template-rows:minmax(250px,1fr) auto auto;gap:12px;overflow:auto;min-height:0}
+.radvista .panel{padding:14px 16px}.radvista h3{font-size:15px}.radvista h3 span{font-size:11.5px}
+.rvtop{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:14px;min-height:0}
+.rvescudo{position:relative;overflow:hidden;padding:0!important;background:radial-gradient(70% 80% at 56% 52%,rgba(16,28,44,.95),rgba(5,8,12,.98))}
+.rvescudo canvas{position:absolute;inset:0;width:100%;height:100%}
+.rvleyenda{position:absolute;right:14px;top:12px;display:flex;gap:12px;font:400 11.5px SG;color:var(--t3)}.rvleyenda i{display:inline-block;width:12px;height:2px;margin-right:6px;vertical-align:middle}.rvilus{opacity:.7}
+.rvcapas{position:absolute;left:14px;bottom:36px;display:flex;flex-direction:column;gap:6px}
+.rvcapas button{height:30px;padding:0 12px;border-radius:15px;border:1px solid var(--l2);font:500 12px SG;color:var(--t3);background:rgba(8,13,19,.7);text-align:left}.rvcapas button.on{color:var(--t1);border-color:rgba(143,230,245,.5)}
+.rvkpis{display:grid;grid-template-rows:repeat(4,1fr);gap:8px;min-height:0}
+.rvkpis .rvk{padding:9px 14px!important;justify-content:center}
+.rvk{display:flex;flex-direction:column;gap:2px}.rvk small{font:500 11.5px SG;color:var(--t3)}.rvk b{font:500 22px SG;letter-spacing:-.02em}.rvk b em{font:400 12px SG;color:var(--t3);font-style:normal;margin-left:5px}
+.rvk span{font:400 12px/1.35 SG;color:var(--t2)}.rvk button{font:500 12px SG;color:#8fe6f5;padding:0;text-decoration:underline;text-underline-offset:3px}
+.rvk.aviso{border-color:rgba(236,106,168,.45)}.rvk.aviso span{color:#f3b3cf}
+.rvk.alerta{border-color:rgba(242,180,87,.75);background:rgba(40,22,6,.8)}.rvk.alerta b{color:#ffd28a}
+.rvbar{position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.07);margin:4px 0 2px}.rvbar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#8fe6f5,#f2b457)}
+.rvmedio{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:14px}
+.rvgraf svg{display:block;width:100%;height:auto;max-height:200px;margin-top:4px}
+.rveje{font:400 11px SG;fill:#6d7786}.rvlim{font:500 11.5px SG;fill:#ec6aa8}.rvhoy{font:600 12px SG;fill:#e8eef5}
+.rvtipsvg rect{fill:rgba(10,15,21,.95);stroke:rgba(255,255,255,.18)}.rvtipv{font:600 15px SG;fill:#f2f5f8}
+.rvbajo{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:14px}
+.rvcanales{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;margin-top:8px}
+.rvcanal{display:grid;grid-template-columns:10px 1fr auto;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--l1)}
+.rvcanal i{width:8px;height:8px;border-radius:50%;background:#4a5260}.rvcanal i.vivo{background:#6fd6b0}
+.rvcanal b{display:block;font:600 12.5px SG}.rvcanal span{font:400 11px SG;color:var(--t3)}.rvcanal em{font:500 11.5px SG;font-style:normal;color:var(--t2);white-space:nowrap}
+.rvdet code{font-size:11px;color:var(--t2)}
+.rvev{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--l1)}.rvev b{font:600 12.5px SG}.rvev span{font:400 12px SG;color:var(--t2)}.rvev.on b,.rvev.on span{color:#ffd28a}

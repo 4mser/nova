@@ -8,7 +8,7 @@
 <!-- NOVA Station en la tablet común de la nave (vertical).
      Sin tarjeta, «Órbita»: NOVA al centro y la tripulación orbitándola, con la misión arriba y lo común abajo.
      Con la tarjeta NFC de un astronauta, «Gemelo»: su cuerpo en 3D con sus signos en cada órgano y NOVA a su lado. -->
-<link rel="stylesheet" href="station.css?v=3">
+<link rel="stylesheet" href="station.css?v=7">
 <script>
 // lo que el gemelo 3D (gemelo3d.mjs, compartido con la estación del PC) espera encontrar como globales
 var vista = 'comun', CREW = [], ultimo = null, mision = null, REG;
@@ -23,6 +23,7 @@ function preguntarNova(q) { if (window.stationPreguntar) window.stationPreguntar
 <header class="cab">
   <div class="marca"><svg id="marca" viewBox="0 0 52 52"></svg><div><b>NOVA <span>Station</span></b></div></div>
   <div class="mis" id="mision">Connecting to the ship…</div>
+  <button class="radchip" id="radChip" hidden></button>
   <div class="reloj" id="reloj">--:--</div>
   <div class="quien" id="quien" hidden>
     <svg class="anillo" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5"/><circle id="anillo" cx="18" cy="18" r="15.5"/></svg>
@@ -66,9 +67,10 @@ function preguntarNova(q) { if (window.stationPreguntar) window.stationPreguntar
     <b id="gNombre"></b><span id="gRol"></span><div id="ultimas"></div>
     <input type="range" id="gDia" min="0" max="1018"><u id="gHoyM"></u><u id="gMarte"></u><span id="gDiaTxt"></span><button id="gHoy"></button><button id="gEj"></button>
   </div>
-  <nav class="dock cinco" id="dockPersonal">
+  <nav class="dock cinco seis" id="dockPersonal">
     <button data-hoja="check"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 14c1 1.3 2.1 2 3.5 2s2.5-.7 3.5-2M9 9.5h.01M15 9.5h.01"/></svg><b>Check-in</b></button>
     <button data-hoja="medir"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 7.5 2.8C19.5 16.4 12 21 12 21Z"/><path d="M8 12.5h2l1-2 2 4 1-2h2"/></svg><b>Measure</b></button>
+    <button data-hoja="ecg"><svg viewBox="0 0 24 24"><path d="M3 12.5h4l2-5 3.5 10 2.5-7 1.5 2H21"/></svg><b>ECG</b><i id="ecgN" hidden>live</i></button>
     <button data-hoja="casa"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8.5a.5.5 0 0 1-.5.5H15v-6H9v6H4.5a.5.5 0 0 1-.5-.5z"/></svg><b>Home</b><i id="casaN" hidden></i></button>
     <button data-hoja="kit"><svg viewBox="0 0 24 24"><rect x="3.5" y="7" width="17" height="12.5" rx="2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M12 10.5v6M9 13.5h6"/></svg><b>Kit</b></button>
     <button data-hoja="hablar" class="nv"><svg viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg><b>Ask NOVA</b></button>
@@ -106,11 +108,11 @@ function preguntarNova(q) { if (window.stationPreguntar) window.stationPreguntar
 
 <script>const BASE = ['8750', '8751', '8760'].includes(location.port) ? '' : 'http://127.0.0.1:8750';</script>
 <script src="voz.js"></script>
-<script src="lib/mascota-base.js"></script>
-<script src="lib/mascota-orbes.js"></script>
-<script src="gemelo-fichas.js?v=3"></script>
+<script src="lib/mascota-base.js?v=2"></script>
+<script src="lib/mascota-orbes.js?v=2"></script>
+<script src="gemelo-fichas.js?v=4"></script>
 <script type="module" src="gemelo3d.mjs?v=5"></script>
 <script type="module" src="kit3d.mjs?v=1"></script>
-<script type="module" src="station.js?v=3"></script>
+<script type="module" src="station.js?v=15"></script>
 </body>
 </html>
