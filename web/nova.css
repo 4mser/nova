@@ -464,9 +464,9 @@ footer p{font-size:13px;color:var(--ink3);max-width:760px}
 /* ── pantallas reales, ejercicio y salud de las mujeres (13 nov 2026) ── */
 .shots{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px}
 .shots figure{margin:0;background:var(--s1);border:1px solid var(--l1);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
-.shots img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top left;background:var(--s2)}
+.shots img,.shots video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top left;background:var(--s2)}
 .shots .ancha{grid-column:span 2}
-.shots .ancha img{aspect-ratio:auto;height:100%;max-height:520px}
+.shots .ancha img,.shots .ancha video{aspect-ratio:auto;height:100%;max-height:520px}
 .shots .fono{grid-row:span 2}
 .shots .fono img{aspect-ratio:auto;height:100%;max-height:740px;object-fit:cover;object-position:top}
 .shots figcaption{padding:18px 20px 20px;color:var(--ink2);font-size:15px;line-height:1.5}

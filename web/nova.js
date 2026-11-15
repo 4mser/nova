@@ -199,4 +199,10 @@ if ($('gal')) { const VID = [['teaser', 'Hi. I\'m Nova.', 'TEASER', '0:17'], ['e
         v.play().then(() => { v.classList.add('on'); const b = c.querySelector('.bar i'); (function paso(){ const k = Math.min(1, (v.currentTime - DESDE) / PREV); b.style.transform = `scaleX(${k})`; if (k >= 1) return parar(); raf = requestAnimationFrame(paso); })(); }).catch(() => {});
       }, 200); });
       c.addEventListener('pointerleave', parar); }); } }
+
+/* ── clips de pantallas reales: cargan y corren solo cuando se ven ── */
+{ const vs = [...document.querySelectorAll('video.vivo')];
+  if (vs.length && !reducido) { const io2 = new IntersectionObserver(es => es.forEach(e => { const v = e.target;
+      if (e.isIntersecting){ if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } else v.pause(); }), { rootMargin: '120px 0px' });
+    vs.forEach(v => io2.observe(v)); } }
 })();
