@@ -1,0 +1,98 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Android 11+ esconde las otras apps: estas consultas dejan ver Spotify, YouTube Music y la cámara -->
+  <queries>
+    <package android:name="com.spotify.music" />
+    <package android:name="com.google.android.apps.youtube.music" />
+    <package android:name="com.whatsapp" />
+    <package android:name="com.whatsapp.w4b" />
+    <package android:name="com.waze" />
+    <package android:name="com.google.android.apps.maps" />
+    <intent><action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" /></intent>
+    <intent><action android:name="android.media.action.STILL_IMAGE_CAMERA" /></intent>
+    <intent><action android:name="android.media.action.VIDEO_CAMERA" /></intent>
+  </queries>
+
+  <!-- agrandar la capa desde la burbuja cuando la vuelven a invocar -->
+  <uses-permission android:name="android.permission.REORDER_TASKS" />
+  <!-- no molestar / silencio por voz (el usuario lo concede en Ajustes → Acceso a No molestar) -->
+  <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+  <!-- la capa como ventana sobre otras apps (el usuario lo concede en Ajustes → Mostrar sobre otras apps) -->
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+  <!-- seguir escuchando como burbuja mientras usas otra app: servicio en primer plano con micrófono -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
+  <application>
+    <!-- NOVA como asistente del teléfono: Ajustes → Apps predeterminadas → Asistente digital. Mantener presionado el
+         botón de encendido (o el gesto del asistente) abre esta actividad transparente sobre lo que estés usando.
+         VOICE_COMMAND: el botón de los audífonos Bluetooth; ESCUCHAR: el atajo del ícono y la ficha de ajustes rápidos. -->
+    <activity
+      android:name="expo.modules.novacontrol.NovaAsistenteActivity"
+      android:label="NOVA"
+      android:exported="true"
+      android:theme="@style/Theme.NovaAsistente"
+      android:launchMode="singleTask"
+      android:taskAffinity="solutions.bn.nova.asistente"
+      android:excludeFromRecents="true"
+      android:screenOrientation="portrait"
+      android:windowSoftInputMode="adjustResize"
+      android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode|smallestScreenSize">
+      <intent-filter>
+        <action android:name="android.intent.action.ASSIST" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VOICE_COMMAND" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="solutions.bn.nova.ESCUCHAR" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </activity>
+
+    <!-- la capa como ventana propia (completa o burbuja) que sigue escuchando sobre cualquier app -->
+    <service
+      android:name="expo.modules.novacontrol.NovaCapa"
+      android:exported="false"
+      android:foregroundServiceType="microphone|mediaPlayback" />
+
+    <!-- ficha «NOVA» en los ajustes rápidos (la cortina de arriba) -->
+    <service
+      android:name="expo.modules.novacontrol.NovaFicha"
+      android:label="NOVA"
+      android:icon="@drawable/nova_ficha"
+      android:exported="true"
+      android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+      <intent-filter>
+        <action android:name="android.service.quicksettings.action.QS_TILE" />
+      </intent-filter>
+    </service>
+
+    <!-- acceso a notificaciones (opcional, lo das tú en Ajustes): con él NOVA sabe qué está sonando y en qué app,
+         lee y responde los chats con mensajes sin leer desde su notificación, y lee la última notificación que llegó. -->
+    <service
+      android:name="expo.modules.novacontrol.NovaOyente"
+      android:label="NOVA"
+      android:exported="true"
+      android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+      <intent-filter>
+        <action android:name="android.service.notification.NotificationListenerService" />
+      </intent-filter>
+    </service>
+
+    <!-- accesibilidad (opcional, lo das tú en Ajustes → Accesibilidad → NOVA): NOVA ve lo que hay en pantalla y
+         usa las apps por ti (tocar, escribir, desplazar) mientras sigue como burbuja encima. -->
+    <service
+      android:name="expo.modules.novacontrol.NovaAccesibilidad"
+      android:label="NOVA"
+      android:exported="true"
+      android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+      <intent-filter>
+        <action android:name="android.accessibilityservice.AccessibilityService" />
+      </intent-filter>
+      <meta-data android:name="android.accessibilityservice" android:resource="@xml/nova_accesibilidad" />
+    </service>
+  </application>
+</manifest>

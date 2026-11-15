@@ -1,0 +1,255 @@
+:root {
+  --fondo: rgba(5, 16, 23, 0.9);
+  --fondo-2: rgba(10, 30, 42, 0.86);
+  --linea: rgba(150, 230, 250, 0.14);
+  --texto: #ecfbff;
+  --suave: rgba(214, 244, 252, 0.72);
+  --tenue: rgba(214, 244, 252, 0.46);
+  --acento: #5ad8f2;
+  --acento-2: #1d9cc0;
+  --brillo: rgba(90, 216, 242, 0.35);
+  --alerta: #ff6b9a;
+  --ok: #6ee7b7;
+  --mono: 'SF Mono', ui-monospace, Menlo, monospace;
+}
+/* modo Claude: coral */
+body.claude { --acento: #f0a07c; --acento-2: #d97757; --brillo: rgba(240, 140, 100, 0.35); --linea: rgba(250, 190, 160, 0.16); }
+
+* { box-sizing: border-box; margin: 0; }
+html, body { background: transparent; overflow: hidden; user-select: none; -webkit-user-select: none; }
+body { font: 13px/1.45 -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; color: var(--texto); -webkit-font-smoothing: antialiased; }
+main { width: 480px; height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+#escena { width: 210px; height: 210px; flex: none; position: relative; }
+#nova { width: 210px; height: 210px; cursor: pointer; transition: filter 0.7s ease; }
+body.claude #nova { filter: hue-rotate(185deg) saturate(1.25) brightness(1.05); }
+/* micrófono apagado: NOVA apagada y en gris, con el ícono tachado */
+body.silenciada #nova { filter: grayscale(0.9) brightness(0.62); }
+body.claude.silenciada #nova { filter: grayscale(0.9) brightness(0.62); }
+.mudo { position: absolute; left: 50%; top: 62%; width: 26px; height: 26px; margin-left: 30px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(8, 18, 24, 0.92); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 10px rgba(0, 0, 0, 0.4); opacity: 0; transform: scale(0.6); transition: opacity 0.3s, transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.4); pointer-events: none; }
+.mudo svg { width: 14px; height: 14px; fill: none; stroke: #ff8fae; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+body.silenciada .mudo { opacity: 1; transform: none; }
+/* mantener presionado: NOVA se encoge un poco antes de apagar o prender el micrófono */
+#nova { transition: filter 0.7s ease, transform 0.25s ease; }
+#nova.apretando { transform: scale(0.94); }
+
+/* ── panel ── */
+.panel {
+  position: relative; width: 336px; margin-top: -6px; transition-property: opacity, transform, filter, width; padding: 12px 14px 14px; border-radius: 18px;
+  background: linear-gradient(165deg, var(--fondo-2), var(--fondo) 60%);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--linea), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2), filter 0.35s;
+}
+/* borde vivo mientras trabaja: un brillo que recorre el contorno */
+.panel::before {
+  content: ''; position: absolute; inset: -1px; border-radius: 19px; padding: 1px; pointer-events: none; opacity: 0;
+  background: conic-gradient(from var(--giro, 0deg), transparent 0 62%, var(--acento) 78%, transparent 92%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  transition: opacity 0.4s;
+}
+.panel.vivo::before { opacity: 1; animation: giro 2.6s linear infinite; }
+@property --giro { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes giro { to { --giro: 360deg; } }
+.oculto { opacity: 0; transform: translateY(8px) scale(0.97); filter: blur(4px); pointer-events: none; }
+form.oculto { display: none; }
+/* NOVA en la mitad de abajo de la pantalla: todo en espejo, NOVA abajo y el panel encima */
+body.abajo main { flex-direction: column-reverse; }
+body.abajo .panel { margin: 0 0 -6px; }
+body.abajo form.panel { margin: 0 0 8px; }
+body.abajo .oculto { transform: translateY(-8px) scale(0.97); }
+
+.cabeza { display: flex; align-items: center; gap: 8px; height: 22px; }
+.modo { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px 2px 6px; border-radius: 999px; background: color-mix(in srgb, var(--acento) 14%, transparent); }
+.modo i { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 8px var(--acento); }
+.modo b { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; color: var(--acento); }
+.estado { flex: 1; font-size: 11.5px; color: var(--suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.estado.mal { color: var(--alerta); }
+.onda { width: 64px; height: 18px; }
+/* × del panel: lo cierra hasta tu próximo pedido (lo que esté haciendo Claude sigue) */
+.cerrar { flex: none; width: 22px; height: 22px; margin-right: -4px; padding: 0; border: none; border-radius: 50%; display: grid; place-items: center; background: transparent; color: var(--tenue); cursor: pointer; transition: background 0.2s, color 0.2s; }
+.cerrar svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.cerrar:hover { background: color-mix(in srgb, var(--acento) 18%, transparent); color: var(--texto); }
+
+.panel.ancho { width: 452px; }
+.hilo { margin-top: 10px; max-height: calc(100vh - 330px); overflow-y: auto; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; }
+.hilo:empty { display: none; }
+.hilo::-webkit-scrollbar { display: none; }
+
+.tu { align-self: flex-end; max-width: 88%; padding: 6px 10px; border-radius: 12px 12px 4px 12px; background: rgba(255, 255, 255, 0.06); color: var(--suave); font-size: 12.5px; }
+.ella { font-size: 14.5px; line-height: 1.5; letter-spacing: -0.005em; overflow-wrap: anywhere; }
+.ella.nota { font-size: 12.5px; color: var(--suave); }
+.ella code, .tu code { font: 11.5px var(--mono); padding: 1px 5px; border-radius: 5px; background: rgba(255, 255, 255, 0.08); }
+.ella strong { color: #fff; font-weight: 600; }
+.ella ul { padding-left: 16px; margin-top: 4px; }
+.ella p + p { margin-top: 6px; }
+.p { display: inline-block; opacity: 0; transform: translateY(4px); filter: blur(3px); animation: palabra 0.42s cubic-bezier(0.2, 0.8, 0.3, 1) forwards; white-space: pre-wrap; }
+@keyframes palabra { to { opacity: 1; transform: none; filter: none; } }
+
+/* pasos de Claude y acciones de NOVA */
+.paso { display: grid; grid-template-columns: 18px 1fr 16px; align-items: start; column-gap: 8px; font-size: 12px; color: var(--suave); animation: entra 0.35s ease both; }
+.paso svg { width: 16px; height: 16px; margin-top: 1px; fill: none; stroke: var(--acento); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.paso .det { grid-column: 2 / 4; font: 10.5px/1.4 var(--mono); color: var(--tenue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.paso .marca { width: 14px; height: 14px; margin-top: 2px; border-radius: 50%; border: 1.6px solid color-mix(in srgb, var(--acento) 30%, transparent); border-top-color: var(--acento); animation: rueda 0.8s linear infinite; }
+.paso.listo .marca { animation: none; border: none; background: none; }
+.paso.listo .marca::after { content: '✓'; font-size: 12px; color: var(--ok); }
+.paso.fallo .marca::after { content: '✕'; color: var(--alerta); }
+.paso.listo { color: var(--tenue); }
+.accion { display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border-radius: 999px; font-size: 11.5px; background: color-mix(in srgb, var(--ok) 12%, transparent); color: var(--ok); animation: entra 0.35s ease both; }
+.accion.mal { background: color-mix(in srgb, var(--alerta) 12%, transparent); color: var(--alerta); }
+.accion.espera { background: color-mix(in srgb, var(--acento) 12%, transparent); color: var(--acento); }
+.accion svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes entra { from { opacity: 0; transform: translateY(5px); } }
+@keyframes rueda { to { transform: rotate(360deg); } }
+
+/* tarjeta de permiso */
+.pregunta { margin-top: 10px; padding: 11px 12px 10px; border-radius: 13px; background: rgba(255, 196, 120, 0.07); box-shadow: inset 0 0 0 1px rgba(255, 196, 120, 0.32); transition: opacity 0.3s, transform 0.3s; }
+.pregunta.oculto { display: none; }
+.pregunta-titulo { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #ffc478; }
+.pregunta-texto { margin-top: 4px; font-size: 13px; }
+.pregunta-detalle { margin-top: 6px; padding: 7px 9px; max-height: 92px; overflow: auto; border-radius: 8px; background: rgba(0, 0, 0, 0.35); font: 11px/1.45 var(--mono); color: #ffe2bd; white-space: pre-wrap; word-break: break-all; user-select: text; -webkit-user-select: text; }
+.pregunta-detalle:empty { display: none; }
+.botones { display: flex; gap: 8px; margin-top: 10px; }
+.botones .boton { flex: 1; }
+.botones .boton.oculto { display: none; }
+#siempre { color: #ffc478; }
+
+.boton { padding: 8px 12px; border-radius: 10px; border: none; cursor: pointer; font: 600 12.5px -apple-system, sans-serif; background: var(--acento); color: #061218; transition: transform 0.12s, filter 0.2s; }
+.boton:hover { filter: brightness(1.08); }
+.boton:active { transform: scale(0.97); }
+.boton.fantasma { background: rgba(255, 255, 255, 0.07); color: var(--texto); }
+.boton:disabled { opacity: 0.5; cursor: default; }
+.pista { margin-top: 6px; font-size: 10.5px; color: var(--tenue); text-align: center; }
+
+form.panel { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; user-select: text; -webkit-user-select: text; }
+.titulo { font-weight: 600; font-size: 12px; color: var(--suave); }
+input { width: 100%; padding: 9px 11px; border-radius: 10px; border: none; outline: none; background: rgba(255, 255, 255, 0.06); box-shadow: inset 0 0 0 1px var(--linea); color: var(--texto); font: inherit; font-size: 13.5px; }
+input:focus { box-shadow: inset 0 0 0 1px var(--acento), 0 0 0 3px var(--brillo); }
+.error { color: var(--alerta); font-size: 12px; }
+.error:empty { display: none; }
+.defs { position: absolute; }
+
+/* ═════ visuales ═════ */
+:root { --viz-fondo: #0b1a22; --viz-rejilla: rgba(214, 244, 252, 0.08); --viz-eje: rgba(214, 244, 252, 0.5); }
+.bloque { padding: 10px 11px 11px; border-radius: 13px; background: rgba(255, 255, 255, 0.035); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05); animation: entra 0.4s ease both; }
+.bloque-cab { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.bloque-cab > div { flex: 1; min-width: 0; }
+.bloque-titulo { display: block; font-size: 12.5px; font-weight: 600; }
+.bloque-sub { display: block; font-size: 11px; color: var(--tenue); }
+.bloque-ampliar { flex: none; width: 24px; height: 24px; border: none; border-radius: 7px; cursor: pointer; background: rgba(255, 255, 255, 0.06); color: var(--suave); font-size: 13px; line-height: 24px; }
+.bloque-ampliar:hover { background: rgba(255, 255, 255, 0.12); color: var(--texto); }
+.bloque-fuente { margin-top: 8px; font-size: 10.5px; color: var(--tenue); }
+.bloque-texto { padding: 0; background: none; box-shadow: none; }
+
+.viz { position: relative; }
+.viz-svg { width: 100%; height: auto; display: block; overflow: visible; }
+.viz-rejilla { stroke: var(--viz-rejilla); stroke-width: 1; }
+.viz-base { stroke: rgba(214, 244, 252, 0.28); stroke-width: 1; }
+.viz-eje { fill: var(--viz-eje); font: 10px -apple-system, sans-serif; }
+.viz-directa { fill: var(--suave); font: 600 10px -apple-system, sans-serif; }
+.viz-guia { stroke: rgba(214, 244, 252, 0.35); stroke-width: 1; stroke-dasharray: 3 3; }
+.viz-marca { transition: opacity 0.15s; }
+.viz-leyenda { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 6px; font-size: 11px; color: var(--suave); }
+.viz-leyenda span, .viz-tip span { display: inline-flex; align-items: center; gap: 5px; }
+.viz-leyenda i, .viz-tip i { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.viz-tip { position: absolute; z-index: 2; min-width: 120px; padding: 7px 9px; border-radius: 9px; background: rgba(2, 10, 14, 0.96); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08); font-size: 11px; color: var(--suave); pointer-events: none; display: flex; flex-direction: column; gap: 2px; transition: opacity 0.12s; }
+.viz-tip.oculto { opacity: 0; transform: none; filter: none; }
+.viz-tip b { color: var(--texto); font-weight: 600; margin-bottom: 2px; }
+.viz-tip strong { color: var(--texto); }
+.viz-vertabla { margin-top: 4px; border: none; background: none; padding: 2px 0; font-size: 10.5px; color: var(--tenue); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.viz-vacio { font-size: 12px; color: var(--tenue); }
+
+.viz-metricas { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.viz-metrica { display: flex; flex-direction: column; gap: 2px; padding: 9px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.04); }
+.viz-metrica-et { font-size: 11px; color: var(--tenue); }
+.viz-metrica-v { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.viz-cambio { font-size: 11px; color: var(--suave); }
+.viz-cambio.bien { color: var(--ok); }
+.viz-cambio.mal { color: var(--alerta); }
+
+.viz-tarjetas { display: flex; flex-direction: column; gap: 6px; }
+.viz-tarjeta { display: flex; gap: 10px; width: 100%; padding: 8px; border: none; border-radius: 10px; background: rgba(255, 255, 255, 0.04); color: inherit; font: inherit; text-align: left; cursor: default; transition: background 0.15s; }
+button.viz-tarjeta { cursor: pointer; }
+button.viz-tarjeta:hover { background: rgba(255, 255, 255, 0.09); }
+.viz-tarjeta-img { width: 64px; height: 64px; flex: none; border-radius: 8px; object-fit: cover; background: rgba(255, 255, 255, 0.05); }
+.viz-tarjeta-cuerpo { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.viz-tarjeta-fuente { font-size: 10.5px; color: var(--acento); }
+.viz-tarjeta-titulo { font-size: 12.5px; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.viz-tarjeta-resumen { font-size: 11.5px; color: var(--suave); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.viz-imagenes { display: grid; gap: 6px; grid-template-columns: repeat(3, 1fr); }
+.viz-imagenes.n1 { grid-template-columns: 1fr; }
+.viz-imagenes.n2 { grid-template-columns: 1fr 1fr; }
+.viz-imagen img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 9px; display: block; cursor: zoom-in; background: rgba(255, 255, 255, 0.04); }
+.viz-imagenes.n1 .viz-imagen img { aspect-ratio: auto; max-height: 260px; object-fit: contain; }
+.viz-imagen figcaption { margin-top: 3px; font-size: 10.5px; color: var(--tenue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.viz-tabla { max-height: 260px; overflow: auto; border-radius: 9px; }
+.viz-tabla table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.viz-tabla th { position: sticky; top: 0; background: #0f222c; text-align: left; font-weight: 600; color: var(--suave); padding: 6px 8px; }
+.viz-tabla td { padding: 5px 8px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+.viz-tabla .num { text-align: right; font-variant-numeric: tabular-nums; }
+.viz-tabla tbody tr:hover { background: rgba(255, 255, 255, 0.04); }
+
+.viz-lista { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; }
+.viz-lista li { display: grid; grid-template-columns: 16px 1fr; column-gap: 8px; align-items: start; }
+.viz-lista i { width: 14px; height: 14px; margin-top: 2px; border-radius: 4px; box-shadow: inset 0 0 0 1.5px var(--tenue); font: normal 10px/14px -apple-system; text-align: center; color: #061218; }
+.viz-lista li.hecho i { background: var(--ok); box-shadow: none; }
+.viz-lista li.hecho span { color: var(--tenue); text-decoration: line-through; }
+.viz-lista small { grid-column: 2; font-size: 11px; color: var(--tenue); }
+
+.viz-codigo { border-radius: 9px; background: rgba(0, 0, 0, 0.35); overflow: hidden; }
+.viz-codigo-cab { display: block; padding: 5px 10px; font: 10.5px var(--mono); color: var(--tenue); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+.viz-codigo pre { margin: 0; padding: 9px 10px; max-height: 240px; overflow: auto; font: 11px/1.5 var(--mono); color: #d8f3fa; user-select: text; -webkit-user-select: text; }
+
+/* ═════ lienzo (ventana grande) ═════ */
+body.lienzo { background: #08141b; overflow: auto; }
+body.lienzo main { width: auto; height: auto; padding: 44px 32px 32px; align-items: stretch; }
+body.lienzo .bloque { background: none; box-shadow: none; padding: 0; }
+body.lienzo .bloque-titulo { font-size: 20px; }
+body.lienzo .bloque-sub { font-size: 13px; }
+body.lienzo .viz-metrica-v { font-size: 34px; }
+body.lienzo .viz-tabla, body.lienzo .viz-codigo pre { max-height: none; }
+body.lienzo .viz-imagenes.n1 .viz-imagen img { max-height: 80vh; }
+body.lienzo .viz-tarjeta-titulo { font-size: 14px; }
+body.lienzo .viz-tarjeta-resumen { font-size: 13px; -webkit-line-clamp: 3; }
+.lienzo-arrastre { position: fixed; inset: 0 0 auto 0; height: 36px; -webkit-app-region: drag; }
+
+/* ═════ modo visible y fácil de cambiar ═════ */
+.chip-modo {
+  position: absolute; left: 50%; bottom: 2px; transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border: none; border-radius: 999px; cursor: pointer;
+  background: rgba(5, 16, 23, 0.86); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acento) 45%, transparent);
+  font: 700 10px/1 -apple-system, sans-serif; letter-spacing: 0.14em; color: var(--acento); white-space: nowrap;
+  transition: color 0.4s, box-shadow 0.4s, transform 0.2s;
+}
+.chip-modo i { width: 7px; height: 7px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 8px var(--acento); transition: background 0.4s, box-shadow 0.4s; }
+.chip-modo .cambiar { font-size: 11px; letter-spacing: 0; opacity: 0.55; transition: opacity 0.2s; }
+.chip-modo:hover .cambiar { opacity: 1; }
+.chip-modo:hover { transform: translateX(-50%) scale(1.06); }
+.chip-modo .oido { display: none; font-weight: 600; letter-spacing: 0.04em; font-size: 9.5px; color: var(--tenue); }
+/* esperando «Oye Nova»: el punto late suave y lo dice */
+body.vigia .chip-modo .oido { display: inline; }
+body.vigia .chip-modo i { animation: oido 2.4s ease-in-out infinite; }
+@keyframes oido { 50% { opacity: 0.35; } }
+body.silenciada .chip-modo { color: var(--tenue); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); }
+body.silenciada .chip-modo i { background: var(--tenue); box-shadow: none; }
+.modo { cursor: pointer; }
+.modo:hover { filter: brightness(1.2); }
+/* al cambiar de modo, NOVA da un pequeño salto y suelta un destello del color nuevo */
+#escena.cambio #nova { animation: salto 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.4); }
+#escena.cambio::after { content: ''; position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; border: 2px solid var(--acento); animation: destello 0.7s ease-out forwards; pointer-events: none; }
+@keyframes salto { 30% { transform: scale(0.88); } 65% { transform: scale(1.07); } }
+@keyframes destello { from { opacity: 0.9; transform: scale(0.6); } to { opacity: 0; transform: scale(1.7); } }
+
+/* visita a otro escritorio: llega desde lejos con una onda de luz; al irse se encoge y se desvanece */
+#escena.llega #nova { animation: llega 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.3) both; }
+#escena.llega::before { content: ''; position: absolute; left: 50%; top: 50%; width: 140px; height: 140px; margin: -70px 0 0 -70px; border-radius: 50%; pointer-events: none;
+  box-shadow: 0 0 0 2px var(--acento), 0 0 50px 14px var(--brillo); animation: onda-llega 0.95s 0.15s ease-out both; }
+#escena.yendo #nova { animation: yendo 0.34s ease-in forwards; }
+@keyframes llega { 0% { transform: scale(0.1) translateY(60px) rotate(-25deg); opacity: 0; filter: blur(12px) brightness(2); } 55% { transform: scale(1.12) rotate(4deg); opacity: 1; filter: blur(0) brightness(1.4); } 100% { transform: none; } }
+@keyframes onda-llega { 0% { transform: scale(0.2); opacity: 1; } 100% { transform: scale(2.1); opacity: 0; } }
+@keyframes yendo { to { transform: scale(0.15) translateY(30px); opacity: 0; filter: blur(10px); } }
+
+/* una sola NOVA: sin chip de modo (el naranja aparece solo mientras trabaja en el Mac) */
+#chip-modo { display: none !important; }

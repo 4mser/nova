@@ -1,0 +1,255 @@
+{
+  "expo": {
+    "name": "NOVA",
+    "slug": "nova-app",
+    "version": "0.9.4",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "nova",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#05080c",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "solutions.bn.nova"
+    },
+    "android": {
+      "package": "solutions.bn.nova",
+      "adaptiveIcon": {
+        "backgroundColor": "#05080c",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.ACTIVITY_RECOGNITION",
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
+        "android.permission.health.READ_BODY_TEMPERATURE",
+        "android.permission.health.READ_DISTANCE",
+        "android.permission.health.READ_EXERCISE",
+        "android.permission.health.READ_HEART_RATE",
+        "android.permission.health.READ_HEART_RATE_VARIABILITY",
+        "android.permission.health.READ_OXYGEN_SATURATION",
+        "android.permission.health.READ_RESPIRATORY_RATE",
+        "android.permission.health.READ_RESTING_HEART_RATE",
+        "android.permission.health.READ_SLEEP",
+        "android.permission.health.READ_STEPS",
+        "android.permission.CAMERA",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.USE_EXACT_ALARM",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR",
+        "com.android.alarm.permission.SET_ALARM",
+        "android.permission.READ_CONTACTS",
+        "android.permission.CALL_PHONE",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.FOREGROUND_SERVICE_MICROPHONE"
+      ],
+      "googleServicesFile": "./google-services.json"
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/images/favicon.png",
+      "backgroundColor": "#05080c"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#05080c"
+        }
+      ],
+      "expo-image",
+      "expo-status-bar",
+      "expo-web-browser",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Nova listens only while you record a voice message, to turn it into words.",
+          "enableBackgroundRecording": true
+        }
+      ],
+      "expo-asset",
+      [
+        "react-native-ble-plx",
+        {
+          "isBackgroundEnabled": false,
+          "modes": [],
+          "bluetoothAlwaysPermission": "Nova reads your heart rate from your watch over Bluetooth.",
+          "neverForLocation": true
+        }
+      ],
+      "react-native-health-connect",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "minSdkVersion": 26,
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      [
+        "react-native-android-widget",
+        {
+          "fonts": [
+            "./assets/fonts/SpaceGrotesk_300Light.ttf",
+            "./assets/fonts/SpaceGrotesk_400Regular.ttf",
+            "./assets/fonts/SpaceGrotesk_500Medium.ttf",
+            "./assets/fonts/SpaceGrotesk_600SemiBold.ttf"
+          ],
+          "widgets": [
+            {
+              "name": "Casa",
+              "label": "Casa",
+              "description": "Fotos y mensajes de tu familia, desde la Tierra",
+              "minWidth": "250dp",
+              "minHeight": "180dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 2,
+              "previewImage": "./assets/widgets/preview-casa.png",
+              "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal|vertical"
+            },
+            {
+              "name": "Crew",
+              "label": "Crew",
+              "description": "Las fotos de hoy de tu crew, en buena calidad",
+              "minWidth": "250dp",
+              "minHeight": "180dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 2,
+              "previewImage": "./assets/widgets/preview-crew.png",
+              "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal|vertical"
+            },
+            {
+              "name": "Corazon",
+              "label": "Cuerpo",
+              "description": "Pulso, sueño, pasos y recuperación, de tu reloj y Health Connect",
+              "minWidth": "110dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 2,
+              "targetCellHeight": 2,
+              "previewImage": "./assets/widgets/preview-corazon.png",
+              "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal|vertical"
+            },
+            {
+              "name": "Mision",
+              "label": "Hábitos y foco",
+              "description": "Tus hábitos de hoy, la racha y los minutos de foco",
+              "minWidth": "250dp",
+              "minHeight": "56dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 1,
+              "previewImage": "./assets/widgets/preview-mision.png",
+              "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal"
+            },
+            {
+              "name": "Diario",
+              "label": "Check-in",
+              "description": "Tu check-in de hoy: lo que falta o cómo respondiste",
+              "minWidth": "110dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 2,
+              "targetCellHeight": 2,
+              "previewImage": "./assets/widgets/preview-diario.png",
+              "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal|vertical"
+            },
+            {
+              "name": "Plan",
+              "label": "Tu día",
+              "description": "Lo que viene en tu agenda y tus tareas de hoy",
+              "minWidth": "250dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 2,
+              "previewImage": "./assets/widgets/preview-plan.png",
+              "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal|vertical"
+            }
+          ]
+        }
+      ],
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "NOVA uses your photos only when you pick one for your profile or your crew.",
+          "cameraPermission": "NOVA opens the camera when you share a moment with your crew."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#8fe6f5",
+          "defaultChannel": "momento",
+          "icon": "./assets/images/android-icon-monochrome.png"
+        }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Nova reads your calendar to plan focus time around your day."
+        }
+      ],
+      "./plugins/atajos.js",
+      [
+        "expo-share-intent",
+        {
+          "androidIntentFilters": [
+            "text/*",
+            "image/*",
+            "video/*"
+          ],
+          "disableIOS": true
+        }
+      ],
+      "expo-video",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "NOVA uses the camera only while you show her something and ask about it.",
+          "recordAudioAndroid": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "405815ef-5f01-4134-a620-94d347b8b9c3"
+      }
+    },
+    "owner": "4mser",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/405815ef-5f01-4134-a620-94d347b8b9c3",
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    }
+  }
+}

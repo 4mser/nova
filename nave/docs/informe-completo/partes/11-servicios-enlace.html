@@ -1,0 +1,47 @@
+<section class="page p11">
+<style>.p11 table.t td{padding:4px 12px}.p11 .lead{font-size:10.2pt!important}.p11 table.t th{padding:7px 12px}.p11 .tj{padding:12px 15px}.p11 .tj p{font-size:8.8pt}</style>
+  <div class="kick"><span style="color:var(--mut)">11</span>&nbsp;&nbsp;·&nbsp;&nbsp;Parte I · Arquitectura&nbsp;&nbsp;·&nbsp;&nbsp;Servicios de la nave</div><h1 style="font-size:25pt;margin-top:10px">Un solo programa abre y vigila todo lo demás</h1>
+  <p class="lead">NOVA PC (Tauri, con su enlace en Rust) es lo único que hay que abrir. Desde que arranca, con ventana o sin ella, levanta los siete servicios de a bordo, los vigila cada 3 segundos y vuelve a abrir el que se cae. Lo que ya está corriendo no se duplica y cada servicio deja su registro en <code>~/.nova-pc/logs/</code>.</p>
+
+  <table class="t" style="margin-top:16px;font-size:8.4pt">
+    <thead><tr><th style="width:150px">Servicio</th><th style="width:70px">Puerto</th><th>Programa</th><th style="width:96px">Registro</th></tr></thead>
+    <tbody>
+      <tr><td><lu n="rocket" style="color:var(--cian)"></lu>&nbsp; <b>Núcleo de vuelo</b></td><td>TCP 5080</td><td><code>fprime-gds</code>: abre <code>Nova_Nave</code> y da la API de Systems</td><td><code>nucleo.log</code></td></tr>
+      <tr><td><lu n="brain" style="color:var(--lila)"></lu>&nbsp; <b>Modelo de lenguaje</b></td><td>TCP 8081</td><td><code>llama-server</code>: Qwen3 4B Q4_K_M, 16k de contexto, en GPU</td><td><code>modelo.log</code></td></tr>
+      <tr><td><lu n="volume-2" style="color:var(--lila)"></lu>&nbsp; <b>Voz</b></td><td>TCP 8082</td><td><code>voz/servidor.py</code> con Kokoro-82M</td><td><code>voz.log</code></td></tr>
+      <tr><td><lu n="mic" style="color:var(--lila)"></lu>&nbsp; <b>Oído</b></td><td>TCP 8083</td><td><code>whisper-server</code>: large-v3-turbo q5_0</td><td><code>oido.log</code></td></tr>
+      <tr><td><lu n="search" style="color:var(--lila)"></lu>&nbsp; <b>Búsqueda</b></td><td>TCP 8084</td><td><code>llama-server --embedding</code>: nomic-embed v2</td><td><code>busqueda.log</code></td></tr>
+      <tr><td><lu n="scan-eye" style="color:var(--lila)"></lu>&nbsp; <b>Visión</b></td><td>TCP 8792</td><td><code>vision/servidor.py</code>: MediaPipe Pose y Hands</td><td><code>vision.log</code></td></tr>
+      <tr><td><lu n="flask-conical" style="color:var(--ok)"></lu>&nbsp; <b>Simulador</b></td><td>UDP 50053</td><td><code>simulador.py</code> (no con <code>NOVA_SIN_SIMULADOR=1</code>)</td><td><code>simulador.log</code></td></tr>
+    </tbody>
+  </table>
+
+  <svg class="dg" viewBox="0 0 674 122" style="margin-top:8px" role="img" aria-label="Ciclo de vigilancia de un servicio">
+    <rect x="1" y="34" width="138" height="56" rx="12" fill="#0f1722" stroke="rgba(150,185,215,.26)"/><text class="t" x="14" y="58">¿Falta el programa</text><text class="t" x="14" y="74">o el modelo?</text>
+    <path d="M70 34V14H166" fill="none" stroke="#ec6aa8" stroke-width="1.3" stroke-dasharray="4 3"/><text class="mm" x="172" y="18">AVISA UNA VEZ Y LA NAVE SIGUE SIN ÉL</text>
+    <path d="M139 62H176" stroke="#46c8e8" stroke-width="1.4"/><path d="M170 58l7 4-7 4" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <rect x="178" y="34" width="150" height="56" rx="12" fill="rgba(143,230,245,.07)" stroke="rgba(143,230,245,.55)"/><text class="t" x="192" y="58">¿Su proceso vive o</text><text class="t" x="192" y="74">el puerto está en uso?</text>
+    <path d="M328 62H366" stroke="#46c8e8" stroke-width="1.4"/><path d="M360 58l7 4-7 4" fill="none" stroke="#46c8e8" stroke-width="1.4"/><text class="m" x="347" y="54" text-anchor="middle">NO</text>
+    <rect x="368" y="34" width="132" height="56" rx="12" fill="rgba(111,214,176,.08)" stroke="rgba(111,214,176,.55)"/><text class="t" x="382" y="58">Lo abre con su</text><text class="t" x="382" y="74">registro y PATH</text>
+    <path d="M500 62H538" stroke="#46c8e8" stroke-width="1.4"/><path d="M532 58l7 4-7 4" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <rect x="540" y="34" width="133" height="56" rx="12" fill="rgba(242,180,87,.07)" stroke="rgba(242,180,87,.5)"/><text class="t" x="554" y="58">Espera 3 s</text><text x="554" y="76">30 s tras 4 caídas</text>
+    <path d="M606 90V114H253V90" fill="none" stroke="rgba(150,185,215,.45)" stroke-width="1.2"/><text class="m" x="430" y="108" text-anchor="middle">VUELVE A REVISAR</text>
+  </svg>
+
+  <h2 style="margin-top:12px">El enlace: dos puertas y una sola API</h2>
+  <div class="g3" style="margin-top:10px">
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="network"></lu>&nbsp; HTTP :8750</div><p>Pantallas, teléfonos y consola de Tierra. Sirve la interfaz y la API; cada respuesta va con <code>no-cache</code>, así la pantalla carga siempre la versión nueva.</p></div>
+    <div class="tj"><div class="k" style="color:var(--mag)"><lu n="lock"></lu>&nbsp; HTTPS :8751</div><p>La misma app con certificado propio (rcgen + rustls), porque el navegador solo da la cámara a páginas seguras. Incluye las IP de hoy y se rehace si cambian.</p></div>
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="key-round"></lu>&nbsp; Token opcional</div><p>Con <code>NOVA_TOKEN</code>, las 8 rutas que escriben desde fuera (teléfonos, visores, Tierra, Casa) exigen la cabecera <code>x-nova-token</code>.</p></div>
+  </div>
+  <table class="t" style="margin-top:12px;font-size:8.2pt">
+    <thead><tr><th style="width:190px">Variable</th><th>Qué cambia</th></tr></thead>
+    <tbody>
+      <tr><td><code>--sin-ventana</code></td><td>solo el enlace: otro monitor, un análogo o pruebas</td></tr>
+      <tr><td><code>NOVA_SIN_SERVICIOS=1</code></td><td>cada pieza se levanta a mano (anexo)</td></tr>
+      <tr><td><code>NOVA_PUERTO_ENLACE</code></td><td>una nave de prueba en otro puerto</td></tr>
+      <tr><td><code>NOVA_MODELO</code> · <code>_OIDO</code> · <code>_VOZ</code> …</td><td>un servicio en otro computador</td></tr>
+    </tbody>
+  </table>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>11 / 40</span></div>
+</section>

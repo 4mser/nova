@@ -1,0 +1,11 @@
+node_modules/
+.DS_Store
+*.log
+.expo/
+dist/
+out/
+# secretos: nunca al repositorio
+google-services.json
+credentials.json
+station/credenciales/
+.env*

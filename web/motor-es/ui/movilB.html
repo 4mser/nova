@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>HALO · mobile B</title>
+<link rel="stylesheet" href="ui.css?v=1791048873">
+<style>html,body{margin:0;width:1920px;height:1080px;background:transparent;overflow:hidden}
+.tabla{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:100px}</style></head><body>
+<div class="tabla">
+  <div class="iph"><div class="scr" id="sCheck">
+    <div class="sb"><span>21:06</span><i class="isla"></i><span class="sbi"><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".5"/><rect x="2.5" y="2.5" width="11" height="7" rx="2"/></svg></span></div>
+    <div class="cabchat"><svg id="novaChat" viewBox="0 0 60 60"></svg><div><b>Check-in de la noche</b><span>Cerca de un minuto</span></div></div>
+    <div class="chat">
+      <div class="b nv">¿Cómo te fue hoy, Mara?</div>
+      <div class="b yo">Día largo preparando la caminata espacial. Salió bien, pero estoy bastante cansada.</div>
+      <div class="pvt"><div class="top"><span class="lbl">Lo que entendió Nova</span><span class="lbl" style="color:var(--t3)">automático</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--l1)"><span style="font:500 15px SG">Ánimo</span><b style="font:500 15px SG;color:#7fe3c4">Bueno</b></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--l1)"><span style="font:500 15px SG">Estrés</span><b style="font:500 15px SG;color:#46c8e8">Bajo</b></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0"><span style="font:500 15px SG">Fatiga</span><b style="font:500 15px SG;color:#f2b457">Leve</b></div></div>
+      <div class="b nv">Gracias, Mara. Que descanses.</div>
+    </div>
+    <div class="campo"><span>Habla con Nova</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></div>
+</div></div>
+  <!-- SESIÓN PRIVADA -->
+  <div class="iph"><div class="scr">
+    <div class="sb"><span>21:20</span><i class="isla"></i><span class="sbi"><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".5"/><rect x="2.5" y="2.5" width="11" height="7" rx="2"/></svg></span></div>
+    <div class="pg">
+      <div class="tit">Sesión privada</div><div class="tsub">Con tu psicóloga en la Tierra</div>
+      <div class="cuenta"><svg id="sCuenta" viewBox="0 0 92 92"></svg><div><b>Sábado, 10:00 hora de la nave</b><span>Dra. Elena Ruiz, psicóloga de vuelo. El video llega con 18 min de retraso, así que Nova le envía tus temas antes.</span></div></div>
+      <div class="lbl" style="margin:22px 4px 2px">De qué quieres hablar</div>
+      <div class="temas"><div><i class="ok"></i><s>Perderme el cumpleaños de mi hija</s></div><div><i class="ok"></i>Ando irritable después de los turnos de noche</div><div><i></i>Dormir mejor antes del aterrizaje</div><div><i></i style="border-style:dashed"><span style="color:var(--t3)">Agregar un tema</span></div></div>
+      <div class="candado"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Solo tú y la Dra. Ruiz pueden ver esto</div>
+    </div>
+    <div class="campo"><span>Escríbele a Nova</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></div>
+  </div></div>
+  <!-- PRIVACIDAD -->
+  <div class="iph"><div class="scr">
+    <div class="sb"><span>21:24</span><i class="isla"></i><span class="sbi"><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".5"/><rect x="2.5" y="2.5" width="11" height="7" rx="2"/></svg></span></div>
+    <div class="pg">
+      <div class="tit">Lo que compartes</div><div class="tsub">Solo sale de tu teléfono lo que tú activas</div>
+      <div class="flujo2"><svg id="pFlujo" viewBox="0 0 330 190"></svg></div>
+      <div class="sws">
+        <div><div>Signos vitales<small>Cirujano de vuelo, siempre</small></div><i class="sw on"></i></div>
+        <div><div>Sueño<small>Cirujano de vuelo</small></div><i class="sw on"></i></div>
+        <div><div>Ánimo y estrés<small>Tu psicóloga</small></div><i class="sw on"></i></div>
+        <div><div>Diario<small>Solo tú</small></div><i class="sw"></i></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+<div class="demo-g">Datos de demostración</div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script>
+<script>dibujarMovilB(+(location.hash.slice(1) || 2.4));</script>
+</body></html>

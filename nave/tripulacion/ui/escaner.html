@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#05080c">
+<meta name="mobile-web-app-capable" content="yes">
+<title>NOVA · Body scan</title>
+<!-- Body scan (AR): the camera finds a crew member's body, Nova fits the reference anatomy to their proportions and
+     draws their organs, skeleton and the CPR point on top, colored by their live twin. Works on the ship's screen,
+     on a phone and on a phone inside a headset (side-by-side view). Every frame also goes live to NOVA Station. -->
+<style>
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-400-latin.woff2);font-weight:400}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-500-latin.woff2);font-weight:500}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-600-latin.woff2);font-weight:600}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-700-latin.woff2);font-weight:700}
+:root{--bg:#05080c;--s1:#0a0f15;--s2:#0f151d;--l1:rgba(255,255,255,.08);--l2:rgba(255,255,255,.14);--t1:#f2f5f8;--t2:#9aa4b2;--t3:#5b6573;--ac:#46c8e8;--ac2:#8fe6f5;--at:#f2b457;--al:#ec6aa8;--ok:#6fd6b0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);touch-action:manipulation}
+body{font-family:SG;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+[hidden]{display:none!important}
+/* in the headset each eye gets the same picture: HTML panels would land on one eye only (the step is drawn into the picture) */
+body.visor #proc,body.visor #sugiere,body.visor #hoja,body.visor #qcpr{display:none!important}
+#pantalla{position:fixed;inset:0;width:100%;height:100%;display:block}
+.barra{position:fixed;left:12px;right:12px;margin-inline:auto;width:fit-content;bottom:max(14px,env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;
+  padding:8px;border-radius:26px;background:rgba(5,8,12,.78);border:1px solid var(--l2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.grupo{display:flex;gap:4px;padding:0 4px}
+.grupo+.grupo{border-left:1px solid var(--l1);padding-left:8px}
+.b{height:40px;padding:0 14px;border-radius:20px;font:500 14px SG;color:var(--t2);border:1px solid transparent;white-space:nowrap}
+.b.on{color:var(--t1);background:var(--s2);border-color:rgba(143,230,245,.4)}
+.b.pri{background:var(--t1);color:var(--bg);font-weight:600}
+.b.rcp.on{border-color:rgba(236,106,168,.55);color:#ffd3e6}
+.b.g{color:#d9d2ff;border-color:rgba(168,152,255,.35)}
+.inicio{position:fixed;inset:0;display:grid;place-items:center;padding:28px;text-align:center;background:radial-gradient(ellipse at 50% 40%,#0c1620,#05080c 70%)}
+.inicio .c{max-width:520px}
+.inicio svg{width:120px;height:100px;overflow:visible;margin-bottom:10px}
+.inicio h1{font:600 32px SG;letter-spacing:-.03em}
+.inicio p{font:400 16px/1.5 SG;color:var(--t2);margin:10px 0 22px}
+.inicio .acc{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.inicio .acc button{height:50px;padding:0 24px;border-radius:25px;font:600 16px SG;border:1px solid var(--l2);background:var(--s2)}
+.inicio .acc button.pri{background:var(--t1);color:var(--bg);border-color:var(--t1)}
+.inicio small{display:block;margin-top:18px;font:400 12px/1.5 SG;color:var(--t3)}
+.estado{font:500 14px SG;color:var(--t2);margin-top:14px;min-height:20px}
+.err{color:#ffd3e6}
+.b.sis.on{color:#e8fbff;border-color:rgba(143,230,245,.55);background:rgba(70,200,232,.12);box-shadow:0 0 14px rgba(70,200,232,.25)}
+.b.emer{color:#ffd3e6;border-color:rgba(255,122,156,.4)}
+.proc{position:fixed;left:max(16px,env(safe-area-inset-left));bottom:calc(max(14px,env(safe-area-inset-bottom)) + 70px);width:min(420px,calc(100% - 32px));padding:16px 18px;border-radius:22px;
+  background:rgba(6,9,14,.72);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.pcab{display:flex;align-items:center;gap:10px;font:600 11px SG;letter-spacing:.12em;text-transform:uppercase;color:#ff9db4}
+.pcab b{margin-left:auto;font-weight:500;color:var(--t3);letter-spacing:.06em}
+.px{font:400 22px SG;color:var(--t2);width:28px;height:28px;line-height:1}
+.ptxt{font:500 17px/1.4 SG;color:var(--t1);margin:10px 0 12px}
+.ptxt.grave{color:#fff}
+.pkit{font:500 13px SG;color:#9ff0d0;margin:-4px 0 10px}
+.ptiempo{font:500 34px SG;letter-spacing:-.02em;margin:-4px 0 10px;font-feature-settings:"tnum" 1}
+.pacc{display:flex;gap:8px}
+.pb{flex:1;height:44px;border-radius:22px;border:1px solid var(--l2);font:600 15px SG;color:var(--t1);background:rgba(255,255,255,.04)}
+.pb.pri{background:var(--t1);color:var(--bg);border-color:var(--t1)}
+.sugiere{position:fixed;left:50%;top:max(16px,env(safe-area-inset-top));transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-radius:24px;
+  background:rgba(6,9,14,.75);border:1px solid rgba(244,184,96,.45);font:500 14px SG;color:#ffe2b5;backdrop-filter:blur(12px)}
+.sugiere i{width:8px;height:8px;border-radius:50%;background:#f4b860}
+.sugiere b{color:#fff;font-weight:600}
+.sugiere button{height:34px;padding:0 14px;border-radius:17px;background:#f4b860;color:#1a1206;font:600 13px SG}
+.hoja{position:fixed;right:16px;top:16px;bottom:90px;width:min(380px,calc(100% - 32px));overflow:auto;padding:12px;border-radius:22px;background:rgba(6,9,14,.86);border:1px solid var(--l2);backdrop-filter:blur(14px)}
+.hcab{display:flex;align-items:center;justify-content:space-between;font:600 12px SG;letter-spacing:.12em;text-transform:uppercase;color:var(--t2);padding:6px 8px 10px}
+.hcab button{font:400 22px SG;color:var(--t2)}
+.hp{display:block;width:100%;text-align:left;padding:12px;border-radius:14px}
+.hp:hover{background:rgba(255,255,255,.05)}
+.hp b{display:block;font:600 15px SG;color:var(--t1)}
+.hp span{display:block;font:400 12.5px/1.4 SG;color:var(--t2);margin-top:3px}
+.qcpr{position:fixed;right:max(16px,env(safe-area-inset-right));top:120px;width:300px;padding:16px 18px;border-radius:22px;background:rgba(6,9,14,.72);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:grid;gap:14px}
+.qt{font:600 11px SG;letter-spacing:.14em;text-transform:uppercase;color:#ff9db4}
+.qn{display:flex;align-items:baseline;gap:8px}.qn b{font:600 40px/1 SG;letter-spacing:-.03em;font-feature-settings:"tnum" 1}.qn span{font:500 12.5px SG;color:var(--t2)}
+.qn b.ok{color:#7fe0c0}.qn b.mal{color:#f4b860}.qn b.gris{color:var(--t3)}
+.qgauge{position:relative;height:10px;border-radius:5px;background:rgba(255,255,255,.08);margin-top:8px}
+.qband{position:absolute;top:0;bottom:0;background:rgba(127,224,192,.35);border-radius:5px}
+.qneedle{position:absolute;top:-4px;bottom:-4px;width:4px;margin-left:-2px;border-radius:2px;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.6)}
+.qesc{display:flex;justify-content:space-between;font:400 10.5px SG;color:var(--t3);margin-top:4px}
+.qfila{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.qfila b{display:block;font:600 20px SG;font-feature-settings:"tnum" 1}.qfila span{font:500 11px SG;color:var(--t2)}
+.qplan{display:grid;gap:5px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}.qplan span{font:600 10.5px SG;letter-spacing:.12em;text-transform:uppercase;color:#c3b8ff}
+.qplan div{display:grid;grid-template-columns:110px 1fr 36px;gap:8px;align-items:center;font:500 12px SG;color:var(--t2)}.qplan div i{height:6px;border-radius:3px;background:rgba(195,184,255,.35)}.qplan div em{font-style:normal;font-size:11px;color:var(--t3);text-align:right}
+.qplan div.mejor{color:#fff}.qplan div.mejor i{background:#c3b8ff}.qplan div.mejor b::before{content:"→ ";color:#c3b8ff}
+.qscore{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}.qscore span{font:600 11px SG;letter-spacing:.12em;text-transform:uppercase;color:var(--t2)}.qscore b{font:600 26px SG}.qscore em{width:100%;font:400 10.5px SG;font-style:normal;color:var(--t3)}
+@media (max-width:619px){.qcpr{top:118px;left:16px;right:16px;width:auto;grid-template-columns:1fr 1fr;padding:12px 14px;gap:10px}.qcpr .qt,.qcpr .qfila,.qcpr .qscore em,.qcpr .qesc{display:none}.qn b{font-size:30px}.qscore{grid-column:1/-1;padding-top:6px}}
+@media (max-width:619px){.proc{bottom:calc(max(14px,env(safe-area-inset-bottom)) + 112px)}.ptxt{font-size:15px}}
+@media (max-width:619px){#gTrip{display:none}}@media (min-width:620px){.solo-angosto{display:none}}
+@media (max-width:560px){.barra{gap:4px;padding:6px;border-radius:22px}.grupo{padding:0 2px}.grupo+.grupo{padding-left:4px}.b{height:36px;padding:0 8px;font-size:13px}.grupo+.grupo{border-left:0}}
+</style>
+</head>
+<body>
+<canvas id="pantalla"></canvas>
+<div class="barra" id="barra" hidden>
+  <div class="grupo" id="gTrip"></div>
+  <div class="grupo solo-angosto"><button class="b on" id="bTrip" title="Next crew member">Crew</button></div>
+  <div class="grupo" id="gSis">
+    <button class="b sis on" data-sis="cardio">Cardio</button><button class="b sis" data-sis="resp">Resp</button><button class="b sis" data-sis="metab">Metabolic</button><button class="b sis" data-sis="renal">Renal</button><button class="b sis" data-sis="oseo">Skeletal</button><button class="b sis" data-sis="neuro">Neuro</button>
+  </div>
+  <div class="grupo">
+    <button class="b on" data-capa="organos">Hologram</button>
+    <button class="b rcp" data-capa="rcp">CPR</button>
+  </div>
+  <div class="grupo">
+    <button class="b g" id="bGrav" title="Which gravity the procedure uses">Gravity: mission</button>
+    <button class="b g" id="bTec" hidden title="Microgravity CPR technique">Evetts-Russomano</button>
+  </div>
+  <div class="grupo">
+    <button class="b emer" id="bEmer" title="Medical procedures">Procedures</button>
+  </div>
+  <div class="grupo">
+    <button class="b" id="bGirar" title="Switch camera">Flip</button>
+    <button class="b" id="bVisor">Headset</button>
+  </div>
+</div>
+<div class="proc" id="proc" hidden></div>
+<div class="qcpr" id="qcpr" hidden></div>
+<div class="sugiere" id="sugiere" hidden></div>
+<div class="hoja" id="hoja" hidden></div>
+<div class="inicio" id="inicio">
+  <div class="c">
+    <svg id="nova" viewBox="0 0 120 100"></svg>
+    <h1>Body scan</h1>
+    <p>Point the camera at a crew member. Nova finds their body, fits the reference anatomy to their proportions and shows
+      their organs with today's twin data. NOVA Station sees the scan live.</p>
+    <div class="acc"><button class="pri" id="bEmpezar">Start scan</button><button id="bEmpezarVisor">Start in headset</button></div>
+    <div class="estado" id="estadoIni"></div>
+    <small>Runs on board: the vision models and the anatomy load from the ship. Organ positions are estimated from the body's
+      landmarks and a reference atlas (BodyParts3D, HuBMAP · CC BY 4.0), not imaged. Demo, pending flight surgeon review.</small>
+  </div>
+</div>
+<script>const BASE = ['8750', '8751'].includes(location.port) ? '' : 'http://127.0.0.1:8750';</script>
+<script src="voz.js"></script>
+<script src="lib/mascota-base.js"></script>
+<script src="lib/mascota-orbes.js"></script>
+<script type="module" src="escaner.js?v=13"></script>
+</body>
+</html>

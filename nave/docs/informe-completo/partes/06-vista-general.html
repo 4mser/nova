@@ -1,0 +1,73 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">06</span>&nbsp;&nbsp;·&nbsp;&nbsp;Parte I · Arquitectura&nbsp;&nbsp;·&nbsp;&nbsp;Vista general</div><h1 style="font-size:25pt;margin-top:10px">Todo vive dentro de la nave</h1>
+  <p class="lead">El borde punteado turquesa es el casco: todo lo que está adentro funciona sin la Tierra. Lo único que cruza es un enlace lento, con el retraso de la luz, que baja un informe y sube paquetes firmados.</p>
+  <svg class="dg" viewBox="0 0 674 800" style="margin-top:16px" role="img" aria-label="Arquitectura completa de NOVA">
+    <rect x="1" y="1" width="672" height="640" rx="22" fill="rgba(70,200,232,.035)" stroke="rgba(143,230,245,.32)" stroke-dasharray="5 6"/>
+    <text class="mc" x="20" y="24">LA NAVE · TODO A BORDO</text>
+    <!-- fila 1: de dónde salen los datos -->
+    <text class="m" x="20" y="50">DE DÓNDE SALEN LOS DATOS</text>
+    <rect x="20" y="60" width="200" height="74" rx="12" fill="rgba(111,214,176,.08)" stroke="rgba(111,214,176,.55)"/>
+    <text class="t" x="34" y="82">Estación médica</text><text x="34" y="99">ECG, SpO<tspan dy="2.5" font-size="7.5">2</tspan><tspan dy="-2.5">,</tspan> presión, temperatura,</text><text x="34" y="113">respiración, glucosa, masa</text><text class="mo" x="34" y="127">USB SERIE O UDP · NDJSON</text>
+    <rect x="237" y="60" width="200" height="74" rx="12" fill="rgba(111,214,176,.08)" stroke="rgba(111,214,176,.55)"/>
+    <text class="t" x="251" y="82">Teléfonos de la tripulación</text><text x="251" y="99">pulso del reloj, sueño,</text><text x="251" y="113">ánimo solo si se comparte</text><text class="mo" x="251" y="127">CADA 5 S · /V1/LOTE</text>
+    <rect x="454" y="60" width="200" height="74" rx="12" fill="#0f1722" stroke="rgba(150,185,215,.26)"/>
+    <text class="t" x="468" y="82">Simulador</text><text x="468" y="99">escenarios: desmayo, hipoglucemia,</text><text x="468" y="113">fiebre, hipoxia, CO<tspan dy="2.5" font-size="7.5">2</tspan></text><text class="m" x="468" y="127">VARIABILIDAD REAL · BIDMC</text>
+    <!-- flechas al núcleo -->
+    <path d="M120 134V158H300M337 134V158M554 134V158H374" fill="none" stroke="#46c8e8" stroke-width="1.4"/><path d="M337 158V170" stroke="#46c8e8" stroke-width="1.4"/><path d="M332 165l5 7 5-7" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <!-- fila 2: núcleo F Prime -->
+    <rect x="20" y="176" width="634" height="104" rx="14" fill="rgba(143,230,245,.07)" stroke="rgba(143,230,245,.55)"/>
+    <text class="mc" x="36" y="198">NÚCLEO DE VUELO · F PRIME V4.4.2 · C++</text>
+    <rect x="36" y="210" width="140" height="34" rx="8" fill="#0f1722" stroke="rgba(150,185,215,.26)"/><text class="t" x="48" y="231">Estacion</text><text class="m" x="128" y="231">50050</text>
+    <path d="M176 227h18" stroke="#46c8e8" stroke-width="1.4"/><path d="M189 223l6 4-6 4" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <rect x="196" y="210" width="170" height="34" rx="8" fill="#0f1722" stroke="rgba(236,106,168,.5)"/><text class="t" x="208" y="231">MonitorSalud</text><text class="mm" x="300" y="231">UMBRALES</text>
+    <path d="M366 227h18" stroke="#46c8e8" stroke-width="1.4"/><path d="M379 223l6 4-6 4" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <rect x="386" y="210" width="140" height="34" rx="8" fill="#0f1722" stroke="rgba(150,185,215,.26)"/><text class="t" x="398" y="231">Pantalla</text><text class="m" x="478" y="231">50051</text>
+    <rect x="540" y="210" width="98" height="34" rx="8" fill="#0f1722" stroke="rgba(150,185,215,.26)"/><text class="t" x="552" y="231">GDS</text><text class="m" x="590" y="231">CCSDS</text>
+    <text class="m" x="36" y="266">CDHCORE · COMCCSDS · FILEHANDLING · PRMDB · RATE GROUPS 1 / 0,5 / 0,25 HZ</text>
+    <path d="M456 280V300" stroke="#46c8e8" stroke-width="1.4"/><path d="M451 295l5 7 5-7" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <!-- fila 3: enlace + IA -->
+    <rect x="20" y="306" width="300" height="168" rx="14" fill="rgba(236,106,168,.07)" stroke="rgba(236,106,168,.5)"/>
+    <text class="mm" x="36" y="328">INTELIGENCIA A BORDO</text>
+    <text class="t" x="36" y="350">Qwen3 4B · llama.cpp</text><text class="m" x="200" y="350">:8081 LENGUAJE</text>
+    <text class="t" x="36" y="374">nomic embed v2</text><text class="m" x="200" y="374">:8084 BÚSQUEDA</text>
+    <text class="t" x="36" y="398">whisper.cpp</text><text class="m" x="200" y="398">:8083 OÍDO</text>
+    <text class="t" x="36" y="422">Kokoro</text><text class="m" x="200" y="422">:8082 VOZ</text>
+    <text class="t" x="36" y="446">MediaPipe Pose + Hands</text><text class="m" x="200" y="446">:8792 VISIÓN</text>
+    <text class="m" x="36" y="464">TODO EN EL COMPUTADOR DE LA NAVE</text>
+    <rect x="338" y="306" width="316" height="168" rx="14" fill="rgba(143,230,245,.07)" stroke="rgba(143,230,245,.55)"/>
+    <text class="mc" x="354" y="328">ENLACE DE LA NAVE · RUST (TAURI + AXUM)</text>
+    <text class="tg" x="354" y="352">NOVA PC</text>
+    <text x="354" y="372">HTTP :8750 · HTTPS :8751 · 39 rutas /v1/…</text>
+    <text x="354" y="388">flujo en vivo (SSE) y estado cada 5 s</text>
+    <text x="354" y="404">historia a 1 Hz, bitácora, kit, biblioteca</text>
+    <text x="354" y="420">protocolos, casa, misión y retraso de la luz</text>
+    <text x="354" y="436">abre y vigila los 7 servicios de a bordo</text>
+    <text class="m" x="354" y="462">CEREBRO: A BORDO POR DEFECTO · DEMO OPCIONAL</text>
+    <path d="M320 390h18" stroke="#ec6aa8" stroke-width="1.4"/>
+    <path d="M496 474V494" stroke="#46c8e8" stroke-width="1.4"/><path d="M496 494H110V506M496 494V506M560 494V506" fill="none" stroke="#46c8e8" stroke-width="1.4"/>
+    <!-- fila 4: interfaces -->
+    
+    <rect x="20" y="510" width="200" height="72" rx="12" fill="rgba(168,152,255,.09)" stroke="rgba(168,152,255,.55)"/>
+    <text class="t" x="34" y="532">Estación (pantalla grande)</text><text x="34" y="549">Crew, Vitals, Body twin, Mind,</text><text x="34" y="563">Kit, Library, Live scan, Systems</text>
+    <rect x="237" y="510" width="200" height="72" rx="12" fill="rgba(168,152,255,.09)" stroke="rgba(168,152,255,.55)"/>
+    <text class="t" x="251" y="532">App NOVA (modo misión)</text><text x="251" y="549">Today, Crew, Body, Mind, Log,</text><text x="251" y="563">Emergency, From home, widget</text>
+    <rect x="454" y="510" width="200" height="72" rx="12" fill="rgba(168,152,255,.09)" stroke="rgba(168,152,255,.55)"/>
+    <text class="t" x="468" y="532">Escáner del cuerpo (AR)</text><text x="468" y="549">cámara del teléfono, anatomía</text><text x="468" y="563">calzada, pasos sobre el cuerpo</text>
+    <text class="m" x="20" y="606">LA NAVE GUARDA: HISTORIA A 1 HZ · 41 FUENTES · 12 PROTOCOLOS</text><text class="m" x="20" y="622">KIT DE 42 INSUMOS · BITÁCORA · CLAVE PÚBLICA DE LA TIERRA</text>
+    <!-- enlace con la Tierra -->
+    <path d="M600 474V488" stroke="none"/>
+    <path d="M654 390H668V672" fill="none" stroke="#f2b457" stroke-width="1.4" stroke-dasharray="5 5"/>
+    <path d="M662 676V410H654" fill="none" stroke="#ec6aa8" stroke-width="1.4" stroke-dasharray="5 5"/>
+    <rect x="1" y="676" width="672" height="122" rx="22" fill="rgba(242,180,87,.045)" stroke="rgba(242,180,87,.36)" stroke-dasharray="5 6"/>
+    <text class="ma" x="20" y="700">LA TIERRA · 9,9 MINUTOS LUZ HOY (DÍA 220 DE LA MISIÓN)</text>
+    <rect x="20" y="712" width="200" height="72" rx="12" fill="rgba(242,180,87,.08)" stroke="rgba(242,180,87,.55)"/>
+    <text class="t" x="34" y="734">Control de Misión</text><text x="34" y="751">consola del cirujano: informe,</text><text x="34" y="765">umbrales, mensajes de casa</text>
+    <rect x="237" y="712" width="200" height="72" rx="12" fill="rgba(168,152,255,.09)" stroke="rgba(168,152,255,.55)"/>
+    <text class="t" x="251" y="734">Modelo padre</text><text x="251" y="751">aprende de los informes,</text><text x="251" y="765">destila un modelo hijo</text>
+    <rect x="454" y="712" width="146" height="72" rx="12" fill="rgba(236,106,168,.08)" stroke="rgba(236,106,168,.55)"/>
+    <text class="t" x="468" y="734">Firma ed25519</text><text x="468" y="751">la clave privada</text><text x="468" y="765">vive solo aquí</text>
+    
+    <text class="ma" x="480" y="664" text-anchor="end">INFORME DE BAJADA</text><text class="mm" x="650" y="664" text-anchor="end">PAQUETE DE SUBIDA</text>
+  </svg>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>06 / 40</span></div>
+</section>

@@ -1,0 +1,37 @@
+<section class="page">
+  <div class="kick">Presentación · Inteligencia a bordo</div>
+  <h1 style="font-size:25pt;margin-top:10px">Cinco modelos que caben en el computador de la nave</h1>
+  <p class="lead">Cada modelo corre en su propio servicio, solo en <code>127.0.0.1</code>; la nave lo abre y lo vigila. Si uno falta, sigue sin él y lo dice. Memoria medida con todo corriendo, el 14 de noviembre.</p>
+  <table class="t" style="margin-top:18px">
+    <tr><th style="width:104px">Función</th><th>Modelo</th><th>Motor · puerto</th><th style="width:64px">Disco</th><th style="width:72px">Licencia</th></tr>
+    <tr><td style="white-space:nowrap"><b><lu n="message-square-text" style="color:var(--lila)"></lu>&nbsp; Lenguaje</b></td><td>Qwen3-4B-Instruct-2507 · Q4_K_M · contexto 16.384, 2 turnos en paralelo, caché de prefijo</td><td>llama.cpp b12110 · Metal · <code>:8081</code></td><td>2,50 GB</td><td>Apache 2.0</td></tr>
+    <tr><td style="white-space:nowrap"><b><lu n="search" style="color:var(--lila)"></lu>&nbsp; Búsqueda</b></td><td>nomic-embed-text-v2-moe · Q4_K_M · 768 dimensiones, multilingüe</td><td>llama.cpp <code>--embedding</code> · <code>:8084</code></td><td>344 MB</td><td>Apache 2.0</td></tr>
+    <tr><td style="white-space:nowrap"><b><lu n="ear" style="color:var(--lila)"></lu>&nbsp; Oído</b></td><td>Whisper large-v3-turbo · q5_0 · idioma automático</td><td>whisper.cpp · <code>:8083</code></td><td>574 MB</td><td>MIT</td></tr>
+    <tr><td style="white-space:nowrap"><b><lu n="audio-lines" style="color:var(--lila)"></lu>&nbsp; Voz</b></td><td>Kokoro-82M v1.0 · voz af_heart (inglés), ef_dora (español)</td><td>ONNX Runtime · Python 3.12 · <code>:8082</code></td><td>337 MB</td><td>Apache 2.0</td></tr>
+    <tr><td style="white-space:nowrap"><b><lu n="scan-eye" style="color:var(--lila)"></lu>&nbsp; Visión</b></td><td>MediaPipe Pose Landmarker heavy (puntos 3D y máscara) + Hand Landmarker</td><td>MediaPipe 1.2.3 · GPU · <code>:8792</code> tras <code>/v1/vision/ws</code></td><td>38,5 MB</td><td>Apache 2.0</td></tr>
+  </table>
+  <div class="g2" style="margin-top:18px;align-items:start">
+    <div class="tj">
+      <div class="k" style="color:var(--cian)">Memoria en uso, medida</div>
+      <svg class="dg" viewBox="0 0 300 168" style="margin-top:10px" role="img" aria-label="Memoria por servicio">
+        <g font-size="10">
+          <text x="0" y="14">Lenguaje</text><rect x="92" y="5" width="170" height="12" rx="3" fill="#a898ff"/><text x="300" y="14" text-anchor="end" class="m" style="fill:#eef3f8">2,86 GB</text>
+          <text x="0" y="36">Oído</text><rect x="92" y="27" width="27" height="12" rx="3" fill="#a898ff" opacity=".8"/><text x="300" y="36" text-anchor="end" class="m" style="fill:#eef3f8">456 MB</text>
+          <text x="0" y="58">Voz</text><rect x="92" y="49" width="14" height="12" rx="3" fill="#a898ff" opacity=".8"/><text x="300" y="58" text-anchor="end" class="m" style="fill:#eef3f8">228 MB</text>
+          <text x="0" y="80">Búsqueda</text><rect x="92" y="71" width="13" height="12" rx="3" fill="#a898ff" opacity=".8"/><text x="300" y="80" text-anchor="end" class="m" style="fill:#eef3f8">223 MB</text>
+          <text x="0" y="102">Enlace (Rust)</text><rect x="92" y="93" width="12" height="12" rx="3" fill="#46c8e8"/><text x="300" y="102" text-anchor="end" class="m" style="fill:#eef3f8">194 MB</text>
+          <text x="0" y="124">Visión</text><rect x="92" y="115" width="5" height="12" rx="3" fill="#a898ff" opacity=".8"/><text x="300" y="124" text-anchor="end" class="m" style="fill:#eef3f8">79 MB</text>
+          <text x="0" y="146">GDS F Prime</text><rect x="92" y="137" width="3" height="12" rx="2" fill="#f2b457"/><text x="300" y="146" text-anchor="end" class="m" style="fill:#eef3f8">47 MB</text>
+          <text x="0" y="166">Núcleo F Prime</text><rect x="92" y="157" width="2" height="10" rx="1" fill="#f2b457"/><text x="300" y="166" text-anchor="end" class="m" style="fill:#eef3f8">4 MB</text>
+        </g>
+      </svg>
+      <p style="font-size:8pt;margin-top:8px;color:var(--mut)">Memoria residente de cada proceso. Total cercano a 4,1 GB: cabe en un computador de vuelo de 8 GB con margen.</p>
+    </div>
+    <div style="display:grid;gap:12px">
+      <div class="tj"><div class="k" style="color:var(--lila)">Rápido donde importa</div><p>Reglas y protocolos van primero en el prompt: con la caché de prefijo NOVA empieza a responder en cerca de 1,5 s. La visión tarda unos 13 ms por cuadro.</p></div>
+      <div class="tj"><div class="k" style="color:var(--amb)">Lo que los modelos no hacen</div><p>No deciden pasos médicos ni umbrales. Las emergencias responden con texto fijo: el modelo llegó a negar un paro reportado porque el sensor no lo mostraba.</p></div>
+      <div class="tj"><div class="k" style="color:var(--mag)">Demo opcional, declarada</div><p>Para la demo el cerebro puede ser Claude; la pantalla dice «demo brain · Claude» y vuelve sola al modelo de a bordo. Queda fuera de la arquitectura de vuelo.</p></div>
+    </div>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>05 / 40</span></div>
+</section>

@@ -1,0 +1,130 @@
+{
+ "lines": [
+  {
+   "id": "01",
+   "text": "In April, four humans flew around the Moon. Next, we go to Mars."
+  },
+  {
+   "id": "02",
+   "text": "Mars is 225 million kilometers away. A message home takes up to 22 minutes.",
+   "say": "Mars is two hundred twenty-five million kilometers away. A message home takes up to twenty-two minutes."
+  },
+  {
+   "id": "03",
+   "text": "Out there, the body changes. Bones thin, sleep drifts, and radiation adds up. And the crew has to catch it themselves."
+  },
+  {
+   "id": "04",
+   "text": "That's why I'm here. I'm Nova, and I watch over the crew, every minute of the mission."
+  },
+  {
+   "id": "05",
+   "text": "Our medical station measures heart, oxygen, blood pressure and breathing, and sends every reading straight to the ship's computer."
+  },
+  {
+   "id": "06",
+   "text": "Every morning, each astronaut sees their day at a glance, on their own phone."
+  },
+  {
+   "id": "07",
+   "text": "Their body: heart, oxygen and training, tracked every day, so small changes never become big problems."
+  },
+  {
+   "id": "08",
+   "text": "And their mind. Every evening we check in, and mood, stress and focus become a constellation they can read."
+  },
+  {
+   "id": "09",
+   "text": "The check-in takes a minute, with a tap or with their voice. No forms to fill in."
+  },
+  {
+   "id": "10",
+   "text": "And they decide what to share. Vital signs go to the flight surgeon, and their journal stays theirs."
+  },
+  {
+   "id": "11",
+   "text": "On the big screen, I watch the whole crew at once. When something drifts, I tell you why."
+  },
+  {
+   "id": "12",
+   "text": "For each of them, every vital sign, live, against the limits the flight surgeon set."
+  },
+  {
+   "id": "13",
+   "text": "I keep a living model of every body on board, so you can see exactly what space is changing: fluid rising to the head, bone thinning in the hips, and a heart that works less."
+  },
+  {
+   "id": "14",
+   "text": "And I notice the quiet things, like a crewmate whose mood has been low for days."
+  },
+  {
+   "id": "15",
+   "text": "When something goes wrong, anyone on board can help. I open the right protocol, step by step, with my voice and a metronome."
+  },
+  {
+   "id": "16",
+   "text": "Point a phone at the patient, and I see the body: bones, organs, and the exact spot for each step."
+  },
+  {
+   "id": "17",
+   "text": "I confirm what's right and correct what isn't: a little higher, toward the head."
+  },
+  {
+   "id": "18",
+   "text": "And CPR changes with gravity: on Mars, astride the patient. In weightlessness, a technique built for zero g."
+  },
+  {
+   "id": "19",
+   "text": "Ask where the defibrillator is, and its drawer opens. In an emergency, the whole rack lights up what to grab."
+  },
+  {
+   "id": "20",
+   "text": "I don't just watch the numbers. I forecast where they're heading, and warn before a line is crossed."
+  },
+  {
+   "id": "21",
+   "text": "I think on board, without waiting for Earth. And every night, I send Mission Control a report smaller than a photo."
+  },
+  {
+   "id": "22",
+   "text": "That report travels as CCSDS packets, from F Prime, NASA's flight software, the same one that flew the Ingenuity helicopter on Mars.",
+   "say": "That report travels as C C S D S packets, from F Prime, NASA's flight software, the same one that flew the Ingenuity helicopter on Mars."
+  },
+  {
+   "id": "23",
+   "text": "On Earth, a much bigger parent model learns from it, and flight surgeons check every change. Then it teaches a smaller child model, light enough for the ship's computer."
+  },
+  {
+   "id": "24",
+   "text": "The child flies back signed. The ship checks the signature before installing it, and rolls back if anything fails. And Mission Control sees it all with the real delay of light."
+  },
+  {
+   "id": "25",
+   "text": "Inside me runs a language model, speech recognition and a voice, all on the ship's own computer. No internet needed."
+  },
+  {
+   "id": "26",
+   "text": "Everything I do is built on NASA's own research: its human health risks, the Twins Study, and radiation measured on the way to Mars."
+  },
+  {
+   "id": "27",
+   "text": "NASA calls this Earth-independent medical care. We would test it in analog missions like HERA and CHAPEA, then on the space station, and then on the way to Mars."
+  },
+  {
+   "id": "28",
+   "text": "NOVA. Health that travels with you."
+  },
+  {
+   "id": "29",
+   "text": "Exercise is part of the treatment. I track every session, and show what skipping it would cost: bone and muscle, day by day."
+  },
+  {
+   "id": "30",
+   "text": "Women's health is built in from day one: cycle care that stays private, and a close watch on the risks NASA has found in flight, like clots in the neck veins."
+  },
+  {
+   "id": "31",
+   "text": "And every answer opens the real page of the book it came from."
+  }
+ ]
+}

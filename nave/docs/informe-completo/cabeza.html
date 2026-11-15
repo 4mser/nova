@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>NOVA · Informe técnico completo</title>
+<link rel="stylesheet" href="/@ambar/runtime/ambar.css">
+<link rel="stylesheet" href="/@ambar/runtime/doc.css">
+<link rel="stylesheet" href="/@ambar/runtime/fonts.css">
+<style>
+/* NOVA · documento de arquitectura. A4 fijo, fondo de espacio profundo, un color por función:
+   turquesa = la nave y los datos en vivo · lila = NOVA y los modelos · ámbar = la Tierra y el retraso de la luz ·
+   magenta = alertas y firmas · verde = sensores y verificación */
+@font-face{font-family:'SG';font-weight:300;font-display:block;src:url('fonts/space-grotesk-300-latin.woff2') format('woff2')}
+@font-face{font-family:'SG';font-weight:400;font-display:block;src:url('fonts/space-grotesk-400-latin.woff2') format('woff2')}
+@font-face{font-family:'SG';font-weight:500;font-display:block;src:url('fonts/space-grotesk-500-latin.woff2') format('woff2')}
+@font-face{font-family:'SG';font-weight:600;font-display:block;src:url('fonts/space-grotesk-600-latin.woff2') format('woff2')}
+@font-face{font-family:'SG';font-weight:700;font-display:block;src:url('fonts/space-grotesk-700-latin.woff2') format('woff2')}
+@font-face{font-family:'PM';font-weight:400;font-display:block;src:url('fonts/ibm-plex-mono-400-latin.woff2') format('woff2')}
+@font-face{font-family:'PM';font-weight:500;font-display:block;src:url('fonts/ibm-plex-mono-500-latin.woff2') format('woff2')}
+:root{
+  --bg:#04070b; --s1:#0a1018; --s2:#0f1722; --l1:rgba(150,185,215,.14); --l2:rgba(150,185,215,.26);
+  --ink:#eef3f8; --ink2:#c2ccd8; --mut:#8693a3; --dim:#5d6a7a;
+  --cian:#8fe6f5; --ac:#46c8e8; --lila:#a898ff; --amb:#f2b457; --mag:#ec6aa8; --ok:#6fd6b0;
+  --paper:#04070b; --paper-ink:#eef3f8; --paper-text:#c2ccd8;
+}
+.page{background:#04070b;color:var(--ink);padding:56px 60px 0;font-family:'Inter',sans-serif}
+.page::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(70% 40% at 92% 0%,rgba(15,74,92,.55),transparent 70%),radial-gradient(60% 35% at 0% 100%,rgba(42,29,82,.45),transparent 70%)}
+.page > *{position:relative}
+.kick{font:500 8pt 'PM',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--cian)}
+.page h1{font:600 30pt/1.04 'SG',sans-serif;letter-spacing:-.035em;color:var(--ink);margin:12px 0 0;max-width:600px}
+.page h1 .c{color:var(--cian)}
+.page h2{font:600 13pt/1.2 'SG',sans-serif;letter-spacing:-.015em;color:var(--ink);margin:0}
+.page p{font-size:10pt;line-height:1.6;color:var(--ink2);margin:0}
+.lead{margin-top:16px!important;font-size:10.8pt!important;line-height:1.62!important;max-width:660px}
+.mono{font-family:'PM',monospace}
+.pie{position:absolute;left:60px;right:60px;bottom:26px;display:flex;justify-content:space-between;font:400 7pt 'PM',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.pie b{font-weight:500;color:var(--mut)}
+.tj{background:var(--s1);border:1px solid var(--l1);border-radius:16px;padding:16px 18px 16px}
+.tj .k{font:500 7pt 'PM',monospace;letter-spacing:.18em;text-transform:uppercase}
+.tj h2{margin-top:6px}
+.tj p{margin-top:6px;font-size:9.4pt;line-height:1.55}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.dg{display:block;width:100%;height:auto}
+.dg text{font-family:'Inter',sans-serif;fill:#c2ccd8;font-size:10px}
+.dg .t{font-family:'SG',sans-serif;font-weight:600;fill:#eef3f8;font-size:12px}
+.dg .tg{font-family:'SG',sans-serif;font-weight:600;fill:#eef3f8;font-size:14px}
+.dg .m{font-family:'PM',monospace;font-weight:500;font-size:9px;letter-spacing:.1em;fill:#8693a3}
+.dg .mc{font-family:'PM',monospace;font-weight:500;font-size:9px;letter-spacing:.12em;fill:#8fe6f5}
+.dg .ma{font-family:'PM',monospace;font-weight:500;font-size:9px;letter-spacing:.12em;fill:#f2b457}
+.dg .ml{font-family:'PM',monospace;font-weight:500;font-size:9px;letter-spacing:.12em;fill:#a898ff}
+.dg .mm{font-family:'PM',monospace;font-weight:500;font-size:9px;letter-spacing:.12em;fill:#ec6aa8}
+.dg .mo{font-family:'PM',monospace;font-weight:500;font-size:9px;letter-spacing:.12em;fill:#6fd6b0}
+table.t{width:100%;border-collapse:collapse;font-size:9.2pt;background:var(--s1);border:1px solid var(--l1);border-radius:14px;overflow:hidden}
+table.t th{text-align:left;font:500 7pt 'PM',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);background:var(--s2);padding:9px 14px;border-bottom:1px solid var(--l1)}
+table.t td{padding:9px 14px;border-bottom:1px solid var(--l1);color:var(--ink2);vertical-align:top;line-height:1.45}
+table.t tr:last-child td{border-bottom:0}
+table.t td b{color:var(--ink);font-weight:600}
+table.t code,p code{font-family:'PM',monospace;font-weight:400;font-size:7.6pt;color:var(--cian)}
+.est{font:500 7pt 'PM',monospace;letter-spacing:.08em;padding:2px 7px;border-radius:999px;white-space:nowrap;border:1px solid}
+.est.ok{color:var(--ok);border-color:rgba(111,214,176,.5)}.est.par{color:var(--amb);border-color:rgba(242,180,87,.5)}.est.sig{color:var(--lila);border-color:rgba(168,152,255,.5)}
+.sec{display:flex;align-items:baseline;gap:14px}
+.sec .n{font:300 30pt/1 'SG',sans-serif;color:var(--dim);letter-spacing:-.04em}
+.lista{display:grid;gap:12px;margin-top:4px}
+.it{display:grid;grid-template-columns:14px 1fr;gap:10px;align-items:start}
+.it i{width:8px;height:8px;border-radius:50%;margin-top:6px}
+.it p{font-size:9.8pt}
+.it b{color:var(--ink);font-weight:600}
+
+.franja{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--l1);border:1px solid var(--l1);border-radius:14px;overflow:hidden;margin-top:20px}
+.franja div{background:var(--s1);padding:12px 14px}
+.franja b{display:block;font:300 19pt/1 'SG',sans-serif;letter-spacing:-.03em;color:var(--ink)}
+.franja span{display:block;font-size:8.2pt;color:var(--mut);margin-top:6px;line-height:1.35}
+.aire table.t td{padding:11px 14px}
+.aire .tj{padding:19px 20px 19px}
+.aire h2{margin-top:30px!important}
+.aire .g2,.aire .g3{gap:14px}
+.aire2 table.t td{padding:9.5px 14px}.aire3 table.t td{padding:7.5px 14px}.aire3 .tj{padding:16px 18px}.aire3 h2{margin-top:22px!important}.aire2 .tj{padding:18px 19px 18px}.aire2 h2{margin-top:28px!important}
+/* flechas y signos (≤ ≥ → ↔ ≈ −) que no traen los subconjuntos latinos: Noto Sans Math, SIL OFL 1.1 */
+@font-face{font-family:'SG';font-weight:300;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+@font-face{font-family:'SG';font-weight:400;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+@font-face{font-family:'SG';font-weight:500;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+@font-face{font-family:'SG';font-weight:600;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+@font-face{font-family:'SG';font-weight:700;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+@font-face{font-family:'Inter';font-weight:400;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+@font-face{font-family:'Inter';font-weight:500;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+@font-face{font-family:'Inter';font-weight:600;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+@font-face{font-family:'Inter';font-weight:700;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+@font-face{font-family:'PM';font-weight:400;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+@font-face{font-family:'PM';font-weight:500;font-display:block;src:url('fonts/noto-sans-math-400.woff2') format('woff2');unicode-range:U+2190-21FF,U+2212,U+2248,U+2264-2265}
+.sb{font-size:.72em;vertical-align:-.25em;line-height:0}
+/* ── informe completo: piezas nuevas ── */
+.ic{display:inline-block;width:1em;height:1em;vertical-align:-.14em;flex:none}
+.ic svg{width:100%;height:100%;display:block}
+.logo{display:flex;align-items:center;gap:9px;background:var(--s1);border:1px solid var(--l1);border-radius:12px;padding:9px 11px;min-width:0}
+.logo .ic{width:20px;height:20px}
+.logo b{display:block;font:600 9.4pt/1.15 'SG',sans-serif;color:var(--ink)}
+.logo span{display:block;font-size:7.6pt;line-height:1.3;color:var(--mut)}
+.mono-tile{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;font:500 7pt 'PM',monospace;color:#04070b;flex:none}
+.cap{border:1px solid var(--l2);border-radius:12px;overflow:hidden;background:#000}
+.cap img{display:block;width:100%}
+.capleg{font-size:7.8pt;line-height:1.4;color:var(--mut);margin-top:6px}
+.capleg b{color:var(--ink2);font-weight:600}
+.tel{border:1px solid var(--l2);border-radius:22px;padding:5px;background:#0a0f15}
+.tel img{display:block;width:100%;border-radius:17px}
+.parte{font:300 120pt/0.9 'SG',sans-serif;letter-spacing:-.06em;color:rgba(143,230,245,.12)}
+.cita{border-left:2px solid var(--lila);padding:2px 0 2px 14px}
+.cita p{font-size:9.6pt;color:var(--ink)}
+.chip{display:inline-flex;align-items:center;gap:5px;font:500 7pt 'PM',monospace;letter-spacing:.08em;padding:3px 8px;border-radius:999px;border:1px solid var(--l2);color:var(--ink2);white-space:nowrap}
+@media print{*{box-shadow:none!important;text-shadow:none!important}}
+</style>
+</head>
+<body>

@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NOVA · Health that travels with you</title>
+<meta name="description" content="NOVA watches over every astronaut on the way to Mars: body, mind and radiation, on board and offline. A Team B&N project for the NASA Space Apps Challenge 2026.">
+<meta property="og:title" content="NOVA · Health that travels with you">
+<meta property="og:description" content="The health copilot for the crew going to Mars. Body, mind and radiation, on board and offline.">
+<meta property="og:image" content="https://nova-spaceapps.vercel.app/og.jpg">
+<meta property="og:url" content="https://nova-spaceapps.vercel.app/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#04070b">
+<link rel="alternate" hreflang="en" href="https://nova-spaceapps.vercel.app/">
+<link rel="alternate" hreflang="es" href="https://nova-spaceapps.vercel.app/es/">
+<link rel="alternate" hreflang="x-default" href="https://nova-spaceapps.vercel.app/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="motor/fonts/space-grotesk-500-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="nova.css?v=1791100000">
+</head><body>
+
+<nav id="nav"><div class="wrap">
+  <a class="marca" href="#historia" aria-label="NOVA"><svg id="navNova" viewBox="0 0 60 60"></svg><span>NOVA</span></a>
+  <div class="links"><a href="#historia">Story</a><a href="#modelos">How it works</a><a href="#real">Real screens</a><a href="#mujeres">Women's health</a><a href="#radiacion">Radiation</a><a href="#ciencia">Science</a><a href="#videos">Videos</a><a href="#preguntas">FAQ</a></div>
+  <span class="evento"><i></i>Space Apps 2026</span>
+  <span class="idioma" aria-label="Language"><a href="./" lang="en" aria-current="true">EN</a><a href="es/" lang="es" hreflang="es">ES</a></span>
+</div></nav>
+
+<!-- ═══ LA HISTORIA: el código del video, en la página, manejado por el scroll ═══ -->
+<section id="historia" class="top" aria-label="Nova's story">
+  <h1 class="oculto">NOVA, the health copilot for astronauts on the way to Mars</h1>
+  <div class="h-pin">
+    <div class="h-escena" id="hEscena"><div class="h-marco" id="hMarco">
+      <video id="hVid" muted playsinline autoplay loop preload="auto" aria-label="Nova's story"></video>
+      <div class="h-aviso" id="hAviso">Tap to hear Nova</div>
+      <div class="h-ctl3">
+        <button id="hSon" aria-label="Sound" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path class="on" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="off" d="M17 9l5 6M22 9l-5 6"/></svg></button>
+        <button id="hPlay" aria-label="Pause"><svg viewBox="0 0 24 24"><path class="p1" d="M8 5v14M16 5v14"/><path class="p2" d="M7 5l12 7-12 7z"/></svg></button>
+        <button id="hFull" aria-label="Full screen"><svg viewBox="0 0 24 24"><path class="ex" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/><path class="co" d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
+      </div>
+      <div class="h-pie"><div class="h-prog" id="hProgW"><i id="hProg"></i></div><span id="hPaso">0:00</span></div>
+    </div></div>
+  </div>
+</section>
+
+<div class="estado wrap"><i></i><p>NOVA is a working prototype built for NASA Space Apps 2026. It runs on a ship computer around NASA's F Prime flight software, with every model on board. The crew and their numbers are demo data.</p></div>
+
+<!-- ═══ CÓMO FUNCIONA: todo a bordo ═══ -->
+<section class="sec" id="modelos"><div class="wrap">
+  <span class="rot rev">How it works</span>
+  <h2 class="rev">Everything runs <span class="g">on board.</span></h2>
+  <p class="sub rev">No internet and no cloud during the mission. A medical station and each astronaut's phone feed NASA's F Prime flight core, and five small models on the ship's own computer turn those numbers into care the crew can act on.</p>
+  <div class="mod-grid rev">
+    <div><span class="ic" style="background:#f2f5f8;border-color:#f2f5f8"><img src="img/fprime-logo.svg" alt="F Prime" style="width:24px;height:auto"></span><canvas class="sig" data-k="bone" aria-hidden="true"></canvas><b>Flight core</b><p>Every reading is checked against limits the flight surgeon can change from Earth.</p><small>F Prime · NASA JPL · CCSDS packets</small></div>
+    <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 10h8M8 13h5"/></svg></span><canvas class="sig" data-k="fatigue" aria-hidden="true"></canvas><b>Language model</b><p>Answers, explains and writes the nightly report. It never decides a medical step.</p><small>Qwen3 4B · llama.cpp · offline</small></div>
+    <div><span class="ic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><canvas class="sig" data-k="voice" aria-hidden="true"></canvas><b>Speech and voice</b><p>Understands the crew and reads every step aloud, in English and Spanish.</p><small>whisper.cpp · Kokoro</small></div>
+    <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><canvas class="sig" data-k="sleep" aria-hidden="true"></canvas><b>Vision</b><p>Sees the body and the rescuer's hands through a phone camera, about 15 ms a frame.</p><small>MediaPipe Pose + Hands · ship GPU</small></div>
+    <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/></svg></span><canvas class="sig" data-k="bone" aria-hidden="true"></canvas><b>Medical library</b><p>41 open sources and 35,830 passages. Every answer opens the real page it came from.</p><small>Gray's Anatomy · OpenStax · ISS medical kit</small></div>
+    <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></span><canvas class="sig" data-k="stress" aria-hidden="true"></canvas><b>Medical station</b><p>ECG, oxygen, blood pressure, temperature, breathing and glucose, one line of JSON per reading.</p><small>Built by our team · USB or UDP</small></div>
+  </div>
+</div></section>
+
+<!-- ═══ PANTALLAS REALES ═══ -->
+<section class="sec" id="real"><div class="wrap">
+  <span class="rot rev">Real screens</span>
+  <h2 class="rev">Not a mockup. <span class="g">The real thing.</span></h2>
+  <p class="sub rev">Captured from NOVA running on our ship computer, with the demo crew: Mara, David, Ingrid and Kenji.</p>
+  <div class="shots rev">
+    <figure class="ancha"><img src="img/real/estacion.jpg" alt="NOVA PC crew view: four crew members with live vital signs and a note that Kenji is running low" loading="lazy"><figcaption><b>The big screen</b>The whole crew at once, live from the flight core. When something drifts, Nova says why.</figcaption></figure>
+    <figure class="fono"><img src="img/real/app-hoy.jpg" alt="NOVA app Today screen in mission mode" loading="lazy"><figcaption><b>Each astronaut's phone</b>Their day at a glance, Emergency and the body scan, linked to the ship.</figcaption></figure>
+    <figure><img src="img/real/emergencia.jpg" alt="Emergency guide for cardiac arrest in microgravity with a 110 per minute metronome" loading="lazy"><figcaption><b>Emergencies</b>12 protocols with their source and page. Nova reads each step and keeps the beat.</figcaption></figure>
+    <figure><img src="img/real/escaner.jpg" alt="Body scan: organs and the heart drawn over a patient on the floor, with live heart rate" loading="lazy"><figcaption><b>Body scan</b>A phone camera, vision on the ship, anatomy fitted to the patient.</figcaption></figure>
+    <figure><img src="img/real/rcp-0g.jpg" alt="CPR coaching in microgravity with the Evetts-Russomano technique and patient drift" loading="lazy"><figcaption><b>CPR for every gravity</b>Earth, Mars at 0.38 g, or weightlessness with Evetts-Russomano and drift.</figcaption></figure>
+    <figure><img src="img/real/kit.jpg" alt="Medical kit rack with drawer A lit and the defibrillator photo" loading="lazy"><figcaption><b>The medical kit</b>Ask for the defibrillator and its drawer lights up.</figcaption></figure>
+    <figure><img src="img/real/biblioteca.jpg" alt="Medical library showing the real page of a CPR in microgravity guideline with the passage highlighted" loading="lazy"><figcaption><b>The library</b>Every answer opens the real page, highlighted.</figcaption></figure>
+  </div>
+  <p class="cred-real rev">CPR footage under the scan: «RCP.ogv» by Primerosauxilios, CC BY-SA 3.0, Wikimedia Commons.</p>
+</div></section>
+
+<!-- ═══ EJERCICIO ═══ -->
+<section class="sec" id="ejercicio"><div class="wrap">
+  <span class="rot rev">Exercise</span>
+  <h2 class="rev">Exercise is part <span class="g">of the treatment.</span></h2>
+  <p class="sub rev">Without weight on them, the hip and leg bones lose 1 to 1.5% of their density each month, and posture muscles shrink fast. NOVA's body twin projects every crew member with and without their exercise plan, so skipping a session has a visible cost.</p>
+  <div class="ej rev">
+    <figure><img src="img/real/gemelo-con.jpg" alt="Mara's body twin on day 219 with the exercise plan: hip bone −4.7%, leg muscle −6%" loading="lazy"><figcaption><span class="tag ok">Plan on</span>Hip and thigh bones <b>−4.7%</b> · leg muscles <b>−6%</b></figcaption></figure>
+    <figure><img src="img/real/gemelo-sin.jpg" alt="The same body twin without exercise: hip bone −9.0%, leg muscle −17%" loading="lazy"><figcaption><span class="tag at">Plan off</span>Hip and thigh bones <b>−9.0%</b> · leg muscles <b>−17%</b></figcaption></figure>
+  </div>
+  <p class="rd-pie rev">Mara Reyes, day 219 of a demo mission. Rates from the NASA Human Research Program (bone fracture and muscle evidence reports) and NASA OCHMO-MTB-013 (2026): resistance exercise on the ARED protects bone about equally in women and men (Smith et al., JBMR 2014).</p>
+</div></section>
+
+<!-- ═══ SALUD DE LAS MUJERES ═══ -->
+<section class="sec" id="mujeres"><div class="wrap">
+  <span class="rot rev">Women's health</span>
+  <h2 class="rev">Women's health, <span class="g">built in.</span></h2>
+  <p class="sub rev">About half of NASA's new astronaut candidates are women, yet most spaceflight data still comes from men. NOVA follows what NASA has learned so far, and keeps the most private data on her own phone.</p>
+  <div class="muj rev">
+    <div class="muj-fonos"><img src="img/real/app-ciclo.jpg" alt="NOVA app Cycle screen: menstrual suppression with the continuous pill, 97% of pills taken, a note about breakthrough bleeding and a reminder about the neck-vein ultrasound" loading="lazy"><img src="img/real/app-ciclo-nasa.jpg" alt="Cycle screen: last 30 days, supplies for the mission and the neck-vein ultrasound NASA asks for" loading="lazy"></div>
+    <ol class="evid">
+      <li><b>Cycle care that stays private</b><p>Track the cycle or suppress it with a continuous pill, implant or hormonal IUD. Nothing reaches the crew screen; only a summary goes to the flight surgeon, and only if she chooses.</p><small>Jain &amp; Wotring, npj Microgravity 2016 · npj Microgravity 2025</small></li>
+      <li><b>Clots in the neck veins</b><p>In weightlessness, blood slows in the jugular vein in about half of crew members, women and men. A clot was found on an astronaut taking a combined pill. NASA now screens everyone by ultrasound; NOVA reminds the scan, marks methods with estrogen and treats a swollen neck, leg or chest pain as urgent.</p><small>Marshall-Goebel et al., JAMA Netw Open 2019 · NASA OCHMO-MTB-007, 2026</small></li>
+      <li><b>Supplies until home</b><p>Pills and pads counted against the days left in the mission. For a three-year mission that is about 1,100 pills.</p><small>Jain &amp; Wotring, npj Microgravity 2016</small></li>
+      <li><b>Anemia and urinary health</b><p>Heavy bleeding with low energy, or burning when peeing, points her to the flight surgeon and the right test in the kit.</p><small>Frontiers in Physiology 2025 · NASA OCHMO-MTB-003</small></li>
+      <li><b>Ready to stand up again</b><p>Dizziness on standing after landing is more common in women. Before landing, NOVA plans a stand test, fluids and compression garments.</p><small>npj Microgravity 2025</small></li>
+      <li><b>One radiation limit</b><p>NASA now uses 600 mSv for everyone, set for the most sensitive case: a woman early in her career. NOVA counts every dose against it.</p><small>NASA-STD-3001 · OCHMO-TB-020</small></li>
+    </ol>
+  </div>
+  <p class="rd-pie rev">NOVA is not a medical device: care signals point to the flight surgeon and are not a diagnosis. Reproductive health in long missions is still an open research question (Nature, npj Women's Health 2024).</p>
+</div></section>
+
+<!-- ═══ BANDA: la Tierra lejana, antes del ciclo nave–Tierra ═══ -->
+<section class="banda" id="ciclo" aria-label="Smarter every night">
+  <div class="b-foto" aria-hidden="true"><img src="img/tierra-lejana.jpg" alt="" loading="lazy"></div>
+  <svg class="b-viaje" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true"><path id="bRuta" d="M60 330 C 360 300, 560 150, 820 170" /><circle r="4" class="b-pk"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#bRuta"/></animateMotion></circle></svg>
+  <div class="wrap b-txt">
+    <span class="rot rev">Every night</span>
+    <h2 class="rev">While the crew sleeps,<br><span class="g">Nova goes home.</span></h2>
+    <p class="sub rev">A report of about 6 KB leaves the F Prime core as CCSDS packets and crosses up to 22 light-minutes to Earth. There, a larger parent model learns from it, flight surgeons review every change, and a smaller child model flies back, signed with ed25519. The ship checks the signature before installing it and rolls back if anything fails.</p>
+  </div>
+  <span class="b-cred">PHOTO · NASA / ARTEMIS II</span>
+</section>
+
+<section class="sec sec-bucle" id="aprende"><div class="wrap">
+  <span class="rot rev">Proposed learning loop</span>
+  <h2 class="rev">It thinks on board. <span class="g">It learns at home.</span></h2>
+  <p class="sub rev">One night of the loop, running live. Move the ship farther from Earth, hide it behind the Sun, or try to slip a bad update past Mission Control.</p>
+  <div class="rd lp rev">
+    <div class="rd-vis"><canvas id="lpCv" aria-label="Simulation of the learning loop between the ship and Earth"></canvas></div>
+    <aside class="rd-panel lp-panel">
+      <div class="lp-top"><div><div class="rd-k">Mission night</div><div class="rd-n"><b id="lpNoche">41</b></div></div>
+        <div><div class="rd-k">Model on board</div><div class="rd-n"><b id="lpVer">v1.4</b></div></div></div>
+      <ol class="lp-pasos" id="lpPasos"><li>On board</li><li>To Earth</li><li>Learns</li><li>Review</li><li>Back</li></ol>
+      <div class="rd-nova"><svg id="lpNova" viewBox="0 0 60 60"></svg><p id="lpMsg"></p></div>
+      <label class="lp-dist"><span class="rd-k">Light delay, one way <b id="lpDel">12 min</b></span><input type="range" id="lpD" min="3" max="22" step="0.5" value="12"></label>
+      <div class="rd-ctl lp-ctl"><button id="lpPlay" aria-label="Play or pause the loop"><svg viewBox="0 0 24 24"><path class="p2" d="M7 5l12 7-12 7z"/><path class="p1" d="M8 5v14M16 5v14"/></svg></button><button class="btn lp-b" id="lpConj"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Solar conjunction</button></div>
+      <button class="btn lp-b mal" id="lpMal"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>Slip in a bad update</button>
+    </aside>
+  </div>
+  <p class="rd-pie rev">Illustrative simulation of the proposed design. One-way light time between Earth and Mars ranges from about 3 to 22 minutes, and around solar conjunction, roughly every 26 months, Mars missions pause commanding for about two weeks (NASA). Report and update sizes, alert error and approvals are design targets and demo data.</p>
+</div></section>
+
+<!-- ═══ RADIACIÓN INTERACTIVA ═══ -->
+<section class="sec" id="radiacion"><div class="wrap">
+  <span class="rot rev">Try it</span>
+  <h2 class="rev">Radiation adds up. <span class="g">Nova keeps count.</span></h2>
+  <p class="sub rev">Drag through a mission to Mars and watch the dose build up against NASA's career limit. Then hit the crew with a solar storm.</p>
+  <div class="rd rev">
+    <div class="rd-vis"><canvas id="rdCv" aria-label="Mission dose over time"></canvas></div>
+    <aside class="rd-panel">
+      <div class="rd-a"><div class="rd-k">Mission day</div><div class="rd-n"><b id="rdDiaN">0</b><small>of 860</small></div>
+        <div class="rd-f"><span id="rdFase">Cruise to Mars</span><small><b id="rdTasa">1.84</b> mSv / day</small></div></div>
+      <div class="rd-b"><div class="rd-k">Dose so far</div><div class="rd-n big"><b id="rdTot">0</b><small>mSv</small></div>
+        <div class="rd-barra"><i id="rdBar"></i><span id="rdPct">0%</span></div></div>
+      <div class="rd-nova"><svg id="rdNova" viewBox="0 0 60 60"></svg><p id="rdMsg"></p></div>
+      <div class="rd-ctl">
+        <button id="rdPlay" aria-label="Play or pause the mission"><svg viewBox="0 0 24 24"><path class="p2" d="M7 5l12 7-12 7z"/><path class="p1" d="M8 5v14M16 5v14"/></svg></button>
+        <input type="range" id="rdDia" min="0" max="860" step="1" value="40" aria-label="Mission day">
+      </div>
+      <button class="btn btn-tor" id="rdTorm"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Trigger a solar storm</button>
+    </aside>
+  </div>
+  <p class="rd-pie rev">Illustrative mission: 180 days of cruise each way and 500 days on Mars. Daily doses measured by Curiosity's RAD: 1.84 mSv in cruise (Zeitlin et al., 2013) and 0.64 mSv on the surface (Hassler et al., 2014). Storm values are illustrative.</p>
+</div></section>
+
+<!-- ═══ CIENCIA ═══ -->
+<section class="sec" id="ciencia"><div class="wrap">
+  <span class="rot rev">Built on NASA science</span>
+  <h2 class="rev">Every number has <span class="g">a source.</span></h2>
+  <div class="cifras rev">
+    <div><b><span class="cnt" data-n="225">225</span><small>M km</small></b><p>average distance from Earth to Mars</p></div>
+    <div><b><span class="cnt" data-n="22">22</span><small>min</small></b><p>for a message to reach home, one way</p></div>
+    <div><b>1–1.5<small>%/month</small></b><p>of hip bone density lost in microgravity</p></div>
+    <div class="amb"><b>≈<span class="cnt" data-n="660">660</span><small>mSv</small></b><p>for a round trip to Mars, over NASA's 600 mSv career limit</p></div>
+  </div>
+  <ul class="fuentes rev">
+    <li><b>Human Research Program</b><span>The five hazards of human spaceflight and their health risks.</span></li>
+    <li><b>NASA Twins Study</b><span>What a year in space changed in one twin and not the other (Science, 2019).</span></li>
+    <li><b>MSL RAD</b><span>Radiation measured inside Curiosity on the way to Mars (Zeitlin et al., Science, 2013).</span></li>
+    <li><b>NASA-STD-3001</b><span>NASA's crew health and performance standards.</span></li>
+    <li><b>Open Science Data Repository</b><span>NASA's open biological and physiological spaceflight data.</span></li>
+    <li><b>Venous thrombosis in spaceflight</b><span>NASA OCHMO-MTB-007 (2026): jugular stasis and the ultrasound screening of every crewmember.</span></li>
+    <li><b>Women in space</b><span>Sex differences in spaceflight and female astronaut health (npj Microgravity, 2025; Experimental Physiology, 2026).</span></li>
+    <li><b>CPR in microgravity</b><span>The DGLRM/ESAM guideline behind every CPR step (Hinkelbein et al., 2020).</span></li>
+  </ul>
+  <div class="ruta rev">
+    <div class="r-linea"><i id="rLlena"></i></div>
+    <div class="r-paso"><span>Now</span><b>Prototype</b><small>Space Apps 2026</small></div>
+    <div class="r-paso"><span>Step 2</span><b>HERA</b><small>45-day analog mission</small></div>
+    <div class="r-paso"><span>Step 3</span><b>CHAPEA</b><small>One year in a simulated Mars habitat</small></div>
+    <div class="r-paso"><span>Step 4</span><b>Space station</b><small>Real crews, real orbit</small></div>
+    <div class="r-paso"><span>Goal</span><b>Artemis and Mars</b><small>Earth-independent medical care</small></div>
+  </div>
+</div></section>
+
+<!-- ═══ VIDEOS ═══ -->
+<section class="sec" id="videos"><div class="wrap">
+  <span class="rot rev">Videos</span>
+  <h2 class="rev">Nova, <span class="g">in short films.</span></h2>
+  <p class="sub rev">Meet Nova, her friends and the training for Mars.</p>
+  <div class="gal rev" id="gal"></div>
+</div></section>
+<div class="vmod" id="vmod" aria-hidden="true"><div class="vmod-in"><button id="vcer" aria-label="Close">✕</button><video id="vmv" controls playsinline></video><b id="vtit"></b></div></div>
+
+<!-- ═══ PREGUNTAS ═══ -->
+<section class="sec" id="preguntas"><div class="wrap estrecho">
+  <span class="rot rev">FAQ</span>
+  <h2 class="rev">Ask before <span class="g">launch.</span></h2>
+  <div class="faq rev">
+    <details><summary>Is NOVA real?<i></i></summary><p>Yes. NOVA is a working prototype our team built for the NASA Space Apps Challenge 2026, for the challenge "Create Health Monitoring Software for Astronauts on Space Missions". The flight core, the ship screens, the phone app and the body scan all run today. The crew and their numbers are demo data.</p></details>
+    <details><summary>Does it need a connection to Earth?<i></i></summary><p>No. Every model runs on the ship's computer, offline. Once a night, NOVA sends Mission Control a report of about 6 KB, and improvements come back signed, with the real delay of light.</p></details>
+    <details><summary>Who sees what an astronaut shares?<i></i></summary><p>She or he decides. Vital signs go to the flight surgeon. Mood leaves the phone only if they choose to share their day, cycle care stays on the phone unless she sends a summary, and the journal never leaves it.</p></details>
+    <details><summary>How does NOVA handle women's health?<i></i></summary><p>It follows what NASA has learned: private cycle care or menstrual suppression, the neck-vein ultrasound NASA now requires, urgent signs for clots, supplies counted to the end of the mission, anemia and urinary checks, and readiness for landing.</p></details>
+    <details><summary>Does Nova replace the flight surgeon?<i></i></summary><p>No. Emergency steps come from a reviewed file with their source and page, and the limits live in the flight core. Nova explains and guides; the crew and their doctors decide.</p></details>
+    <details><summary>Where does the knowledge come from?<i></i></summary><p>41 open medical sources on board (35,830 passages), NASA's Human Research Program evidence, NASA-STD-3001, open spaceflight data from OSDR and public heart and sleep datasets from PhysioNet.</p></details>
+  </div>
+</div></section>
+
+<!-- ═══ CIERRE ═══ -->
+<section class="sec cierre"><div class="wrap">
+  <svg id="finNova" viewBox="0 0 400 400" role="img" aria-label="NOVA"></svg>
+  <h2 class="rev">NOVA. <span class="g">Health that travels with you.</span></h2>
+  <p class="sub rev">NASA Space Apps Challenge · November 14–15, 2026</p>
+  <div class="ctas rev"><a class="btn btn-p" href="#historia">Watch the story again</a></div>
+</div></section>
+
+<footer><div class="wrap">
+  <img src="motor/img/logo-bn.png" alt="B&N Solutions" class="f-logo">
+  <p>NOVA is a Team B&amp;N project for the NASA International Space Apps Challenge. It is not affiliated with or endorsed by NASA. Space images: NASA, public domain. Crew, names and numbers in the interfaces are demo data.</p>
+</div></footer>
+
+<!-- NOVA flotante + chat -->
+<button class="fab" id="fab" aria-label="Ask Nova"><svg id="fabNova" viewBox="0 0 120 120"></svg><span class="globo" id="fabGlobo">Ask me anything</span></button>
+<div class="velo" id="velo"></div>
+<section class="chat" id="chat" aria-label="Chat with Nova" aria-hidden="true">
+  <div class="c-asa" id="chatAsa" aria-hidden="true"><i></i></div>
+  <div class="c-cab"><svg id="chatNova" viewBox="0 0 60 60"></svg><div><b>Nova</b><small>Health copilot · on board</small></div><button id="chatX" aria-label="Close">✕</button></div>
+  <div class="c-msgs" id="chatMsgs"></div>
+  <div class="c-chips" id="chatChips"></div>
+</section>
+
+<script src="motor/mascota-base.js?v=1791066072"></script>
+<script src="motor/mascota-orbes.js?v=1791066072"></script>
+<script src="nova.js?v=1791066072"></script>
+<script src="radiacion.js?v=1791066072"></script>
+<script src="bucle.js?v=1791100000"></script>
+</body></html>

@@ -1,0 +1,28 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">13</span>&nbsp;&nbsp;·&nbsp;&nbsp;La pantalla de la nave</div>
+  <h1 style="font-size:25pt;margin-top:10px">Una pantalla para la tripulación, legible a dos metros</h1>
+  <p class="lead">NOVA PC es la ventana de escritorio de la nave (Tauri) y la misma interfaz servida por el enlace en <code>:8750</code>. Recibe el estado del núcleo F Prime una vez por segundo por SSE y lo muestra en ocho vistas. La vista <b>Crew</b> es la de inicio: los cuatro tripulantes lado a lado, con NOVA a la derecha.</p>
+  <div class="cap" style="margin-top:16px"><img style="height:340px;object-fit:cover;object-position:top" src="img/capturas/pc2-crew.jpg" alt="Vista Crew de NOVA PC con cuatro tripulantes"></div>
+  <p class="capleg"><b>Vista Crew, 14 nov 2026, día 220 de misión.</b> Anillo de pulso, ritmo y seis signos por tripulante. Kenji aparece en ámbar por un ánimo de 2/5 en su check-in.</p>
+  <div class="g3" style="margin-top:14px">
+    <div class="tj">
+      <div class="k" style="color:var(--amb)"><lu n="triangle-alert"></lu>&nbsp; Tarjetas de NOVA</div>
+      <p>Cada aviso sale de reglas fijas, no del modelo: qué cambió, qué hacer y la fuente. Pulso y presión bajos a la vez abren la guía de desmayo. <b>Acknowledge</b> lo calla 2 min si el nivel no sube.</p>
+    </div>
+    <div class="tj">
+      <div class="k" style="color:var(--cian)"><lu n="maximize"></lu>&nbsp; Llena cualquier ventana</div>
+      <p>Diseñada para 1800×1000, <code>escala.js</code> la ajusta con un factor de 0,68 a 1,35: la letra crece con la ventana y la grilla reparte el resto. Sirve en un portátil o en la pantalla del módulo.</p>
+    </div>
+    <div class="tj">
+      <div class="k" style="color:var(--lila)"><lu n="audio-lines"></lu>&nbsp; Voz y oído a bordo</div>
+      <p>Habla con Kokoro frase por frase; si falla, usa la voz del sistema, también sin red. Escucha con whisper.cpp: corta tras 0,9 s de silencio y no se oye a sí misma.</p>
+    </div>
+  </div>
+  <table class="t" style="margin-top:14px">
+    <tr><th style="width:30%">Vista</th><th>Qué muestra</th><th style="width:16%">Estado</th></tr>
+    <tr><td><b>Crew · Vitals · Body twin · Mind</b></td><td>En vivo · historia y pronóstico (14) · gemelo 3D (15) · estado mental (16)</td><td><span class="est ok">en uso</span></td></tr>
+    <tr><td><b>Live body scan</b></td><td>El escáner en RA visto desde la nave, con control remoto del visor (parte III)</td><td><span class="est ok">en uso</span></td></tr>
+    <tr><td><b>Medical kit · Systems · Library</b></td><td>Rack 3D (19) · núcleo F Prime (20) · biblioteca y lector (18)</td><td><span class="est ok">en uso</span></td></tr>
+  </table>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>13 / 40</span></div>
+</section>

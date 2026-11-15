@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#04070b">
+<title>NOVA Station</title>
+<!-- NOVA Station en la tablet común de la nave (vertical).
+     Sin tarjeta, «Órbita»: NOVA al centro y la tripulación orbitándola, con la misión arriba y lo común abajo.
+     Con la tarjeta NFC de un astronauta, «Gemelo»: su cuerpo en 3D con sus signos en cada órgano y NOVA a su lado. -->
+<link rel="stylesheet" href="station.css?v=3">
+<script>
+// lo que el gemelo 3D (gemelo3d.mjs, compartido con la estación del PC) espera encontrar como globales
+var vista = 'comun', CREW = [], ultimo = null, mision = null, REG;
+var RANGO = { sin_dato: 0, normal: 1, esperado_vuelo: 2, vigilar: 2, atencion: 3, aviso_tierra: 4 };
+function $(id) { return document.getElementById(id); }
+function cambiarVista(v) { vista = v; }
+function abrirRegistro(i, s) { if (window.stationMedir) window.stationMedir(s); }
+function preguntarNova(q) { if (window.stationPreguntar) window.stationPreguntar(q); }
+</script>
+</head>
+<body class="comun">
+<header class="cab">
+  <div class="marca"><svg id="marca" viewBox="0 0 52 52"></svg><div><b>NOVA <span>Station</span></b></div></div>
+  <div class="mis" id="mision">Connecting to the ship…</div>
+  <div class="reloj" id="reloj">--:--</div>
+  <div class="quien" id="quien" hidden>
+    <svg class="anillo" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5"/><circle id="anillo" cx="18" cy="18" r="15.5"/></svg>
+    <div><b id="quienNombre">—</b><span id="quienRol"></span></div>
+    <button class="salir" id="salir">Sign out</button>
+  </div>
+</header>
+
+<!-- ÓRBITA · sin tarjeta -->
+<main id="comun" class="orbita">
+  <svg class="arco" id="arco" viewBox="0 0 800 120" preserveAspectRatio="none"></svg>
+  <section class="escena" id="escena">
+    <svg class="lazos" id="lazos"></svg>
+    <div id="sats"></div>
+  </section>
+  <div class="dice" id="dice"></div>
+  <div class="chips"><button class="chip" id="chipHablar"><svg viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>Ask NOVA</button><span class="chip nfc" id="chipNFC" role="button"><svg viewBox="0 0 24 24"><path d="M6 8.5a7 7 0 0 1 0 7M9.5 6a10.5 10.5 0 0 1 0 12M13 3.5a14 14 0 0 1 0 17"/></svg>Tap your card</span><button class="chip qr" id="chipQR"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1"/><path d="M14 14h2.5v2.5H14zM18 18h2.5v2.5H18zM14 18.5v2M18.5 14h2"/></svg>Scan my QR</button></div>
+  <button class="emergencia" id="btnEmer"><svg viewBox="0 0 24 24"><path d="M12 3.5 21 19.5H3z"/><path d="M12 10v4.5M12 17.2h.01"/></svg><span><b>Emergency</b>Step-by-step guide · no card needed</span></button>
+  <nav class="dock" id="dockComun">
+    <button data-hoja="kit"><svg viewBox="0 0 24 24"><rect x="3.5" y="7" width="17" height="12.5" rx="2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M12 10.5v6M9 13.5h6"/></svg><b>Medical kit</b><span id="dKit">—</span></button>
+    <button data-hoja="mente"><svg viewBox="0 0 24 24"><path d="M9.5 4.5a3 3 0 0 0-3 3 3 3 0 0 0-2 5.2 3 3 0 0 0 2 4.8 3 3 0 0 0 5.5 1V5.8a2.7 2.7 0 0 0-2.5-1.3zM14.5 4.5a3 3 0 0 1 3 3 3 3 0 0 1 2 5.2 3 3 0 0 1-2 4.8 3 3 0 0 1-5.5 1"/></svg><b>Crew mind</b><span id="dMente">—</span></button>
+    <button data-hoja="biblio"><svg viewBox="0 0 24 24"><path d="M5 4.5h4.5v15H5zM9.5 4.5H14v15H9.5z"/><path d="m15 5.2 3.9-1 3 14.6-3.9.9z"/></svg><b>Library</b><span>41 open sources</span></button>
+    <button data-hoja="mision"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="9.5" ry="4.5" transform="rotate(-20 12 12)"/></svg><b>Mission</b><span id="dMision">—</span></button>
+  </nav>
+  <div class="demo" id="demo" hidden></div>
+</main>
+
+<!-- GEMELO · con tarjeta -->
+<main id="personal" class="gem" hidden>
+  <div id="gem" class="gemcaja">
+  <div class="g3d" id="g3d"></div>
+  <svg class="glineas" id="gLin"></svg>
+  <aside class="gpanel" id="gPanel"></aside>
+  <div class="getq" id="gEtq" hidden></div>
+  <div class="gcarga" id="gCarga">Loading anatomy…</div>
+  </div>
+  <div class="globo-gem" id="globoGem"><b id="hola">Hi</b><span id="novaDice"></span></div>
+  <div class="tarjeta-gem" id="tarjetaGem"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M7 14.5h4M15.5 9.5a3 3 0 0 1 0 4M17.5 8a5.5 5.5 0 0 1 0 7"/></svg><div><b>Crew card</b><span id="tarjetaTxt">—</span></div><button id="vincular">Link a card</button></div>
+  <div class="gocultos" hidden>
+    <div id="gQuien"></div><div id="gCapas"></div><div id="gEstilo"><button data-ge="halo">HALO</button><button data-ge="anatomia">Anatomy</button></div>
+    <b id="gNombre"></b><span id="gRol"></span><div id="ultimas"></div>
+    <input type="range" id="gDia" min="0" max="1018"><u id="gHoyM"></u><u id="gMarte"></u><span id="gDiaTxt"></span><button id="gHoy"></button><button id="gEj"></button>
+  </div>
+  <nav class="dock cinco" id="dockPersonal">
+    <button data-hoja="check"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 14c1 1.3 2.1 2 3.5 2s2.5-.7 3.5-2M9 9.5h.01M15 9.5h.01"/></svg><b>Check-in</b></button>
+    <button data-hoja="medir"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 7.5 2.8C19.5 16.4 12 21 12 21Z"/><path d="M8 12.5h2l1-2 2 4 1-2h2"/></svg><b>Measure</b></button>
+    <button data-hoja="casa"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8.5a.5.5 0 0 1-.5.5H15v-6H9v6H4.5a.5.5 0 0 1-.5-.5z"/></svg><b>Home</b><i id="casaN" hidden></i></button>
+    <button data-hoja="kit"><svg viewBox="0 0 24 24"><rect x="3.5" y="7" width="17" height="12.5" rx="2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M12 10.5v6M9 13.5h6"/></svg><b>Kit</b></button>
+    <button data-hoja="hablar" class="nv"><svg viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg><b>Ask NOVA</b></button>
+  </nav>
+</main>
+
+<!-- NOVA: al centro de la órbita, o al lado de tu cuerpo; se arrastra, se levanta, se le habla -->
+<div class="nova" id="nova"><svg id="novaSvg"></svg><div class="toque" id="novaToque" aria-label="NOVA. Tap to talk, drag to play."></div></div>
+
+<!-- hojas: kit 3D, mente, biblioteca, misión, tripulante, check-in, medir, casa -->
+<section class="hoja" id="hoja" hidden>
+  <div class="hcab"><div><span class="kick" id="hojaKick"></span><b id="hojaTit"></b></div><button id="hojaX" aria-label="Close">×</button></div>
+  <div class="hcuerpo" id="hojaCuerpo"></div>
+</section>
+
+<!-- conversación con NOVA -->
+<section class="charla-caja" id="charlaCaja" hidden>
+  <div class="hcab"><div><span class="kick">NOVA</span><b id="charlaTit">For the crew</b></div><button id="charlaX" aria-label="Close">×</button></div>
+  <div class="charla" id="charla"></div>
+  <form class="preg" id="preg" autocomplete="off"><button type="button" class="mic" id="mic" aria-label="Talk"><svg viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg></button><input id="pregIn" placeholder="Ask NOVA"><button class="ir">Ask</button></form>
+</section>
+
+<section class="modal" id="nueva" hidden>
+  <div class="caja"><h1>New card</h1><p>This card is not linked to anyone yet. Who does it belong to?</p><div class="elige" id="elige"></div><button class="sec" id="nuevaX">Cancel</button></div>
+</section>
+<section class="modal" id="vinculo" hidden>
+  <div class="caja" style="align-items:center;text-align:center"><div class="ondas"><i></i><i></i><i></i><svg viewBox="0 0 24 24"><path d="M6 8.5a7 7 0 0 1 0 7M9.5 6a10.5 10.5 0 0 1 0 12M13 3.5a14 14 0 0 1 0 17"/></svg></div>
+    <h1>Hold your card to the reader</h1><p>Any NFC card or tag works. It will open your space from now on.</p><div class="cuenta" id="vCuenta">45</div><button class="sec" id="vCancelar">Cancel</button></div>
+</section>
+<section class="modal" id="escanerQR" hidden>
+  <div class="caja" style="align-items:center;text-align:center"><h1>Show your QR</h1><p>Open the NOVA app on your phone: Settings → Mission mode → Ship link → My station QR.</p><video id="qrVideo" playsinline muted></video><button class="sec" id="qrCancelar">Cancel</button></div>
+</section>
+<section class="modal emer" id="guia" hidden><div class="caja grande" id="guiaCaja"></div></section>
+<div class="aviso" id="aviso" hidden></div>
+
+<script>const BASE = ['8750', '8751', '8760'].includes(location.port) ? '' : 'http://127.0.0.1:8750';</script>
+<script src="voz.js"></script>
+<script src="lib/mascota-base.js"></script>
+<script src="lib/mascota-orbes.js"></script>
+<script src="gemelo-fichas.js?v=3"></script>
+<script type="module" src="gemelo3d.mjs?v=5"></script>
+<script type="module" src="kit3d.mjs?v=1"></script>
+<script type="module" src="station.js?v=3"></script>
+</body>
+</html>

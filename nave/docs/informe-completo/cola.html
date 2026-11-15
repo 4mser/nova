@@ -1,0 +1,10 @@
+
+<script>
+// estrellas fijas (sin azar: semilla por índice), en cada <g data-cielo> o #cieloP
+(() => { const h = i => { const x = Math.sin(i * 127.1) * 43758.5453; return x - Math.floor(x); };
+  document.querySelectorAll('#cieloP,[data-cielo]').forEach((g, k) => { let s = '';
+    for (let i = 0; i < 220; i++) { const j = i + k * 977; s += `<circle cx="${(h(j) * 794).toFixed(1)}" cy="${(h(j + 1e3) * 1123).toFixed(1)}" r="${(h(j + 2e3) < .93 ? .6 : 1.3).toFixed(1)}" fill="#cfe6f5" opacity="${(.15 + h(j + 3e3) * .5).toFixed(2)}"/>`; }
+    g.innerHTML = s; }); })();
+</script>
+</body>
+</html>

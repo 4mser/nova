@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- NOVA ve y usa las apps por ti: lee lo que hay en pantalla y toca, escribe y desplaza cuando se lo pides -->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+  android:description="@string/nova_accesibilidad"
+  android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged"
+  android:accessibilityFeedbackType="feedbackGeneric"
+  android:accessibilityFlags="flagReportViewIds|flagRetrieveInteractiveWindows"
+  android:canRetrieveWindowContent="true"
+  android:canPerformGestures="true"
+  android:notificationTimeout="100" />

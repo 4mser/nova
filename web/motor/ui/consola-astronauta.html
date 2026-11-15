@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>HALO · crew member</title>
+<link rel="stylesheet" href="ui.css?v=1791048873"><link rel="stylesheet" href="escritorio.css">
+<style>
+.det{flex:1;display:grid;grid-template-columns:620px 1fr;gap:16px;padding:0 48px 40px;min-height:0}
+.reloj{display:flex;flex-direction:column}
+.reloj svg{width:560px;height:560px;margin:auto;display:block;overflow:visible}
+.ley{display:flex;gap:22px;justify-content:center;font:400 14px SG;color:var(--t2);margin-bottom:6px}
+.ley i{display:inline-block;width:16px;height:6px;border-radius:3px;margin-right:8px;vertical-align:middle}
+.col{display:grid;grid-template-rows:auto 1fr;gap:16px;min-height:0}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.trend{display:grid;grid-template-columns:200px 1fr 110px;align-items:center;gap:20px;padding:16px 0;border-bottom:1px solid var(--l1)}
+.trend:last-child{border-bottom:0;padding-bottom:0}
+.trend span{font:400 15px SG;color:var(--t2)}
+.trend svg{width:100%;height:48px;overflow:visible}
+.trend b{font:300 30px SG;letter-spacing:-.045em;text-align:right;display:block}.trend b .u{font-size:13px}
+.trend em{font:500 13px SG;font-style:normal;text-align:right;display:block;color:var(--al)}
+.big{font:300 56px/1 SG;letter-spacing:-.05em;margin-top:18px}.big .u{font-size:16px;letter-spacing:0}
+.pan svg{width:100%;height:200px;margin-top:20px;overflow:visible}
+.tabsx{display:flex;gap:4px;padding:5px;border-radius:24px;background:var(--s1);border:1px solid var(--l1)}
+.tabsx span{padding:10px 18px;border-radius:20px;font:500 15px SG;color:var(--t2)}
+.tabsx span.on{background:var(--s2);color:var(--t1)}
+.plan{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.plan div{display:flex;gap:12px;align-items:flex-start;font:400 15px/1.4 SG;color:var(--t2)}
+.plan i{flex:none;width:18px;height:18px;border-radius:9px;border:1.5px solid var(--l2);margin-top:1px;display:grid;place-items:center}
+.plan i.ok{background:var(--nv);border-color:var(--nv)}
+.plan i.ok::after{content:'';width:8px;height:4px;border-left:2px solid var(--bg);border-bottom:2px solid var(--bg);transform:rotate(-45deg) translate(1px,-1px)}
+</style></head><body>
+<div class="app">
+  <nav class="riel-nav" id="riel"></nav>
+  <main class="centro">
+    <div class="barra">
+      <div style="display:flex;align-items:center;gap:18px"><div class="av" style="width:56px;height:56px;font-size:17px;background:#c3b8ff">KT</div>
+        <div><h1>Kenji Tanaka</h1><div class="sub">Mission specialist · readiness 63, down 19 this week</div></div></div>
+      <div class="tabsx"><span class="on">Overview</span><span>Vitals</span><span>Sleep</span><span>Mind</span><span>Body</span><span>Dose</span></div>
+    </div>
+    <section class="det">
+      <div class="panel reloj"><h3>Sleep, last 7 nights<span>each ring is one night</span></h3>
+        <svg id="reloj" viewBox="0 0 560 560"></svg>
+        <div class="ley"><span><i style="background:#a898ff"></i>Asleep</span><span><i style="background:#f2b457"></i>Bright light after 22:30</span><span><i style="background:rgba(255,255,255,.12)"></i>His usual window</span></div></div>
+      <div class="col">
+        <div class="panel"><h3>Last 30 days<span>shift change on Sol 209</span></h3>
+          <div class="trend"><span>Resting heart</span><svg id="t1" viewBox="0 0 420 48"></svg><div><b>66<span class="u">bpm</span></b><em>+8</em></div></div>
+          <div class="trend"><span>Heart rate variability</span><svg id="t2" viewBox="0 0 420 48"></svg><div><b>41<span class="u">ms</span></b><em>−23</em></div></div>
+          <div class="trend"><span>Sleep</span><svg id="t3" viewBox="0 0 420 48"></svg><div><b>5.1<span class="u">h</span></b><em>−1.9</em></div></div>
+          <div class="trend"><span>Reaction time</span><svg id="t4" viewBox="0 0 420 48"></svg><div><b>298<span class="u">ms</span></b><em>+14%</em></div></div>
+        </div>
+        <div class="dos">
+          <div class="panel pan"><h3>Bone<span>hip, estimated</span></h3><div class="big">−0.4<span class="u">% per month</span></div><svg id="hueso" viewBox="0 0 300 200"></svg></div>
+          <div class="panel pan"><h3>Muscle<span>squat load vs. launch</span></h3><div class="big">96<span class="u">%</span></div><svg id="musculo" viewBox="0 0 300 200"></svg></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <aside class="nova">
+    <div class="nova-cab"><svg id="novaP" viewBox="0 0 300 230"></svg><h2>Nova</h2><p>Here's what I see in Kenji's data.</p></div>
+    <div class="sec">Why his readiness dropped</div>
+    <div class="ins nv"><p style="color:var(--t1)">Since the shift change he's on screens past midnight. Late light is pushing his sleep 1 h 40 min later, and his heart shows it: lower variability, higher resting rate.</p><div class="conf"><span>Confidence <b>93%</b></span><span>Fatigue model · light and sleep logs</span></div></div>
+    <div class="sec">Plan for tonight</div>
+    <div class="plan"><div><i class="ok"></i>Warm, dim light in his quarters from 21:30</div><div><i class="ok"></i>Exercise moved to the morning</div><div><i></i>No caffeine after 14:00</div><div><i></i>Retest reaction time tomorrow</div></div>
+    <div class="ins" style="margin-top:22px;padding:0;border:0;background:none"><div class="acc" style="margin-top:0"><span class="pri">Send plan to Kenji</span><span>Tell the flight surgeon</span></div></div>
+    <div class="preg"><span>Ask Nova about Kenji</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></div>
+  </aside>
+</div>
+<div class="demo-c">Demo data, fictional crew</div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script><script src="consolas.js"></script>
+<script>dibujarConsolaAstronauta(+(location.hash.slice(1) || 2.4));</script>
+</body></html>

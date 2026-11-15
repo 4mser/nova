@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="nova_accesibilidad">NOVA ve lo que hay en pantalla y usa las apps por ti cuando se lo pides por voz (tocar, escribir, desplazar). Solo mientras la capa de NOVA está abierta; no guarda ni envía lo que lee.</string>
+</resources>

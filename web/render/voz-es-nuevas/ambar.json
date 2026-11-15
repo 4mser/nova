@@ -1,0 +1,60 @@
+{
+ "title": "NOVA · ES nuevas",
+ "voice": {
+  "provider": "gemini",
+  "name": "Aoede",
+  "language": "es-US",
+  "mode": "take",
+  "style": "A warm, friendly AI health companion talking to an astronaut crew, confident and close",
+  "maxPause": 0.32,
+  "model": [
+   "gemini-3.8-flash-tts",
+   "gemini-3.1-flash-tts-preview"
+  ]
+ },
+ "lead": 0,
+ "gap": 0.5,
+ "lines": [
+  {
+   "id": "19",
+   "text": "Si algo sale mal, cualquiera a bordo puede ayudar. Abro el protocolo correcto, paso a paso, con mi voz y un metrónomo."
+  },
+  {
+   "id": "20",
+   "text": "Apunta un teléfono al paciente y veo el cuerpo: huesos, órganos y el punto exacto de cada paso."
+  },
+  {
+   "id": "21",
+   "text": "Confirmo lo que está bien y corrijo lo que no: un poco más arriba, hacia la cabeza."
+  },
+  {
+   "id": "22",
+   "text": "Y la reanimación cambia con la gravedad: en Marte, a horcajadas sobre el paciente. En ingravidez, una técnica hecha para cero g."
+  },
+  {
+   "id": "23",
+   "text": "Pregunta dónde está el desfibrilador y su cajón se enciende. Cada respuesta abre la página real del libro de donde salió."
+  },
+  {
+   "id": "24",
+   "text": "No solo miro los números. Pronostico hacia dónde van y aviso antes de que crucen un límite."
+  },
+  {
+   "id": "26",
+   "text": "Ese informe viaja en paquetes CCSDS, desde F Prime, el software de vuelo de la NASA, el mismo que hizo volar al helicóptero Ingenuity en Marte.",
+   "say": "Ese informe viaja en paquetes ce ce ese de ese, desde Ef Praim, el software de vuelo de la NASA, el mismo que hizo volar al helicóptero Ingenuity en Marte."
+  },
+  {
+   "id": "27",
+   "text": "En la Tierra, un modelo padre mucho más grande aprende de él, y los cirujanos de vuelo revisan cada cambio. Luego le enseña a un modelo hijo, más pequeño, que cabe en el computador de la nave."
+  },
+  {
+   "id": "28",
+   "text": "El hijo vuelve firmado. La nave verifica la firma antes de instalarlo y vuelve atrás si algo falla. Y Control de Misión lo ve todo con el retraso real de la luz."
+  },
+  {
+   "id": "29",
+   "text": "Dentro de mí funcionan un modelo de lenguaje, el reconocimiento de voz y una voz, todo en el computador de la nave. Sin internet."
+  }
+ ]
+}

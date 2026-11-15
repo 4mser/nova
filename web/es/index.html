@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NOVA · Salud que viaja contigo</title>
+<meta name="description" content="NOVA cuida a cada astronauta en el viaje a Marte: cuerpo, mente y radiación, a bordo y sin conexión. Un proyecto del Equipo B&N para el NASA Space Apps Challenge 2026.">
+<meta property="og:title" content="NOVA · Salud que viaja contigo">
+<meta property="og:description" content="El copiloto de salud de la tripulación que va a Marte. Cuerpo, mente y radiación, a bordo y sin conexión.">
+<meta property="og:image" content="https://nova-spaceapps.vercel.app/og.jpg">
+<meta property="og:url" content="https://nova-spaceapps.vercel.app/es/">
+<meta property="og:locale" content="es_CL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#04070b">
+<link rel="alternate" hreflang="en" href="https://nova-spaceapps.vercel.app/">
+<link rel="alternate" hreflang="es" href="https://nova-spaceapps.vercel.app/es/">
+<link rel="alternate" hreflang="x-default" href="https://nova-spaceapps.vercel.app/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../motor/fonts/space-grotesk-500-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../nova.css?v=1791100000">
+</head><body>
+
+<nav id="nav"><div class="wrap">
+  <a class="marca" href="#historia" aria-label="NOVA"><svg id="navNova" viewBox="0 0 60 60"></svg><span>NOVA</span></a>
+  <div class="links"><a href="#historia">Historia</a><a href="#modelos">Cómo funciona</a><a href="#radiacion">Radiación</a><a href="#ciencia">Ciencia</a><a href="#videos">Videos</a><a href="#preguntas">Preguntas</a></div>
+  <span class="evento"><i></i>Space Apps 2026</span>
+  <span class="idioma" aria-label="Idioma"><a href="../" lang="en" hreflang="en">EN</a><a href="./" lang="es" aria-current="true">ES</a></span>
+</div></nav>
+
+<!-- ═══ LA HISTORIA: el código del video, en la página, manejado por el scroll ═══ -->
+<section id="historia" class="top" aria-label="La historia de NOVA">
+  <h1 class="oculto">NOVA, el copiloto de salud para astronautas en el viaje a Marte</h1>
+  <div class="h-pin">
+    <div class="h-escena" id="hEscena"><div class="h-marco" id="hMarco">
+      <video id="hVid" muted playsinline autoplay loop preload="auto" aria-label="La historia de NOVA"></video>
+      <div class="h-aviso" id="hAviso">Toca para escuchar a NOVA</div>
+      <div class="h-ctl3">
+        <button id="hSon" aria-label="Sonido" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path class="on" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="off" d="M17 9l5 6M22 9l-5 6"/></svg></button>
+        <button id="hPlay" aria-label="Pausar"><svg viewBox="0 0 24 24"><path class="p1" d="M8 5v14M16 5v14"/><path class="p2" d="M7 5l12 7-12 7z"/></svg></button>
+        <button id="hFull" aria-label="Pantalla completa"><svg viewBox="0 0 24 24"><path class="ex" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/><path class="co" d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
+      </div>
+      <div class="h-pie"><div class="h-prog" id="hProgW"><i id="hProg"></i></div><span id="hPaso">0:00</span></div>
+    </div></div>
+  </div>
+</section>
+
+<div class="estado wrap"><i></i><p>NOVA es un concepto para el NASA Space Apps 2026. Las interfaces son diseños, la tripulación y las cifras son datos de demostración, y los modelos describen la arquitectura que proponemos.</p></div>
+
+<!-- ═══ CÓMO FUNCIONA ═══ -->
+<section class="sec" id="modelos"><div class="wrap">
+  <span class="rot rev">El diseño</span>
+  <h2 class="rev">Seis modelos. <span class="g">Un copiloto.</span></h2>
+  <p class="sub rev">Cada uno se entrenaría con ciencia real en la Tierra y estaría hecho para funcionar a bordo, sin conexión. Juntos convierten un wearable, una breve conversación por voz y los sensores de radiación de la nave en una sola respuesta diaria: ¿qué tan listo está cada astronauta hoy?</p>
+  <div class="mod-grid rev">
+    <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></span><canvas class="sig" data-k="sleep" aria-hidden="true"></canvas><b>Sueño</b><p>Pulso, movimiento y temperatura de la piel, noche tras noche.</p><small>Estudios del sueño de PhysioNet · datos de la tripulación</small></div>
+    <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></span><canvas class="sig" data-k="stress" aria-hidden="true"></canvas><b>Estrés</b><p>Variabilidad de la frecuencia cardiaca comparada con la línea base de cada persona.</p><small>Investigación en VFC · línea base personal</small></div>
+    <div><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span><canvas class="sig" data-k="fatigue" aria-hidden="true"></canvas><b>Fatiga</b><p>Deuda de sueño y ritmo circadiano, para anticipar el estado de alerta.</p><small>Modelo de dos procesos del sueño (Borbély)</small></div>
+    <div><span class="ic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><canvas class="sig" data-k="voice" aria-hidden="true"></canvas><b>Voz y ánimo</b><p>Una conversación de un minuto cada noche. Sin formularios.</p><small>Modelo de lenguaje pequeño a bordo</small></div>
+    <div class="amb"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M12 4a8 8 0 0 1 7 4l-5 3M5 8a8 8 0 0 1 7-4M5 16l5-3M19 16l-5-3M12 20a8 8 0 0 1-7-4M19 16a8 8 0 0 1-7 4"/></svg></span><canvas class="sig" data-k="rad" aria-hidden="true"></canvas><b>Radiación</b><p>Presupuesto de dosis por persona y alertas cuando el Sol hace erupción.</p><small>NASA DONKI · GOES · MSL RAD</small></div>
+    <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M7 4a2 2 0 1 0-2 3l9 9a2 2 0 1 0 3 2 2 2 0 1 0-2-3L6 6"/></svg></span><canvas class="sig" data-k="bone" aria-hidden="true"></canvas><b>Huesos, músculos y ojos</b><p>Ejercicio, ecografías y exámenes oculares que la tripulación ya hace.</p><small>Programa de Investigación Humana de la NASA</small></div>
+  </div>
+</div></section>
+
+<!-- ═══ BANDA: la Tierra lejana, antes del ciclo nave–Tierra ═══ -->
+<section class="banda" id="ciclo" aria-label="Más lista cada noche">
+  <div class="b-foto" aria-hidden="true"><img src="../img/tierra-lejana.jpg" alt="" loading="lazy"></div>
+  <svg class="b-viaje" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true"><path id="bRuta" d="M60 330 C 360 300, 560 150, 820 170" /><circle r="4" class="b-pk"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#bRuta"/></animateMotion></circle></svg>
+  <div class="wrap b-txt">
+    <span class="rot rev">Cada noche</span>
+    <h2 class="rev">Mientras la tripulación duerme,<br><span class="g">NOVA vuelve a casa.</span></h2>
+    <p class="sub rev">Un informe de 6 KB recorre hasta 22 minutos luz hasta la Tierra. El plan: NOVA aprende allá durante la noche y una versión más lista vuelve a la nave.</p>
+  </div>
+  <span class="b-cred">FOTO · NASA / ARTEMIS II</span>
+</section>
+
+<section class="sec sec-bucle" id="aprende"><div class="wrap">
+  <span class="rot rev">Ciclo de aprendizaje propuesto</span>
+  <h2 class="rev">Piensa a bordo. <span class="g">Aprende en casa.</span></h2>
+  <p class="sub rev">Una noche del ciclo, en vivo. Aleja la nave de la Tierra, escóndela detrás del Sol o intenta colar una actualización mala sin que Control de Misión lo note.</p>
+  <div class="rd lp rev">
+    <div class="rd-vis"><canvas id="lpCv" aria-label="Simulación del ciclo de aprendizaje entre la nave y la Tierra"></canvas></div>
+    <aside class="rd-panel lp-panel">
+      <div class="lp-top"><div><div class="rd-k">Noche de misión</div><div class="rd-n"><b id="lpNoche">41</b></div></div>
+        <div><div class="rd-k">Modelo a bordo</div><div class="rd-n"><b id="lpVer">v1.4</b></div></div></div>
+      <ol class="lp-pasos" id="lpPasos"><li>A bordo</li><li>A la Tierra</li><li>Aprende</li><li>Revisión</li><li>De vuelta</li></ol>
+      <div class="rd-nova"><svg id="lpNova" viewBox="0 0 60 60"></svg><p id="lpMsg"></p></div>
+      <label class="lp-dist"><span class="rd-k">Retraso de la luz, una vía <b id="lpDel">12 min</b></span><input type="range" id="lpD" min="3" max="22" step="0.5" value="12"></label>
+      <div class="rd-ctl lp-ctl"><button id="lpPlay" aria-label="Reproducir o pausar el ciclo"><svg viewBox="0 0 24 24"><path class="p2" d="M7 5l12 7-12 7z"/><path class="p1" d="M8 5v14M16 5v14"/></svg></button><button class="btn lp-b" id="lpConj"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Conjunción solar</button></div>
+      <button class="btn lp-b mal" id="lpMal"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>Colar una actualización mala</button>
+    </aside>
+  </div>
+  <p class="rd-pie rev">Simulación ilustrativa del diseño propuesto. La luz tarda entre unos 3 y 22 minutos en ir de la Tierra a Marte, y cerca de la conjunción solar, más o menos cada 26 meses, las misiones en Marte dejan de enviar órdenes durante unas dos semanas (NASA). Los tamaños del informe y la actualización, el error de alertas y las aprobaciones son metas de diseño y datos de demostración.</p>
+</div></section>
+
+<!-- ═══ RADIACIÓN INTERACTIVA ═══ -->
+<section class="sec" id="radiacion"><div class="wrap">
+  <span class="rot rev">Pruébalo</span>
+  <h2 class="rev">La radiación se acumula. <span class="g">NOVA lleva la cuenta.</span></h2>
+  <p class="sub rev">Recorre una misión a Marte y mira cómo la dosis crece frente al límite de carrera de la NASA. Luego lanza una tormenta solar sobre la tripulación.</p>
+  <div class="rd rev">
+    <div class="rd-vis"><canvas id="rdCv" aria-label="Dosis de la misión en el tiempo"></canvas></div>
+    <aside class="rd-panel">
+      <div class="rd-a"><div class="rd-k">Día de misión</div><div class="rd-n"><b id="rdDiaN">0</b><small>de 860</small></div>
+        <div class="rd-f"><span id="rdFase">Crucero a Marte</span><small><b id="rdTasa">1,84</b> mSv / día</small></div></div>
+      <div class="rd-b"><div class="rd-k">Dosis acumulada</div><div class="rd-n big"><b id="rdTot">0</b><small>mSv</small></div>
+        <div class="rd-barra"><i id="rdBar"></i><span id="rdPct">0 %</span></div></div>
+      <div class="rd-nova"><svg id="rdNova" viewBox="0 0 60 60"></svg><p id="rdMsg"></p></div>
+      <div class="rd-ctl">
+        <button id="rdPlay" aria-label="Reproducir o pausar la misión"><svg viewBox="0 0 24 24"><path class="p2" d="M7 5l12 7-12 7z"/><path class="p1" d="M8 5v14M16 5v14"/></svg></button>
+        <input type="range" id="rdDia" min="0" max="860" step="1" value="40" aria-label="Día de misión">
+      </div>
+      <button class="btn btn-tor" id="rdTorm"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Lanzar tormenta solar</button>
+    </aside>
+  </div>
+  <p class="rd-pie rev">Misión ilustrativa: 180 días de crucero en cada sentido y 500 días en Marte. Dosis diarias medidas por el RAD de Curiosity: 1,84 mSv en crucero (Zeitlin et al., 2013) y 0,64 mSv en la superficie (Hassler et al., 2014). Los valores de la tormenta son ilustrativos.</p>
+</div></section>
+
+<!-- ═══ CIENCIA ═══ -->
+<section class="sec" id="ciencia"><div class="wrap">
+  <span class="rot rev">Basado en ciencia de la NASA</span>
+  <h2 class="rev">Cada cifra tiene <span class="g">una fuente.</span></h2>
+  <div class="cifras rev">
+    <div><b><span class="cnt" data-n="225">225</span><small>M km</small></b><p>de distancia media entre la Tierra y Marte</p></div>
+    <div><b><span class="cnt" data-n="22">22</span><small>min</small></b><p>tarda un mensaje en llegar a casa, solo de ida</p></div>
+    <div><b>1–1,5<small>%/mes</small></b><p>de densidad ósea de la cadera que se pierde en microgravedad</p></div>
+    <div class="amb"><b>≈<span class="cnt" data-n="660">660</span><small>mSv</small></b><p>en un viaje de ida y vuelta a Marte, por encima del límite de carrera de 600 mSv de la NASA</p></div>
+  </div>
+  <ul class="fuentes rev">
+    <li><b>Human Research Program</b><span>Los cinco peligros de los vuelos espaciales tripulados y sus riesgos para la salud.</span></li>
+    <li><b>NASA Twins Study</b><span>Lo que un año en el espacio cambió en un gemelo y no en el otro (Science, 2019).</span></li>
+    <li><b>MSL RAD</b><span>Radiación medida dentro de Curiosity en el viaje a Marte (Zeitlin et al., Science, 2013).</span></li>
+    <li><b>NASA-STD-3001</b><span>Los estándares de salud y desempeño de tripulaciones de la NASA.</span></li>
+    <li><b>Open Science Data Repository</b><span>Datos abiertos de la NASA sobre biología y fisiología en vuelos espaciales.</span></li>
+    <li><b>DONKI</b><span>La base de datos de clima espacial de la NASA: fulguraciones solares y tormentas de partículas.</span></li>
+  </ul>
+  <div class="ruta rev">
+    <div class="r-linea"><i id="rLlena"></i></div>
+    <div class="r-paso"><span>Ahora</span><b>Prototipo</b><small>Space Apps 2026</small></div>
+    <div class="r-paso"><span>Paso 2</span><b>HERA</b><small>Misión análoga de 45 días</small></div>
+    <div class="r-paso"><span>Paso 3</span><b>CHAPEA</b><small>Un año en un hábitat marciano simulado</small></div>
+    <div class="r-paso"><span>Paso 4</span><b>Estación espacial</b><small>Tripulaciones reales, órbita real</small></div>
+    <div class="r-paso"><span>Meta</span><b>Artemis y Marte</b><small>Atención médica independiente de la Tierra</small></div>
+  </div>
+</div></section>
+
+<!-- ═══ VIDEOS ═══ -->
+<section class="sec" id="videos"><div class="wrap">
+  <span class="rot rev">Videos</span>
+  <h2 class="rev">NOVA, <span class="g">en cortos.</span></h2>
+  <p class="sub rev">Conoce a NOVA, a sus amigos y su entrenamiento para Marte. Los cortos están en inglés.</p>
+  <div class="gal rev" id="gal"></div>
+</div></section>
+<div class="vmod" id="vmod" aria-hidden="true"><div class="vmod-in"><button id="vcer" aria-label="Cerrar">✕</button><video id="vmv" controls playsinline></video><b id="vtit"></b></div></div>
+
+<!-- ═══ PREGUNTAS ═══ -->
+<section class="sec" id="preguntas"><div class="wrap estrecho">
+  <span class="rot rev">Preguntas</span>
+  <h2 class="rev">Pregunta antes <span class="g">del despegue.</span></h2>
+  <div class="faq rev">
+    <details><summary>¿NOVA existe de verdad?<i></i></summary><p>NOVA es el concepto que nuestro equipo lleva al NASA Space Apps Challenge 2026 (14 y 15 de noviembre), para el desafío «Create Health Monitoring Software for Astronauts». En esas 48 horas construiremos un prototipo funcional. Las interfaces que ves aquí son diseños; la tripulación y las cifras son datos de demostración.</p></details>
+    <details><summary>¿Necesita conexión con la Tierra?<i></i></summary><p>Está diseñada para funcionar sin ella. Cada modelo correría a bordo, sin conexión. Una vez por noche, NOVA enviaría a Control de Misión un informe de unos 6 KB, más pequeño que una foto.</p></details>
+    <details><summary>¿Quién ve lo que comparte un astronauta?<i></i></summary><p>Lo decide el astronauta. Los signos vitales van al cirujano de vuelo, lo que siente solo a su psicólogo, y su diario es solo suyo.</p></details>
+    <details><summary>¿NOVA reemplaza al cirujano de vuelo?<i></i></summary><p>No. NOVA vigila cada minuto y explica qué cambió y por qué. Las decisiones siguen en manos de la tripulación y sus médicos.</p></details>
+    <details><summary>¿De dónde salen los datos de entrenamiento?<i></i></summary><p>Saldrían de la ciencia abierta de la NASA (OSDR, DONKI, MSL RAD), de misiones análogas como HERA y CHAPEA, y de conjuntos públicos de datos de sueño y corazón de PhysioNet.</p></details>
+  </div>
+</div></section>
+
+<!-- ═══ CIERRE ═══ -->
+<section class="sec cierre"><div class="wrap">
+  <svg id="finNova" viewBox="0 0 400 400" role="img" aria-label="NOVA"></svg>
+  <h2 class="rev">NOVA. <span class="g">Salud que viaja contigo.</span></h2>
+  <p class="sub rev">NASA Space Apps Challenge · 14 y 15 de noviembre de 2026</p>
+  <div class="ctas rev"><a class="btn btn-p" href="#historia">Ver la historia otra vez</a></div>
+</div></section>
+
+<footer><div class="wrap">
+  <img src="../motor/img/logo-bn.png" alt="B&N Solutions" class="f-logo">
+  <p>NOVA es un proyecto del Equipo B&amp;N para el NASA International Space Apps Challenge. No está afiliado a la NASA ni cuenta con su respaldo. Imágenes del espacio: NASA, dominio público. La tripulación, los nombres y las cifras de las interfaces son datos de demostración.</p>
+</div></footer>
+
+<!-- NOVA flotante + chat -->
+<button class="fab" id="fab" aria-label="Pregúntale a NOVA"><svg id="fabNova" viewBox="0 0 120 120"></svg><span class="globo" id="fabGlobo">Pregúntame lo que quieras</span></button>
+<div class="velo" id="velo"></div>
+<section class="chat" id="chat" aria-label="Chat con NOVA" aria-hidden="true">
+  <div class="c-asa" id="chatAsa" aria-hidden="true"><i></i></div>
+  <div class="c-cab"><svg id="chatNova" viewBox="0 0 60 60"></svg><div><b>NOVA</b><small>Copiloto de salud · a bordo</small></div><button id="chatX" aria-label="Cerrar">✕</button></div>
+  <div class="c-msgs" id="chatMsgs"></div>
+  <div class="c-chips" id="chatChips"></div>
+</section>
+
+<script src="../motor/mascota-base.js?v=1791066072"></script>
+<script src="../motor/mascota-orbes.js?v=1791066072"></script>
+<script src="nova.js?v=1791066072"></script>
+<script src="radiacion.js?v=1791066072"></script>
+<script src="../bucle.js?v=1791100000"></script>
+</body></html>

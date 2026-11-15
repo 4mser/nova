@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- cielo del widget: brillo turquesa al centro que se apaga hacia los bordes -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+  <corners android:radius="26dp" />
+  <gradient android:type="radial" android:gradientRadius="62%p" android:centerX="0.5" android:centerY="0.5"
+    android:startColor="#FF12404D" android:centerColor="#FF081A22" android:endColor="#FF05080C" />
+  <stroke android:width="1dp" android:color="#FF1A2129" />
+</shape>

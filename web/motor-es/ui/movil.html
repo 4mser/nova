@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>HALO · mobile</title>
+<link rel="stylesheet" href="ui.css?v=1791048873">
+<style>html,body{margin:0;width:1920px;height:1080px;background:#05080c;overflow:hidden}
+.tabla{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:100px}</style></head><body>
+<div class="tabla">
+  <!-- HOY -->
+  <div class="iph" id="pHoy"><div class="scr">
+    <div class="sb"><span>9:41</span><i class="isla"></i><span class="sbi"><svg viewBox="0 0 20 12"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".5"/><rect x="2.5" y="2.5" width="15" height="7" rx="2"/></svg></span></div>
+    <div class="pg">
+      <div class="saludo"><div><h1>Good morning,<br>Mara</h1><p>Sol 214 · cruise to Mars</p></div><div class="av">MR</div></div>
+      <div class="hero"><svg id="novaHoy" viewBox="0 0 360 240"></svg></div>
+      <div class="msg"><div class="de"><i></i>Nova</div>You slept well and your heart is steady. You're clear for today's spacewalk.</div>
+      <div class="rej">
+        <div class="cel"><div class="lbl">Heart</div><div class="v"><span id="hrHoy">64</span><span class="u">bpm</span></div><svg id="trazaHoy" viewBox="0 0 150 30"></svg></div>
+        <div class="cel"><div class="lbl">Readiness</div><div class="v">86<span class="u">/ 100</span></div><svg id="barHoy" viewBox="0 0 150 30"></svg></div>
+        <div class="cel"><div class="lbl">Sleep</div><div class="v">7<span class="u">h</span> 05<span class="u">m</span></div><div class="meta">Deep sleep 1 h 40 m</div></div>
+        <div class="cel"><div class="lbl">Mission dose</div><div class="v">214<span class="u">mSv</span></div><div class="bar"><i style="width:35.6%"></i></div></div>
+      </div>
+    </div>
+    <div class="tabs"><span class="on"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Today</span><span><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>Sleep</span><span><svg id="tabNova" viewBox="0 0 40 40" style="width:28px;height:28px;margin:-3px 0 -2px"></svg>Nova</span><span><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg>Me</span></div>
+  </div></div>
+
+  <!-- CHECK-IN -->
+  <div class="iph" id="pCheck"><div class="scr">
+    <div class="sb"><span>21:06</span><i class="isla"></i><span class="sbi"><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".5"/><rect x="2.5" y="2.5" width="11" height="7" rx="2"/></svg></span></div>
+    <div class="cabchat"><svg id="novaChat" viewBox="0 0 60 60"></svg><div><b>Evening check-in</b><span>About one minute</span></div></div>
+    <div class="chat">
+      <div class="b nv">How did today feel, from 1 to 5?</div>
+      <div class="escala"><i>1</i><i>2</i><i>3</i><i class="on">4</i><i>5</i></div>
+      <div class="b yo">A 4. Long day of EVA prep.</div>
+      <div class="b nv">Got it. Your stress stayed low all afternoon. Last thing before bed: a two-minute reaction test.</div>
+      <div class="pvt"><div class="top"><span class="lbl">Reaction time</span><span class="lbl" style="color:var(--ok)">Normal for you</span></div>
+        <div class="v">268<span class="u" style="font-size:16px">ms</span></div><svg id="pvtG" viewBox="0 0 310 44"></svg></div>
+    </div>
+    <div class="campo"><span>Message Nova</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></div>
+  </div></div>
+
+  <!-- ALERTA -->
+  <div class="iph" id="pRad"><div class="scr">
+    <div class="sb"><span>14:26</span><i class="isla"></i><span class="sbi"><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".5"/><rect x="2.5" y="2.5" width="13" height="7" rx="2"/></svg></span></div>
+    <div class="aviso"><svg id="novaAl" viewBox="0 0 60 60"></svg><div><b>Solar storm</b><p>Go to the galley shelter now. I've told the crew.</p></div></div>
+    <div class="gran"><div class="v">4.8</div><p>mSv per hour right now<br><span style="color:var(--t3)">usually 0.08</span></p></div>
+    <div class="pg" style="padding-top:0">
+      <div class="cel" style="padding:18px"><div class="lbl">Last 6 hours</div><svg id="radHist" viewBox="0 0 320 90" style="height:90px;margin-top:14px"></svg></div>
+      <div class="rej">
+        <div class="cel"><div class="lbl">Shelter</div><div class="v">38<span class="u">m away</span></div><div class="meta">Galley, aft wall</div></div>
+        <div class="cel"><div class="lbl">Mission dose</div><div class="v">218<span class="u">mSv</span></div><div class="bar"><i style="width:36.3%"></i></div></div>
+      </div>
+    </div>
+    <div class="cta">I'm on my way</div>
+  </div></div>
+</div>
+<div class="demo-g">Demo data</div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script>
+<script>dibujarMovil(+(location.hash.slice(1) || 2.4));</script>
+</body></html>

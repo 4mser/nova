@@ -1,0 +1,8 @@
+{
+  "name": "nova-api",
+  "private": true,
+  "type": "module",
+  "description": "API de NOVA: cuentas, crew, fotos del día, tareas y retos (Node 22+ con node:sqlite)",
+  "scripts": { "start": "node --no-warnings servidor.mjs" },
+  "dependencies": { "ws": "^8.18.0" }
+}

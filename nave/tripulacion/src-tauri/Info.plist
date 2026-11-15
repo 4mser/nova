@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSCameraUsageDescription</key>
+	<string>NOVA uses the camera only when the crew opens the camera guide, to see the patient and the rescuer's hands. The video is processed on board and never leaves the ship.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>NOVA listens when you press the microphone so the crew can talk to her. The audio is transcribed on board and never leaves the ship.</string>
+</dict>
+</plist>

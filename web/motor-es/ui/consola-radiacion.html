@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>HALO · radiation</title>
+<link rel="stylesheet" href="ui.css?v=1791048873"><link rel="stylesheet" href="escritorio.css">
+<style>
+.tormenta{position:relative;flex:1;margin:0 48px 40px;border-radius:28px;overflow:hidden;background:radial-gradient(80% 90% at 15% 0%,rgba(236,106,168,.10),transparent 60%),#070a0f;border:1px solid var(--l1)}
+.tormenta canvas,.tormenta svg.capa{position:absolute;inset:0;width:100%;height:100%}
+.dato{position:absolute;left:40px;top:34px}
+.dato .k{font:500 15px SG;color:#ffb3d6;display:flex;gap:10px;align-items:center}.dato .k i{width:8px;height:8px;border-radius:50%;background:var(--al)}
+.dato .v{font:300 104px/1 SG;letter-spacing:-.06em;margin-top:12px}.dato .v .u{font-size:22px;letter-spacing:0}
+.dato p{font:400 16px SG;color:var(--t2);margin-top:8px}
+.pico{position:absolute;right:40px;top:40px;text-align:right}
+.pico .v{font:300 44px/1 SG;letter-spacing:-.045em}.pico p{font:400 15px SG;color:var(--t2);margin-top:6px}
+.pie3{position:absolute;left:40px;right:40px;bottom:32px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:16px}
+.pie3>div{padding:18px 20px;border-radius:22px;background:rgba(10,15,21,.82);border:1px solid var(--l1);backdrop-filter:blur(10px)}
+.pie3 small{display:block;font:400 14px SG;color:var(--t2)}.pie3 b{font:300 30px SG;letter-spacing:-.04em}.pie3 b .u{font-size:14px}
+.pie3 svg{display:block;width:100%;height:40px;margin-top:6px;overflow:visible}
+</style></head><body>
+<div class="app">
+  <nav class="riel-nav" id="riel"></nav>
+  <main class="centro">
+    <div class="barra"><div><h1>Radiación y hábitat</h1><div class="sub">Sol 214 · 14:26 hora de la nave</div></div>
+      <div class="estado"><span class="pil al"><i class="p" style="background:var(--al)"></i>Tormenta solar en curso</span><span class="pil">12 dosímetros <b>en vivo</b></span></div></div>
+    <section class="tormenta" id="tor">
+      <canvas id="cv"></canvas>
+      <svg class="capa" id="nave" viewBox="0 0 1296 928" preserveAspectRatio="none"></svg>
+      <div class="dato"><div class="k"><i></i>Tasa de dosis fuera del refugio</div><div class="v"><span id="tasa">4,8</span><span class="u"> mSv/h</span></div><p>Lo normal es 0,08. Dentro del refugio: <b style="color:var(--ac2);font-weight:500">1,6</b></p></div>
+      <div class="pico"><div class="v" id="pico">1 h 52 m</div><p>para el pico de la tormenta</p></div>
+      <div class="pie3">
+        <div><small>Flujo de protones solares, 24 h</small><svg id="flujo" viewBox="0 0 400 40" preserveAspectRatio="none"></svg></div>
+        <div><small>Tripulación en el refugio</small><b id="ref">3<span class="u"> de 4</span></b></div>
+        <div><small>Dosis de la tormenta hasta ahora</small><b>+3<span class="u"> mSv cada uno</span></b></div>
+        <div><small>Aire de cabina</small><b>21,1<span class="u">% O₂, normal</span></b></div>
+      </div>
+    </section>
+  </main>
+  <aside class="nova">
+    <div class="nova-cab"><svg id="novaP" viewBox="0 0 300 230"></svg><h2>Nova</h2><p>Modo tormenta. Guío a todos al refugio y cuento la dosis de cada persona.</p></div>
+    <div class="sec">Todos al refugio</div>
+    <div class="ins al"><div class="chk" id="chk"></div></div>
+    <div class="sec">Lo que cuesta esta tormenta</div>
+    <div class="ins"><p>En el refugio durante las próximas 6 horas, cada persona suma cerca de 9 mSv. En el laboratorio serían cerca de 40.</p><div class="conf"><span>Confianza <b>90%</b></span><span>Modelo de radiación · NASA DONKI + dosímetros</span></div><div class="acc"><span class="pri">Avisar a la Tierra</span><span>Pausar caminata</span></div></div>
+    <div class="preg"><span>Pregúntale a Nova por la tormenta</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></div>
+  </aside>
+</div>
+<div class="demo-c">Datos de demostración, escenario ilustrativo</div>
+<style>.chk{display:flex;flex-direction:column}.chk div{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(236,106,168,.15);font:400 15px SG;color:#f0dbe6}.chk div:last-child{border-bottom:0}.chk span{font:600 13px SG}</style>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script><script src="consolas.js"></script>
+<script>dibujarConsolaRadiacion(+(location.hash.slice(1) || 4));</script>
+</body></html>

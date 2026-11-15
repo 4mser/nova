@@ -1,0 +1,866 @@
+{
+ "version": 1,
+ "packs": [
+  {
+   "id": "alsp",
+   "n": "Advanced life support",
+   "color": "#ec6aa8",
+   "donde": "Medical rack, drawer A",
+   "nota": "Cardiac arrest, anaphylaxis, severe bleeding. Opened only for emergencies."
+  },
+  {
+   "id": "resp",
+   "n": "Respiratory support",
+   "color": "#8fe6f5",
+   "donde": "Medical rack, drawer B",
+   "nota": "Oxygen and airway help. Cabin oxygen feeds the mask."
+  },
+  {
+   "id": "amp",
+   "n": "Medications",
+   "color": "#a898ff",
+   "donde": "Medical rack, drawer C",
+   "nota": "Everyday medicines. Most expire before the return to Earth."
+  },
+  {
+   "id": "diag",
+   "n": "Diagnostics",
+   "color": "#46c8e8",
+   "donde": "Medical rack, drawer D",
+   "nota": "Tools to measure. Readings go to Nova and the flight surgeon."
+  },
+  {
+   "id": "trauma",
+   "n": "Wounds and trauma",
+   "color": "#f2b457",
+   "donde": "Medical rack, drawer E",
+   "nota": "Dressings, closure and splinting."
+  },
+  {
+   "id": "cont",
+   "n": "Contamination protection",
+   "color": "#6fd6b0",
+   "donde": "Hatch-side locker",
+   "nota": "For smoke, toxic spills or chemicals in the eyes."
+  }
+ ],
+ "items": [
+  {
+   "id": "aed",
+   "pack": "alsp",
+   "n": "Defibrillator (AED)",
+   "cantidad": 1,
+   "inicial": 1,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Analyzes the heart rhythm and shocks if needed. Pads expire separately.",
+   "protocolos": [
+    "paro_cardiaco"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/aed.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Defibrillator-809447_1920.jpg",
+    "autor": "Tanja-Denise Schantz",
+    "licencia": "CC0"
+   }
+  },
+  {
+   "id": "bvm",
+   "pack": "alsp",
+   "n": "Bag-valve-mask",
+   "cantidad": 2,
+   "inicial": 2,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Breathes for a person who is not breathing. Connects to cabin oxygen.",
+   "protocolos": [
+    "paro_cardiaco",
+    "oxigeno_bajo"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/bvm.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:A_mannequin_and_a_bag_valve_mask_are_used_to_train_U.S._Marines_in_cardiopulmonary_resuscitation_(CPR)_for_emergency_procedures_at_Marine_Corps_Air_Station_Beaufort,_S.C.,_Jan._28,_2010_100128-M-QS915-003.jpg",
+    "autor": "Lance Cpl. Kevin Clark",
+    "licencia": "Public domain"
+   }
+  },
+  {
+   "id": "opa",
+   "pack": "alsp",
+   "n": "Oral airways (set of 6 sizes)",
+   "cantidad": 1,
+   "inicial": 1,
+   "minimo": 1,
+   "unidad": "set",
+   "vence_dia": null,
+   "uso": "Keeps the tongue from blocking the airway in an unconscious person.",
+   "protocolos": [
+    "paro_cardiaco",
+    "convulsion"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/opa.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Oral_Airway_(4)_Adult_Large.JPG",
+    "autor": "ICUnurses",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "lma",
+   "pack": "alsp",
+   "n": "Laryngeal mask airway",
+   "cantidad": 2,
+   "inicial": 2,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": 1824,
+   "uso": "Secures the airway when the mask is not enough. Trained use only.",
+   "protocolos": [
+    "paro_cardiaco"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/lma.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:ProSeal_Laryngeal_Mask_Airway_inflated_001.jpg",
+    "autor": "ignis",
+    "licencia": "CC BY-SA 3.0"
+   }
+  },
+  {
+   "id": "epipen",
+   "pack": "alsp",
+   "n": "Epinephrine 1 mg/mL (1:1000) ampoules",
+   "cantidad": 8,
+   "inicial": 8,
+   "minimo": 4,
+   "unidad": "ampoule",
+   "vence_dia": 547,
+   "uso": "Severe allergic reaction: 0.5 mL (0.5 mg) into the outer mid-thigh, as the protocol says.",
+   "protocolos": [
+    "anafilaxia"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/epipen.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Adrenalin.jpg",
+    "autor": "Mvejr",
+    "licencia": "CC BY 4.0"
+   }
+  },
+  {
+   "id": "ampolla",
+   "pack": "alsp",
+   "n": "Epinephrine 1 mg/10 mL (1:10,000)",
+   "cantidad": 6,
+   "inicial": 6,
+   "minimo": 2,
+   "unidad": "vial",
+   "vence_dia": 730,
+   "uso": "Cardiac arrest drug, given by the trained crew member as the checklist says.",
+   "protocolos": [
+    "paro_cardiaco"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/ampolla.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Adrenaline_ampoule.jpg",
+    "autor": "Whispyhistory This photo was taken with iPhone 11 Pro Max",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "midazolam",
+   "pack": "alsp",
+   "n": "Midazolam 5 mg/mL",
+   "cantidad": 6,
+   "inicial": 6,
+   "minimo": 2,
+   "unidad": "ampoule",
+   "vence_dia": 730,
+   "uso": "Benzodiazepine for a seizure that does not stop, as the checklist says. Watch breathing.",
+   "protocolos": [
+    "convulsion"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/midazolam.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Midazolam.JPG",
+    "autor": "James Heilman, MD",
+    "licencia": "CC BY 3.0"
+   }
+  },
+  {
+   "id": "iv_cateter",
+   "pack": "alsp",
+   "n": "IV catheters 18G",
+   "cantidad": 12,
+   "inicial": 12,
+   "minimo": 4,
+   "unidad": "unit",
+   "vence_dia": 1459,
+   "uso": "Opens a vein for fluids or drugs.",
+   "protocolos": [
+    "hemorragia",
+    "descompresion"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/iv_cateter.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Intravenous_cannula_05.JPG",
+    "autor": "Saltanat ebli",
+    "licencia": "CC0"
+   }
+  },
+  {
+   "id": "suero",
+   "pack": "alsp",
+   "n": "Saline 0.9% 500 mL",
+   "cantidad": 8,
+   "inicial": 8,
+   "minimo": 4,
+   "unidad": "bag",
+   "vence_dia": 730,
+   "uso": "Fluid replacement. Bags carry a gas trap: in weightlessness bubbles do not rise.",
+   "protocolos": [
+    "hemorragia",
+    "desmayo",
+    "descompresion"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/suero.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Iv1-07_014.jpg",
+    "autor": "Wikimedia Commons",
+    "licencia": "CC BY-SA 3.0"
+   }
+  },
+  {
+   "id": "jeringa",
+   "pack": "alsp",
+   "n": "Syringes and needles",
+   "cantidad": 40,
+   "inicial": 40,
+   "minimo": 15,
+   "unidad": "unit",
+   "vence_dia": 1824,
+   "uso": "Drawing up and giving injected medicines.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/jeringa.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Syringe_with_needle_(2).JPG",
+    "autor": "Intropin",
+    "licencia": "CC BY-SA 3.0"
+   }
+  },
+  {
+   "id": "torniquete",
+   "pack": "alsp",
+   "n": "Tourniquet",
+   "cantidad": 3,
+   "inicial": 3,
+   "minimo": 2,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Stops severe bleeding from an arm or leg. Note the time it goes on.",
+   "protocolos": [
+    "hemorragia"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/torniquete.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Tourniquet.jpeg",
+    "autor": "INDNAM",
+    "licencia": "CC BY-SA 3.0"
+   }
+  },
+  {
+   "id": "mascarilla_o2",
+   "pack": "resp",
+   "n": "Oxygen mask (non-rebreather)",
+   "cantidad": 4,
+   "inicial": 4,
+   "minimo": 2,
+   "unidad": "unit",
+   "vence_dia": 1824,
+   "uso": "High-flow oxygen from the cabin supply.",
+   "protocolos": [
+    "oxigeno_bajo",
+    "descompresion",
+    "co2"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/mascarilla_o2.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Non_Rebreather_Mask.JPG",
+    "autor": "ICUnurses",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "inhalador",
+   "pack": "resp",
+   "n": "Salbutamol inhaler",
+   "cantidad": 3,
+   "inicial": 3,
+   "minimo": 1,
+   "unidad": "inhaler",
+   "vence_dia": 730,
+   "uso": "Opens the airways in an asthma-like attack or wheezing.",
+   "protocolos": [
+    "anafilaxia"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/inhalador.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Easyhaler_Buventol_inhaler.jpg",
+    "autor": "Sadenäyttely",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "ibuprofeno",
+   "pack": "amp",
+   "n": "Ibuprofen 400 mg",
+   "cantidad": 38,
+   "inicial": 60,
+   "minimo": 20,
+   "unidad": "tablet",
+   "vence_dia": 1094,
+   "uso": "Pain, back pain from spine stretching, fever. Take with food.",
+   "protocolos": [
+    "fiebre"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/ibuprofeno.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Amneal_Pharmaceuticals_ibuprofen_tablets.jpg",
+    "autor": "Mx. Granger",
+    "licencia": "CC0"
+   }
+  },
+  {
+   "id": "paracetamol",
+   "pack": "amp",
+   "n": "Acetaminophen 500 mg",
+   "cantidad": 71,
+   "inicial": 80,
+   "minimo": 20,
+   "unidad": "tablet",
+   "vence_dia": 1094,
+   "uso": "Pain and fever. Gentler on the stomach than ibuprofen.",
+   "protocolos": [
+    "fiebre"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/paracetamol.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Thiocolchicoside-Aceclofenac-Paracetamol_Tablet_-_Howrah_20170920111151.jpg",
+    "autor": "Biswarup Ganguly",
+    "licencia": "CC BY 3.0"
+   }
+  },
+  {
+   "id": "antihistaminico",
+   "pack": "amp",
+   "n": "Loratadine 10 mg",
+   "cantidad": 26,
+   "inicial": 30,
+   "minimo": 10,
+   "unidad": "tablet",
+   "vence_dia": 1094,
+   "uso": "Allergy symptoms: itch, sneezing, mild rash. Not for anaphylaxis.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/antihistaminico.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Fortune_NT-Alergi_tablet_(contains_Loratadine_10mg).jpg",
+    "autor": "Mk2010",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "antibiotico",
+   "pack": "amp",
+   "n": "Amoxicillin 500 mg",
+   "cantidad": 42,
+   "inicial": 42,
+   "minimo": 21,
+   "unidad": "capsule",
+   "vence_dia": 730,
+   "uso": "Bacterial infections, only when the flight surgeon prescribes it.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/antibiotico.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Amoxicillin.JPG",
+    "autor": "Smile a While",
+    "licencia": "CC BY 3.0"
+   }
+  },
+  {
+   "id": "glucosa_gel",
+   "pack": "amp",
+   "n": "Glucose tablets 4 g",
+   "cantidad": 34,
+   "inicial": 40,
+   "minimo": 15,
+   "unidad": "tablet",
+   "vence_dia": 730,
+   "uso": "Low blood sugar: 4 tablets give the 15 g of fast sugar in the protocol. Check again in 15 minutes.",
+   "protocolos": [
+    "hipoglucemia",
+    "desmayo"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/glucosa_gel.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Glucose_2.jpg",
+    "autor": "Paul Nasca",
+    "licencia": "Public domain"
+   }
+  },
+  {
+   "id": "sales",
+   "pack": "amp",
+   "n": "Oral rehydration salts",
+   "cantidad": 17,
+   "inicial": 20,
+   "minimo": 8,
+   "unidad": "sachet",
+   "vence_dia": 1094,
+   "uso": "Dehydration, vomiting or diarrhea. One sachet in 1 liter of water.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/sales.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Oral_rehydration_salts_-_Packet.jpg",
+    "autor": "Cjp24",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "crema",
+   "pack": "amp",
+   "n": "Hydrocortisone 1% cream",
+   "cantidad": 2,
+   "inicial": 4,
+   "minimo": 1,
+   "unidad": "tube",
+   "vence_dia": 730,
+   "uso": "Itchy rash and dry skin irritation, common in space.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/crema.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Tube_of_hydrocortisone_cream.jpg",
+    "autor": "Father Goose",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "pomada_ojos",
+   "pack": "amp",
+   "n": "Lubricating eye drops",
+   "cantidad": 3,
+   "inicial": 6,
+   "minimo": 2,
+   "unidad": "bottle",
+   "vence_dia": 547,
+   "uso": "Dry or irritated eyes from cabin air.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/pomada_ojos.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Walgreens_Lubricant_Eye_Drops.jpg",
+    "autor": "TaurusEmerald",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "antiseptico",
+   "pack": "amp",
+   "n": "Povidone-iodine 10%",
+   "cantidad": 4,
+   "inicial": 4,
+   "minimo": 1,
+   "unidad": "bottle",
+   "vence_dia": 1094,
+   "uso": "Cleans skin before closing a wound.",
+   "protocolos": [
+    "hemorragia"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/antiseptico.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Betadine_spray.jpg",
+    "autor": "Whispyhistory",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "estetoscopio",
+   "pack": "diag",
+   "n": "Stethoscope",
+   "cantidad": 2,
+   "inicial": 2,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Listen to the heart, lungs and bowel.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/estetoscopio.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:2023_Stetoskop.jpg",
+    "autor": "Jacek Halicki",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "tensiometro",
+   "pack": "diag",
+   "n": "Blood pressure cuff",
+   "cantidad": 2,
+   "inicial": 2,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Manual backup for the station cuff. Arm at heart height.",
+   "protocolos": [
+    "desmayo"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/tensiometro.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Aneroid_Sphygmomanometer.jpg",
+    "autor": "Confidence24",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "oximetro",
+   "pack": "diag",
+   "n": "Pulse oximeter",
+   "cantidad": 3,
+   "inicial": 3,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Oxygen and pulse from a fingertip.",
+   "protocolos": [
+    "oxigeno_bajo",
+    "co2"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/oximetro.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:OxyWatch_C20_Pulse_Oximeter.png",
+    "autor": "Thinkpaul",
+    "licencia": "CC BY-SA 3.0"
+   }
+  },
+  {
+   "id": "termometro",
+   "pack": "diag",
+   "n": "Digital thermometer",
+   "cantidad": 3,
+   "inicial": 3,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Under the tongue for one minute.",
+   "protocolos": [
+    "fiebre"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/termometro.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:2023_Elektroniczny_termometr_lekarski.jpg",
+    "autor": "Jacek Halicki",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "glucometro",
+   "pack": "diag",
+   "n": "Glucose meter and strips",
+   "cantidad": 1,
+   "inicial": 1,
+   "minimo": 1,
+   "unidad": "kit",
+   "vence_dia": 456,
+   "uso": "Blood sugar from a finger prick. Strips expire first.",
+   "protocolos": [
+    "hipoglucemia",
+    "desmayo"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/glucometro.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:(20250417)_Blood_glucose_meter_09.jpg",
+    "autor": "Roy Zuo",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "otoscopio",
+   "pack": "diag",
+   "n": "Otoscope and ophthalmoscope",
+   "cantidad": 1,
+   "inicial": 1,
+   "minimo": 1,
+   "unidad": "set",
+   "vence_dia": null,
+   "uso": "Look into ears and at the back of the eye (SANS check).",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/otoscopio.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Otoscope_or_Auriscope_ENT_Instrument_Medical.jpg",
+    "autor": "Sarindam7",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "ecografo",
+   "pack": "diag",
+   "n": "Handheld ultrasound",
+   "cantidad": 1,
+   "inicial": 1,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Images of heart, lungs, eyes, bladder and bones. Guided remotely by Earth.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/ecografo.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Handheld_ultrasonic_cutter_knife_Electraze_CUR-01.jpg",
+    "autor": "Qurren",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "tiras_orina",
+   "pack": "diag",
+   "n": "Urine test strips",
+   "cantidad": 19,
+   "inicial": 50,
+   "minimo": 20,
+   "unidad": "strip",
+   "vence_dia": 365,
+   "uso": "Blood, infection and hydration in urine. Kidney stone screening.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/tiras_orina.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Visually_read_a_urine_test_strip_by_comparing_it_with_the_color_key_provided_by_the_manufacturer._Color_chart_from_Urinox-10_urine_test_strips_by_Diagnox_is_shown_in_this_image.jpg",
+    "autor": "Hxa098020",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "gasas",
+   "pack": "trauma",
+   "n": "Sterile gauze pads",
+   "cantidad": 60,
+   "inicial": 60,
+   "minimo": 20,
+   "unidad": "pad",
+   "vence_dia": 1824,
+   "uso": "Cover and press on wounds.",
+   "protocolos": [
+    "hemorragia"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/gasas.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Alginat_Wundauflage_gezupft.jpg",
+    "autor": "Korrupt",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "venda",
+   "pack": "trauma",
+   "n": "Elastic bandage",
+   "cantidad": 10,
+   "inicial": 10,
+   "minimo": 4,
+   "unidad": "roll",
+   "vence_dia": 1824,
+   "uso": "Holds dressings and supports sprains.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/venda.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Crepe_Bandage.jpg",
+    "autor": "Abdsomod",
+    "licencia": "CC0"
+   }
+  },
+  {
+   "id": "curitas",
+   "pack": "trauma",
+   "n": "Adhesive bandages",
+   "cantidad": 86,
+   "inicial": 100,
+   "minimo": 30,
+   "unidad": "unit",
+   "vence_dia": 1824,
+   "uso": "Small cuts and blisters.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/curitas.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Adhesive_bandage.jpg",
+    "autor": "Beendy234",
+    "licencia": "CC BY 4.0"
+   }
+  },
+  {
+   "id": "grapadora",
+   "pack": "trauma",
+   "n": "Skin stapler",
+   "cantidad": 2,
+   "inicial": 2,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": 1824,
+   "uso": "Fast closure of a clean cut on the scalp or limbs.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/grapadora.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Skin_stapler_closeup.jpg",
+    "autor": "Steven Fruitsmaak",
+    "licencia": "CC BY 3.0"
+   }
+  },
+  {
+   "id": "suturas",
+   "pack": "trauma",
+   "n": "Sutures",
+   "cantidad": 12,
+   "inicial": 12,
+   "minimo": 4,
+   "unidad": "pack",
+   "vence_dia": 1824,
+   "uso": "Closing wounds. Trained use only.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/suturas.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Set_of_Hagedorn%27s_suture_needles,_mounted_on_card,_England,_Wellcome_L0057712.jpg",
+    "autor": "Wikimedia Commons",
+    "licencia": "CC BY 4.0"
+   }
+  },
+  {
+   "id": "hemostatico",
+   "pack": "trauma",
+   "n": "Hemostatic gauze",
+   "cantidad": 4,
+   "inicial": 4,
+   "minimo": 2,
+   "unidad": "pack",
+   "vence_dia": 1094,
+   "uso": "Packed into a deep wound to stop heavy bleeding.",
+   "protocolos": [
+    "hemorragia"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/hemostatico.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Hemostatic_Agent_3.jpg",
+    "autor": "Intropin (Mark Oniffrey)",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "ferula",
+   "pack": "trauma",
+   "n": "Moldable splint",
+   "cantidad": 3,
+   "inicial": 3,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Holds a suspected fracture or sprain still.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/ferula.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Sam_Splint_-_Finger_Splint_-_First_Aid_Gear_(52881944189).jpg",
+    "autor": "Tony Webster",
+    "licencia": "CC BY 2.0"
+   }
+  },
+  {
+   "id": "tijeras",
+   "pack": "trauma",
+   "n": "Trauma shears",
+   "cantidad": 2,
+   "inicial": 2,
+   "minimo": 1,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Cut clothing away to see the injury.",
+   "protocolos": [
+    "hemorragia",
+    "anafilaxia"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/tijeras.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Trauma-shears.jpg",
+    "autor": "Another-anon-artist-234",
+    "licencia": "CC0"
+   }
+  },
+  {
+   "id": "guantes",
+   "pack": "trauma",
+   "n": "Nitrile gloves",
+   "cantidad": 164,
+   "inicial": 200,
+   "minimo": 50,
+   "unidad": "glove",
+   "vence_dia": 1824,
+   "uso": "Protect both people. Put on before touching blood.",
+   "protocolos": [
+    "hemorragia"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/guantes.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Disposable_nitrile_glove.jpg",
+    "autor": "Wikimedia Commons",
+    "licencia": "Public domain"
+   }
+  },
+  {
+   "id": "n95",
+   "pack": "cont",
+   "n": "N95 respirator",
+   "cantidad": 16,
+   "inicial": 16,
+   "minimo": 8,
+   "unidad": "mask",
+   "vence_dia": 1824,
+   "uso": "Smoke, dust or a toxic leak in the cabin.",
+   "protocolos": [
+    "co2"
+   ],
+   "foto": {
+    "archivo": "kit/fotos/n95.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:N95mask.jpg",
+    "autor": "Hanabishi",
+    "licencia": "CC0"
+   }
+  },
+  {
+   "id": "gafas",
+   "pack": "cont",
+   "n": "Safety goggles",
+   "cantidad": 6,
+   "inicial": 6,
+   "minimo": 4,
+   "unidad": "unit",
+   "vence_dia": null,
+   "uso": "Protect the eyes from fumes and floating debris.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/gafas.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:2023_Okulary_ochronne_(1).jpg",
+    "autor": "Jacek Halicki",
+    "licencia": "CC BY-SA 4.0"
+   }
+  },
+  {
+   "id": "lavaojos",
+   "pack": "cont",
+   "n": "Eyewash",
+   "cantidad": 4,
+   "inicial": 4,
+   "minimo": 2,
+   "unidad": "bottle",
+   "vence_dia": 730,
+   "uso": "Rinse chemicals or particles out of the eyes for 15 minutes.",
+   "protocolos": [],
+   "foto": {
+    "archivo": "kit/fotos/lavaojos.jpg",
+    "fuente": "https://commons.wikimedia.org/wiki/File:2008-07-02_Eye_wash_station.jpg",
+    "autor": "Ildar Sagdejev (Specious)",
+    "licencia": "CC BY-SA 3.0"
+   }
+  }
+ ]
+}

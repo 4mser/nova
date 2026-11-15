@@ -1,0 +1,340 @@
+<!-- ============================================================ 16 · APP MÓVIL 1 -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>10 · App móvil</span></div>
+  <div class="secn">10</div>
+  <div class="cabsec">
+    <span class="ojo">10 · App NOVA en modo misión</span>
+    <h2>El teléfono de cada astronauta, enlazado con la nave y sin internet</h2>
+  </div>
+  <p class="lead">La app NOVA (Expo SDK 57, React Native 0.86, expo-router; versión 0.9.4) tiene un <b>modo misión</b>. Con la dirección de la nave y el asiento (T1–T4) configurados, el teléfono deja de usar servicios en la nube y habla solo con el enlace de la nave por la red local: entrega sus lecturas y recibe el estado de la tripulación, la misión y Casa.</p>
+  <div style="display:flex;justify-content:space-between;gap:4mm">
+    <div class="equipo"><div class="tel" style="width:52mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:4mm;height:1.8mm"></span></i></div><div class="rec"><img src="img/m/m-hoy.jpg" alt="Hoy"></div></div></div>
+      <div class="leyenda-eq"><b>Hoy</b>Resumen de NOVA, emergencia<br>y signos que llegan de la nave</div></div>
+    <div class="equipo"><div class="tel" style="width:52mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:4mm;height:1.8mm"></span></i></div><div class="rec"><img src="img/m/m-hoy-abajo.jpg" alt="Hoy, plan del día"></div></div></div>
+      <div class="leyenda-eq"><b>Hoy · más abajo</b>Casa, check-in y el plan<br>del día en hora de la nave</div></div>
+    <div class="equipo"><div class="tel" style="width:52mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:4mm;height:1.8mm"></span></i></div><div class="rec"><img src="img/m/m-crew.jpg" alt="Crew"></div></div></div>
+      <div class="leyenda-eq"><b>Crew</b>Cada compañero en vivo<br>con el mismo código de color</div></div>
+  </div>
+  <div class="g2">
+    <div class="caja"><h4>Lo que el teléfono envía (<code>src/cuenta/nave.ts</code>)</h4>
+      <ul class="l"><li>Cada 5 s: pulso y VFC del reloj o banda, SpO₂, pasos, luz y ruido.</li><li>Cada minuto, si cambió: sueño de anoche y pulso en reposo.</li><li>Ánimo y energía del check-in solo con «Compartir mi día». Nunca el texto del diario.</li><li>Todo por <code>POST /v1/lote</code>; el núcleo lo trata igual que la estación.</li></ul></div>
+    <div class="caja"><h4>Lo que el teléfono recibe (<code>naveEstado.ts</code>)</h4>
+      <ul class="l"><li><code>/v1/estado</code> cada 5 s con la app abierta.</li><li><code>/v1/mision</code>, tripulación y <code>/v1/sistemas</code> cada minuto.</li><li><code>/v1/casa</code> cada minuto, guardado en el teléfono para verlo sin enlace.</li><li>Un único almacén para Hoy, Crew, Emergencia, Casa y el widget.</li></ul></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 17 · APP MÓVIL 2 -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>10 · App móvil</span></div>
+  <div class="cabsec">
+    <span class="ojo">10 · Emergencia, ciclo y la nave en el bolsillo</span>
+    <h2>Funciones que siguen andando aunque se caiga el enlace</h2>
+  </div>
+  <div style="display:flex;justify-content:space-between;gap:3mm">
+    <div class="equipo"><div class="tel" style="width:40mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:3.4mm;height:1.6mm"></span></i></div><div class="rec"><img src="img/m/m-emergencia.jpg" alt="Emergencia"></div></div></div>
+      <div class="leyenda-eq"><b>Emergencia</b>Quién y qué pasa</div></div>
+    <div class="equipo"><div class="tel" style="width:40mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:3.4mm;height:1.6mm"></span></i></div><div class="rec"><img src="img/m/m-rcp.jpg" alt="Guía de RCP"></div></div></div>
+      <div class="leyenda-eq"><b>Guía de RCP</b>Signos en vivo y fuente</div></div>
+    <div class="equipo"><div class="tel" style="width:40mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:3.4mm;height:1.6mm"></span></i></div><div class="rec"><img src="img/m/m-ciclo.jpg" alt="Ciclo"></div></div></div>
+      <div class="leyenda-eq"><b>Ciclo</b>Privado por defecto</div></div>
+    <div class="equipo"><div class="tel" style="width:40mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:3.4mm;height:1.6mm"></span></i></div><div class="rec"><img src="img/m/m-tu-nave.jpg" alt="La nave y sesión privada"></div></div></div>
+      <div class="leyenda-eq"><b>Tú · La nave</b>Núcleo, enlace y sesión</div></div>
+  </div>
+  <div class="g2">
+    <div class="caja al"><div class="cajacab"><h4>Emergencia</h4><span class="est at">Parcial</span></div><p>Los mismos 12 protocolos de la nave dentro de la app (<code>src/emergencia/protocolos.json</code>), así que funcionan sin la nave y sin internet. La guía muestra los signos de la persona si hay enlace y cita fuente y páginas. Falta traducir algunos pasos que el teléfono todavía muestra en inglés.</p></div>
+    <div class="caja nv"><div class="cajacab"><h4>Ciclo menstrual</h4><span class="est ok">Funciona</span></div><p>Basado en tres revisiones de licencia CC BY sobre salud femenina en vuelo. Modo de supresión con píldora continua, registro de sangrado y síntomas, aviso de píldora y cálculo de suministros hasta el fin de la misión. Se queda en el teléfono; compartir es opcional y va solo al informe privado del cirujano.</p></div>
+    <div class="caja"><div class="cajacab"><h4>La nave y sesión privada</h4><span class="est at">Sin publicar</span></div><p>La tarjeta «The ship» muestra el núcleo en línea, la distancia en minutos-luz y el último cambio enviado desde la Tierra. Debajo, la sesión privada con la psicóloga en la Tierra: NOVA envía los temas antes porque el video llega con 9 minutos de retraso. La tarjeta pasa tsc y lint y sale por OTA, pero todavía no tiene commit.</p></div>
+    <div class="caja"><div class="cajacab"><h4>Widget de Casa</h4><span class="est ok">Funciona</span></div><p>Widget de pantalla de inicio en Android (<code>react-native-android-widget</code>) con el último mensaje de la familia. Se actualiza solo cuando llega algo nuevo. Build de prueba EAS 0.9.4 lanzado desde el commit <code>e7d2aab</code>.</p></div>
+  </div>
+  <div class="caja at"><h4>Nota sobre la tarjeta «Mission dose» de Hoy</h4><p>Muestra 214 mSv y el 21 % de un límite de carrera de 1000 mSv con un valor de ejemplo fijo en <code>motor.ts</code>, basado en la tasa de crucero medida por MSL RAD (≈ 1,84 mSv/día). El cálculo real con datos de radiación es parte del módulo pendiente.</p></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 18 · API Y PUERTOS -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>11 · Enlace de la nave</span></div>
+  <div class="secn">11</div>
+  <div class="cabsec">
+    <span class="ojo">11 · Enlace de la nave: API y puertos</span>
+    <h2>Una sola puerta HTTP para pantallas, teléfonos y Tierra</h2>
+  </div>
+  <p class="lead"><code>main.rs</code> levanta un servidor axum en el puerto 8750 que sirve la interfaz, la consola de Tierra y estas rutas. Si la nave define <code>NOVA_TOKEN</code>, las rutas que escriben exigen la cabecera <code>x-nova-token</code>.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:30%">Ruta</th><th style="width:9%">Método</th><th>Para qué sirve</th><th style="width:15%">La usa</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">/v1/flujo</td><td>GET</td><td>Server-Sent Events con el estado a 1 Hz, alertas, eventos del núcleo y subidas</td><td>PC, Tierra</td></tr>
+      <tr><td class="mono">/v1/estado</td><td>GET</td><td>Estado completo: 4 tripulantes × 18 sensores, cabina y umbrales</td><td>teléfono</td></tr>
+      <tr><td class="mono">/v1/ingreso · /v1/lote</td><td>POST</td><td>Medición manual de la pantalla · lote de lecturas del teléfono hacia el núcleo</td><td>PC · teléfono</td></tr>
+      <tr><td class="mono">/v1/historia · /v1/resumen</td><td>GET</td><td>Serie de un sensor en una ventana · resumen de 24 h por tripulante</td><td>PC</td></tr>
+      <tr><td class="mono">/v1/mision</td><td>GET</td><td>Día, fase, distancia, retraso de la luz, elongación y conjunción</td><td>todas</td></tr>
+      <tr><td class="mono">/v1/preguntar · /v1/modelo</td><td>POST · GET</td><td>Ask NOVA en streaming · estado del modelo local</td><td>PC</td></tr>
+      <tr><td class="mono">/v1/decir</td><td>POST</td><td>Texto a voz con Kokoro (WAV)</td><td>PC</td></tr>
+      <tr><td class="mono">/v1/bitacora</td><td>GET · POST</td><td>Bitácora de emergencias, conversaciones e ingresos</td><td>PC, Tierra</td></tr>
+      <tr><td class="mono">/v1/privado</td><td>POST</td><td>Resumen con consentimiento que va solo al informe del cirujano</td><td>teléfono</td></tr>
+      <tr><td class="mono">/v1/escenario</td><td>POST</td><td>Escenario de demo al simulador (UDP 50053)</td><td>PC (tecla D)</td></tr>
+      <tr><td class="mono">/v1/biblioteca[/buscar|/recargar]</td><td>GET · POST</td><td>Catálogo, búsqueda semántica y recarga del paquete</td><td>PC</td></tr>
+      <tr><td class="mono">/v1/casa[/archivo|/respuesta]</td><td>GET · POST</td><td>Bandeja por tripulante, fotos y respuestas</td><td>teléfono, PC</td></tr>
+      <tr><td class="mono">/v1/casa/subida · /bajada</td><td>POST</td><td>Entrada desde la Tierra · retiro de respuestas</td><td>relevo Casa</td></tr>
+      <tr><td class="mono">/v1/sistemas · /comando</td><td>GET · POST</td><td>Núcleo traducido · comando a la cola de subida</td><td>PC, Tierra</td></tr>
+      <tr><td class="mono">/v1/tierra/informe</td><td>GET</td><td>Informe de la nave para la Tierra</td><td>Tierra</td></tr>
+      <tr><td class="mono">/v1/salud</td><td>GET</td><td>Comprobación de que el enlace está vivo</td><td>monitoreo</td></tr>
+    </tbody></table></div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:12%">Puerto</th><th style="width:12%">Protocolo</th><th style="width:30%">De → a</th><th>Contenido</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">50050</td><td>UDP</td><td>estación, simulador, enlace → núcleo</td><td>Mediciones NDJSON con el contrato v1</td></tr>
+      <tr><td class="mono">50051</td><td>UDP</td><td>núcleo → enlace</td><td>Estado a 1 Hz y alertas</td></tr>
+      <tr><td class="mono">50052</td><td>UDP</td><td>enlace → núcleo</td><td>Ingresos manuales de la tripulación</td></tr>
+      <tr><td class="mono">50053</td><td>UDP</td><td>enlace → simulador</td><td>Escenarios de demo</td></tr>
+      <tr><td class="mono">50000</td><td>TCP</td><td>núcleo ↔ fprime-gds</td><td>Tramas CCSDS: telemetría, eventos y comandos</td></tr>
+      <tr><td class="mono">5080</td><td>HTTP</td><td>enlace → fprime-gds</td><td>API REST del sistema de tierra</td></tr>
+      <tr><td class="mono">8750</td><td>HTTP</td><td>pantallas, teléfonos, Tierra → enlace</td><td>Interfaz, consola de Tierra y API v1</td></tr>
+      <tr><td class="mono">8081/82/84</td><td>HTTP</td><td>enlace → modelos</td><td>Qwen3 4B · nomic v2 · Kokoro</td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 19 · MATERIAL NASA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>12 · Material real</span></div>
+  <div class="secn">12</div>
+  <div class="cabsec">
+    <span class="ojo">12 · Material real de la NASA y fuentes abiertas</span>
+    <h2>Lo que NOVA usa de verdad, con su licencia</h2>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:23%">Recurso</th><th style="width:22%">Qué es</th><th>Cómo lo usa NOVA</th><th style="width:15%">Licencia</th><th style="width:11%">Estado</th></tr></thead>
+    <tbody>
+      <tr><td>F Prime v4.4.2</td><td>Marco de software de vuelo del JPL</td><td>Núcleo: componentes, puertos, parámetros, eventos, comandos y telemetría</td><td>Apache 2.0</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>fprime-gds</td><td>Sistema de tierra de F Prime</td><td>Transporte con el núcleo, diccionarios y API REST para Systems y la consola</td><td>Apache 2.0</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>CCSDS</td><td>Estándar de comunicaciones espaciales</td><td>Tramas y paquetes entre el núcleo y el GDS (<code>ComCcsds</code>)</td><td>Estándar abierto</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Informes de evidencia del HRP (13)</td><td>Riesgos de salud en misiones largas</td><td>Biblioteca: condiciones médicas, renal, SANS, hueso, corazón, ortostatismo, descompresión, conducta, sueño, radiación (2), fármacos, inmunidad</td><td>Gob. EE. UU.</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>NASA-STD-3001 vol. 1 y 2</td><td>Norma de salud y habitabilidad</td><td>Límites de CO₂ de cabina y criterios de salud de tripulación</td><td>Gob. EE. UU.</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Briefs técnicos de OCHMO (8)</td><td>Oficina del médico jefe de la NASA</td><td>CO₂, ortostatismo, radiación, descompresión, SANS, hueso, operaciones médicas, fármacos</td><td>Gob. EE. UU.</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Catálogo CHeCS</td><td>Equipo médico de la ISS</td><td>Saber qué hay en el botiquín al responder</td><td>Uso público</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Elementos J2000 de Standish</td><td>Efemérides aproximadas del JPL</td><td>Posición de la Tierra, Marte y la nave; retraso de la luz</td><td>Uso público</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Guía de RCP en microgravedad (2020)</td><td>Hinkelbein et al., Scand J Trauma</td><td>Protocolo de paro cardíaco y metrónomo</td><td>CC BY 4.0</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Salud femenina en vuelo (3)</td><td>Revisiones en npj Microgravity, Exp. Physiology, Frontiers</td><td>Base del módulo de ciclo</td><td>CC BY 4.0</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>BEC y lista de medicamentos de la OMS</td><td>Atención básica de emergencias</td><td>Anafilaxia, atragantamiento, hemorragia y convulsión</td><td>CC BY-NC-SA</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>MedlinePlus · OpenStax</td><td>Salud en lenguaje claro · anatomía</td><td>Explicaciones simples en Ask NOVA</td><td>Dominio público · CC BY</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>PhysioNet BIDMC</td><td>Registros reales de PPG y respiración</td><td>Variabilidad real del simulador</td><td>ODC-By 1.0</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>MSL RAD · DONKI</td><td>Dosis medida camino a Marte · clima espacial</td><td>Módulo de radiación (hoy solo la tasa de referencia)</td><td>Datos públicos</td><td><span class="est al">Previsto</span></td></tr>
+      <tr><td>OSDR / SOMA</td><td>Datos abiertos de biología espacial</td><td>Rangos esperados en vuelo (<code>ESPERADO_VUELO</code>)</td><td>Datos públicos</td><td><span class="est al">Previsto</span></td></tr>
+      <tr><td>Open MCT</td><td>Visor de telemetría de la NASA</td><td>Evaluado; Systems ya cumple ese papel con el diseño de NOVA</td><td>Apache 2.0</td><td><span class="est at">No usado</span></td></tr>
+    </tbody></table></div>
+  <div class="nova"><img src="img/m/orbe.png" alt=""><p>Regla del equipo: si una fuente no tiene licencia que permita llevarla a bordo, no entra. Por eso no hay manuales comerciales de urgencias en la biblioteca, aunque serían útiles.</p></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 20 · MODELOS Y STACK -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>13 · Modelos y stack</span></div>
+  <div class="secn">13</div>
+  <div class="cabsec">
+    <span class="ojo">13 · Modelos, stack y licencias</span>
+    <h2>Unos 3 GB de modelos que caben en el computador de la nave</h2>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:27%">Modelo</th><th style="width:18%">Tarea</th><th class="num" style="width:10%">Tamaño</th><th>Cómo corre</th><th style="width:11%">Licencia</th></tr></thead>
+    <tbody>
+      <tr><td>Qwen3-4B-Instruct-2507 Q4_K_M</td><td>Conversación</td><td class="num">2,3 GB</td><td>llama.cpp <code>llama-server</code>, contexto 8192, todas las capas en GPU, plantilla Jinja</td><td>Apache 2.0</td></tr>
+      <tr><td>nomic-embed-text-v2-moe Q4_K_M</td><td>Vectores</td><td class="num">337 MB</td><td>llama.cpp en modo embedding, pooling medio, 768 dimensiones</td><td>Apache 2.0</td></tr>
+      <tr><td>Kokoro-82M v1.0</td><td>Voz</td><td class="num">337 MB</td><td>ONNX Runtime en Python, 24 kHz, voces <code>af_heart</code> y <code>ef_dora</code></td><td>Apache 2.0</td></tr>
+      <tr><td>Biblioteca médica</td><td>Datos</td><td class="num">56 MB</td><td>Fragmentos y matriz float32 en memoria</td><td>según fuente</td></tr>
+    </tbody></table></div>
+  <div class="g2">
+    <div class="caja"><h4>Por qué un modelo de 4B</h4><ul class="l"><li>Cabe con holgura junto al resto de los servicios y responde en segundos en GPU local.</li><li>Las decisiones críticas ya no dependen de él: lo que importa es que explique bien y cite.</li><li>Su versión 2507 sigue instrucciones largas y responde en español o inglés según la pregunta.</li></ul></div>
+    <div class="caja"><h4>Cómo se acota el modelo</h4><ul class="l"><li>Temperatura 0,2 y 400 tokens como máximo.</li><li>Contexto armado por el enlace con datos reales, umbrales, alertas, protocolos y fragmentos.</li><li>Emergencias resueltas antes de llegar al modelo; tres pruebas de <code>cargo test</code> cubren ese detector.</li></ul></div>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:20%">Pieza</th><th style="width:36%">Tecnología</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td>Núcleo de vuelo</td><td>F Prime 4.4.2 · C++17 · FPP · CMake</td><td>Python 3.12 en un entorno propio para <code>fprime-util</code> y <code>fprime-gds</code></td></tr>
+      <tr><td>Enlace y pantalla</td><td>Rust · Tauri 2 · axum 0.8 · tokio · reqwest 0.12 · serde_json</td><td>Siete módulos: main, historia, misión, nova, biblioteca, casa, tierra (≈ 1900 líneas)</td></tr>
+      <tr><td>Interfaz de la nave</td><td>HTML, CSS y JavaScript sin framework</td><td>Space Grotesk local; vistas Crew, Vitals, Systems, Library, Emergency y consola de Tierra (≈ 1700 líneas)</td></tr>
+      <tr><td>Simulador y herramientas</td><td>Python 3</td><td>Simulador BIDMC, indexador de la biblioteca, servidor de voz, relevo Casa</td></tr>
+      <tr><td>App móvil</td><td>Expo SDK 57 · React Native 0.86 · expo-router · TypeScript</td><td>Widgets con <code>react-native-android-widget</code>; builds con EAS y actualizaciones OTA</td></tr>
+      <tr><td>Repositorios</td><td>GitHub privados</td><td><code>4mser/nova-pc</code> (último commit <code>153bcbb</code>) · <code>4mser/nova-app</code> (<code>e7d2aab</code>)</td></tr>
+    </tbody></table></div>
+  <div class="caja at"><div class="cajacab"><h4>Atención con una licencia</h4><span class="est at">Uso comercial</span></div><p>Todo el código y los modelos son Apache 2.0 o equivalentes. La excepción son el BEC y la lista de medicamentos de la OMS (CC BY-NC-SA 3.0 IGO): sirven para el hackathon y para investigación, pero un uso comercial futuro exige permiso de la OMS o reemplazarlos.</p></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 21 · SEGURIDAD Y PRIVACIDAD -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>14 · Seguridad y privacidad</span></div>
+  <div class="secn">14</div>
+  <div class="cabsec">
+    <span class="ojo">14 · Seguridad clínica y privacidad</span>
+    <h2>Reglas fijas donde hay riesgo, y la persona decide qué se comparte</h2>
+  </div>
+  <div class="g2">
+    <div class="caja al"><h4>Seguridad clínica</h4><ul class="l al">
+      <li>Umbrales en el núcleo de vuelo, con dos niveles y 10 s de histéresis para bajar.</li>
+      <li>Valores imposibles y lecturas de baja calidad no disparan alertas.</li>
+      <li>Pasos de emergencia literales desde un archivo versionado, con fuente y página.</li>
+      <li>El modelo de lenguaje no da pasos de emergencia ni diagnósticos.</li>
+      <li>Lo que reporta la tripulación manda sobre lo que dicen los sensores.</li>
+      <li>Cada guía deja bitácora con hora para el cirujano de vuelo.</li>
+    </ul></div>
+    <div class="caja nv"><h4>Privacidad</h4><ul class="l nv">
+      <li>Nada sale a internet: modelos, biblioteca y voz corren en la nave.</li>
+      <li>Ánimo y energía solo se comparten con «Compartir mi día». El texto del diario nunca sale del teléfono.</li>
+      <li>El ciclo menstrual es privado por defecto y nunca aparece en la pantalla de la tripulación.</li>
+      <li><code>/v1/privado</code> lleva resúmenes con consentimiento solo al informe del cirujano.</li>
+      <li>La sesión con la psicóloga la ven solo la persona y su terapeuta.</li>
+    </ul></div>
+  </div>
+  <div class="diag">
+    <svg viewBox="0 0 1780 340" xmlns="http://www.w3.org/2000/svg">
+      <text x="20" y="34" fill="#6d7786" font-size="18" letter-spacing="2.5" class="m">QUIÉN VE CADA DATO</text>
+      <g font-size="20">
+        <g data-caja><rect x="20" y="60" width="400" height="262" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="44" y="104" fill="#6fd6b0" font-size="24" font-weight="600">Toda la tripulación</text>
+          <text x="44" y="146" fill="#a5afbd">signos vitales</text>
+          <text x="44" y="178" fill="#a5afbd">cabina: CO₂, O₂, temperatura</text>
+          <text x="44" y="210" fill="#a5afbd">alertas y guías</text>
+          <text x="44" y="242" fill="#a5afbd">sueño y pasos</text>
+          <text x="44" y="274" fill="#a5afbd">ánimo, si se comparte</text></g>
+        <g data-caja><rect x="460" y="60" width="400" height="262" rx="16" fill="#0f151d" stroke="#ec6aa8"/>
+          <text x="484" y="104" fill="#ec6aa8" font-size="24" font-weight="600">Cirujano de vuelo</text>
+          <text x="484" y="146" fill="#a5afbd">informe de 24 h</text>
+          <text x="484" y="178" fill="#a5afbd">bitácora de guías</text>
+          <text x="484" y="210" fill="#a5afbd">preguntas a NOVA</text>
+          <text x="484" y="242" fill="#a5afbd">resúmenes privados</text>
+          <text x="484" y="274" fill="#a5afbd">con consentimiento</text></g>
+        <g data-caja><rect x="900" y="60" width="400" height="262" rx="16" fill="#0f151d" stroke="#a898ff"/>
+          <text x="924" y="104" fill="#a898ff" font-size="24" font-weight="600">Psicóloga</text>
+          <text x="924" y="146" fill="#a5afbd">temas que la persona</text>
+          <text x="924" y="178" fill="#a5afbd">elige para la sesión</text>
+          <text x="924" y="226" fill="#6d7786" font-size="18">área de Ambar</text></g>
+        <g data-caja><rect x="1340" y="60" width="420" height="262" rx="16" fill="#0f151d" stroke="rgba(255,255,255,.25)"/>
+          <text x="1364" y="104" fill="#f2f5f8" font-size="24" font-weight="600">Solo la persona</text>
+          <text x="1364" y="146" fill="#a5afbd">diario y notas</text>
+          <text x="1364" y="178" fill="#a5afbd">ciclo menstrual</text>
+          <text x="1364" y="210" fill="#a5afbd">respuestas a casa</text>
+          <text x="1364" y="242" fill="#a5afbd">hasta la bajada</text></g>
+      </g>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 9.</b> Niveles de visibilidad de los datos. Lo que no está en la primera columna solo sale del teléfono con una acción explícita de la persona.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:28%">Riesgo</th><th>Mitigación actual</th><th style="width:16%">Estado</th></tr></thead>
+    <tbody>
+      <tr><td>El modelo inventa un dato</td><td>Regla 1 del sistema, datos con antigüedad en el contexto, citas obligatorias y respuesta «no lo tengo medido»</td><td><span class="est ok">Mitigado</span></td></tr>
+      <tr><td>Paso de emergencia incorrecto</td><td>Respuesta fija sin modelo; protocolos con fuente; revisión médica pendiente</td><td><span class="est at">Parcial</span></td></tr>
+      <tr><td>Alarmas falsas por un pico</td><td>Rango plausible, calidad mínima, histéresis y umbrales ajustables por la Tierra</td><td><span class="est ok">Mitigado</span></td></tr>
+      <tr><td>Un tercero en la red de la nave</td><td><code>NOVA_TOKEN</code> opcional en rutas de escritura; red sin salida a internet</td><td><span class="est at">Básico</span></td></tr>
+      <tr><td>Actualización maliciosa desde la Tierra</td><td>Diseñada con firma ed25519 y vuelta atrás; hoy solo se aceptan comandos del diccionario</td><td><span class="est al">Pendiente</span></td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 22 · PENDIENTES -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>15 · Pendientes</span></div>
+  <div class="secn">15</div>
+  <div class="cabsec">
+    <span class="ojo">15 · Pendientes, riesgos y plan</span>
+    <h2>Lo que falta antes del 14 de noviembre</h2>
+  </div>
+  <p class="lead">Orden acordado del plan: biblioteca, emergencias y salud femenina (hechas), luego la parte preventiva. En paralelo, la estación de Luis y la revisión médica.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:24%">Pendiente</th><th>Qué incluye</th><th style="width:14%">Responsable</th><th style="width:13%">Estado</th></tr></thead>
+    <tbody>
+      <tr><td>Preventiva</td><td>Líneas base personales y tendencias (p. ej. pulso en reposo +10 lpm en 3 días), riesgo renal, SANS, pérdida ósea y sueño</td><td>Nicolás Moreno</td><td><span class="est al">Siguiente</span></td></tr>
+      <tr><td>Vistas Sleep, Mind y Body en PC</td><td>Vistas nuevas en la pantalla de la nave con los datos del teléfono y la preventiva</td><td>Nicolás Moreno</td><td><span class="est al">Pendiente</span></td></tr>
+      <tr><td>Ciclo nocturno</td><td>Informe automático cada noche y mejoras desde la Tierra como paquete firmado con ed25519, verificado a bordo y con vuelta atrás</td><td>Nicolás Moreno</td><td><span class="est at">Parcial</span></td></tr>
+      <tr><td>Radiación</td><td>Dosis acumulada con la tasa de MSL RAD y alerta por evento solar con DONKI; reemplaza el valor fijo de la app</td><td>Nicolás Moreno</td><td><span class="est al">Pendiente</span></td></tr>
+      <tr><td>Rangos esperados en vuelo</td><td>Nivel <code>ESPERADO_VUELO</code> con datos de OSDR / SOMA</td><td>Nicolás Moreno</td><td><span class="est al">Pendiente</span></td></tr>
+      <tr><td>Estación médica física</td><td>Confirmar sensores y placa; conectar por USB serie o UDP con el contrato v1</td><td>Luis González</td><td><span class="est at">Esperando</span></td></tr>
+      <tr><td>Revisión clínica</td><td>Un médico asesor revisa los 12 protocolos y los umbrales de partida</td><td>Por conseguir</td><td><span class="est al">Riesgo</span></td></tr>
+      <tr><td>Sueño, ánimo y sesión privada</td><td>Validar el protocolo de bienestar y el flujo con la psicóloga</td><td>Ambar Martínez</td><td><span class="est at">Por revisar</span></td></tr>
+      <tr><td>Pasos del teléfono en inglés</td><td>Traducir los pasos de emergencia que la app todavía muestra en inglés</td><td>Nicolás Moreno</td><td><span class="est at">Parcial</span></td></tr>
+      <tr><td>Tarjeta «La nave»</td><td>Commit y publicación por OTA de <code>EstadoNave.tsx</code></td><td>Nicolás Moreno</td><td><span class="est at">Lista</span></td></tr>
+    </tbody></table></div>
+  <div class="g2">
+    <div class="caja al"><h4>Riesgo: reglas de Space Apps</h4><p>Parte del trabajo existe antes del hackathon. Hay que revisar qué permiten las reglas sobre trabajo previo y declararlo con claridad en la entrega para no arriesgar la descalificación.</p></div>
+    <div class="caja at"><h4>Riesgo: hardware a tiempo</h4><p>Si la estación no llega, la demo usa el simulador con datos reales de PhysioNet. El núcleo no cambia: el contrato es el mismo.</p></div>
+  </div>
+  <div class="diag">
+    <svg viewBox="0 0 1780 240" xmlns="http://www.w3.org/2000/svg">
+      <path d="M60,120 H1720" stroke="rgba(255,255,255,.18)" stroke-width="3"/>
+      <g font-size="25">
+        <circle cx="120" cy="120" r="14" fill="#6fd6b0"/><text x="120" y="62" text-anchor="middle" fill="#f2f5f8" font-weight="600">Hecho</text><text x="120" y="174" text-anchor="middle" fill="#a5afbd">núcleo · PC</text><text x="120" y="210" text-anchor="middle" fill="#a5afbd">app · Tierra</text>
+        <circle cx="560" cy="120" r="14" fill="#f2b457"/><text x="560" y="62" text-anchor="middle" fill="#f2f5f8" font-weight="600">10–11 nov</text><text x="560" y="174" text-anchor="middle" fill="#a5afbd">preventiva y vistas</text><text x="560" y="210" text-anchor="middle" fill="#a5afbd">Sleep, Mind, Body</text>
+        <circle cx="1000" cy="120" r="14" fill="#f2b457"/><text x="1000" y="62" text-anchor="middle" fill="#f2f5f8" font-weight="600">12–13 nov</text><text x="1000" y="174" text-anchor="middle" fill="#a5afbd">ciclo nocturno, radiación</text><text x="1000" y="210" text-anchor="middle" fill="#a5afbd">estación de Luis</text>
+        <circle cx="1440" cy="120" r="14" fill="#ec6aa8"/><text x="1440" y="62" text-anchor="middle" fill="#f2f5f8" font-weight="600">14–15 nov</text><text x="1440" y="174" text-anchor="middle" fill="#a5afbd">hackathon: demo,</text><text x="1440" y="210" text-anchor="middle" fill="#a5afbd">video y entrega</text>
+      </g>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 10.</b> Propuesta de calendario hasta la entrega, sujeta a lo que acuerde el equipo.</p>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 23 · ANEXO -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>Anexo</span></div>
+  <div class="secn">A</div>
+  <div class="cabsec">
+    <span class="ojo">Anexo · cómo levantar todo</span>
+    <h2>Seis procesos y la nave queda andando en un solo computador</h2>
+  </div>
+  <p class="lead">Así se levantó cada captura de este informe en el Mac de desarrollo (Apple Silicon). Cada bloque corre en su propia terminal desde <code>~/nova-pc</code>.</p>
+  <div class="codigo" style="white-space:pre"><span class="c"># 1 · núcleo de vuelo y sistema de tierra (lanza Nova_Nave conectado por TCP 50000)</span>
+<span class="k">source</span> vuelo/fprime-venv/bin/activate && cd vuelo/Nova/Nave
+fprime-util build -j12
+fprime-gds -g html --gui-port 5080
+
+<span class="c"># 2 · modelo de lenguaje y modelo de búsqueda (llama.cpp)</span>
+llama-server -m ~/.nova-pc/modelos/Qwen3-4B-Instruct-2507-Q4_K_M.gguf --port 8081 -c 8192 -ngl 99 --jinja
+llama-server -m ~/.nova-pc/modelos/nomic-embed-text-v2-moe.Q4_K_M.gguf --embedding --pooling mean \
+             --port 8084 -c 2048 -ub 2048 -b 2048 -ngl 99
+
+<span class="c"># 3 · voz de NOVA (Kokoro, :8082)</span>
+cd voz && .venv/bin/python servidor.py
+
+<span class="c"># 4 · estación simulada con datos BIDMC (escenarios: desmayo T3, hipoglucemia T1, fiebre T2, hipoxia T4, co2, normal)</span>
+python3 estacion/simulador/simulador.py
+
+<span class="c"># 5 · enlace y pantalla de la nave (:8750); --sin-ventana para solo el enlace</span>
+cd tripulacion/src-tauri && cargo run
+./target/debug/nova-tripulacion --sin-ventana
+
+<span class="c"># 6 · pruebas del detector de emergencias</span>
+cargo test</div>
+  <div class="g2">
+    <div class="codigo" style="white-space:pre"><span class="c"># preparar la biblioteca (en la Tierra)</span>
+cd biblioteca && .venv/bin/python indexar.py
+<span class="c"># → ~/.nova-pc/biblioteca</span>
+
+<span class="c"># mensaje de la familia</span>
+python3 tierra/casa.py enviar --trip T2 \
+  --de "Ana" --relacion "wife" \
+  --texto "We miss you!" --foto playa.jpg
+python3 tierra/casa.py bajar</div>
+    <div class="codigo" style="white-space:pre"><span class="c"># app móvil (~/nova-app)</span>
+npx expo start
+<span class="c"># en la app: modo misión + enlazar la nave</span>
+<span class="c"># url http://&lt;ip-del-pc&gt;:8750 · asiento T1–T4</span>
+
+<span class="c"># consola de Tierra</span>
+open http://127.0.0.1:8750/tierra/
+
+<span class="c"># escenario de demo desde la pantalla</span>
+<span class="c"># tecla D en NOVA PC</span></div>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:26%">Dato de este informe</th><th>De dónde sale</th></tr></thead>
+    <tbody>
+      <tr><td>Umbrales y eventos</td><td><code>vuelo/Nova/Components/MonitorSalud/MonitorSalud.fpp</code> y <code>.cpp</code></td></tr>
+      <tr><td>Topología y rate groups</td><td><code>vuelo/Nova/Nave/Top/topology.fpp</code></td></tr>
+      <tr><td>Contrato y sensores</td><td><code>estacion/CONTRATO.md</code> · <code>Components/Salud/Salud.fpp</code></td></tr>
+      <tr><td>Rutas y puertos</td><td><code>tripulacion/src-tauri/src/main.rs</code></td></tr>
+      <tr><td>Protocolos</td><td><code>tripulacion/ui/protocolos.json</code> v0.2</td></tr>
+      <tr><td>Fuentes y fragmentos</td><td><code>~/.nova-pc/biblioteca/catalogo.json</code> (32 fuentes, 14.551 fragmentos)</td></tr>
+      <tr><td>Capturas</td><td>Aplicaciones reales con el simulador, 9 de noviembre de 2026; tripulación ficticia</td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>

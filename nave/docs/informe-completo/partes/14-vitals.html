@@ -1,0 +1,26 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">14</span>&nbsp;&nbsp;·&nbsp;&nbsp;Vitals y pronóstico</div>
+  <h1 style="font-size:25pt;margin-top:10px">La historia de cada signo y lo que viene en los próximos 15 minutos</h1>
+  <p class="lead">La vista Vitals dibuja la historia guardada a bordo (1 Hz por 6 h y por minuto por 30 días, en disco; ventanas de 10 min a 7 días) con los umbrales vigentes del núcleo encima, proyecta cada signo hacia adelante y avisa cuando algo se sale de lo esperado.</p>
+  <div style="display:grid;grid-template-columns:330px 1fr;gap:16px;margin-top:16px;align-items:start">
+    <div><div class="cap"><img src="img/capturas/pc2-vitals-pulso.jpg" alt="Panel de pulso con el cono de pronóstico"></div>
+      <p class="capleg"><b>Pulso de Kenji, última hora.</b> En lila, el cono a 15 min: 55 ±18 bpm, con 14 % de probabilidad de quedar en el umbral de atención (≤ 45).</p></div>
+    <div class="lista" style="margin-top:0">
+      <div class="it"><i style="background:var(--cian)"></i><p><b>Tendencia.</b> Mínimos cuadrados ponderados sobre los últimos 30 min de esa persona, con más peso a lo reciente (constante de 15 min).</p></div>
+      <div class="it"><i style="background:var(--lila)"></i><p><b>Cono.</b> Se proyecta un cuarto de la ventana elegida, hasta 15 min. El ancho es ±2 desviaciones y crece con el horizonte.</p></div>
+      <div class="it"><i style="background:var(--amb)"></i><p><b>Probabilidad de cruce.</b> La chance de pasar el umbral de atención al final del horizonte. Sobre 30 % el cono se pinta ámbar.</p></div>
+      <div class="it"><i style="background:var(--mag)"></i><p><b>Cambio inesperado.</b> Si la última lectura cae a más de 3 desviaciones de lo que la tendencia esperaba, el panel lo marca como <i>unexpected change</i>.</p></div>
+    </div>
+  </div>
+  <div class="tj" style="margin-top:14px;border-color:rgba(242,180,87,.35)"><div class="k" style="color:var(--amb)"><lu n="info"></lu>&nbsp; Alcance honesto</div><p>Estadística simple y explicable sobre los datos de cada persona, en el espíritu de los modelos de mundo: predecir y actuar sobre la predicción. No es un modelo aprendido ni está validado clínicamente. Solo corre con lecturas de los últimos 30 s.</p></div>
+  <h2 style="margin-top:18px">Cada signo, leído por la amenaza del vuelo que lo mueve</h2>
+  <table class="t" style="margin-top:10px">
+    <tr><th style="width:28%">Amenaza (NASA HRP)</th><th style="width:34%">Qué mira NOVA</th><th>Cómo</th></tr>
+    <tr><td><b>Radiación espacial</b></td><td>Dosis acumulada de la misión</td><td>Tasas de MSL RAD: 1,84 mSv/día en crucero, 0,64 en Marte; límite 600 mSv</td></tr>
+    <tr><td><b>Aislamiento y confinamiento</b></td><td>Sueño, ánimo, energía, VFC</td><td>Check-ins compartidos y variabilidad del pulso</td></tr>
+    <tr><td><b>Distancia a la Tierra</b></td><td>Azúcar en sangre y retraso de la luz</td><td>Sin reabastecimiento ni evacuación</td></tr>
+    <tr><td><b>Campos de gravedad</b></td><td>Pulso y presión</td><td>Los fluidos suben y el corazón se adapta</td></tr>
+    <tr><td><b>Ambiente cerrado y hostil</b></td><td>SpO₂, respiración, temperatura, CO₂</td><td>El aire de la cabina llega al cuerpo</td></tr>
+  </table>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>14 / 40</span></div>
+</section>

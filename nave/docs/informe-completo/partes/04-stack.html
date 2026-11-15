@@ -1,0 +1,73 @@
+<section class="page">
+  <div class="kick">Presentación · La pila tecnológica</div>
+  <h1 style="font-size:25pt;margin-top:10px">Todo lo que corre en la nave, por capa</h1>
+  <p class="lead">Software abierto de punta a punta, elegido para correr sin conexión en un solo computador. Cada pieza tiene su licencia verificada (página 34). Las versiones son las que están instaladas hoy.</p>
+  <div class="capas">
+    <div class="capa"><div class="cl" style="--c:var(--amb)"><b>Núcleo de vuelo</b><span>Signos, reglas, alertas y comandos</span></div>
+      <div class="logos">
+        <div class="logo"><img src="img/logos/fprime-logo.svg" alt="" style="width:20px;height:20px"><div><b>F Prime 4.4.2</b><span>NASA JPL · marco de vuelo</span></div></div>
+        <div class="logo"><si n="cplusplus"></si><div><b>C++</b><span>4 componentes propios</span></div></div>
+        <div class="logo"><si n="cmake"></si><div><b>CMake</b><span>fprime-util build</span></div></div>
+        <div class="logo"><si n="python"></si><div><b>Python 3.12</b><span>GDS de F Prime</span></div></div>
+      </div></div>
+    <div class="capa"><div class="cl" style="--c:var(--cian)"><b>Enlace y escritorio</b><span>La pantalla y la API de la nave</span></div>
+      <div class="logos">
+        <div class="logo"><si n="rust"></si><div><b>Rust 1.99</b><span>Enlace, servicios, firmas</span></div></div>
+        <div class="logo"><si n="tauri"></si><div><b>Tauri 2</b><span>Ventana nativa</span></div></div>
+        <div class="logo"><div class="mono-tile" style="background:var(--cian);font-weight:500">ax</div><div><b>axum 0.8 · tokio</b><span>HTTP, SSE y WebSocket</span></div></div>
+        <div class="logo"><lu n="lock-keyhole" style="color:var(--ok)"></lu><div><b>rustls · rcgen</b><span>HTTPS propio :8751</span></div></div>
+        <div class="logo"><lu n="key-round" style="color:var(--mag)"></lu><div><b>ed25519-dalek 2</b><span>Paquetes firmados</span></div></div>
+      </div></div>
+    <div class="capa"><div class="cl" style="--c:var(--lila)"><b>IA a bordo</b><span>Lenguaje, búsqueda, voz, oído, visión</span></div>
+      <div class="logos">
+        <div class="logo"><div class="mono-tile" style="background:var(--lila);font-weight:500">ll</div><div><b>llama.cpp b12110</b><span>Qwen3 4B · nomic embed</span></div></div>
+        <div class="logo"><div class="mono-tile" style="background:var(--lila);font-weight:500">wh</div><div><b>whisper.cpp</b><span>large-v3-turbo</span></div></div>
+        <div class="logo"><si n="onnx"></si><div><b>ONNX Runtime</b><span>Voz Kokoro-82M</span></div></div>
+        <div class="logo"><si n="mediapipe"></si><div><b>MediaPipe 1.2.3</b><span>Pose heavy + Hands, GPU</span></div></div>
+        <div class="logo"><si n="huggingface"></si><div><b>Hugging Face</b><span>Origen de los pesos</span></div></div>
+      </div></div>
+    <div class="capa"><div class="cl" style="--c:var(--cian)"><b>Interfaz y 3D</b><span>Lo que ve la tripulación</span></div>
+      <div class="logos">
+        <div class="logo"><si n="javascript"></si><div><b>JavaScript</b><span>Módulos ES, sin framework</span></div></div>
+        <div class="logo"><si n="threedotjs"></si><div><b>three.js</b><span>Gemelo, kit y holograma</span></div></div>
+        <div class="logo"><si n="webgl"></si><div><b>WebGL</b><span>Shaders propios</span></div></div>
+        <div class="logo"><si n="mozilla"></si><div><b>pdf.js 5.4.296</b><span>Lector de la biblioteca</span></div></div>
+        <div class="logo"><si n="webassembly"></si><div><b>WebAssembly</b><span>JPEG 2000 escaneado</span></div></div>
+      </div></div>
+    <div class="capa"><div class="cl" style="--c:var(--ok)"><b>Teléfono</b><span>Cada tripulante, su app</span></div>
+      <div class="logos">
+        <div class="logo"><si n="expo"></si><div><b>Expo 57</b><span>Builds y OTA</span></div></div>
+        <div class="logo"><si n="react"></si><div><b>React Native 0.86</b><span>React 19.2</span></div></div>
+        <div class="logo"><si n="android"></si><div><b>Android</b><span>Widget «Casa»</span></div></div>
+      </div></div>
+    <div class="capa"><div class="cl" style="--c:var(--mut)"><b>Herramientas</b><span>Datos, pruebas y entorno</span></div>
+      <div class="logos">
+        <div class="logo"><si n="nodedotjs"></si><div><b>Node.js 24</b><span>Scripts y pruebas</span></div></div>
+        <div class="logo"><si n="puppeteer"></si><div><b>Puppeteer</b><span>Pruebas de punta a punta</span></div></div>
+        <div class="logo"><si n="uv"></si><div><b>uv</b><span>Entornos de Python</span></div></div>
+        <div class="logo"><si n="github"></si><div><b>Git · GitHub</b><span>Repositorio privado</span></div></div>
+      </div></div>
+    <div class="capa"><div class="cl" style="--c:var(--amb)"><b>Hardware</b><span>Hoy y en vuelo</span></div>
+      <div class="logos">
+        <div class="logo"><si n="apple"></si><div><b>Apple M5 Pro</b><span>Desarrollo, GPU Metal</span></div></div>
+        <div class="logo"><si n="nvidia"></si><div><b>Clase Jetson</b><span>Objetivo de vuelo · siguiente</span></div></div>
+        <div class="logo"><lu n="cpu" style="color:var(--ok)"></lu><div><b>Estación médica</b><span>USB serie o UDP · Luis</span></div></div>
+      </div></div>
+  </div>
+  <div class="franja" style="margin-top:16px">
+    <div><b>≈ 14.000</b><span>líneas propias en la nave (Rust, C++, JS, Python), sin contar la app</span></div>
+    <div><b>38</b><span>commits en el repositorio de la nave desde el 5 de noviembre</span></div>
+    <div><b>7</b><span>servicios locales que la nave abre y vigila sola</span></div>
+    <div><b>0</b><span>servicios en la nube en la arquitectura de vuelo</span></div>
+  </div>
+  <p style="font-size:7.6pt;color:var(--dim);margin-top:12px">Logos de Simple Icons (CC0) e íconos de Lucide (ISC); las marcas pertenecen a sus dueños. F Prime: logo del proyecto abierto de NASA JPL (Apache 2.0).</p>
+  <style>
+    .capas{display:grid;gap:7px;margin-top:16px}
+    .capa{display:grid;grid-template-columns:136px 1fr;gap:12px;align-items:stretch}
+    .cl{border-left:2px solid var(--c);padding:4px 0 4px 11px;display:flex;flex-direction:column;justify-content:center}
+    .cl b{font:600 10pt 'SG';color:var(--ink)}.cl span{font-size:7.6pt;color:var(--mut);line-height:1.35;margin-top:2px}
+    .logos{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+    .logos .logo{padding:7px 10px}.logos .logo .ic{color:var(--ink)}
+  </style>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>04 / 40</span></div>
+</section>

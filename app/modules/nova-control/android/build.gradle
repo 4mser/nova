@@ -1,0 +1,20 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'solutions.bn.nova'
+version = '0.1.0'
+
+android {
+  namespace "expo.modules.novacontrol"
+  defaultConfig {
+    versionCode 1
+    versionName '0.1.0'
+  }
+}
+
+dependencies {
+  // la capa del asistente es una ReactActivity propia (otra raíz de React sobre lo que estés usando)
+  implementation 'com.facebook.react:react-android'
+}

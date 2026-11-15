@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>HALO · mind</title>
+<link rel="stylesheet" href="ui.css?v=1791048873"><link rel="stylesheet" href="escritorio.css">
+<style>
+.mg{flex:1;display:grid;grid-template-rows:1fr auto;gap:16px;padding:0 48px 40px;min-height:0}
+.mapa{display:grid;grid-template-columns:170px 1fr 90px;align-items:center;row-gap:18px;column-gap:20px;margin-top:22px}
+.mapa .nm{font:500 15px SG;color:var(--t1)}.mapa .nm span{display:block;font:400 13px SG;color:var(--t3)}
+.mapa .celdas{display:grid;grid-template-columns:repeat(14,1fr);gap:6px}
+.mapa .celdas i{height:66px;border-radius:12px}
+.arriba{display:grid;grid-template-columns:500px 1fr;gap:16px;min-height:0}
+.cer{display:flex;flex-direction:column}
+#cerebro3d{position:relative;flex:1;min-height:330px;margin:4px -10px 0}
+#cerebro3d canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+.leyc{display:flex;justify-content:space-between;font:400 13.5px SG;color:var(--t2)}.leyc i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px}
+#estadoC{color:var(--al);font-weight:500}
+.zonas{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.zonas div{padding:10px 12px;border-radius:14px;background:var(--s2);font:400 12.5px/1.35 SG;color:var(--t3)}.zonas b{display:block;font:500 13.5px SG;color:var(--t1)}
+.mapa{grid-template-columns:120px 1fr 64px!important;column-gap:14px!important}
+.mapa .pr{font:300 26px SG;letter-spacing:-.04em;text-align:right}.mapa .pr .u{font-size:13px}
+.dias{display:grid;grid-template-columns:repeat(14,1fr);gap:6px;font:400 12px SG;color:var(--t3);text-align:center}
+.rampa{display:flex;align-items:center;gap:10px;font:400 13px SG;color:var(--t3)}.rampa i{width:80px;height:6px;border-radius:3px;background:linear-gradient(90deg,#5b5bd6,#4a8fe0,#46c8e8,#7fe3c4,#f2b35e)}
+.tres{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.fila4{display:grid;grid-template-columns:110px 1fr 70px;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--l1);font:400 15px SG;color:var(--t2)}
+.fila4:last-child{border-bottom:0}
+.fila4 svg{width:100%;height:34px;overflow:visible}
+.fila4 b{font:400 18px SG;color:var(--t1);text-align:right;letter-spacing:-.02em}.fila4 b .u{font-size:12.5px}
+.fila4.x b{color:var(--nv)}
+</style></head><body>
+<div class="app">
+  <nav class="riel-nav" id="riel"></nav>
+  <main class="centro">
+    <div class="barra"><div><h1>Mente</h1><div class="sub">Salud mental de la tripulación, según los check-ins de la noche y los tests de reacción</div></div>
+      <div class="estado"><span class="pil">Sesiones privadas esta semana <b>3</b></span><span class="pil" id="met">Tiempo de misión</span></div></div>
+    <section class="mg">
+      <div class="arriba">
+      <div class="panel cer"><h3>Patrón de estrés de Kenji<span>modelo conceptual</span></h3>
+        <div id="cerebro3d" data-cerebro3d data-video="1"></div>
+        <div class="leyc"><span><i style="background:#ec6aa8"></i>Más activo esta noche</span><span id="estadoC">Calma → Estrés</span></div>
+        <div class="zonas"><div><b>Lóbulo temporal</b>emoción, memoria</div><div><b>Tronco encefálico</b>alerta, pulso</div><div><b>Lóbulo frontal</b>foco, control</div></div></div>
+      <div class="panel"><h3>Ánimo, últimos 14 días<span class="rampa">bajo <i></i> alto</span></h3>
+        <div class="mapa" id="mapa"></div>
+        <div class="mapa" style="margin-top:8px;row-gap:0"><div></div><div class="dias" id="dias"></div><div></div></div></div>
+      </div>
+      <div class="tres">
+        <div class="panel"><h3>Estrés<span>check-in de la noche</span></h3><div id="pStress" style="margin-top:8px"></div></div>
+        <div class="panel"><h3>Foco<span>tiempo de reacción, 14 días</span></h3><div id="pFocus" style="margin-top:8px"></div></div>
+        <div class="panel"><h3>Conexión<span>llamadas a casa, últimos 7 días</span></h3><div id="pCon" style="margin-top:8px"></div></div>
+      </div>
+    </section>
+  </main>
+  <aside class="nova">
+    <div class="nova-cab"><svg id="novaP" viewBox="0 0 300 230"></svg><h2>Nova</h2><p>Leo el ánimo con cuidado y solo comparto lo que cada persona permite.</p></div>
+    <div class="sec">Requiere atención</div>
+    <div class="ins nv"><div class="q"><i style="background:var(--nv)"></i>Ingrid lleva 9 días sin llamar a casa</div>
+      <p>El aislamiento aparece en silencio. Su ánimo está bien por ahora, pero aquí es cuando suele empezar a bajar. Puedo buscar un horario de llamada que funcione con el retraso de 18 minutos.</p><div class="conf"><span>Confianza <b>84%</b></span><span>Modelo de voz y ánimo · 30 días</span></div>
+      <div class="acc"><span class="pri">Sugerir llamada familiar</span><span>Más tarde</span></div></div>
+    <div class="sec">Patrones que noté</div>
+    <div class="lista"><div><i style="background:var(--nv)"></i><span><b>El ánimo de Kenji</b> sigue a su sueño, un día después</span></div><div><i style="background:var(--ok)"></i><span><b>La moral de la tripulación</b> estable, mejor después de las comidas compartidas</span></div></div>
+    <div class="preg"><span>Pregúntale a Nova</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></div>
+  </aside>
+</div>
+<div class="demo-c">Datos de demostración, tripulación ficticia</div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script><script src="consolas.js"></script>
+<script type="module">
+import './cerebro.mjs';
+const t0 = +(location.hash.slice(1) || 2.4);
+window.dibujarCerebro = (t) => { const c = window.__cerebro3d; if (!c) return; if (!window._estres && t > 1.2){ c.cambiarEstado('estres'); c.enfocar(['temporal', 'tronco']); window._estres = 1; } c.irA(t); };
+dibujarConsolaMente(t0); dibujarCerebro(t0 + 3);
+document.title = 'ok';
+</script>
+</body></html>

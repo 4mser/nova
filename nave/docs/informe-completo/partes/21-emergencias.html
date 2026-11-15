@@ -1,0 +1,37 @@
+<style>.p3c td{padding:5px 10px!important;font-size:8.3pt;line-height:1.36}.p3c th{padding:6px 10px!important}.p3t .tj p{font-size:8.7pt;line-height:1.5}.p3t .tj{padding:13px 15px!important}.p3t p.capleg{font-size:7.8pt;line-height:1.4;margin-top:5px}</style>
+<section class="page aire3 p3t">
+  <div class="kick"><span style="color:var(--mut)">21</span>&nbsp;&nbsp;·&nbsp;&nbsp;Parte III · Emergencias</div>
+  <h1 style="font-size:25pt;margin-top:10px">Doce protocolos fijos, con la fuente a la vista</h1>
+  <p class="lead">Cuando alguien escribe o dice una emergencia, la nave responde con el protocolo escrito, sin pasar por el modelo de lenguaje. La guía paso a paso pregunta, mide y decide con los valores reales del tripulante, en inglés o en español.</p>
+
+  <div class="franja">
+    <div><b>12</b><span>protocolos en <code>ui/protocolos.json</code> v0.2</span></div>
+    <div><b>79</b><span>pasos con ramas en las 10 guías paso a paso</span></div>
+    <div><b>6</b><span>protocolos con fuente y página citadas</span></div>
+    <div><b>0</b><span>decisiones del modelo de lenguaje en una emergencia</span></div>
+  </div>
+
+  <table class="t p3c" style="margin-top:14px">
+    <tr><th style="width:30%">Protocolo</th><th style="width:10%">Guía</th><th>Fuente y página</th><th style="width:24%">Aviso a la Tierra</th></tr>
+    <tr><td><b>Paro cardiaco en microgravedad</b></td><td>10 pasos</td><td>DGLRM/ESAM, RCP en microgravedad · p. 2, 4–6, 8</td><td>Siempre, de inmediato</td></tr>
+    <tr><td><b>Posible desmayo (síncope)</b></td><td>8 pasos</td><td class="t3" style="color:var(--mut)">Sin página citada todavía</td><td>Siempre</td></tr>
+    <tr><td><b>Azúcar baja en la sangre</b></td><td>6 pasos</td><td style="color:var(--mut)">Sin página citada todavía</td><td>Bajo 54 mg/dL o si repite</td></tr>
+    <tr><td><b>Fiebre</b></td><td>5 pasos</td><td style="color:var(--mut)">Sin página citada todavía</td><td>Desde 39,5 °C</td></tr>
+    <tr><td><b>Saturación de oxígeno baja</b></td><td>7 pasos</td><td style="color:var(--mut)">Sin página citada todavía</td><td>Bajo 90 % sostenido</td></tr>
+    <tr><td><b>Reacción alérgica grave</b></td><td>9 pasos</td><td>OMS, Basic Emergency Care (BEC) · p. 119, 202, 235</td><td>Siempre</td></tr>
+    <tr><td><b>Atragantamiento</b></td><td>8 pasos</td><td>OMS, BEC · p. 155 · guía de RCP · p. 4</td><td>En el informe de la noche</td></tr>
+    <tr><td><b>Hemorragia grave</b></td><td>8 pasos</td><td>OMS, Basic Emergency Care · p. 169–170</td><td>Con torniquete o si no para</td></tr>
+    <tr><td><b>Convulsión</b></td><td>8 pasos</td><td>OMS, Basic Emergency Care · p. 141–142</td><td>Siempre</td></tr>
+    <tr><td><b>Enfermedad por descompresión</b></td><td>10 pasos</td><td>NASA HRP, DCS e hipoxia · p. 52 · OCHMO · p. 6, 12</td><td>Siempre; de inmediato si es tipo 2</td></tr>
+    <tr><td><b>CO<sub>2</sub> de cabina en alza</b></td><td>Lista</td><td style="color:var(--mut)">Pasos de cabina</td><td>Sobre el límite de aviso</td></tr>
+    <tr><td><b>Poco sueño, ánimo o energía bajos</b></td><td>Lista</td><td style="color:var(--mut)">Pasos de autocuidado</td><td>Nunca solo: decide la persona</td></tr>
+  </table>
+
+  <div class="g3" style="margin-top:12px">
+    <div class="tj"><div class="k" style="color:var(--mag)"><lu n="shield-alert"></lu>&nbsp; Texto fijo</div><p>La nave reconoce la emergencia (<code>nova::emergencia</code>) y devuelve los pasos escritos y dónde está lo necesario en el kit. Lo que reporta la tripulación manda sobre un sensor.</p></div>
+    <div class="tj"><div class="k" style="color:var(--cian)"><lu n="git-branch"></lu>&nbsp; Guía con ramas</div><p>Pregunta, acción, espera o cierre. Las esperas leen el gemelo contra los umbrales del protocolo. En las compresiones suena un metrónomo a 110 por minuto.</p></div>
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="notebook-pen"></lu>&nbsp; Bitácora</div><p>Cada respuesta queda con hora y la consola de Tierra la lee en <code>/v1/bitacora</code>. La guía de desmayo se abre sola si pulso y presión caen juntos.</p></div>
+  </div>
+  <p style="margin-top:10px;font-size:8.2pt;color:var(--mut)">Estado: <span class="est par">demo · pendiente de revisión de un cirujano de vuelo</span>. Licencias: CC BY 4.0, CC BY-NC-SA 3.0 IGO y NASA de uso público.</p>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>21 / 40</span></div>
+</section>

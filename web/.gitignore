@@ -1,0 +1,17 @@
+.vercel
+.DS_Store
+render/voz-es/voice/
+render/voz-es/es/
+render/voz-es/*.wav
+render/voz-es/*.mp4
+render/*-hq.mp4
+render/*.mp4
+render/*.wav
+render/**/*.pcm
+render/v3/voz/
+render/voz-*/voice/
+render/voz-*/take*.wav
+render/voz-es-v2/
+render/voz-live-prueba/
+render/voz-en/
+docs/arquitectura/out/

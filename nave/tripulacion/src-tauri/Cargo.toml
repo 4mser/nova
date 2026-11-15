@@ -1,0 +1,31 @@
+[package]
+name = "nova-tripulacion"
+version = "0.1.0"
+description = "Pantalla de la tripulación de NOVA y enlace con los teléfonos"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+axum = { version = "0.8", features = ["ws"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync", "time"] }
+tokio-stream = { version = "0.1", features = ["sync"] }
+tower-http = { version = "0.6", features = ["cors", "fs", "set-header"] }
+serde_json = "1"
+base64 = "0.22"
+ed25519-dalek = "2"
+# HTTPS propio de la nave para el visor del escáner (la cámara del teléfono exige página segura)
+axum-server = { version = "0.7", default-features = false, features = ["tls-rustls-no-provider"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rcgen = "0.13"
+# puente WebSocket hacia la visión de a bordo (vision/servidor.py)
+tokio-tungstenite = "0.28"
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "stream"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true

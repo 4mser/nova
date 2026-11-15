@@ -1,0 +1,35 @@
+<script>
+// Control de desborde y choques: cada página revisa que nada pase el pie, y que los bloques hermanos no se pisen.
+document.fonts.ready.then(() => setTimeout(() => {
+  const problemas = [];
+  document.querySelectorAll('.pag').forEach((pg, i) => {
+    const pie = pg.querySelector('.pie'); if (!pie) return;
+    const lim = pie.getBoundingClientRect().top - 2;
+    let max = 0;
+    pg.querySelectorAll('*').forEach(e => {
+      if (e.closest('.pie') || e.closest('.cab') || e.classList.contains('secn') || e.closest('.foto') || e.closest('.velo') || e.closest('svg')) return;
+      const r = e.getBoundingClientRect(); if (r.height && r.bottom > max) max = r.bottom;
+    });
+    if (max > lim) problemas.push(`pag ${i + 1} desborda ${Math.round(max - lim)}px`);
+    pg.querySelectorAll('.tw,.caja,.diag,.monitor,.tel').forEach(e => { if (e.scrollHeight > e.clientHeight + 2) problemas.push(`pag ${i + 1} contenido recortado en .${e.className.split(' ')[0]}`); });
+    // textos de SVG que se salen de su caja o se pisan entre sí
+    pg.querySelectorAll('svg').forEach(s => {
+      const vb = s.viewBox.baseVal, ts = [...s.querySelectorAll('text')].map(t => ({ t, b: t.getBBox() }));
+      ts.forEach(({ t, b }) => { if (b.x < vb.x - 1 || b.y < vb.y - 1 || b.x + b.width > vb.x + vb.width + 1 || b.y + b.height > vb.y + vb.height + 1) problemas.push(`pag ${i + 1} texto fuera del SVG: «${t.textContent.slice(0, 30)}»`); });
+      for (let a = 0; a < ts.length; a++) for (let c = a + 1; c < ts.length; c++) {
+        const A = ts[a].b, B = ts[c].b;
+        if (A.x < B.x + B.width - 1 && B.x < A.x + A.width - 1 && A.y < B.y + B.height - 2 && B.y < A.y + A.height - 2) problemas.push(`pag ${i + 1} textos chocan: «${ts[a].t.textContent.slice(0, 22)}» / «${ts[c].t.textContent.slice(0, 22)}»`);
+      }
+      // texto que se sale de la caja (rect) que lo contiene, marcada con data-caja
+      s.querySelectorAll('[data-caja]').forEach(g => {
+        const r = g.querySelector('rect'); if (!r) return; const R = r.getBBox();
+        g.querySelectorAll('text').forEach(t => { const b = t.getBBox(); if (b.x < R.x + 2 || b.x + b.width > R.x + R.width - 2 || b.y < R.y + 1 || b.y + b.height > R.y + R.height - 1) problemas.push(`pag ${i + 1} texto sale de su caja: «${t.textContent.slice(0, 30)}»`); });
+      });
+    });
+  });
+  document.title = problemas.length ? 'PROBLEMAS: ' + problemas.join(' | ') : 'NOVA · Informe técnico';
+  document.body.dataset.listo = '1';
+}, 300));
+</script>
+</body>
+</html>

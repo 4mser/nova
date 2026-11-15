@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOVA · Mission Control</title>
+<link rel="icon" href="../icono.png">
+<link rel="stylesheet" href="../estilo.css?v=4">
+<link rel="stylesheet" href="tierra.css?v=4">
+</head>
+<body>
+<div class="escena" id="escena">
+  <div class="tierra">
+    <header class="tcab">
+      <div class="tmarca"><svg id="marca" viewBox="0 0 52 52"></svg><div><h1>Mission Control</h1><div class="sub">Flight surgeon console · NOVA crew health · Earth</div></div></div>
+      <div class="estado">
+        <span class="pil" id="tDia">Mission day —</span>
+        <span class="pil" id="tLuz"><i class="p"></i>Ship <b>—</b></span>
+        <span class="pil" id="tBajada"><i class="p"></i>Downlink <b>—</b></span>
+      </div>
+    </header>
+    <div class="tgrid">
+      <section class="tcol">
+        <div class="panel"><h3>Crew<span id="tCrewSub">as last received</span></h3><div id="tCrew"></div></div>
+        <div class="panel tal"><h3>Alerts · last 24 h<span id="tNAl"></span></h3><div class="lista" id="tAlertas"></div></div>
+      </section>
+      <section class="panel tcentro">
+        <div class="tabsx" id="tTabs"><button data-tt="informe" class="on">Tonight’s report</button><button data-tt="emergencias">Emergencies</button><button data-tt="privados">Private summaries</button><button data-tt="preguntas">Ask NOVA log</button><button data-tt="aprender">Teach NOVA</button></div>
+        <div class="tcuerpo" id="tCuerpo"></div>
+      </section>
+      <section class="tcol">
+        <div class="panel">
+          <h3>Update the ship’s limits<span>F Prime parameters</span></h3>
+          <div class="tsel" id="tIndicadores"></div>
+          <div id="tLimites"></div>
+          <input class="tin" id="tMotivo" maxlength="160" placeholder="Reason (goes in the log), e.g. Kenji’s resting heart rate runs high">
+          <button class="tbtn" id="tEnviarLim">Send to the ship</button>
+          <p class="tnota" id="tNotaLim"></p>
+        </div>
+        <div class="panel tup"><h3>On the way up<span>light delay</span></h3><div id="tSubida"></div></div>
+        <div class="panel">
+          <h3>A message from home<span>family relay</span></h3>
+          <div class="tsel" id="tPara"></div>
+          <div class="tfila"><input class="tin" id="tDe" maxlength="40" placeholder="From (e.g. Yui)"><input class="tin" id="tRel" maxlength="20" placeholder="Relation (daughter)"></div>
+          <input class="tin" id="tTexto" maxlength="400" placeholder="Message">
+          <div class="tfila"><label class="tfile"><input type="file" id="tFoto" accept="image/*"><span id="tFotoTxt">Add a photo</span></label><button class="tbtn" id="tEnviarCasa">Send to the ship</button></div>
+          <p class="tnota" id="tNotaCasa"></p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<script src="../escala.js"></script>
+<script src="../lib/mascota-base.js"></script>
+<script src="../lib/mascota-orbes.js"></script>
+<script src="../graficos.js"></script>
+<script src="tierra.js?v=5"></script>
+</body>
+</html>

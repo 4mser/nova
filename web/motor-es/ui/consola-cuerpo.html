@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>HALO · body</title>
+<link rel="stylesheet" href="ui.css?v=1791048873"><link rel="stylesheet" href="escritorio.css">
+<style>
+.bg2{flex:1;display:grid;grid-template-rows:auto 1fr;gap:16px;padding:0 48px 40px;min-height:0}
+.ej{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:20px}
+.ej .p{display:flex;flex-direction:column}
+.ej .p .nm{display:flex;justify-content:space-between;align-items:baseline;font:500 15px SG}
+.ej .p .nm b{font:300 26px SG;letter-spacing:-.04em}.ej .p .nm b .u{font-size:13px}
+.ej svg{width:100%;height:130px;margin-top:12px;overflow:visible}
+.ley4{display:flex;gap:18px;font:400 13px SG;color:var(--t3)}.ley4 i{display:inline-block;width:12px;height:6px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.tres{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:16px}
+.hueso svg{width:100%;height:500px;margin-top:10px;overflow:visible}
+.fila4{display:grid;grid-template-columns:90px 1fr 64px;align-items:center;gap:14px;padding:24px 0;border-bottom:1px solid var(--l1);font:400 15px SG;color:var(--t2)}
+.fila4:last-child{border-bottom:0}
+.fila4 .r{height:8px;border-radius:8px;background:var(--l2);position:relative}.fila4 .r i{position:absolute;left:0;top:0;bottom:0;border-radius:8px;background:#6fd6b0}
+.fila4 .r em{position:absolute;top:-5px;bottom:-5px;width:2px;background:rgba(255,255,255,.4);left:90%}
+.fila4 b{font:400 18px SG;color:var(--t1);text-align:right}
+.ojo{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--l1);font:400 15px SG;color:var(--t2)}
+.ojo:last-child{border-bottom:0}
+.ojo span{font:500 13.5px SG}
+</style></head><body>
+<div class="app">
+  <nav class="riel-nav" id="riel"></nav>
+  <main class="centro">
+    <div class="barra"><div><h1>Cuerpo</h1><div class="sub">Corazón, hueso, músculo y ojos de toda la tripulación</div></div>
+      <div class="estado"><span class="pil">Meta de ejercicio <b>2,5 h</b> al día</span><span class="pil" id="met">Tiempo de misión</span></div></div>
+    <section class="bg2">
+      <div class="panel"><h3>Ejercicio esta semana<span class="ley4"><span><i style="background:#6fd6b0"></i>Fuerza</span><span><i style="background:#8fe6f5"></i>Cardio</span></span></h3><div class="ej" id="ej"></div></div>
+      <div class="tres">
+        <div class="panel hueso"><h3>Densidad ósea, proyectada<span>cadera, % desde el despegue</span></h3><svg id="pHueso" viewBox="0 0 440 500"></svg></div>
+        <div class="panel"><h3>Fuerza muscular<span>vs. despegue</span></h3><div id="pMus" style="margin-top:10px"></div></div>
+        <div class="panel"><h3>Ojos<span>controles del disco óptico</span></h3><div id="pOjo" style="margin-top:10px"></div></div>
+      </div>
+    </section>
+  </main>
+  <aside class="nova">
+    <div class="nova-cab"><svg id="novaP" viewBox="0 0 300 230"></svg><h2>Nova</h2><p>Los cambios pequeños en el cuerpo se corrigen fácil si se detectan a tiempo. Los vigilo todos.</p></div>
+    <div class="sec">Requiere atención</div>
+    <div class="ins nv"><div class="q"><i style="background:var(--nv)"></i>El cardio de David bajó 30 %</div>
+      <p>El arnés de la cinta le está rozando el hombro. Cambiaría tres sesiones a la bicicleta esta semana para que su corazón mantenga la forma.</p><div class="conf"><span>Confianza <b>88%</b></span><span>Modelo de ejercicio · 6 semanas</span></div>
+      <div class="acc"><span class="pri">Usar bicicleta</span><span>Ver con David</span></div></div>
+    <div class="sec">Según el plan</div>
+    <div class="lista"><div><i style="background:var(--ok)"></i><span><b>Pérdida ósea</b> bajó a 0,4 % al mes con entrenamiento de fuerza</span></div><div><i style="background:var(--ok)"></i><span><b>Controles de ojos</b> normales, el próximo en Sol 220</span></div></div>
+    <div class="preg"><span>Pregúntale a Nova</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></div>
+  </aside>
+</div>
+<div class="demo-c">Datos de demostración, tripulación ficticia</div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script><script src="consolas.js"></script>
+<script>dibujarConsolaCuerpo(+(location.hash.slice(1) || 2.4));</script>
+</body></html>

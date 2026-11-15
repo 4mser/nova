@@ -1,0 +1,38 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">07</span>&nbsp;&nbsp;·&nbsp;&nbsp;Parte I · Arquitectura&nbsp;&nbsp;·&nbsp;&nbsp;El recorrido de un dato</div><h1 style="font-size:25pt;margin-top:10px">De la estación a la pantalla en menos de un segundo</h1>
+  <p class="lead">Un caso real de la demo: el simulador aplica el escenario «desmayo» y el pulso de Ingrid cae a 34 latidos por minuto. Así pasa ese valor por cada pieza, de arriba hacia abajo en el tiempo.</p>
+  <svg class="dg" viewBox="0 0 674 540" style="margin-top:16px" role="img" aria-label="Secuencia del dato">
+    <text class="m" x="56" y="16" text-anchor="middle">ESTACIÓN</text><text class="m" x="168" y="16" text-anchor="middle">ESTACION</text><text class="m" x="280" y="16" text-anchor="middle">MONITOR</text><text class="m" x="392" y="16" text-anchor="middle">ENLACE</text><text class="m" x="504" y="16" text-anchor="middle">PANTALLAS</text><text class="ma" x="616" y="16" text-anchor="middle">TIERRA</text>
+    <path d="M56 28V530M168 28V530M280 28V530M392 28V530M504 28V530M616 28V530" stroke="rgba(150,185,215,.2)" stroke-width="1"/>
+    <circle cx="56" cy="64" r="4.5" fill="#6fd6b0"/><path d="M56 64H164" stroke="#46c8e8" stroke-width="1.5"/><path d="M158 60l7 4-7 4" fill="none" stroke="#46c8e8" stroke-width="1.5"/>
+    <text x="64" y="56">pulso = 34</text><text class="m" x="64" y="82">UDP 50050</text>
+    <path d="M168 112H276" stroke="#46c8e8" stroke-width="1.5"/><path d="M270 108l7 4-7 4" fill="none" stroke="#46c8e8" stroke-width="1.5"/>
+    <text x="176" y="104">valida, emite Signo</text><text class="m" x="176" y="130">1 HZ</text>
+    <rect x="224" y="146" width="112" height="44" rx="10" fill="rgba(236,106,168,.1)" stroke="rgba(236,106,168,.6)"/><text class="t" x="280" y="165" text-anchor="middle">34 &lt; 35 lpm</text><text class="mm" x="280" y="182" text-anchor="middle">AVISO_TIERRA</text>
+    <path d="M280 220H388" stroke="#46c8e8" stroke-width="1.5"/><path d="M382 216l7 4-7 4" fill="none" stroke="#46c8e8" stroke-width="1.5"/>
+    <text x="288" y="212">WARNING_HI</text><text class="m" x="288" y="238">UDP 50051</text>
+    <path d="M392 268H500" stroke="#46c8e8" stroke-width="1.5"/><path d="M494 264l7 4-7 4" fill="none" stroke="#46c8e8" stroke-width="1.5"/>
+    <text x="400" y="260">flujo SSE</text><text class="mc" x="400" y="286">&lt; 1 S</text>
+    <text class="m" x="384" y="314" text-anchor="end">GUARDA A 1 HZ</text>
+    <rect x="448" y="300" width="112" height="44" rx="10" fill="rgba(168,152,255,.1)" stroke="rgba(168,152,255,.6)"/><text class="t" x="504" y="319" text-anchor="middle">abre la guía</text><text class="ml" x="504" y="336" text-anchor="middle">VOZ Y PASOS</text>
+    <path d="M504 376H612" stroke="#f2b457" stroke-width="1.5" stroke-dasharray="5 4"/><path d="M606 372l7 4-7 4" fill="none" stroke="#f2b457" stroke-width="1.5"/>
+    <text x="512" y="368">informe</text><text class="ma" x="512" y="394">+ 9,9 MIN</text>
+    <rect x="566" y="410" width="100" height="44" rx="10" fill="rgba(242,180,87,.1)" stroke="rgba(242,180,87,.6)"/><text class="t" x="616" y="429" text-anchor="middle">el cirujano</text><text class="ma" x="616" y="446" text-anchor="middle">AJUSTA</text>
+    <path d="M616 488H284" stroke="#ec6aa8" stroke-width="1.5" stroke-dasharray="5 4"/><path d="M290 484l-7 4 7 4" fill="none" stroke="#ec6aa8" stroke-width="1.5"/>
+    <text x="296" y="480">comando de umbral por la cola</text><text class="mm" x="296" y="506">LLEGA A LOS + 19,8 MIN</text>
+  </svg>
+  <div class="g2" style="margin-top:18px">
+    <div class="lista">
+      <div class="it"><i style="background:var(--ok)"></i><p><b>Lectura · 1 Hz.</b> Un mensaje por medición con tripulante, sensor, valor, unidad y calidad de 0 a 1. Máximo 1 KB.</p></div>
+      <div class="it"><i style="background:var(--mag)"></i><p><b>Clasificación.</b> Rango plausible por sensor; una calidad bajo 0,5 no alerta. Subir de nivel es inmediato; bajar exige 10 s seguidos.</p></div>
+      <div class="it"><i style="background:var(--dim)"></i><p><b>Silencio · 120 s.</b> Si un sensor que ya reportó deja de hablar, el núcleo emite <code>SIN_DATOS</code>.</p></div>
+    </div>
+    <div class="lista">
+      <div class="it"><i style="background:var(--cian)"></i><p><b>Estado · 1 Hz.</b> 4 tripulantes × 18 sensores con valor, nivel y edad; cada alerta sale al instante.</p></div>
+      <div class="it"><i style="background:var(--lila)"></i><p><b>Pantallas.</b> NOVA PC recibe el flujo continuo; los teléfonos leen <code>/v1/estado</code> cada 5 s.</p></div>
+      <div class="it"><i style="background:var(--amb)"></i><p><b>Tierra.</b> El informe baja con el retraso de la luz; los comandos suben por una cola con su hora de llegada calculada.</p></div>
+    </div>
+  </div>
+  <div class="franja"><div><b>&lt; 1 s</b><span>del sensor a la pantalla</span></div><div><b>10 s</b><span>seguidos para bajar de nivel</span></div><div><b>120 s</b><span>de silencio y el núcleo avisa</span></div><div><b>9,9 min</b><span>hasta la Tierra, hoy (día 220)</span></div></div>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>07 / 40</span></div>
+</section>

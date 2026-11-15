@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>HALO · crew</title>
+<link rel="stylesheet" href="ui.css?v=1791048873"><link rel="stylesheet" href="escritorio.css"></head><body>
+<div class="app">
+  <nav class="riel-nav" id="riel"></nav>
+  <main class="centro">
+    <div class="barra">
+      <div><h1>Tripulación</h1><div class="sub">Sol 214 de 520 · rumbo a Marte</div></div>
+      <div class="estado"><span class="pil">Enlace con la Tierra <b>18 min</b> solo de ida</span><span class="pil" id="met">Tiempo de misión 214 d 06:12:44</span></div>
+    </div>
+    <section class="crew" id="crew"></section>
+  </main>
+  <aside class="nova">
+    <div class="nova-cab"><svg id="novaP" viewBox="0 0 300 230"></svg>
+      <h2>Nova</h2><p>Cuido a 4 tripulantes y 38 señales. Esto es lo que te necesita.</p></div>
+    <div class="sec">Requiere atención</div>
+    <div class="ins nv"><div class="q"><i style="background:var(--nv)"></i>El sueño de Kenji se está desplazando</div>
+      <p>Tres noches cortas seguidas y su tiempo de reacción es 14 % más lento de lo normal. Sugiero pasar su preparación de caminata espacial a mañana.</p><div class="conf"><span>Confianza <b>91%</b></span><span>Modelo de sueño · 21 noches</span></div>
+      <div class="acc"><span class="pri">Pasar a mañana</span><span>Abrir a Kenji</span></div></div>
+    <div class="sec">Todo en orden</div>
+    <div class="lista">
+      <div><i style="background:var(--ok)"></i><span><b>Ejercicio</b> según el plan para todos esta semana</span></div>
+      <div><i style="background:var(--rd)"></i><span><b>Clima espacial</b> tranquilo, vigilo una fulguración solar</span></div>
+    </div>
+    <div class="preg"><span>Pregúntale a Nova</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></div>
+  </aside>
+</div>
+<div class="demo-c">Datos de demostración, tripulación ficticia</div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script><script src="consolas.js"></script>
+<script>dibujarConsolaCrew(+(location.hash.slice(1) || 2.4));</script>
+</body></html>

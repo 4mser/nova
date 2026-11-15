@@ -1,0 +1,26 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">29</span>&nbsp;&nbsp;·&nbsp;&nbsp;Parte IV · El teléfono</div>
+  <h1 style="font-size:25pt;margin-top:10px">Lo que sigue andando aunque se caiga el enlace</h1>
+  <p class="lead">Las funciones de las que depende una persona en un mal momento viven dentro del teléfono: los protocolos de emergencia, los mensajes de casa ya recibidos y el registro privado. Cuando hay enlace, el teléfono suma los signos en vivo, la voz de NOVA y la bitácora del cirujano.</p>
+  <div class="g4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px">
+    <div><div class="tel" style="width:132px;margin:0 auto"><img src="img/capturas/m-emergencia.jpg" alt="Emergencia"></div><p class="capleg" style="text-align:center"><b>Emergencia</b> · quién y qué pasa</p></div>
+    <div><div class="tel" style="width:132px;margin:0 auto"><img src="img/capturas/m-rcp.jpg" alt="Guía de RCP"></div><p class="capleg" style="text-align:center"><b>Guía de RCP</b> · signos en vivo y fuente</p></div>
+    <div><div class="tel" style="width:132px;margin:0 auto"><img src="img/capturas/m-casa.jpg" alt="Casa"></div><p class="capleg" style="text-align:center"><b>From home</b> · la familia, con el retraso de la luz</p></div>
+    <div><div class="tel" style="width:132px;margin:0 auto"><img src="img/capturas/m-tu-nave.jpg" alt="La nave y sesión privada"></div><p class="capleg" style="text-align:center"><b>La nave</b> · núcleo, enlace y sesión privada</p></div>
+  </div>
+  <div class="g2" style="margin-top:18px">
+    <div class="tj"><div class="cajacab" style="display:flex;justify-content:space-between;align-items:center"><div class="k" style="color:var(--mag)"><lu n="siren"></lu>&nbsp; Emergencia en el teléfono</div><span class="est ok">en uso</span></div>
+      <p>Los mismos 12 protocolos de la nave van dentro de la app (<code>src/emergencia/protocolos.json</code>), así que funcionan sin la nave y sin internet. Con enlace, la guía muestra los signos de la persona, habla con la voz de NOVA (<code>/v1/decir</code>) y deja cada paso en la bitácora (<code>/v1/bitacora</code>). La RCP lleva un metrónomo háptico al ritmo del paso. Pasos y voz en español.</p></div>
+    <div class="tj"><div style="display:flex;justify-content:space-between;align-items:center"><div class="k" style="color:var(--amb)"><lu n="house"></lu>&nbsp; Casa y widget</div><span class="est ok">en uso</span></div>
+      <p>Fotos y mensajes de la familia suben desde la Tierra y llegan cuando se cumple el retraso de la luz. El teléfono guarda la bandeja para verla sin enlace, responde con texto o foto (<code>/v1/casa/respuesta</code>) y muestra la última foto de la familia en un widget de la pantalla de inicio de Android, aunque la app esté cerrada.</p></div>
+    <div class="tj"><div style="display:flex;justify-content:space-between;align-items:center"><div class="k" style="color:var(--cian)"><lu n="scan-line"></lu>&nbsp; Escáner del cuerpo</div><span class="est par">parcial</span></div>
+      <p>El botón «Escáner del cuerpo» de Hoy abre <code>https://&lt;nave&gt;:8751/escaner.html</code> con el tripulante ya elegido: la cámara del navegador exige una página segura y la nave trae su propio certificado. Probado con cámara simulada; falta la prueba en un teléfono real.</p></div>
+    <div class="tj"><div style="display:flex;justify-content:space-between;align-items:center"><div class="k" style="color:var(--lila)"><lu n="lock"></lu>&nbsp; Privacidad</div><span class="est ok">en uso</span></div>
+      <p>El diario y todo lo escrito se quedan en el teléfono. El ánimo sale solo con «Compartir mi día». Un resumen del ciclo sale solo si la persona lo elige, y por <code>/v1/privado</code> va únicamente al informe del cirujano de vuelo, nunca a la pantalla de la tripulación.</p></div>
+  </div>
+  <div class="tj" style="margin-top:12px;display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start">
+    <lu n="calendar-clock" style="color:var(--amb);width:20px;height:20px"></lu>
+    <p style="margin:0">La tarjeta <b>«La nave»</b> del perfil muestra el núcleo en línea, la distancia en minutos-luz y el último cambio enviado desde la Tierra. Debajo, la sesión privada con la psicóloga en la Tierra: el video llega con unos 9 minutos de retraso, así que NOVA le envía antes los temas que la persona eligió.</p>
+  </div>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>29 / 40</span></div>
+</section>

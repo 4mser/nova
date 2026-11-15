@@ -1,0 +1,311 @@
+<!-- ============================================================ 4 · RECORRIDO DE UN DATO -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>02 · Recorrido de un dato</span></div>
+  <div class="secn">02</div>
+  <div class="cabsec">
+    <span class="ojo">02 · El recorrido de un dato</span>
+    <h2>De la estación a la pantalla en menos de un segundo, y a la Tierra en 9,5 minutos</h2>
+  </div>
+  <p class="lead">Ejemplo real de la demo: el simulador aplica el escenario <code>desmayo T3</code> y el pulso de Ingrid cae a 34 lpm. Así pasa ese valor por cada pieza.</p>
+  <div class="diag">
+    <svg viewBox="0 0 1780 1220" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="sa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker>
+      <marker id="sm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ec6aa8"/></marker></defs>
+      <!-- carriles -->
+      <g font-size="22" font-weight="600" fill="#f2f5f8" text-anchor="middle">
+        <g data-caja><rect x="20" y="10" width="200" height="84" rx="14" fill="#0f151d" stroke="#f2b457"/><text x="120" y="48">Simulador</text><text x="120" y="78" font-size="17" font-weight="400" fill="#a5afbd">o estación</text></g>
+        <g data-caja><rect x="270" y="10" width="200" height="84" rx="14" fill="#0f151d" stroke="#6fd6b0"/><text x="370" y="48">Estacion</text><text x="370" y="78" font-size="17" font-weight="400" fill="#a5afbd">F Prime</text></g>
+        <g data-caja><rect x="520" y="10" width="200" height="84" rx="14" fill="#0f151d" stroke="#6fd6b0"/><text x="620" y="48">MonitorSalud</text><text x="620" y="78" font-size="17" font-weight="400" fill="#a5afbd">F Prime</text></g>
+        <g data-caja><rect x="770" y="10" width="200" height="84" rx="14" fill="#0f151d" stroke="#6fd6b0"/><text x="870" y="48">Pantalla</text><text x="870" y="78" font-size="17" font-weight="400" fill="#a5afbd">F Prime</text></g>
+        <g data-caja><rect x="1020" y="10" width="200" height="84" rx="14" fill="#0f151d" stroke="#6fd6b0"/><text x="1120" y="48">Enlace</text><text x="1120" y="78" font-size="17" font-weight="400" fill="#a5afbd">Rust :8750</text></g>
+        <g data-caja><rect x="1270" y="10" width="220" height="84" rx="14" fill="#0f151d" stroke="#6fd6b0"/><text x="1380" y="48">Pantallas</text><text x="1380" y="78" font-size="17" font-weight="400" fill="#a5afbd">PC y teléfonos</text></g>
+        <g data-caja><rect x="1540" y="10" width="220" height="84" rx="14" fill="#0f151d" stroke="#ec6aa8"/><text x="1650" y="48">Tierra</text><text x="1650" y="78" font-size="17" font-weight="400" fill="#a5afbd">cirujano de vuelo</text></g>
+      </g>
+      <g stroke="rgba(255,255,255,.12)" stroke-width="2" stroke-dasharray="4 8">
+        <path d="M120,94 V1210"/><path d="M370,94 V1210"/><path d="M620,94 V1210"/><path d="M870,94 V1210"/><path d="M1120,94 V1210"/><path d="M1380,94 V1210"/><path d="M1650,94 V1210"/>
+      </g>
+      <!-- mensajes -->
+      <g font-size="21" fill="#a5afbd">
+        <text x="20" y="150" fill="#6d7786" class="m" font-size="18">t = 0 s</text>
+        <text x="132" y="160">NDJSON · UDP 50050</text>
+        <path d="M120,176 H366" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#sa)"/>
+
+        <text x="382" y="222">valida · signoOut</text>
+        <path d="M370,238 H616" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#sa)"/>
+
+        <rect x="516" y="266" width="208" height="170" rx="10" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="532" y="298" fill="#f2f5f8" font-weight="600">clasificar()</text>
+        <text x="532" y="328">34 ≤ 35 lpm</text>
+        <text x="532" y="358" fill="#ec6aa8">AVISO_TIERRA</text>
+        <text x="532" y="388">sube al instante</text>
+        <text x="532" y="418">baja tras 10 s</text>
+
+        <text x="634" y="478">alertaOut · estadoOut</text>
+        <path d="M620,494 H866" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#sa)"/>
+        <text x="634" y="524" fill="#6d7786" font-size="18">evento WARNING_HI</text>
+
+        <text x="882" y="570">JSON · UDP 50051</text>
+        <path d="M870,586 H1116" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#sa)"/>
+        <text x="20" y="592" fill="#6d7786" class="m" font-size="18">≤ 1 s</text>
+
+        <rect x="1016" y="614" width="208" height="140" rx="10" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="1032" y="646" fill="#f2f5f8" font-weight="600">guarda</text>
+        <text x="1032" y="676">historia 1 Hz</text>
+        <text x="1032" y="706">alerta en disco</text>
+        <text x="1032" y="736">ve el desmayo</text>
+
+        <text x="1132" y="796">flujo SSE</text>
+        <path d="M1120,812 H1376" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#sa)"/>
+
+        <rect x="1266" y="840" width="230" height="170" rx="10" fill="#151c26" stroke="rgba(236,106,168,.5)"/>
+        <text x="1282" y="872" fill="#f2f5f8" font-weight="600">abre la guía</text>
+        <text x="1282" y="902">desmayo (síncope)</text>
+        <text x="1282" y="932">NOVA lee el paso</text>
+        <text x="1282" y="962">en voz alta</text>
+        <text x="1282" y="992">bitácora con hora</text>
+
+        <text x="1520" y="1064" text-anchor="end" fill="#ec6aa8" font-size="20">informe al cirujano</text>
+        <path d="M1120,1080 H1646" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="10 7" marker-end="url(#sm)"/>
+        <text x="20" y="1086" fill="#6d7786" class="m" font-size="18">+ 9,5 min</text>
+
+        <text x="1530" y="1144" text-anchor="end" fill="#ec6aa8" font-size="20">comando de umbral</text>
+        <path d="M1650,1160 H1124" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="10 7" marker-end="url(#sm)"/>
+        <text x="20" y="1166" fill="#6d7786" class="m" font-size="18">+ 19 min</text>
+        <text x="1132" y="1200" fill="#6d7786" font-size="18">al llegar, el enlace lo entrega al núcleo por el GDS</text>
+      </g>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 2.</b> Diagrama de secuencia del escenario de desmayo. Todo lo que está a la izquierda del canal magenta ocurre en la nave y no espera a la Tierra.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:24%">Paso</th><th style="width:16%">Frecuencia</th><th>Detalle técnico</th></tr></thead>
+    <tbody>
+      <tr><td>Lectura del sensor</td><td>1 Hz (simulador)</td><td>Mensaje <code>medicion</code> con <code>trip</code>, <code>sensor</code>, <code>valor</code>, <code>unidad</code> y <code>calidad</code> 0–1. Máximo 1 KB por datagrama.</td></tr>
+      <tr><td>Estacion → MonitorSalud</td><td>rate group 1 Hz</td><td>Lee el socket sin bloquear en cada ciclo, descarta JSON inválido con el evento <code>MENSAJE_INVALIDO</code> y emite por el puerto tipado <code>Nova.Signo</code>.</td></tr>
+      <tr><td>Clasificación</td><td>por lectura</td><td>Rango plausible por sensor, <code>calidad &lt; 0,5</code> no alerta, dos umbrales por lado. Subir es inmediato; bajar exige 10 s seguidos en el nivel menor.</td></tr>
+      <tr><td>Sin datos</td><td>cada ciclo</td><td>Si un sensor que ya reportó calla más de <code>SEGUNDOS_SIN_DATOS</code> (120 s), evento <code>SIN_DATOS</code>.</td></tr>
+      <tr><td>Pantalla → enlace</td><td>1 Hz + alertas</td><td>Estado completo de 4 tripulantes × 18 sensores (valor, nivel, edad) y cada alerta al instante.</td></tr>
+      <tr><td>Enlace → pantallas</td><td>flujo continuo</td><td>Server-Sent Events para NOVA PC y la consola; los teléfonos consultan <code>/v1/estado</code> cada 5 s.</td></tr>
+      <tr><td>Nave → Tierra</td><td>con retraso de luz</td><td>El informe y los resúmenes privados se leen desde <code>/v1/tierra/informe</code>; los comandos suben por la cola con la hora de llegada calculada.</td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 5 · NÚCLEO F PRIME -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>03 · Núcleo de vuelo</span></div>
+  <div class="secn">03</div>
+  <div class="cabsec">
+    <span class="ojo">03 · Núcleo de vuelo F Prime</span>
+    <h2>El mismo marco de software que voló el helicóptero Ingenuity en Marte</h2>
+  </div>
+  <div class="fila">
+    <div class="crece" style="display:flex;flex-direction:column;gap:2.4mm">
+      <p><b>F Prime</b> es el marco de software de vuelo del Jet Propulsion Laboratory de la NASA, publicado como código abierto con licencia Apache 2.0. Lo usaron Ingenuity, los CubeSats ASTERIA y Lunar Flashlight, y varios instrumentos. Organiza el software en <b>componentes</b> con <b>puertos tipados</b>, y da de serie comandos, eventos, telemetría, parámetros persistentes y comunicación CCSDS con la Tierra.</p>
+      <p>NOVA lo trae como submódulo de git en <code>vuelo/lib/fprime</code> (v4.4.2) y agrega un despliegue propio, <code>Nova/Nave</code>, que reúne los subsistemas estándar (<code>CdhCore</code>, <code>ComCcsds</code>, <code>FileHandling</code>, <code>DataProducts</code>) con los cuatro componentes de salud. Todo se modela en FPP y se compila con <code>fprime-util build</code>.</p>
+    </div>
+    <img src="img/logos/fprime-logo.svg" alt="F Prime" style="width:20mm;flex:none;margin-top:2mm;opacity:.95">
+  </div>
+  <div class="diag">
+    <svg viewBox="0 0 1780 830" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker>
+      <marker id="tg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d7786"/></marker></defs>
+      <text x="20" y="34" fill="#6d7786" font-size="18" letter-spacing="2.5" class="m">TOPOLOGÍA Nova/Nave · CONEXIONES PROPIAS</text>
+      <!-- reloj -->
+      <g data-caja><rect x="20" y="64" width="300" height="112" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="40" y="104" fill="#f2f5f8" font-size="23" font-weight="600">rateGroupDriver</text>
+        <text x="40" y="138" fill="#a5afbd" font-size="18">divide el reloj del sistema</text></g>
+      <g data-caja><rect x="20" y="226" width="300" height="214" rx="14" fill="#0f151d" stroke="#46c8e8"/>
+        <text x="40" y="266" fill="#8fe6f5" font-size="23" font-weight="600">rateGroup_1Hz</text>
+        <text x="40" y="300" fill="#a5afbd" font-size="17">tlmSend · fileDownlink</text>
+        <text x="40" y="326" fill="#a5afbd" font-size="17">systemResources · comQueue</text>
+        <text x="40" y="352" fill="#a5afbd" font-size="17">cmdDisp · aggregator</text>
+        <text x="40" y="384" fill="#f2f5f8" font-size="17">estacion · monitorSalud</text>
+        <text x="40" y="410" fill="#f2f5f8" font-size="17">pantalla</text></g>
+      <g data-caja><rect x="20" y="488" width="300" height="84" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="40" y="524" fill="#f2f5f8" font-size="20" font-weight="600">rateGroup_0_5Hz</text>
+        <text x="40" y="554" fill="#a5afbd" font-size="17">cmdSeq (secuencias)</text></g>
+      <g data-caja><rect x="20" y="620" width="300" height="110" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="40" y="656" fill="#f2f5f8" font-size="20" font-weight="600">rateGroup_0_25Hz</text>
+        <text x="40" y="686" fill="#a5afbd" font-size="17">health · buffer managers</text>
+        <text x="40" y="712" fill="#a5afbd" font-size="17">dpWriter · dpMgr</text></g>
+      <path d="M170,176 V222" stroke="#6d7786" stroke-width="2.5" marker-end="url(#tg)"/>
+      <path d="M170,440 V484" stroke="#6d7786" stroke-width="2.5" marker-end="url(#tg)"/>
+      <path d="M170,572 V616" stroke="#6d7786" stroke-width="2.5" marker-end="url(#tg)"/>
+
+      <!-- componentes -->
+      <g data-caja><rect x="470" y="64" width="330" height="190" rx="16" fill="#0f151d" stroke="#6fd6b0" stroke-width="2"/>
+        <text x="492" y="104" fill="#f2f5f8" font-size="25" font-weight="600">estacion</text>
+        <text x="492" y="138" fill="#a5afbd" font-size="17">schedIn ← 1 Hz</text>
+        <text x="492" y="164" fill="#a5afbd" font-size="17">socket UDP 50050</text>
+        <text x="492" y="190" fill="#a5afbd" font-size="17">tlm: Recibidos, Invalidos</text>
+        <text x="492" y="216" fill="#a5afbd" font-size="17">Conectada (latido 15 s)</text></g>
+      <g data-caja><rect x="470" y="330" width="330" height="270" rx="16" fill="#0f151d" stroke="#6fd6b0" stroke-width="2"/>
+        <text x="492" y="370" fill="#f2f5f8" font-size="25" font-weight="600">monitorSalud</text>
+        <text x="492" y="404" fill="#a5afbd" font-size="17">signoIn (async, cola)</text>
+        <text x="492" y="430" fill="#a5afbd" font-size="17">31 parámetros</text>
+        <text x="492" y="456" fill="#a5afbd" font-size="17">5 eventos · 14 canales</text>
+        <text x="492" y="482" fill="#a5afbd" font-size="17">cmd INGRESAR_SIGNO</text>
+        <text x="492" y="508" fill="#a5afbd" font-size="17">histéresis 10 s</text>
+        <text x="492" y="534" fill="#a5afbd" font-size="17">matriz 4 × 18 niveles</text>
+        <text x="492" y="560" fill="#a5afbd" font-size="17">prmGet / prmSet → prmDb</text></g>
+      <g data-caja><rect x="960" y="330" width="330" height="270" rx="16" fill="#0f151d" stroke="#6fd6b0" stroke-width="2"/>
+        <text x="982" y="370" fill="#f2f5f8" font-size="25" font-weight="600">pantalla</text>
+        <text x="982" y="404" fill="#a5afbd" font-size="17">estadoIn · alertaIn</text>
+        <text x="982" y="430" fill="#a5afbd" font-size="17">(guarded)</text>
+        <text x="982" y="456" fill="#a5afbd" font-size="17">UDP 50051 → enlace</text>
+        <text x="982" y="482" fill="#a5afbd" font-size="17">UDP 50052 ← ingresos</text>
+        <text x="982" y="508" fill="#a5afbd" font-size="17">tlm: Enviados,</text>
+        <text x="982" y="534" fill="#a5afbd" font-size="17">IngresosTripulacion</text></g>
+      <path d="M635,254 V326" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ta)"/>
+      <text x="650" y="296" fill="#8fe6f5" font-size="17" class="m">signoOut → signoIn</text>
+      <path d="M800,430 H956" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ta)"/>
+      <text x="812" y="420" fill="#8fe6f5" font-size="16" class="m">estadoOut</text>
+      <path d="M800,500 H956" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ta)"/>
+      <text x="812" y="490" fill="#8fe6f5" font-size="16" class="m">alertaOut</text>
+      <path d="M1125,600 V660 H635 V604" stroke="#8fe6f5" stroke-width="2.5" fill="none" marker-end="url(#ta)"/>
+      <text x="660" y="690" fill="#8fe6f5" font-size="16" class="m">signoOut (ingreso manual) → signoIn</text>
+      <path d="M320,380 H466" stroke="#6d7786" stroke-width="2" marker-end="url(#tg)"/>
+
+      <!-- servicios estándar -->
+      <g data-caja><rect x="1400" y="64" width="360" height="150" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="1420" y="102" fill="#f2f5f8" font-size="21" font-weight="600">CdhCore</text>
+        <text x="1420" y="134" fill="#a5afbd" font-size="17">cmdDisp · events · tlmSend</text>
+        <text x="1420" y="160" fill="#a5afbd" font-size="17">health · version</text>
+        <text x="1420" y="186" fill="#a5afbd" font-size="17">prmDb (parámetros)</text></g>
+      <g data-caja><rect x="1400" y="262" width="360" height="124" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="1420" y="300" fill="#f2f5f8" font-size="21" font-weight="600">ComCcsds</text>
+        <text x="1420" y="332" fill="#a5afbd" font-size="17">tramas y paquetes CCSDS</text>
+        <text x="1420" y="358" fill="#a5afbd" font-size="17">TCP 50000 ↔ GDS</text></g>
+      <g data-caja><rect x="1400" y="434" width="360" height="124" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="1420" y="472" fill="#f2f5f8" font-size="21" font-weight="600">FileHandling</text>
+        <text x="1420" y="504" fill="#a5afbd" font-size="17">uplink y downlink</text>
+        <text x="1420" y="530" fill="#a5afbd" font-size="17">de archivos</text></g>
+      <g data-caja><rect x="1400" y="606" width="360" height="124" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="1420" y="644" fill="#f2f5f8" font-size="21" font-weight="600">DataProducts</text>
+        <text x="1420" y="676" fill="#a5afbd" font-size="17">productos de datos</text>
+        <text x="1420" y="702" fill="#a5afbd" font-size="17">priorizados</text></g>
+      <path d="M1290,400 H1340 V139 H1396" stroke="#6d7786" stroke-width="2" stroke-dasharray="6 6" fill="none" marker-end="url(#tg)"/>
+      <text x="1125" y="312" text-anchor="middle" fill="#6d7786" font-size="16" class="m">eventos · tlm · prm → CdhCore</text>
+      <text x="20" y="790" fill="#6d7786" font-size="17">Flechas turquesa: puertos propios de NOVA. Gris: conexiones del marco. Las tres instancias propias corren en el grupo de 1 Hz.</text>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 3.</b> Topología del despliegue <code>Nova/Nave</code> según <code>Top/topology.fpp</code>. El monitor recibe por un puerto asíncrono con cola propia; la pantalla usa puertos protegidos por mutex.</p>
+  <div class="g2">
+    <div class="caja"><h4>Por qué F Prime y no un servicio común</h4>
+      <ul class="l"><li>Los umbrales son <b>parámetros de vuelo</b>: se cambian por comando desde la Tierra, se guardan en <code>prmDb</code> y sobreviven al reinicio.</li><li>Cada alerta es un <b>evento con severidad</b> (<code>WARNING_HI</code>, <code>WARNING_LO</code>) que el sistema de tierra ya sabe mostrar y archivar.</li><li>La comunicación con la Tierra usa <b>CCSDS</b>, el estándar de las agencias espaciales.</li></ul></div>
+    <div class="caja"><h4>Decisiones de implementación</h4>
+      <ul class="l"><li>Sin memoria dinámica en el camino de los datos: <code>JsonPlano.hpp</code> lee JSON plano sobre un búfer fijo.</li><li>Tamaños fijos: <code>TRIPULANTES = 4</code>, matrices 4 × 18 de valores, niveles y edades.</li><li>Valores imposibles se descartan con <code>SIGNO_DESCARTADO</code>: un sensor suelto no dispara una emergencia.</li></ul></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 6 · MONITOR: NIVELES Y UMBRALES -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>03 · Núcleo de vuelo</span></div>
+  <div class="cabsec">
+    <span class="ojo">03 · MonitorSalud</span>
+    <h2>Cuatro niveles, dos umbrales por lado y una regla para no alarmar de más</h2>
+  </div>
+  <div class="diag">
+    <svg viewBox="0 0 1780 520" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="na" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a5afbd"/></marker></defs>
+      <g data-caja><rect x="20" y="170" width="250" height="130" rx="65" fill="#0f151d" stroke="rgba(255,255,255,.2)"/>
+        <text x="145" y="230" text-anchor="middle" fill="#a5afbd" font-size="25" font-weight="600">SIN_DATO</text>
+        <text x="145" y="264" text-anchor="middle" fill="#6d7786" font-size="17">al arrancar</text></g>
+      <g data-caja><rect x="420" y="170" width="270" height="130" rx="65" fill="#0f151d" stroke="#6fd6b0" stroke-width="2.5"/>
+        <text x="555" y="230" text-anchor="middle" fill="#6fd6b0" font-size="25" font-weight="600">NORMAL</text>
+        <text x="555" y="264" text-anchor="middle" fill="#a5afbd" font-size="17">dentro de rango</text></g>
+      <g data-caja><rect x="900" y="170" width="300" height="130" rx="65" fill="#0f151d" stroke="#f2b457" stroke-width="2.5"/>
+        <text x="1050" y="230" text-anchor="middle" fill="#f2b457" font-size="25" font-weight="600">ATENCION</text>
+        <text x="1050" y="264" text-anchor="middle" fill="#a5afbd" font-size="17">lo resuelve la tripulación</text></g>
+      <g data-caja><rect x="1420" y="170" width="340" height="130" rx="65" fill="#0f151d" stroke="#ec6aa8" stroke-width="2.5"/>
+        <text x="1590" y="230" text-anchor="middle" fill="#ec6aa8" font-size="25" font-weight="600">AVISO_TIERRA</text>
+        <text x="1590" y="264" text-anchor="middle" fill="#a5afbd" font-size="17">avisar al cirujano</text></g>
+      <g data-caja><rect x="420" y="400" width="270" height="100" rx="50" fill="#0f151d" stroke="#a898ff" stroke-dasharray="7 6"/>
+        <text x="555" y="444" text-anchor="middle" fill="#a898ff" font-size="21" font-weight="600">ESPERADO_VUELO</text>
+        <text x="555" y="474" text-anchor="middle" fill="#6d7786" font-size="16">pendiente · OSDR</text></g>
+      <path d="M270,235 H416" stroke="#a5afbd" stroke-width="2.5" marker-end="url(#na)"/>
+      <text x="282" y="222" fill="#a5afbd" font-size="17">1.ª lectura</text>
+      <path d="M690,210 H896" stroke="#a5afbd" stroke-width="2.5" marker-end="url(#na)"/>
+      <text x="704" y="196" fill="#f2f5f8" font-size="17">cruza umbral 1</text>
+      <path d="M896,262 H694" stroke="#a5afbd" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#na)"/>
+      <text x="704" y="292" fill="#a5afbd" font-size="17">10 s en normal</text>
+      <path d="M1200,210 H1416" stroke="#a5afbd" stroke-width="2.5" marker-end="url(#na)"/>
+      <text x="1214" y="196" fill="#f2f5f8" font-size="17">cruza umbral 2</text>
+      <path d="M1416,262 H1204" stroke="#a5afbd" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#na)"/>
+      <text x="1214" y="292" fill="#a5afbd" font-size="17">10 s abajo</text>
+      <path d="M1590,170 C1590,60 555,60 555,166" stroke="#a5afbd" stroke-width="2" fill="none" marker-end="url(#na)"/>
+      <text x="1072" y="84" text-anchor="middle" fill="#ec6aa8" font-size="17">salto directo si el valor cruza el umbral 2 de una vez · evento WARNING_HI</text>
+      <text x="1072" y="124" text-anchor="middle" fill="#6d7786" font-size="16">(cada cambio relevante sale por alertaOut y queda como evento F Prime)</text>
+      <text x="780" y="400" fill="#6d7786" font-size="17">Fuera de rango plausible → SIGNO_DESCARTADO (no cambia el nivel)</text>
+      <text x="780" y="430" fill="#6d7786" font-size="17">calidad &lt; 0,5 → se guarda la lectura pero no alerta</text>
+      <text x="780" y="460" fill="#6d7786" font-size="17">sin lecturas 120 s → SIN_DATOS</text>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 4.</b> Máquina de estados por tripulante y sensor. Las flechas sólidas suben de inmediato; las discontinuas requieren 10 s seguidos en el nivel menor (<code>SEGUNDOS_PARA_BAJAR</code>).</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:21%">Indicador</th><th class="num">Atención alto</th><th class="num">Atención bajo</th><th class="num">Tierra alto</th><th class="num">Tierra bajo</th><th style="width:34%">Base del valor de partida</th></tr></thead>
+    <tbody>
+      <tr><td>Pulso (lpm)</td><td class="num at">≥ 110</td><td class="num at">≤ 45</td><td class="num al">≥ 140</td><td class="num al">≤ 35</td><td>Taquicardia &gt;100 y bradicardia &lt;50 con margen para tripulación entrenada</td></tr>
+      <tr><td>SpO₂ (%)</td><td class="num">—</td><td class="num at">≤ 94</td><td class="num">—</td><td class="num al">≤ 90</td><td>Hipoxemia bajo 90 %</td></tr>
+      <tr><td>Presión sistólica (mmHg)</td><td class="num at">≥ 140</td><td class="num at">≤ 90</td><td class="num al">≥ 180</td><td class="num al">≤ 80</td><td>ACC/AHA 2017, crisis ≥ 180, hipotensión &lt; 90</td></tr>
+      <tr><td>Presión diastólica (mmHg)</td><td class="num at">≥ 90</td><td class="num">—</td><td class="num al">≥ 120</td><td class="num">—</td><td>ACC/AHA 2017</td></tr>
+      <tr><td>Temperatura (°C)</td><td class="num at">≥ 38,0</td><td class="num at">≤ 35,5</td><td class="num al">≥ 39,5</td><td class="num al">≤ 35,0</td><td>Fiebre ≥ 38, hipotermia &lt; 35</td></tr>
+      <tr><td>Frecuencia respiratoria (rpm)</td><td class="num at">≥ 24</td><td class="num at">≤ 10</td><td class="num al">≥ 30</td><td class="num al">≤ 8</td><td>Rangos de alerta temprana clínica</td></tr>
+      <tr><td>Glucosa (mg/dL)</td><td class="num at">≥ 180</td><td class="num at">≤ 70</td><td class="num al">≥ 250</td><td class="num al">≤ 54</td><td>Hipoglucemia nivel 1 y 2 de la ADA</td></tr>
+      <tr><td>CO₂ de cabina (ppm)</td><td class="num at">≥ 2600</td><td class="num">—</td><td class="num al">≥ 5000</td><td class="num">—</td><td>NASA-STD-3001 vol. 2, límites de CO₂</td></tr>
+      <tr><td>Sueño (h)</td><td class="num">—</td><td class="num at">≤ 5,9</td><td class="num">—</td><td class="num al">≤ 3,5</td><td>Informe de evidencia de sueño del HRP</td></tr>
+      <tr><td>Ánimo y energía (1–5)</td><td class="num">—</td><td class="num at">≤ 2</td><td class="num">—</td><td class="num">—</td><td>Check-in de la app, solo si se comparte</td></tr>
+    </tbody></table></div>
+  <div class="g2">
+    <div class="caja ok"><div class="cajacab"><h4>Probado con comandos reales</h4><span class="est ok">Verificado</span></div><p>Desde la consola de Tierra se cambió <code>PULSO_ALTO_ATENCION</code> a 115 y <code>SPO2_ATENCION</code> a 93 con <code>MonitorSalud.*_PRM_SET</code>. El núcleo aplicó cada valor al llegar el comando, 9,5 minutos después, y la pantalla Systems muestra el nuevo límite.</p></div>
+    <div class="caja at"><div class="cajacab"><h4>Valores de partida</h4><span class="est at">Revisión médica</span></div><p>Son valores para el prototipo con su base anotada en <code>docs/umbrales.md</code>. Antes de una versión real los tiene que validar un médico. La variabilidad cardíaca se comparará contra la línea base de cada persona, sin umbral fijo.</p></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 7 · ESTACIÓN Y SIMULADOR -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>04 · Estación médica</span></div>
+  <div class="secn">04</div>
+  <div class="cabsec">
+    <span class="ojo">04 · Estación médica y simulador</span>
+    <h2>Un contrato de datos para conectar cualquier hardware sin tocar el núcleo</h2>
+  </div>
+  <p class="lead">La estación física la arma Luis. Para no depender de qué placa o sensor elija, NOVA fija un contrato (<code>estacion/CONTRATO.md</code>, versión 1): si un equipo manda mensajes que lo cumplen, el núcleo los entiende. El simulador habla exactamente el mismo contrato.</p>
+  <div class="g2">
+    <div class="caja"><h4>Transporte</h4><ul class="l"><li>JSON de una línea terminado en <code>\n</code> (NDJSON), UTF-8, máximo 1 KB.</li><li>Preferido: USB serie a 115.200 baudios, que no depende de red.</li><li>Alternativa: un datagrama UDP por mensaje al puerto <code>50050</code>.</li><li>Teléfonos: HTTP <code>POST /v1/lote</code> al enlace, que lo traduce al mismo contrato.</li></ul></div>
+    <div class="caja"><h4>Cuatro tipos de mensaje</h4><ul class="l"><li><b>medicion</b>: un valor con unidad y calidad 0–1.</li><li><b>onda</b>: trozo de ECG o PPG con <code>fs</code> y <code>seq</code> para detectar pérdidas.</li><li><b>latido</b>: cada 5 s; sin latido por 15 s el núcleo emite <code>PERDIDA</code>.</li><li><b>evento</b>: sin contacto, movimiento, error de sensor, tripulante identificado.</li></ul></div>
+  </div>
+  <div class="codigo" style="white-space:pre"><span class="c">// medición de SpO₂ de T2 con calidad 0,92</span>
+{<span class="k">"v"</span>:1, <span class="k">"tipo"</span>:<span class="s">"medicion"</span>, <span class="k">"est"</span>:<span class="s">"estacion-1"</span>, <span class="k">"t"</span>:1763164800123, <span class="k">"trip"</span>:<span class="s">"T2"</span>,
+ <span class="k">"sensor"</span>:<span class="s">"spo2"</span>, <span class="k">"valor"</span>:97, <span class="k">"unidad"</span>:<span class="s">"%"</span>, <span class="k">"calidad"</span>:0.92}
+<span class="c">// latido de la estación con sus sensores y batería, cada 5 s</span>
+{<span class="k">"v"</span>:1, <span class="k">"tipo"</span>:<span class="s">"latido"</span>, <span class="k">"est"</span>:<span class="s">"estacion-1"</span>, <span class="k">"t"</span>:0, <span class="k">"sensores"</span>:[<span class="s">"spo2"</span>,<span class="s">"pulso"</span>,<span class="s">"temp"</span>,<span class="s">"pa"</span>], <span class="k">"bateria"</span>:0.81}</div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:17%">Sensor</th><th style="width:10%">Unidad</th><th style="width:19%">Rango aceptado</th><th style="width:17%">Origen</th><th>Notas</th></tr></thead>
+    <tbody>
+      <tr><td>pulso · fc_reposo</td><td>lpm</td><td>20–250 · 25–130</td><td>estación · reloj</td><td>Pulso en reposo desde Health Connect o el reloj</td></tr>
+      <tr><td>spo2</td><td>%</td><td>50–100</td><td>estación</td><td>Saturación de oxígeno</td></tr>
+      <tr><td>pa (sis / dia)</td><td>mmHg</td><td>50–250 / 30–150</td><td>estación</td><td>En <code>extra</code> o como <code>pa_sis</code> y <code>pa_dia</code> separados</td></tr>
+      <tr><td>temp · fr</td><td>°C · rpm</td><td>30–43 · 4–60</td><td>estación</td><td>Temperatura corporal y respiración</td></tr>
+      <tr><td>glucosa · vfc</td><td>mg/dL · ms</td><td>20–600 · 5–250</td><td>estación</td><td>VFC como RMSSD</td></tr>
+      <tr><td>ecg · ppg</td><td>onda</td><td>—</td><td>estación</td><td>Para pulso y VFC calculados en el núcleo</td></tr>
+      <tr><td>co2 · o2 · temp cabina</td><td>ppm · % · °C</td><td>0–10.000 · 0–30 · 0–50</td><td>ambiente</td><td><code>trip</code> = <code>"CABINA"</code></td></tr>
+      <tr><td>sueno_h · pasos</td><td>h · pasos</td><td>0–16 · 0–100.000</td><td>teléfono</td><td>Sueño de la última noche y pasos del día</td></tr>
+      <tr><td>animo · energia</td><td>1–5</td><td>1–5</td><td>teléfono</td><td>Solo si la persona activa «Compartir mi día»</td></tr>
+      <tr><td>luz · ruido</td><td>lux · dB</td><td>0–150.000 · 0–140</td><td>teléfono</td><td>Ambiente para sueño y descanso</td></tr>
+    </tbody></table></div>
+  <div class="g2">
+    <div class="caja"><h4>Simulador con datos reales</h4><p>Pulso, SpO₂ y respiración usan la variabilidad de cuatro registros del <b>BIDMC PPG and Respiration Dataset</b> de PhysioNet (ODC-By 1.0) sobre la línea base de cada tripulante. El resto está modelado. Se controla por terminal o por UDP <code>50053</code> desde el enlace.</p></div>
+    <div class="caja"><h4>Escenarios clínicos de la demo</h4>
+      <table class="t" style="font-size:6.8pt"><tbody>
+        <tr><td>desmayo</td><td>pulso −26, sistólica −48 en 20 s; vuelve en 2 min</td></tr>
+        <tr><td>hipoglucemia</td><td>glucosa −46, pulso +38 en 2 min</td></tr>
+        <tr><td>fiebre</td><td>temperatura +2,0 °C, pulso +22 en 2,5 min</td></tr>
+        <tr><td>hipoxia</td><td>SpO₂ −11, respiración +10 en 1 min</td></tr>
+        <tr><td>co2</td><td>CO₂ de cabina +1500 ppm</td></tr>
+      </tbody></table></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>

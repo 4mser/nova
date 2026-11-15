@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>NOVA · check-in</title>
+<link rel="stylesheet" href="ui.css?v=1791048873">
+<style>
+html,body{margin:0;width:1920px;height:1080px;background:transparent;overflow:hidden}
+.pasos{position:absolute;left:250px;top:250px;width:620px}
+.pasos h2{font:600 54px/1.05 SG;letter-spacing:-.045em}
+.pasos p{font:400 21px/1.45 SG;color:var(--t2);margin-top:16px;max-width:520px}
+.lista3{margin-top:44px;display:flex;flex-direction:column;gap:6px}
+.paso{display:flex;align-items:center;gap:18px;padding:14px 18px;border-radius:20px;font:500 21px SG;color:var(--t3);border:1px solid transparent}
+.paso i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:600 15px SG;font-style:normal;border:1.5px solid var(--l2);color:var(--t3);flex:none}
+.paso.on{color:var(--t1);background:var(--s1);border-color:var(--l1)}.paso.on i{background:var(--ac2);border-color:var(--ac2);color:#041218}
+.paso.ok{color:var(--t2)}.paso.ok i{background:transparent;border-color:var(--ok);color:var(--ok)}
+.iph{position:absolute;left:1180px;top:102px}
+.scrin{position:absolute;inset:54px 0 0 0;padding:6px 20px}
+.qq{font:600 26px/1.15 SG;letter-spacing:-.035em;margin-top:22px}
+.qs{font:400 15px SG;color:var(--t2);margin-top:6px}
+.orbs{display:flex;justify-content:space-between;align-items:center;margin-top:34px;height:80px}
+.orbs i{border-radius:50%}
+.segs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:34px}
+.segs i{height:56px;border-radius:14px;background:rgba(255,255,255,.07)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.chips span{padding:12px 18px;border-radius:22px;border:1px solid var(--l2);font:500 15.5px SG;color:var(--t2)}
+.chips span.on{background:var(--ac2);border-color:var(--ac2);color:#041218}
+.diana{position:relative;height:330px;margin-top:20px;border-radius:24px;background:var(--s1);border:1px solid var(--l1);overflow:hidden}
+.res{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px}
+.res b{font:300 46px/1 SG;letter-spacing:-.05em}
+.dedo{position:absolute;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.7);pointer-events:none;z-index:9}
+.ok-g{position:absolute;inset:54px 0 0 0;display:grid;place-items:center;text-align:center}
+.ok-g b{display:block;font:600 28px SG;letter-spacing:-.03em;margin-top:18px}.ok-g span{font:400 16px/1.45 SG;color:var(--t2)}
+.barra-p{height:4px;border-radius:2px;background:var(--l2);margin-top:14px;overflow:hidden}.barra-p i{display:block;height:100%;background:var(--ac2);border-radius:2px}
+</style></head><body>
+<div class="pasos">
+  <h2>No forms.<br>Just talk.</h2>
+  <p>Every evening Mara talks to Nova for a minute. Nova reads mood, stress and fatigue from her words, her voice and the wearable.</p>
+  <div class="lista3" id="lista"></div>
+</div>
+<div class="iph"><div class="scr" id="scr">
+  <div class="sb"><span>21:06</span><i class="isla"></i><span class="sbi"><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".5"/><rect x="2.5" y="2.5" width="11" height="7" rx="2"/></svg></span></div>
+  <div class="scrin" id="cont"></div>
+</div></div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script>
+<script>
+const PASOS = ['Nova asks', 'She answers in her own words', 'Nova reads mood, stress and fatigue', 'The wearable fills in the rest'];
+const cl = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v)), pr = (t, a, d) => cl((t - a) / d), eOut = x => 1 - Math.pow(2, -10 * x);
+const TT = [0, 1.3, 4.5, 7.4, 10.0];
+const FRASE = "Long day of spacewalk prep. It went well, but I'm pretty tired, and I miss home a little.".split(' ');
+const DET = [['Mood', 'Good', 'from her words', '#7fe3c4'], ['Stress', 'Low', 'heart rate variability', '#46c8e8'], ['Fatigue', 'Mild', 'sleep and voice', '#f2b457'], ['Missing home', 'Noted', 'private, for her psychologist', '#a898ff']];
+function dibujarCheckin(t){
+  const paso = t < TT[1] ? 0 : t < TT[2] ? 1 : t < TT[3] ? 2 : t < TT[4] ? 3 : 4;
+  document.getElementById('lista').innerHTML = PASOS.map((n, i) => `<div class="paso ${i === paso ? 'on' : i < paso ? 'ok' : ''}"><i>${i < paso ? '✓' : i + 1}</i>${n}</div>`).join('');
+  let h = `<div style="display:flex;align-items:center;gap:12px;margin-top:6px"><svg id="nv" viewBox="0 0 48 48" style="width:44px;height:44px;overflow:visible"></svg><div><b style="font:600 17px SG">Evening check-in</b><div style="font:400 13.5px SG;color:var(--t2)">Just talk, about a minute</div></div></div>`;
+  h += `<div class="chat" style="padding:20px 0 0">`;
+  h += `<div class="b nv" style="opacity:${eOut(pr(t, .3, .5))}">How was today, Mara?</div>`;
+  if (t > TT[1]){ const n = Math.min(FRASE.length, Math.floor((t - TT[1] - .2) / 2.8 * FRASE.length));
+    const hablando = t < TT[2];
+    h += `<div class="b yo" style="max-width:92%">${n > 0 ? FRASE.slice(0, n).join(' ') : '&nbsp;'}${hablando ? '<span style="opacity:.5"> ▍</span>' : ''}</div>`;
+    if (hablando){ let w = ''; for (let i = 0; i < 38; i++){ const a = .25 + .75 * Math.abs(Math.sin(t * 9 + i * .7) * Math.sin(t * 3.1 + i * 1.3)); w += `<i style="width:4px;height:${6 + a * 34}px;border-radius:2px;background:#8fe6f5;opacity:${.5 + a * .5}"></i>`; }
+      h += `<div style="display:flex;align-items:center;gap:14px;margin-top:6px"><div style="width:52px;height:52px;border-radius:50%;background:#ec6aa8;display:grid;place-items:center;box-shadow:0 0 0 ${8 + 4 * Math.sin(t * 6)}px rgba(236,106,168,.18)"><svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div><div style="display:flex;align-items:center;gap:3px;height:44px">${w}</div></div>`; } }
+  if (t > TT[2]){ h += `<div class="pvt" style="margin-top:6px"><div class="top"><span class="lbl">What Nova understood</span><span class="lbl" style="color:var(--t3)">automatic</span></div>`;
+    DET.forEach(([k, v, src, col], i) => { const a = eOut(pr(t, TT[2] + .3 + i * .55, .5)); h += `<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:${i < 3 ? '1px solid var(--l1)' : '0'};opacity:${a};transform:translateY(${(1 - a) * 10}px)"><div><div style="font:500 15px SG">${k}</div><div style="font:400 12.5px SG;color:var(--t3)">${src}</div></div><b style="font:500 15px SG;color:${col}">${v}</b></div>`; });
+    h += `</div>`; }
+  h += `</div>`;
+  if (t > TT[3]){ const a = eOut(pr(t, TT[3] + .2, .6)); h += `<div class="msg" style="margin-top:10px;opacity:${a}"><div class="de"><i></i>Nova</div>Thanks, Mara. Rest well, your heart is already slowing down.</div>`; }
+  document.getElementById('cont').innerHTML = h;
+  const nv = document.getElementById('nv'); if (nv) nv.innerHTML = mascotaOrbes({ x: 24, y: 25, R: 15, t, expr: t > TT[3] ? 'feliz' : 'normal', orbes: 0, sinHalo: true, habla: (t < 1.2 || (t > TT[3] && t < TT[3] + 2)) ? .5 + .5 * Math.abs(Math.sin(t * 5)) : 0 });
+}
+dibujarCheckin(+(location.hash.slice(1) || 6.8));
+</script>
+</body></html>

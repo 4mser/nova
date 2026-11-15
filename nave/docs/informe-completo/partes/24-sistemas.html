@@ -1,0 +1,30 @@
+<section class="page aire3 p3t">
+  <div class="kick"><span style="color:var(--mut)">24</span>&nbsp;&nbsp;·&nbsp;&nbsp;Parte III · Holograma por sistemas</div>
+  <h1 style="font-size:25pt;margin-top:10px">Seis sistemas del cuerpo, cada uno con sus datos</h1>
+  <p class="lead">En el estilo holograma, el sistema elegido se enciende en su color y el resto queda como un contorno tenue. Un panel anclado al órgano muestra los valores y su curva de los últimos diez minutos, y dice de dónde viene cada número: medido, estimado o reportado por la persona.</p>
+
+  <div class="g2" style="margin-top:14px;gap:8px 12px;padding:0 104px">
+    <div><div class="cap"><img src="img/ar/ar-sis-cardio.jpg" alt="Sistema cardiovascular con frecuencia y presión en vivo"></div><p class="capleg"><b>Cardiovascular.</b> Corazón y grandes vasos; pulso y sistólica medidos en vivo.</p></div>
+    <div><div class="cap"><img src="img/ar/ar-sis-metab.jpg" alt="Sistema metabólico con la glucosa en vivo"></div><p class="capleg"><b>Metabólico.</b> Hígado, páncreas, estómago e intestinos; glucosa del sensor continuo.</p></div>
+    <div><div class="cap"><img src="img/ar/ar-sis-oseo.jpg" alt="Sistema óseo con densidad estimada"></div><p class="capleg"><b>Óseo.</b> Esqueleto completo con brazos y piernas; densidad estimada.</p></div>
+    <div><div class="cap" style="aspect-ratio:16/9"><img src="img/ar/ar-sis-neuro.jpg" alt="Sistema neurológico con ánimo y sueño" style="height:100%;object-fit:cover;object-position:60% 30%"></div><p class="capleg"><b>Neurológico.</b> Cerebro; ánimo y sueño que la persona comparte.</p></div>
+  </div>
+
+  <table class="t p3c" style="margin-top:12px">
+    <tr><th style="width:17%">Sistema</th><th style="width:30%">Qué se enciende</th><th>Qué muestra</th><th style="width:22%">Origen del dato</th></tr>
+    <tr><td><b>Cardiovascular</b></td><td>Corazón, aorta y vena cava</td><td>Frecuencia cardiaca y presión sistólica</td><td><span class="est ok">medido · en vivo</span></td></tr>
+    <tr><td><b>Respiratorio</b></td><td>Pulmones</td><td>SpO<sub>2</sub> y respiraciones por minuto</td><td><span class="est ok">medido · en vivo</span></td></tr>
+    <tr><td><b>Metabólico</b></td><td>Hígado, páncreas, estómago, intestinos</td><td>Glucosa</td><td><span class="est ok">sensor continuo</span></td></tr>
+    <tr><td><b>Renal</b></td><td>Riñones</td><td>Riesgo de cálculos</td><td><span class="est par">estimado · demo</span></td></tr>
+    <tr><td><b>Óseo</b></td><td>Esqueleto, cráneo y 8 segmentos de brazos y piernas</td><td>Densidad ósea −2,1 %</td><td><span class="est par">estimado · demo</span></td></tr>
+    <tr><td><b>Neurológico</b></td><td>Cerebro</td><td>Ánimo de 1 a 5 y horas de sueño</td><td><span class="est sig">lo comparte la persona</span></td></tr>
+  </table>
+
+  <div class="g3" style="margin-top:14px">
+    <div class="tj" style="padding:14px 16px"><div class="k" style="color:var(--mag)"><lu n="heart-pulse"></lu>&nbsp; Lo mueve el gemelo</div><p>El corazón late al pulso del tripulante y los pulmones se inflan a su frecuencia respiratoria. Es el mismo estado en vivo del resto de la nave.</p></div>
+    <div class="tj" style="padding:14px 16px"><div class="k" style="color:var(--amb)"><lu n="triangle-alert"></lu>&nbsp; Color por nivel</div><p>Un órgano con un valor fuera de rango pulsa en el color de su nivel: lila para vigilar, ámbar para atención y magenta para avisar a la Tierra, los mismos niveles del núcleo de vuelo.</p></div>
+    <div class="tj" style="padding:14px 16px"><div class="k" style="color:var(--cian)"><lu n="scan-line"></lu>&nbsp; Barrido al encontrar</div><p>Cuando aparece un cuerpo o cambias de tripulante, el holograma se revela de la cabeza a la pelvis en 1,4 s. Las curvas se piden a <code>/v1/historia</code> cada 5 s.</p></div>
+  </div>
+  <p style="margin-top:12px;font-size:8.4pt;color:var(--mut)">Renal y óseo muestran hoy valores fijos de demostración: la nave todavía no recibe exámenes de orina ni densitometría. La pantalla los marca como estimados.</p>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>24 / 40</span></div>
+</section>

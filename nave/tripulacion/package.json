@@ -1,0 +1,15 @@
+{
+  "name": "nova-tripulacion",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Pantalla de la tripulación de NOVA (Tauri)",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "enlace": "cargo run --manifest-path src-tauri/Cargo.toml -- --sin-ventana"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.9.6"
+  }
+}

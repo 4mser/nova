@@ -1,0 +1,121 @@
+{
+ "title": "NOVA · narración ES",
+ "voice": {
+  "provider": "gemini",
+  "name": "Aoede",
+  "language": "es-US",
+  "mode": "take",
+  "style": "A warm, friendly AI health companion talking to an astronaut crew, confident and close",
+  "maxPause": 0.32,
+  "model": [
+   "gemini-3.8-flash-tts",
+   "gemini-3.1-flash-tts-preview"
+  ]
+ },
+ "lead": 0,
+ "gap": 0.5,
+ "lines": [
+  {
+   "id": "01",
+   "text": "En abril, cuatro personas volaron alrededor de la Luna. Ahora vamos a Marte."
+  },
+  {
+   "id": "02",
+   "text": "Marte está a 225 millones de kilómetros. Un mensaje a casa tarda hasta 22 minutos.",
+   "say": "Marte está a doscientos veinticinco millones de kilómetros. Un mensaje a casa tarda hasta veintidós minutos."
+  },
+  {
+   "id": "03",
+   "text": "Allá afuera, el cuerpo cambia. Los huesos se debilitan, el sueño se desordena y la radiación se acumula. Y la tripulación tiene que detectarlo sola."
+  },
+  {
+   "id": "04",
+   "text": "Por eso estoy aquí. Soy Nova, y cuido a la tripulación en cada minuto de la misión."
+  },
+  {
+   "id": "05",
+   "text": "Una pulsera registra cada latido, cada respiración y cada noche de sueño."
+  },
+  {
+   "id": "06",
+   "text": "Cada mañana, cada astronauta ve de un vistazo si está listo."
+  },
+  {
+   "id": "07",
+   "text": "Su cuerpo: corazón, oxígeno, hueso y músculo, medidos cada día, para que los cambios pequeños nunca crezcan."
+  },
+  {
+   "id": "08",
+   "text": "Y su mente. Cada noche conversamos, y el ánimo, el estrés y la concentración forman una constelación que pueden leer."
+  },
+  {
+   "id": "09",
+   "text": "Cada noche, solo hablan conmigo un minuto. Leo el ánimo, el estrés y la fatiga en sus palabras, su voz y la pulsera. Sin formularios."
+  },
+  {
+   "id": "10",
+   "text": "Si necesitan apoyo, preparo una sesión privada con su psicólogo en la Tierra."
+  },
+  {
+   "id": "11",
+   "text": "Y ellos deciden qué compartir. Los signos vitales van al cirujano de vuelo, las emociones solo a su psicólogo, y su diario es solo suyo."
+  },
+  {
+   "id": "12",
+   "text": "En la pantalla grande, veo a toda la tripulación a la vez. Si algo se desvía, te digo por qué."
+  },
+  {
+   "id": "13",
+   "text": "En toda la tripulación sigo corazón, hueso, músculo y ojos, para corregir a tiempo los cambios pequeños."
+  },
+  {
+   "id": "14",
+   "text": "Llevo un modelo vivo de cada cuerpo a bordo, para que veas qué está cambiando el espacio: líquido que sube a la cabeza, hueso que se pierde en la cadera y un corazón que trabaja menos."
+  },
+  {
+   "id": "15",
+   "text": "Cada número viene de la investigación de la NASA y de exámenes que la tripulación ya hace a bordo: ecografías, exámenes de la vista y pruebas de fuerza.",
+   "say": "Cada número viene de la investigación de la Nasa y de exámenes que la tripulación ya hace a bordo: ecografías, exámenes de la vista y pruebas de fuerza."
+  },
+  {
+   "id": "16",
+   "text": "Y noto lo que no se dice, como alguien que no llama a casa hace nueve días."
+  },
+  {
+   "id": "17",
+   "text": "Tras un cambio de turno, Kenji duerme más tarde y su corazón lo resiente. Así que le armé un plan para esta noche."
+  },
+  {
+   "id": "18",
+   "text": "Y cuando el Sol hace erupción, guío a todos al refugio y cuento cada milisievert."
+  },
+  {
+   "id": "19",
+   "text": "Pienso a bordo, sin esperar a la Tierra. Y cada noche envío a Control de Misión un informe más liviano que una foto."
+  },
+  {
+   "id": "20",
+   "text": "En la Tierra, esos datos entrenan modelos más grandes en servidores potentes, junto con la ciencia abierta de la NASA y misiones análogas. Cuando los cirujanos de vuelo la validan, una versión más liviana y más inteligente de mí vuelve a la nave.",
+   "say": "En la Tierra, esos datos entrenan modelos más grandes en servidores potentes, junto con la ciencia abierta de la Nasa y misiones análogas. Cuando los cirujanos de vuelo la validan, una versión más liviana y más inteligente de mí vuelve a la nave."
+  },
+  {
+   "id": "21",
+   "text": "Dentro de mí hay seis modelos especializados: sueño, estrés, fatiga, voz, radiación, y hueso y músculo. Cada uno se entrena con ciencia real y funciona a bordo, sin conexión."
+  },
+  {
+   "id": "22",
+   "text": "Todo lo que hago se basa en la investigación de la NASA: sus riesgos para la salud humana, el Estudio de los Gemelos y la radiación medida camino a Marte.",
+   "say": "Todo lo que hago se basa en la investigación de la Nasa: sus riesgos para la salud humana, el Estudio de los Gemelos y la radiación medida camino a Marte."
+  },
+  {
+   "id": "23",
+   "text": "La NASA lo llama atención médica independiente de la Tierra. Lo probaríamos en misiones análogas como HERA y CHAPEA, luego en la estación espacial y después camino a Marte.",
+   "say": "La Nasa lo llama atención médica independiente de la Tierra. Lo probaríamos en misiones análogas como Hera y Chapea, luego en la estación espacial y después camino a Marte."
+  },
+  {
+   "id": "24",
+   "text": "NOVA. Salud que viaja contigo.",
+   "say": "Nova. Salud que viaja contigo."
+  }
+ ]
+}

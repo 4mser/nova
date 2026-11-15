@@ -1,0 +1,241 @@
+<!-- ============================================================ 8 · NOVA PC · CREW -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>05 · NOVA PC</span></div>
+  <div class="secn">05</div>
+  <div class="cabsec">
+    <span class="ojo">05 · NOVA PC: la pantalla de la nave</span>
+    <h2>Una pantalla que llena cualquier ventana y se lee a dos metros</h2>
+  </div>
+  <p class="lead">Aplicación de escritorio con <b>Tauri 2</b>: el proceso en Rust levanta el enlace y la ventana muestra la interfaz web. La escena llena la ventana a cualquier proporción, sin franjas negras: se diseña sobre una referencia de 1800 × 1000 y la letra crece o se achica con la ventana, mientras la grilla reparte el espacio que sobra. En inglés para el jurado, con NOVA como el único elemento con luz. Todas las capturas de este informe son de la aplicación real corriendo en el Mac de desarrollo.</p>
+  <div class="equipo">
+    <div class="monitor"><img src="img/m/pc-crew.jpg" alt="NOVA PC, vista Crew"></div>
+    <div class="cuello"></div><div class="base"></div>
+  </div>
+  <p class="pieimg" style="text-align:center"><b>Vista Crew</b> en vivo con el simulador. David tiene fiebre (38,7 °C) y su tarjeta pasa a ámbar; NOVA lo resume a la derecha con los pasos del protocolo.</p>
+  <div class="g2">
+    <div class="caja"><h4>Qué muestra cada tarjeta de tripulante</h4>
+      <ul class="l"><li>Anillo de pulso con cuántos signos están en rango (<i>6 of 7 in range</i>) y el color del peor nivel.</li><li>Trazo de ritmo cardíaco en vivo y siete signos con su antigüedad (<i>10 s ago</i>).</li><li>Gráfico de los últimos 2 minutos y lo que llega del teléfono: sueño, ánimo, energía y pasos.</li></ul></div>
+    <div class="caja"><h4>Barra superior y columna de NOVA</h4>
+      <ul class="l"><li>Día de misión y fase calculados (<i>Day 215 · cruise to Mars · Mars in 44 d</i>).</li><li>Estado de la estación, CO₂ de cabina y distancia a la Tierra en minutos-luz y kilómetros.</li><li>NOVA con su resumen, la tarjeta de lo que necesita atención, lo que cambió y la caja para preguntarle.</li></ul></div>
+  </div>
+  <div class="g4">
+    <div class="caja"><span class="est ok">Crew</span><p>Toda la tripulación de un vistazo.</p></div>
+    <div class="caja"><span class="est ok">Vitals</span><p>Series de 10 min a 7 días por persona.</p></div>
+    <div class="caja"><span class="est ok">Systems</span><p>El núcleo F Prime en lenguaje claro.</p></div>
+    <div class="caja"><span class="est ok">Library</span><p>Búsqueda en las 32 fuentes médicas.</p></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 9 · VITALS Y ALERTA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>05 · NOVA PC</span></div>
+  <div class="cabsec">
+    <span class="ojo">05 · Vitals y emergencias automáticas</span>
+    <h2>La historia de cada signo y una guía que se abre sola</h2>
+  </div>
+  <div class="fila">
+    <div style="width:118mm;flex:none"><div class="equipo"><div class="monitor"><img src="img/m/pc-vitals.jpg" alt="Vista Vitals"></div><div class="cuello"></div><div class="base"></div></div></div>
+    <div class="crece" style="display:flex;flex-direction:column;gap:2mm">
+      <h3>Vitals</h3>
+      <p>Ocho gráficos por persona con promedio y rango de la ventana, y las líneas de los umbrales vigentes dibujadas encima: ámbar para atención, magenta para avisar a la Tierra. Ventanas de 10 min, 1 h, 6 h, 24 h y 7 días.</p>
+      <p>Los datos salen de <code>historia.rs</code>: segundo a segundo por 6 horas y resumen por minuto por 30 días, en archivos NDJSON por día que se recargan al reiniciar.</p>
+    </div>
+  </div>
+  <div class="fila">
+    <div class="crece" style="display:flex;flex-direction:column;gap:2mm">
+      <h3>Guía automática</h3>
+      <p>Cuando el enlace reconoce un patrón grave en una persona (aquí, pulso de 34 y presión de 72/45 en Ingrid), abre la guía del protocolo que corresponde sin esperar a que alguien la busque.</p>
+      <p>Cada paso es una pregunta de sí o no. NOVA lo lee en voz alta con la voz local y cada respuesta queda con su hora en la bitácora para el cirujano de vuelo. Los signos de la persona siguen en vivo a la izquierda.</p>
+    </div>
+    <div style="width:118mm;flex:none"><div class="equipo"><div class="monitor"><img src="img/m/pc-alerta.jpg" alt="Guía de desmayo abierta automáticamente"></div><div class="cuello"></div><div class="base"></div></div></div>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:26%">Pieza</th><th style="width:22%">Archivo</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td>Vista general y estado</td><td><code>ui/app.js</code></td><td>Recibe el flujo SSE, pinta Crew, cambia de vista y abre el registro manual de mediciones.</td></tr>
+      <tr><td>Gráficos</td><td><code>ui/vitals.js</code>, <code>graficos.js</code></td><td>Series con <code>/v1/historia</code>, umbrales del estado y escalas automáticas.</td></tr>
+      <tr><td>Guía de emergencia</td><td><code>ui/guia.js</code></td><td>Árbol de pasos con condiciones sobre signos medidos, metrónomo y bitácora (<code>POST /v1/bitacora</code>).</td></tr>
+      <tr><td>Historia</td><td><code>src/historia.rs</code></td><td>Anillos en memoria por serie, minutos y alertas en disco, resúmenes de 24 h para el informe.</td></tr>
+      <tr><td>Ingreso manual</td><td><code>POST /v1/ingreso</code></td><td>Pasa por el núcleo (UDP 50052) con las mismas reglas que un sensor.</td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 10 · ASK NOVA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>06 · Ask NOVA</span></div>
+  <div class="secn">06</div>
+  <div class="cabsec">
+    <span class="ojo">06 · Ask NOVA</span>
+    <h2>Un asistente que responde con los datos de la nave y cita sus fuentes</h2>
+  </div>
+  <p class="lead">Cada pregunta pasa primero por un detector de emergencias con reglas fijas en inglés y español. Si es una emergencia, la respuesta es el protocolo tal cual, sin modelo de lenguaje. Si no, se arma un contexto con los datos reales y los fragmentos de la biblioteca, y responde <b>Qwen3 4B</b> en el mismo equipo.</p>
+  <div class="diag">
+    <svg viewBox="0 0 1780 600" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="qa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker>
+      <marker id="qm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ec6aa8"/></marker>
+      <marker id="ql" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a898ff"/></marker></defs>
+      <g data-caja><rect x="20" y="230" width="230" height="130" rx="16" fill="#0f151d" stroke="rgba(255,255,255,.2)"/>
+        <text x="40" y="276" fill="#f2f5f8" font-size="24" font-weight="600">Pregunta</text>
+        <text x="40" y="310" fill="#a5afbd" font-size="19">voz o texto</text>
+        <text x="40" y="338" fill="#a5afbd" font-size="19">inglés o español</text></g>
+      <path d="M250,295 H316" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#qa)"/>
+      <g data-caja><rect x="320" y="200" width="300" height="190" rx="16" fill="#0f151d" stroke="#ec6aa8"/>
+        <text x="342" y="244" fill="#f2f5f8" font-size="24" font-weight="600">¿Emergencia?</text>
+        <text x="342" y="280" fill="#a5afbd" font-size="19">10 grupos de claves</text>
+        <text x="342" y="308" fill="#a5afbd" font-size="19">sin tildes, 2 idiomas</text>
+        <text x="342" y="336" fill="#a5afbd" font-size="19">«por qué», «qué es»</text>
+        <text x="342" y="364" fill="#a5afbd" font-size="19">no cuentan</text></g>
+      <!-- rama emergencia -->
+      <path d="M470,200 V110 H716" stroke="#ec6aa8" stroke-width="2.5" fill="none" marker-end="url(#qm)"/>
+      <text x="486" y="94" fill="#ec6aa8" font-size="19">sí</text>
+      <g data-caja><rect x="720" y="40" width="520" height="140" rx="16" fill="#0f151d" stroke="#ec6aa8"/>
+        <text x="742" y="84" fill="#f2f5f8" font-size="24" font-weight="600">Respuesta fija del protocolo</text>
+        <text x="742" y="120" fill="#a5afbd" font-size="19">pasos exactos de protocolos.json, en el idioma</text>
+        <text x="742" y="148" fill="#a5afbd" font-size="19">de la pregunta, y «pulse Emergency»</text></g>
+      <!-- rama normal -->
+      <path d="M620,295 H716" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#qa)"/>
+      <text x="636" y="282" fill="#8fe6f5" font-size="19">no</text>
+      <g data-caja><rect x="720" y="230" width="250" height="130" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="740" y="274" fill="#f2f5f8" font-size="22" font-weight="600">Vector</text>
+        <text x="740" y="306" fill="#a5afbd" font-size="18">nomic v2 · 768 d</text>
+        <text x="740" y="334" fill="#a5afbd" font-size="18">:8084</text></g>
+      <path d="M970,295 H1016" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#qa)"/>
+      <g data-caja><rect x="1020" y="230" width="250" height="130" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="1040" y="274" fill="#f2f5f8" font-size="22" font-weight="600">Biblioteca</text>
+        <text x="1040" y="306" fill="#a5afbd" font-size="18">coseno + palabras</text>
+        <text x="1040" y="334" fill="#a5afbd" font-size="18">top 5 · 2 por página</text></g>
+      <path d="M1270,295 H1316" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#qa)"/>
+      <g data-caja><rect x="1320" y="200" width="440" height="370" rx="16" fill="#0f151d" stroke="#a898ff" stroke-width="2"/>
+        <text x="1342" y="244" fill="#a898ff" font-size="24" font-weight="600">Qwen3 4B · :8081</text>
+        <text x="1342" y="282" fill="#a5afbd" font-size="18">temperatura 0,2 · 400 tokens</text>
+        <text x="1342" y="310" fill="#a5afbd" font-size="18">respuesta en streaming</text>
+        <text x="1342" y="352" fill="#f2f5f8" font-size="18" font-weight="600">Contexto que recibe</text>
+        <text x="1342" y="384" fill="#a5afbd" font-size="18">7 reglas del sistema</text>
+        <text x="1342" y="412" fill="#a5afbd" font-size="18">signos con antigüedad</text>
+        <text x="1342" y="440" fill="#a5afbd" font-size="18">umbrales vigentes</text>
+        <text x="1342" y="468" fill="#a5afbd" font-size="18">últimas 15 alertas</text>
+        <text x="1342" y="496" fill="#a5afbd" font-size="18">protocolos aprobados</text>
+        <text x="1342" y="524" fill="#a5afbd" font-size="18">fragmentos numerados [1]…[5]</text></g>
+      <!-- datos -->
+      <g data-caja><rect x="720" y="430" width="550" height="140" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="742" y="474" fill="#f2f5f8" font-size="22" font-weight="600">Datos de a bordo</text>
+        <text x="742" y="508" fill="#a5afbd" font-size="18">estado del núcleo, historia, misión (luz)</text>
+        <text x="742" y="536" fill="#a5afbd" font-size="18">tripulación y check-ins compartidos</text></g>
+      <path d="M1270,500 H1316" stroke="#6fd6b0" stroke-width="2.5" marker-end="url(#qa)"/>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 5.</b> Camino de una pregunta en <code>nova.rs</code> y <code>POST /v1/preguntar</code>. Las respuestas salen en streaming a la pantalla y la voz Kokoro las lee por frases.</p>
+  <div class="fila">
+    <div style="width:112mm;flex:none"><div class="equipo"><div class="monitor"><img src="img/m/pc-chat.jpg" alt="Ask NOVA respondiendo"></div><div class="cuello"></div><div class="base"></div></div></div>
+    <div class="crece caja nv"><h4>Reglas que recibe el modelo</h4>
+      <ul class="l nv" style="font-size:7.2pt"><li>Usar solo los datos de a bordo, con unidades y antigüedad; nunca inventar lecturas.</li><li>No reemplaza al cirujano de vuelo; para actuar usa solo protocolos.</li><li>En emergencias: los pasos exactos, en orden, sin agregar nada.</li><li>Breve: hasta 5 frases cortas, sin tablas ni jerga.</li><li>El conocimiento médico solo de los fragmentos, citados como [1], [2].</li></ul></div>
+  </div>
+  <p class="pieimg">En la captura, NOVA explica la pérdida ósea citando dos fragmentos de la biblioteca y reconoce que no hay datos de sueño en ese momento, en vez de inventarlos.</p>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 11 · BIBLIOTECA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>06 · Biblioteca médica</span></div>
+  <div class="cabsec">
+    <span class="ojo">06 · Biblioteca médica a bordo</span>
+    <h2>32 fuentes abiertas, 14.551 fragmentos y búsqueda en dos idiomas sin internet</h2>
+  </div>
+  <div class="diag">
+    <svg viewBox="0 0 1780 330" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ba" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker></defs>
+      <text x="20" y="34" fill="#6d7786" font-size="18" letter-spacing="2.5" class="m">EN LA TIERRA · biblioteca/indexar.py</text>
+      <text x="1300" y="34" fill="#6d7786" font-size="18" letter-spacing="2.5" class="m">EN LA NAVE · biblioteca.rs</text>
+      <path d="M1270,20 V310" stroke="rgba(236,106,168,.5)" stroke-width="2" stroke-dasharray="8 7"/>
+      <g font-size="19" fill="#a5afbd">
+        <g data-caja><rect x="20" y="64" width="220" height="230" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.18)"/>
+          <text x="38" y="104" fill="#f2f5f8" font-size="22" font-weight="600">fuentes.json</text>
+          <text x="38" y="140">32 fuentes con</text><text x="38" y="166">licencia y URL</text><text x="38" y="192">oficial</text></g>
+        <path d="M240,180 H266" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ba)"/>
+        <g data-caja><rect x="270" y="64" width="220" height="230" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.18)"/>
+          <text x="288" y="104" fill="#f2f5f8" font-size="22" font-weight="600">Descarga</text>
+          <text x="288" y="140">PDF y HTML</text><text x="288" y="166">huella SHA-256</text><text x="288" y="192">por archivo</text></g>
+        <path d="M490,180 H516" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ba)"/>
+        <g data-caja><rect x="520" y="64" width="220" height="230" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.18)"/>
+          <text x="538" y="104" fill="#f2f5f8" font-size="22" font-weight="600">Fragmentos</text>
+          <text x="538" y="140">texto por página</text><text x="538" y="166">con sección y</text><text x="538" y="192">número de página</text></g>
+        <path d="M740,180 H766" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ba)"/>
+        <g data-caja><rect x="770" y="64" width="220" height="230" rx="14" fill="#0f151d" stroke="#a898ff"/>
+          <text x="788" y="104" fill="#f2f5f8" font-size="22" font-weight="600">Vectores</text>
+          <text x="788" y="140">nomic v2 MoE</text><text x="788" y="166">768 dimensiones</text><text x="788" y="192">normalizados</text></g>
+        <path d="M990,180 H1016" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ba)"/>
+        <g data-caja><rect x="1020" y="64" width="230" height="230" rx="14" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="1038" y="104" fill="#f2f5f8" font-size="22" font-weight="600">Paquete</text>
+          <text x="1038" y="140">catalogo.json</text><text x="1038" y="166">fragmentos.jsonl</text><text x="1038" y="192">vectores.f32</text><text x="1038" y="230" fill="#6d7786" font-size="17">≈ 56 MB</text></g>
+        <path d="M1250,180 H1296" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#ba)"/>
+        <g data-caja><rect x="1300" y="64" width="460" height="230" rx="14" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="1320" y="104" fill="#f2f5f8" font-size="22" font-weight="600">Búsqueda en memoria</text>
+          <text x="1320" y="140">producto punto sobre la matriz</text>
+          <text x="1320" y="166">+ empujón por palabras clave</text>
+          <text x="1320" y="192">máx. 2 fragmentos por página</text>
+          <text x="1320" y="218">top 5 para Ask NOVA</text>
+          <text x="1320" y="256" fill="#6d7786" font-size="17">/v1/biblioteca/buscar · /recargar</text></g>
+      </g>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 6.</b> La biblioteca se prepara en la Tierra y sube a la nave como un paquete de tres archivos. La nave solo lee: no descarga nada durante la misión. <code>/v1/biblioteca/recargar</code> cambia el paquete sin reiniciar.</p>
+  <div class="fila">
+    <div style="width:104mm;flex:none"><div class="equipo"><div class="monitor"><img src="img/m/pc-biblioteca.jpg" alt="Biblioteca médica"></div><div class="cuello"></div><div class="base"></div></div></div>
+    <div class="crece tw"><table class="t">
+      <thead><tr><th>Editor</th><th class="num">Fuentes</th><th>Licencia</th></tr></thead>
+      <tbody>
+        <tr><td>NASA HRP · informes de evidencia</td><td class="num">13</td><td>Gob. EE. UU.</td></tr>
+        <tr><td>NASA OCHMO · 8 briefs y NASA-STD-3001</td><td class="num">10</td><td>Gob. EE. UU.</td></tr>
+        <tr><td>NASA · catálogo CHeCS</td><td class="num">1</td><td>Uso público</td></tr>
+        <tr><td>Revistas científicas</td><td class="num">4</td><td>CC BY 4.0</td></tr>
+        <tr><td>OMS / CICR</td><td class="num">2</td><td>CC BY-NC-SA</td></tr>
+        <tr><td>MedlinePlus (NLM)</td><td class="num">1</td><td>Dominio público</td></tr>
+        <tr><td>OpenStax (Rice)</td><td class="num">1</td><td>CC BY 4.0</td></tr>
+      </tbody></table></div>
+  </div>
+  <div class="g3">
+    <div class="caja"><h4>Multilingüe</h4><p>El modelo de vectores es multilingüe: una pregunta en español encuentra el párrafo correcto en un informe en inglés.</p></div>
+    <div class="caja"><h4>Trazable</h4><p>Cada resultado lleva editor, título, página, sección y licencia. Ask NOVA cita con el número del fragmento.</p></div>
+    <div class="caja"><h4>Solo licencias abiertas</h4><p>Nada con derechos reservados. Los manuales comerciales de urgencias quedaron fuera a propósito.</p></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 12 · EMERGENCIAS -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>07 · Emergencias</span></div>
+  <div class="secn">07</div>
+  <div class="cabsec">
+    <span class="ojo">07 · Emergencias</span>
+    <h2>Doce protocolos fijos, revisables y con la página de donde sale cada paso</h2>
+  </div>
+  <p class="lead">Archivo único <code>protocolos.json</code> v0.2, compartido por la nave y el teléfono. Cada protocolo trae pasos en inglés y español, cuándo aplicarlo, qué avisar a la Tierra, la fuente y una guía con condiciones sobre signos medidos.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:27%">Protocolo</th><th class="num" style="width:7%">Pasos</th><th style="width:40%">Fuente</th><th style="width:13%">Páginas</th><th>Se abre por</th></tr></thead>
+    <tbody>
+      <tr><td>Paro cardíaco en microgravedad</td><td class="num">6</td><td>Hinkelbein et al., guía de RCP en microgravedad (2020), recomendaciones 1–3 y 10</td><td>2, 4, 5, 6, 8</td><td>pregunta</td></tr>
+      <tr><td>Anafilaxia</td><td class="num">4</td><td>OMS/CICR Basic Emergency Care (2018), dosis de epinefrina</td><td>119, 202, 235</td><td>pregunta</td></tr>
+      <tr><td>Atragantamiento</td><td class="num">4</td><td>OMS/CICR BEC, obstrucción de vía aérea; guía RCP 2020</td><td>155 · 4</td><td>pregunta</td></tr>
+      <tr><td>Hemorragia grave</td><td class="num">4</td><td>OMS/CICR BEC, control de sangrado y torniquete</td><td>169, 170</td><td>pregunta</td></tr>
+      <tr><td>Convulsión</td><td class="num">4</td><td>OMS/CICR BEC, manejo de convulsiones</td><td>141, 142</td><td>pregunta</td></tr>
+      <tr><td>Enfermedad por descompresión</td><td class="num">4</td><td>HRP descompresión e hipoxia (2024); OCHMO</td><td>52 · 12 · 6</td><td>pregunta</td></tr>
+      <tr><td>Posible desmayo (síncope)</td><td class="num">5</td><td>Pasos operativos del equipo</td><td>—</td><td class="al">sensores</td></tr>
+      <tr><td>Glucosa baja</td><td class="num">4</td><td>Regla 15-15 (American Diabetes Association)</td><td>—</td><td class="al">sensores</td></tr>
+      <tr><td>Fiebre</td><td class="num">3</td><td>Pasos operativos del equipo</td><td>—</td><td class="at">sensores</td></tr>
+      <tr><td>Oxígeno bajo</td><td class="num">4</td><td>Pasos operativos del equipo</td><td>—</td><td class="al">sensores</td></tr>
+      <tr><td>CO₂ de cabina en alza</td><td class="num">3</td><td>Pasos operativos; límites de NASA-STD-3001</td><td>—</td><td class="at">sensores</td></tr>
+      <tr><td>Poco sueño, ánimo o energía</td><td class="num">3</td><td>Pasos operativos; acompañamiento de Ambar</td><td>—</td><td class="at">check-in</td></tr>
+    </tbody></table></div>
+  <div class="fila">
+    <div style="width:104mm;flex:none"><div class="equipo"><div class="monitor"><img src="img/m/pc-guia.jpg" alt="Guía de paro cardíaco"></div><div class="cuello"></div><div class="base"></div></div>
+      <p class="pieimg" style="text-align:center;margin-top:1.6mm">Guía de paro cardíaco en NOVA PC con la fuente y las páginas al pie.</p></div>
+    <div class="crece" style="display:flex;flex-direction:column;gap:2.4mm">
+      <div class="caja al"><h4>Qué no hace el modelo</h4><p>Ningún paso de emergencia sale de Qwen3. El detector de <code>nova.rs</code> reconoce la emergencia y devuelve el protocolo literal; el modelo tiene prohibido agregar, cambiar o reordenar pasos.</p></div>
+      <div class="caja"><h4>RCP en microgravedad</h4><p>La guía incluye un metrónomo a ritmo de compresiones y las posiciones de la guía de 2020 para microgravedad. La bitácora registra cada paso para el informe.</p></div>
+      <div class="caja at"><h4>Seis protocolos sin página</h4><p>Desmayo, glucosa, fiebre, oxígeno, CO₂ y sueño todavía no citan página. Quedan marcados para la revisión del médico asesor.</p></div>
+    </div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>

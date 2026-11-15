@@ -1,0 +1,8 @@
+{
+  "name": "nova-servidor-voz",
+  "private": true,
+  "type": "module",
+  "description": "Servidor de voz de NOVA: guarda la clave de Gemini y hace de puente con la API Live",
+  "scripts": { "start": "node voz.mjs" },
+  "dependencies": { "ws": "^8.18.0" }
+}

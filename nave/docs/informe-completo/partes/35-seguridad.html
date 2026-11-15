@@ -1,0 +1,46 @@
+<section class="page">
+  <div class="kick"><span style="color:var(--mut)">35</span>&nbsp;&nbsp;·&nbsp;&nbsp;Rigor · Seguridad clínica y privacidad</div>
+  <h1 style="font-size:25pt;margin-top:10px">Reglas fijas donde hay riesgo, y la persona decide qué se comparte</h1>
+  <div class="g2" style="margin-top:18px;align-items:start">
+    <div class="tj"><div class="k" style="color:var(--amb)"><lu n="shield-check"></lu>&nbsp; Seguridad clínica</div>
+      <div class="lista" style="margin-top:6px;gap:4px">
+        <div class="it"><i style="background:var(--amb)"></i><p>Umbrales en el núcleo de vuelo, con dos niveles y 10 s de histéresis para bajar.</p></div>
+                <div class="it"><i style="background:var(--amb)"></i><p>Pasos de emergencia literales desde un archivo versionado, con su fuente.</p></div>
+        <div class="it"><i style="background:var(--amb)"></i><p>El modelo de lenguaje no da pasos de emergencia ni diagnósticos.</p></div>
+        <div class="it"><i style="background:var(--amb)"></i><p>Lo que reporta la tripulación manda sobre lo que dicen los sensores.</p></div>
+        <div class="it"><i style="background:var(--amb)"></i><p>La anatomía en RA es una estimación y la pantalla lo dice: «organ positions estimated».</p></div>
+      </div></div>
+    <div class="tj"><div class="k" style="color:var(--lila)"><lu n="lock"></lu>&nbsp; Privacidad</div>
+      <div class="lista" style="margin-top:6px;gap:4px">
+        <div class="it"><i style="background:var(--lila)"></i><p>Nada sale a internet: modelos, biblioteca, voz y visión corren en la nave.</p></div>
+        <div class="it"><i style="background:var(--lila)"></i><p>Ánimo y energía solo salen con «Compartir mi día». El diario nunca sale del teléfono.</p></div>
+                <div class="it"><i style="background:var(--lila)"></i><p>El escáner no guarda cuadros: la nave conserva solo el último en memoria para la estación.</p></div>
+        <div class="it"><i style="background:var(--lila)"></i><p><code>/v1/privado</code> lleva resúmenes con consentimiento solo al cirujano de vuelo.</p></div>
+        <div class="it"><i style="background:var(--lila)"></i><p>La demo con un modelo externo se declara en pantalla y solo ve datos de demostración.</p></div>
+      </div></div>
+  </div>
+  <h2 style="margin-top:16px">Quién ve cada dato</h2>
+  <div class="g4v" style="margin-top:10px">
+    <div><b style="color:var(--cian)">Toda la tripulación</b><span>signos vitales · cabina · alertas y guías · sueño y pasos · ánimo si se comparte · escaneo en vivo</span></div>
+    <div><b style="color:var(--amb)">Cirujano de vuelo</b><span>informe nocturno · bitácora de guías e intervenciones · preguntas a NOVA · resúmenes con consentimiento</span></div>
+    <div><b style="color:var(--lila)">Psicóloga</b><span>temas que la persona elige para la sesión privada</span></div>
+    <div><b style="color:var(--mag)">Solo la persona</b><span>diario y notas · ciclo menstrual · respuestas a casa hasta la bajada</span></div>
+  </div>
+  <h2 style="margin-top:16px">Qué puede salir mal, y qué lo detiene</h2>
+  <table class="t aire3 cmp" style="margin-top:10px;font-size:8.4pt">
+    <tr><th style="width:150px">Riesgo</th><th>Mitigación actual</th><th style="width:70px">Estado</th></tr>
+    <tr><td><b>El modelo inventa un dato</b></td><td>Contexto calculado por la nave, citas obligatorias, «no lo tengo medido», 5 frases</td><td><span class="est ok">mitigado</span></td></tr>
+    <tr><td><b>Paso de emergencia incorrecto</b></td><td>Texto fijo sin modelo y con fuente; falta un médico asesor</td><td><span class="est par">parcial</span></td></tr>
+    <tr><td><b>Alarmas falsas por un pico</b></td><td>Rango plausible, calidad mínima, histéresis, umbrales por comando</td><td><span class="est ok">mitigado</span></td></tr>
+    <tr><td><b>El holograma no calza</b></td><td>Calce 3D con las medidas de la persona y FOV ajustable desde la estación; el instructor mira las manos reales</td><td><span class="est par">parcial</span></td></tr>
+    <tr><td><b>Un tercero en la red de la nave</b></td><td><code>NOVA_TOKEN</code> en las 8 rutas que escriben; red sin salida a internet</td><td><span class="est par">básico</span></td></tr>
+    <tr><td><b>Actualización maliciosa</b></td><td>Paquetes firmados con ed25519 y firmas inválidas rechazadas; falta volver atrás si algo falla</td><td><span class="est par">parcial</span></td></tr>
+  </table>
+  <style>
+    .g4v{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--l1);border:1px solid var(--l1);border-radius:14px;overflow:hidden}
+    .g4v div{background:var(--s1);padding:11px 13px}.g4v b{display:block;font:600 9pt 'SG'}.g4v span{display:block;font-size:8pt;line-height:1.45;color:var(--ink2);margin-top:5px}
+  </style>
+  
+  <style>.cmp td{padding:5.5px 12px!important;line-height:1.38!important}.cmp th{padding:7px 12px!important}</style>
+  <div class="pie"><span><b>NOVA</b> · Informe técnico completo</span><span>35 / 40</span></div>
+</section>

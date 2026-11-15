@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>NOVA · body twin</title>
+<link rel="stylesheet" href="ui.css?v=1791048873"><link rel="stylesheet" href="escritorio.css">
+<style>
+.gem{position:relative;flex:1;margin:0 48px 40px;border-radius:28px;overflow:hidden;background:radial-gradient(55% 70% at 50% 45%,rgba(15,74,92,.28),transparent 70%),#06090e;border:1px solid var(--l1)}
+.gem canvas,.gem svg.capa{position:absolute;inset:0;width:100%;height:100%}
+.rot{position:absolute;left:32px;top:28px;display:flex;gap:4px;padding:5px;border-radius:22px;background:var(--s1);border:1px solid var(--l1);z-index:2}
+.rot span{padding:9px 16px;border-radius:18px;font:500 14.5px SG;color:var(--t2)}.rot span.on{background:var(--s2);color:var(--t1)}
+.quien{position:absolute;right:32px;top:30px;text-align:right;z-index:2}
+.quien b{display:block;font:600 20px SG;letter-spacing:-.02em}.quien span{font:400 14px SG;color:var(--t2)}
+.tarj{position:absolute;width:300px;padding:16px 18px;border-radius:20px;background:rgba(10,15,21,.86);border:1px solid var(--l2);z-index:2}
+.tarj .k{display:flex;align-items:center;gap:9px;font:500 14.5px SG;color:var(--t1)}
+.tarj .k i{width:8px;height:8px;border-radius:50%}
+.tarj .v{font:300 30px/1.1 SG;letter-spacing:-.04em;margin-top:8px}.tarj .v .u{font-size:14px}
+.tarj .how{font:400 13px/1.4 SG;color:var(--t2);margin-top:8px}.tarj .how b{font-weight:500;color:var(--t1)}.tarj .src{font:400 12.5px/1.4 SG;color:var(--t3);margin-top:6px;padding-top:8px;border-top:1px solid var(--l1)}
+.linea-t{position:absolute;left:32px;right:32px;bottom:26px;display:flex;align-items:center;gap:16px;font:400 13.5px SG;color:var(--t3);z-index:2}
+.linea-t .barra-t{flex:1;height:4px;border-radius:2px;background:var(--l2);position:relative}
+.linea-t .barra-t i{position:absolute;left:0;top:0;bottom:0;width:41%;border-radius:2px;background:var(--ac2)}
+.linea-t .barra-t em{position:absolute;left:41%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(143,230,245,.2)}
+.linea-t b{color:var(--t1);font-weight:500}
+</style></head><body>
+<div class="app">
+  <nav class="riel-nav" id="riel"></nav>
+  <main class="centro">
+    <div class="barra"><div><h1>Body twin</h1><div class="sub">A living model of each astronaut, updated every night</div></div>
+      <div class="estado"><span class="pil">Compared with <b>launch day</b></span><span class="pil" id="met">Mission time</span></div></div>
+    <section class="gem" id="gem">
+      <canvas id="cvg"></canvas><svg class="capa" id="lin" viewBox="0 0 1296 928"></svg>
+      <div class="rot"><span class="on">Mara</span><span>David</span><span>Ingrid</span><span>Kenji</span></div>
+      <div class="quien"><b>Mara Reyes</b><span>Commander · Sol 214</span></div>
+      <div class="tarj" id="c0" style="left:32px;top:110px"><div class="k"><i style="background:#8fe6f5"></i>Fluid shift</div><div class="v">≈ 2<span class="u"> liters toward the head</span></div><div class="how"><b>Measured</b> Wearable bioimpedance, daily</div><div class="src">NASA HRP: about 2 L of fluid shifts headward in microgravity.</div></div>
+      <div class="tarj" id="c1" style="left:32px;top:380px"><div class="k"><i style="background:#ec6aa8"></i>Heart</div><div class="v">−3<span class="u">% muscle mass</span></div><div class="how"><b>Measured</b> Onboard ultrasound, weekly</div><div class="src">NASA Twins Study (Circulation, 2021): heart mass dropped during a year in space.</div></div>
+      <div class="tarj" id="c2" style="left:32px;top:650px"><div class="k"><i style="background:#f2b457"></i>Hip bone</div><div class="v">−2.8<span class="u">% density</span></div><div class="how"><b>Measured</b> Bone model, checked by DXA before and after flight</div><div class="src">NASA: 1–1.5% of hip bone lost per month without exercise.</div></div>
+      <div class="tarj" id="c3" style="right:32px;top:110px"><div class="k"><i style="background:#a898ff"></i>Eyes</div><div class="v">Grade 1<span class="u"> optic disc swelling</span></div><div class="how"><b>Measured</b> Onboard OCT and ultrasound, weekly</div><div class="src">NASA: about 70% of long-duration crews show signs of SANS.</div></div>
+      <div class="tarj" id="c4" style="right:32px;top:380px"><div class="k"><i style="background:#8fe6f5"></i>Spine</div><div class="v">+3<span class="u"> cm taller</span></div><div class="how"><b>Measured</b> Monthly body scan</div><div class="src">NASA: astronauts grow up to 3% taller in microgravity.</div></div>
+      <div class="tarj" id="c5" style="right:32px;top:650px"><div class="k"><i style="background:#6fd6b0"></i>Calf muscle</div><div class="v">−6<span class="u">% volume</span></div><div class="how"><b>Measured</b> Ultrasound and strength tests</div><div class="src">NASA: up to 20% muscle loss in space without countermeasures.</div></div>
+      <div class="linea-t"><span>Launch</span><div class="barra-t"><i></i><em></em></div><span><b>Sol 214</b> of 520</span><span>Landing</span></div>
+    </section>
+  </main>
+  <aside class="nova">
+    <div class="nova-cab"><svg id="novaP" viewBox="0 0 300 230"></svg><h2>Nova</h2><p>Here's what space is changing in Mara's body, and what we're doing about it.</p></div>
+    <div class="sec">Watch closely</div>
+    <div class="ins nv"><div class="q"><i style="background:var(--nv)"></i>Her eyes need a weekly scan</div>
+      <p>Optic disc swelling is early and mild. I scheduled ultrasound every Sunday and flagged it for the flight surgeon.</p>
+      <div class="acc"><span class="pri">See scan history</span></div></div>
+    <div class="sec">On plan</div>
+    <div class="lista"><div><i style="background:var(--ok)"></i><span><b>Bone and muscle</b> loss half of what it would be without exercise</span></div><div><i style="background:var(--ok)"></i><span><b>Heart</b> fitness steady for 6 weeks</span></div></div>
+    <div class="preg"><span>Ask Nova about Mara</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></div>
+  </aside>
+</div>
+<div class="demo-c">Mara's values are demo data · ranges and effects from NASA research · body mesh: MakeHuman (CC0)</div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script><script src="consolas.js"></script><script src="gemelo.js"></script>
+<script>dibujarConsolaGemelo(+(location.hash.slice(1) || 2.4));</script>
+</body></html>

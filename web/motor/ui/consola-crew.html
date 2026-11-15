@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>HALO · crew</title>
+<link rel="stylesheet" href="ui.css?v=1791048873"><link rel="stylesheet" href="escritorio.css"></head><body>
+<div class="app">
+  <nav class="riel-nav" id="riel"></nav>
+  <main class="centro">
+    <div class="barra">
+      <div><h1>Crew</h1><div class="sub">Sol 214 of 520 · cruise to Mars</div></div>
+      <div class="estado"><span class="pil">Earth link <b>18 min</b> one way</span><span class="pil" id="met">Mission time 214d 06:12:44</span></div>
+    </div>
+    <section class="crew" id="crew"></section>
+  </main>
+  <aside class="nova">
+    <div class="nova-cab"><svg id="novaP" viewBox="0 0 300 230"></svg>
+      <h2>Nova</h2><p>Watching 4 crew members and 38 signals. Here's what needs you.</p></div>
+    <div class="sec">Needs attention</div>
+    <div class="ins nv"><div class="q"><i style="background:var(--nv)"></i>Kenji's sleep is drifting</div>
+      <p>Three short nights in a row, and his reaction time is 14% slower than usual. I suggest moving his spacewalk prep to tomorrow.</p><div class="conf"><span>Confidence <b>91%</b></span><span>Sleep model · 21 nights</span></div>
+      <div class="acc"><span class="pri">Move to tomorrow</span><span>Open Kenji</span></div></div>
+    <div class="sec">All clear</div>
+    <div class="lista">
+      <div><i style="background:var(--ok)"></i><span><b>Exercise</b> on plan for everyone this week</span></div>
+      <div><i style="background:var(--rd)"></i><span><b>Space weather</b> quiet, I'm watching a solar flare</span></div>
+    </div>
+    <div class="preg"><span>Ask Nova</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></div>
+  </aside>
+</div>
+<div class="demo-c">Demo data, fictional crew</div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script><script src="consolas.js"></script>
+<script>dibujarConsolaCrew(+(location.hash.slice(1) || 2.4));</script>
+</body></html>

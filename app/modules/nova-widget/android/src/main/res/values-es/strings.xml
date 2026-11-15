@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- nombres de los widgets en el selector de Android cuando el teléfono está en español -->
+<resources>
+  <string name="nova_viva_nombre">Nova</string>
+  <string name="nova_viva_desc">Nova respira en su órbita. El arco es tu preparación y su cara sigue tu día. Tócala para hablar.</string>
+  <string name="nova_hoy_nombre">Nova · Hoy</string>
+  <string name="nova_hoy_desc">Nova respirando, su frase del día, tu preparación, tu sueño y tu check-in.</string>
+</resources>

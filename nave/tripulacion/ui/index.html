@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOVA · Crew</title>
+<link rel="icon" href="icono.png">
+<link rel="stylesheet" href="estilo.css?v=5">
+</head>
+<body>
+<div class="escena" id="escena">
+  <div class="arrastre" data-tauri-drag-region></div>
+  <div class="app">
+    <nav class="riel">
+      <div class="marca" id="marca"></div>
+      <button class="ico on" data-vista="crew" title="Crew"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="16.5" cy="9" r="2.6"/><path d="M16 14c2.4 0 4 1.5 4.5 4.2"/></svg><i class="badge" id="badgeCrew" hidden></i></button>
+      <button class="ico" data-vista="vitals" title="Vitals"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></button>
+      <button class="ico" data-vista="gemelo" title="Body twin"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.6" r="2.1"/><path d="M8 21l1.2-8.5L7 9.2c1.6-.9 3.2-1.3 5-1.3s3.4.4 5 1.3l-2.2 3.3L16 21"/><path d="M12 11.5v3"/></svg></button>
+      <button class="ico" data-vista="mente" title="Mind"><svg viewBox="0 0 24 24"><path d="M9.5 4.5a3 3 0 0 0-3 3 3 3 0 0 0-2 5.2 3 3 0 0 0 2 4.8 3 3 0 0 0 5.5 1V5.8a2.7 2.7 0 0 0-2.5-1.3zM14.5 4.5a3 3 0 0 1 3 3 3 3 0 0 1 2 5.2 3 3 0 0 1-2 4.8 3 3 0 0 1-5.5 1"/><path d="M12 5.8c.6-.8 1.5-1.3 2.5-1.3"/></svg></button>
+      <button class="ico" data-vista="escaner" title="Live body scan"><svg viewBox="0 0 24 24"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><circle cx="12" cy="8.3" r="1.7"/><path d="M9 17l.8-5.2-1.6-1.6c1.2-.6 2.4-.9 3.8-.9s2.6.3 3.8.9l-1.6 1.6L15 17"/></svg><i class="badge" id="badgeScan" hidden></i></button>
+      <button class="ico" data-vista="kit" title="Medical kit"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M12 10.5v6M9 13.5h6"/></svg></button>
+      <button class="ico" data-vista="sistemas" title="Onboard systems"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h6v6H9zM9 1.8v2.2M15 1.8v2.2M9 20v2.2M15 20v2.2M1.8 9h2.2M1.8 15h2.2M20 9h2.2M20 15h2.2"/></svg></button>
+      <button class="ico" data-vista="biblioteca" title="Medical library"><svg viewBox="0 0 24 24"><path d="M5 4.5h4.5v15H5zM9.5 4.5H14v15H9.5z"/><path d="m15 5.2 3.9-1 3 14.6-3.9.9z"/></svg></button>
+      <button class="ico emer" id="btnEmergencia" title="Emergency guide"><svg viewBox="0 0 24 24"><path d="M12 3.5 21 19.5H3z"/><path d="M12 10v4.5M12 17.2h.01"/></svg></button>
+      <div class="pie">ONBOARD · NO EARTH LINK NEEDED</div>
+    </nav>
+
+    <main class="centro">
+      <div class="barra" data-tauri-drag-region>
+        <div data-tauri-drag-region>
+          <h1 id="titulo" data-tauri-drag-region>Crew</h1>
+          <div class="sub"><span id="mision">Mission day —</span><span>·</span><span class="vivo off" id="vivo"><i></i><span>Waiting for the onboard core</span></span></div>
+        </div>
+        <div class="estado">
+          <span class="pil off" id="pilEstacion"><i class="p"></i>Station <b id="txtEstacion">—</b></span>
+          <span class="pil" id="pilCabina"><i class="p"></i>CO₂ <b id="txtCo2">—</b></span>
+          <span class="pil" id="pilLuz"><i class="p"></i><span id="txtLuzL">Earth link</span> <b id="txtLuz">—</b><span id="txtLuzR">one way</span></span>
+          <button class="btn-reg" id="btnReg"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Log a measurement</button>
+        </div>
+      </div>
+      <section class="crew" id="crew"></section>
+      <section class="gem" id="gem" hidden>
+        <div class="g3d" id="g3d"></div>
+        <svg class="glineas" id="gLin"></svg>
+        <div class="gtop">
+          <div class="tabsx" id="gQuien"></div>
+          <div class="tabsx gcapas" id="gCapas"></div>
+          <div class="tabsx" id="gEstilo"><button data-ge="halo">HALO</button><button data-ge="anatomia">Anatomy</button></div>
+        </div>
+        <div class="gnom"><b id="gNombre"></b><span id="gRol"></span><div class="gley"><span><i style="background:#46c8e8"></i>In range</span><span><i style="background:#a898ff"></i>Watch</span><span><i style="background:#f2b457"></i>Attention</span><span><i style="background:#ec6aa8"></i>Tell Earth</span></div></div>
+        <div class="getq" id="gEtq" hidden></div>
+        <aside class="gpanel" id="gPanel"></aside>
+        <div class="gcarga" id="gCarga">Loading anatomy…</div>
+        <div class="glinea">
+          <span>Launch</span>
+          <div class="gpista"><input type="range" id="gDia" min="0" max="1018" step="1" aria-label="Mission day"><u id="gHoyM" title="Today"></u><u id="gMarte" class="marte" title="Mars arrival"></u></div>
+          <span>Earth</span>
+          <span class="gdia" id="gDiaTxt"></span>
+          <button class="gchip" id="gHoy" hidden>Back to today</button>
+          <button class="gchip on" id="gEj" title="Project with or without the exercise plan">Exercise plan</button>
+        </div>
+        <div class="gpie">Reference anatomy, not a scan of this person · BodyParts3D 4.0 © DBCLS (CC BY 4.0) · female: MakeHuman (CC0) silhouette with NIH HuBMAP organs (CC BY 4.0) · estimates from NASA research rates</div>
+      </section>
+      <section class="mente" id="mente" hidden>
+        <div class="tabsx mtabs"><button data-mtab="general" class="on">Overview</button><button data-mtab="const">Constellations</button></div>
+        <div class="mconst" id="mConst" hidden></div>
+        <div class="marriba">
+          <div class="panel mcer"><h3 id="mTit">Brain<span>conceptual model · live vitals</span></h3>
+            <div class="tabsx" id="mQuien"></div>
+            <div id="mCer" class="mcer3d" data-cerebro3d></div>
+            <div class="mest"><span>State</span><b id="mEstado">—</b></div>
+            <ul class="mpor" id="mPor"></ul>
+            <div class="mley" id="cerLey"></div>
+          </div>
+          <div class="panel"><h3>Mood, last 14 days<span class="rampa">low <i></i> high · evening check-ins shared by each person</span></h3>
+            <div class="mapa" id="mMapa"></div>
+            <div class="mapa dias"><div></div><div class="ndias" id="mDias"></div><div></div></div>
+          </div>
+        </div>
+        <div class="mtres">
+          <div class="panel"><h3>Sleep<span>hours, 14 days</span></h3><div id="mSueno"></div></div>
+          <div class="panel"><h3>Energy<span>today's check-in</span></h3><div id="mEnergia"></div></div>
+          <div class="panel"><h3>Body signals now<span>vs each person's usual</span></h3><div id="mAhora"></div></div>
+        </div>
+      </section>
+      <section class="kit" id="kit" hidden>
+        <div class="ktop"><div class="kres" id="kResumen"></div>
+          <form class="kbusca" id="kBusca"><input id="kBuscaIn" placeholder="Ask the rack · e.g. something for heavy bleeding that is not gauze" autocomplete="off"><button>Find</button></form></div>
+        <div class="kresp" id="kResp" hidden></div>
+        <div class="kesc" id="kEsc"></div>
+        <div class="kcuerpo">
+          <div class="kescena" id="kEscena"><div class="ksello" id="kSello"></div><div class="kayuda">Drag to turn · click a drawer · click a card</div></div>
+          <aside class="kpanel" id="kPanel"></aside>
+        </div>
+        <div class="kauto" id="kAuto"></div>
+      </section>
+      <section class="scan" id="scan" hidden>
+        <div class="scuerpo">
+          <div class="sescena" id="sEscena">
+            <img id="sImg" alt="">
+            <div class="svacio" id="sVacio"><div><b>No scan running</b>Open the body scan on a phone (scan the code) or on this screen. The picture shows up here live.</div></div>
+            <div class="setiq" id="sEtiq" hidden><span class="pil" id="sPilVivo"><i class="p"></i><b>LIVE</b> <span id="sDisp">—</span></span><span class="pil" id="sPilRed"><i class="p"></i><span id="sRed">—</span></span></div>
+          </div>
+          <aside class="spanel" id="sPanel">
+            <div class="scaja"><h4>Join from a phone</h4>
+              <div class="sqr"><div id="sQr"></div><div><p>Scan with the phone's camera, accept the ship's certificate once, then tap <b>Start scan</b> or <b>Start in headset</b>.</p><code id="sUrl">—</code></div></div>
+            </div>
+            <div class="scaja" id="sQuien"><h4>Scanning</h4><div id="sQuienTxt" class="squien">Nobody yet</div></div>
+            <div class="scaja sctl" id="sCtl" hidden><h4>Control the viewer<span id="sCtlEstado"></span></h4><div id="sCtlCuerpo"></div></div>
+            <div class="scaja"><h4>What Nova sees</h4><div id="sFoco" class="sfoco">—</div><div class="sfilas" id="sVit"></div></div>
+            <div class="scaja" id="sProcCaja" hidden><h4>Procedure in progress</h4><div id="sProc" class="sproc"></div><div id="sTl" class="stl"></div></div>
+            <div class="scaja"><h4>Gravity and procedure</h4><div class="sfilas" id="sGrav"><div><i style="background:var(--t3)"></i>Waiting for a scan<b>—</b></div></div></div>
+            <div class="sacc"><button class="btn-reg" id="sAqui"><svg viewBox="0 0 24 24"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/></svg>Scan with this screen's camera</button></div>
+            <p class="snota">Organ positions are estimated from body landmarks and a reference atlas fitted to each person's proportions, not imaged. The phone sends each frame to this computer, which runs the vision on its GPU and sends back only the results; the phone draws the hologram on its own live camera.</p>
+          </aside>
+        </div>
+      </section>
+      <section class="sistemas" id="sistemas" hidden>
+        <div class="sctop" id="sisTarjetas"></div>
+        <div class="sisgrid">
+          <div class="panel sisev">
+            <h3>What the core is doing<span>F Prime events, in plain words</span></h3>
+            <div class="tabsx" id="sisFiltros"><button data-sf="todo">All</button><button data-sf="salud">Health</button><button data-sf="estacion">Station</button><button data-sf="comandos">Commands</button><button data-sf="sistema">System</button></div>
+            <div class="evlista" id="sisEventos"></div>
+          </div>
+          <div class="sisder">
+            <div class="panel"><h3>Limits in force<span>set by the flight surgeon</span></h3><div id="sisUmbrales"></div></div>
+            <div class="panel sisup"><h3>Up from Earth<span>real light delay</span></h3><div id="sisSubida"></div></div>
+          </div>
+        </div>
+      </section>
+      <section class="biblio" id="biblioteca" hidden>
+        <form class="bbusca" id="bForm" autocomplete="off"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="bIn" placeholder="Search the onboard medical library · English or Spanish"><button type="submit">Search</button></form>
+        <div class="bcuerpo">
+          <div class="blado"><div class="bcab" id="bCab"></div><div class="blista" id="bRes"></div></div>
+          <div class="blector vacio" id="bLector">
+            <div class="lcab"><div class="ltit"><b id="lTit"></b><span id="lSub"></span></div>
+              <div class="lzoom"><button id="lMenos" title="Zoom out">−</button><button id="lAjustar" title="Fit width"><span id="lZoom">100%</span></button><button id="lMas" title="Zoom in">+</button></div></div>
+            <div class="lhoja" id="lHoja">
+              <div class="lpag" id="lPag"><div class="lmarcas" id="lMarcas"></div></div>
+              <div class="ltexto" id="lTexto" hidden></div>
+              <div class="lcarga" id="lCarga" hidden><p class="pensando"><i></i><i></i><i></i></p>Opening the original document…</div>
+              <div class="laviso" id="lAviso" hidden></div>
+              <div class="lbienvenida"><svg viewBox="0 0 24 24"><path d="M4 5.5C6.5 4.2 9.3 4.3 12 6c2.7-1.7 5.5-1.8 8-.5v13c-2.5-1.3-5.3-1.2-8 .5-2.7-1.7-5.5-1.8-8-.5z"/><path d="M12 6v13.5"/></svg>
+                <b>Read the real page</b><p>Every passage opens on its original page, with figures and tables, straight from the documents stored on board. No internet needed.</p><div class="lsug" id="lSug"></div></div>
+            </div>
+            <div class="lpie" id="lPie"><button id="lAnt" title="Previous page">‹</button><label><input id="lNum" type="number" min="1"><span id="lDe"></span></label><button id="lSig" title="Next page">›</button>
+              <div class="lmini" id="lMini"></div><button class="lvolver" id="lVolver" hidden>Back to the passage</button></div>
+          </div>
+        </div>
+      </section>
+      <section class="vitals" id="vitals" hidden>
+        <div class="vbar"><div class="vquien" id="vquien"></div><div class="tabsx" id="vrango"></div></div>
+        <div class="vamen" id="vamen" aria-label="The five hazards of human spaceflight"></div>
+        <div class="vgrid" id="vgrid"></div>
+      </section>
+    </main>
+
+    <aside class="nova">
+      <button class="plegar" id="novaPlegar" title="Hide Nova (more room)" aria-label="Hide Nova"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <div class="nova-cab">
+        <svg id="novaP" viewBox="0 0 300 220"></svg>
+        <h2>Nova</h2>
+        <p id="novaDice">Connecting to the crew's sensors.</p>
+      </div>
+      <div class="nova-cuerpo">
+        <div class="charla" id="charla" hidden></div>
+        <div class="sec" id="secAtencion" hidden><span>Needs attention</span><span id="nAtencion"></span></div>
+        <div id="atencion"></div>
+        <div class="sec"><span>Latest</span><span id="hora"></span></div>
+        <div class="lista" id="ultimas"></div>
+      </div>
+      <div class="sugerencias" id="sugerencias"></div>
+      <form class="preg" id="pregForm" autocomplete="off"><input id="pregIn" maxlength="400" placeholder="Ask Nova about the crew"><em id="pregEstado">…</em><button type="button" class="vozb" id="vozBtn" aria-label="Nova voice"><svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path class="ondas" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg></button><button type="button" class="micb" id="micBtn" aria-label="Talk to Nova" title="Talk to Nova (onboard, no internet)"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button><button type="submit" aria-label="Ask"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form>
+      <div class="panel-voz" id="panelVoz" hidden><div><b id="pvTitulo">Listening</b><span id="pvSub">Speak in English or Spanish</span></div><button id="pvFin"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>End</button></div>
+    </aside>
+  </div>
+  <div class="pie-demo" id="pieDemo">Fictional crew · heart, oxygen and breathing variability from PhysioNet BIDMC (ODC-By) · press D for demo scenarios</div>
+
+  <div class="demo" id="demo">
+    <span>Demo · simulated station</span>
+    <button data-e="desmayo" data-t="T3">Ingrid faints</button>
+    <button data-e="hipoglucemia" data-t="T1">Mara: low sugar</button>
+    <button data-e="fiebre" data-t="T2">David: fever</button>
+    <button data-e="hipoxia" data-t="T4">Kenji: low oxygen</button>
+    <button data-e="co2" data-t="T1">Cabin CO₂</button>
+    <button data-e="normal" data-t="T1">Reset</button>
+  </div>
+
+  <div class="emergencia" id="emergencia">
+    <div class="em-izq">
+      <div class="em-marca">Emergency guide</div>
+      <div class="em-quien" id="emQuien"></div>
+      <div class="em-proto"><span id="emProto"></span><b id="emTiempo">0:00</b></div>
+      <div class="em-signos" id="emSignos"></div>
+      <div class="em-ritmo"><div class="f"><span>Heart rhythm</span><em id="emRitmoTxt">live</em></div><svg id="emTraza" viewBox="0 0 420 70" preserveAspectRatio="none"></svg></div>
+      <div class="em-nova"><svg id="emNova" viewBox="0 0 120 100"></svg><p>Nova reads each step aloud and keeps the log. The crew decides.</p></div>
+    </div>
+    <div class="em-centro">
+      <div class="em-n" id="emPasoN">Step 1</div>
+      <div class="paso-txt" id="emPaso"></div>
+      <div class="em-metro" id="emMetro" hidden></div>
+      <div class="em-botones" id="emBotones"></div>
+      <div class="em-pie" id="emFuente">Approved onboard protocol · demo, pending flight surgeon review · Nova guides, the crew decides</div>
+    </div>
+    <div class="em-der">
+      <div class="em-acc"><button id="emVoz">Voice on</button><button id="emCerrar">Close</button></div>
+      <div class="sec"><span>Log for the flight surgeon</span></div>
+      <div class="em-log" id="emLog"></div>
+    </div>
+  </div>
+  <div class="guia-ar" id="guiaAR"></div>
+<div class="escaner-local" id="escanerLocal"></div>
+  <div class="velo" id="veloEm"><div class="hoja" id="emElegir"></div></div>
+
+  <div class="velo" id="velo">
+    <div class="hoja">
+      <h2>Log a measurement</h2>
+      <div class="sub">Nova adds it to the crew record and checks it against the mission limits right away.</div>
+      <div class="paso">Who</div>
+      <div class="quien" id="quien"></div>
+      <div class="paso">What</div>
+      <div class="chips" id="chips"></div>
+      <div class="paso" id="pasoValor">Value</div>
+      <div class="valor" id="valor"></div>
+      <div class="como"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><div id="como"></div></div>
+      <div class="acc"><span class="msg" id="msgReg">Saved. Nova is checking it.</span><button id="btnCancelar">Cancel</button><button class="pri" id="btnGuardar">Save</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="escala.js?v=1794235709"></script>
+<script src="lib/mascota-base.js"></script>
+<script src="lib/mascota-orbes.js"></script>
+<script src="graficos.js?v=1794235709"></script>
+<script src="voz.js?v=1794434207"></script>
+<script src="vitals.js?v=1794235709"></script>
+<script src="app.js?v=1794235709"></script>
+<script src="chat.js?v=4"></script>
+<script src="plegar.js?v=1"></script>
+<script src="escucha.js?v=1794235709"></script>
+<script src="gemelo-fichas.js?v=3"></script>
+<script type="module" src="gemelo3d.mjs?v=5"></script>
+<script src="mente.js?v=3"></script>
+<script src="constelaciones.js?v=1"></script>
+<script src="kit.js?v=3"></script>
+<script type="module" src="kit3d.mjs?v=1"></script>
+<script src="biblioteca.js?v=2"></script>
+<script type="module" src="lector.mjs?v=1"></script>
+<script src="sistemas.js?v=2"></script>
+<script src="guia.js?v=1794440000"></script>
+<script type="module" src="escaner-estacion.js?v=4"></script>
+</body>
+</html>

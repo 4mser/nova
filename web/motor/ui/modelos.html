@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>NOVA · models</title>
+<link rel="stylesheet" href="ui.css?v=1791048873">
+<style>
+html,body{margin:0;width:1920px;height:1080px;background:transparent;overflow:hidden}
+h2{position:absolute;left:150px;top:92px;font:600 58px/1.05 SG;letter-spacing:-.045em}
+.sub{position:absolute;left:150px;top:166px;font:400 21px SG;color:var(--t2)}
+#nv{position:absolute;right:150px;top:56px;width:220px;height:170px;overflow:visible}
+.rej6{position:absolute;left:150px;right:150px;top:260px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.mod{padding:26px 28px;border-radius:28px;background:var(--s1);border:1px solid var(--l1);height:300px;display:flex;flex-direction:column}
+.mod .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center}
+.mod .ic svg{width:24px;height:24px;fill:none;stroke:#05080c;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.mod b{font:600 27px SG;letter-spacing:-.03em;margin-top:16px}
+.mod dl{margin-top:16px;display:grid;grid-template-columns:104px 1fr;row-gap:12px;font:400 17px/1.4 SG}
+.mod dt{color:var(--t3)}.mod dd{color:var(--t1)}
+.pie2{position:absolute;left:150px;right:150px;bottom:150px;display:flex;gap:12px;justify-content:center}
+html.vert h2{left:640px;width:640px;top:70px;font-size:50px}
+html.vert .sub{left:640px;width:500px;top:130px;font-size:18px}
+html.vert #nv{right:640px;top:120px;width:130px;height:100px}
+html.vert .rej6{left:640px;right:640px;top:220px;grid-template-columns:1fr 1fr;gap:12px}
+html.vert .mod{height:262px;padding:18px 18px;border-radius:22px}
+html.vert .mod .ic{width:36px;height:36px;border-radius:11px}
+html.vert .mod b{font-size:21px;margin-top:10px}
+html.vert .mod dl{grid-template-columns:62px 1fr;row-gap:7px;font-size:13px;margin-top:10px}
+html.vert .pie2{display:none}
+</style></head><body>
+<h2 id="tit"></h2><div class="sub" id="sub"></div>
+<svg id="nv" viewBox="0 0 220 170"></svg>
+<div class="rej6" id="rej"></div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script>
+<script>
+const cl = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v)), pr = (t, a, d) => cl((t - a) / d), eOut = x => 1 - Math.pow(2, -10 * x);
+const ES = /motor-es/.test(location.pathname);
+const T = ES ? { tit: 'Todo funciona a bordo.', sub: 'Sin internet ni nube: el propio computador de la nave', d: ['Hace', 'Corre', 'Detalle'] }
+  : { tit: 'Everything runs on board.', sub: 'No internet, no cloud: the ship\'s own computer', d: ['Does', 'Runs', 'Detail'] };
+const M = ES ? [
+  ['Modelo de lenguaje', '#a898ff', '<path d="M4 5h16v11H8l-4 4z"/><path d="M8 10h8M8 13h5"/>', 'Responde, explica y arma el informe', 'Qwen3 4B · llama.cpp', 'En la GPU de la nave'],
+  ['Reconocimiento de voz', '#8fe6f5', '<rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>', 'Entiende lo que dice la tripulación', 'whisper.cpp', 'El audio nunca sale de la nave'],
+  ['Voz', '#ec6aa8', '<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/>', 'Habla cada paso en voz alta', 'Kokoro', 'Inglés y español'],
+  ['Visión', '#6fd6b0', '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', 'Ve el cuerpo y las manos', 'MediaPipe Pose + Hands', 'Unos 15 ms por cuadro'],
+  ['Biblioteca médica', '#f2b457', '<path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/>', 'Cita la página real de cada fuente', '41 fuentes abiertas', '35.830 pasajes'],
+  ['Núcleo de vuelo', '#46c8e8', 'FPRIME', 'Telemetría, umbrales y comandos', 'F Prime · JPL', 'Paquetes CCSDS'],
+] : [
+  ['Language model', '#a898ff', '<path d="M4 5h16v11H8l-4 4z"/><path d="M8 10h8M8 13h5"/>', 'Answers, explains, writes the report', 'Qwen3 4B · llama.cpp', 'On the ship\'s GPU'],
+  ['Speech recognition', '#8fe6f5', '<rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>', 'Understands what the crew says', 'whisper.cpp', 'Audio never leaves the ship'],
+  ['Voice', '#ec6aa8', '<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/>', 'Reads every step aloud', 'Kokoro', 'English and Spanish'],
+  ['Vision', '#6fd6b0', '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', 'Sees the body and the hands', 'MediaPipe Pose + Hands', 'About 15 ms a frame'],
+  ['Medical library', '#f2b457', '<path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/>', 'Cites the real page of every source', '41 open sources', '35,830 passages'],
+  ['Flight core', '#46c8e8', 'FPRIME', 'Telemetry, limits and commands', 'F Prime · JPL', 'CCSDS packets'],
+];
+function dibujarModelos(t){
+  document.documentElement.classList.toggle('vert', !!(parent.esVert && parent.esVert()));
+  document.getElementById('tit').textContent = T.tit; document.getElementById('sub').textContent = T.sub;
+  document.getElementById('rej').innerHTML = M.map(([n, c, ic, rd, gv, tr], i) => { const a = eOut(pr(t, .6 + i * .9, .6));
+    return `<div class="mod" style="opacity:${a};transform:translateY(${(1 - a) * 30}px)">${ic === 'FPRIME' ? '<div class="ic" style="background:#f2f5f8"><img src="img/fprime-logo.svg" style="width:30px;height:auto"></div>' : `<div class="ic" style="background:${c}"><svg viewBox="0 0 24 24">${ic}</svg></div>`}<b>${n}</b>
+      <dl><dt>${T.d[0]}</dt><dd>${rd}</dd><dt>${T.d[1]}</dt><dd style="color:${c}">${gv}</dd><dt>${T.d[2]}</dt><dd>${tr}</dd></dl></div>`; }).join('');
+  document.getElementById('nv').innerHTML = mascotaOrbes({ x: 110, y: 90, R: 50, t, expr: 'feliz', orbes: 6 });
+}
+dibujarModelos(+(location.hash.slice(1) || 8));
+</script></body></html>

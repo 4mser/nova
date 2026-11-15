@@ -1,0 +1,1513 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>NOVA · Informe técnico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Sistema HALO v3 «flight deck» de NOVA llevado a papel A4: superficies planas y oscuras, un borde fino,
+   color por función (turquesa = en vivo / funciona, lila = NOVA, ámbar = atención o parcial, magenta = aviso a Tierra o pendiente). */
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-300-latin.woff2);font-weight:300}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-400-latin.woff2);font-weight:400}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-500-latin.woff2);font-weight:500}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-600-latin.woff2);font-weight:600}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-700-latin.woff2);font-weight:700}
+:root{
+  --bg:#05080c;--s1:#0a0f15;--s2:#0f151d;--s3:#151c26;--l1:rgba(255,255,255,.075);--l2:rgba(255,255,255,.13);--l3:rgba(255,255,255,.2);
+  --t1:#f2f5f8;--t2:#a5afbd;--t3:#6d7786;--ac:#46c8e8;--ac2:#8fe6f5;--nv:#a898ff;--at:#f2b457;--al:#ec6aa8;--ok:#6fd6b0;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+@page{size:210mm 297mm;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#222}
+body{font-family:SG,system-ui,sans-serif;color:var(--t1);font-size:8.5pt;line-height:1.52;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-feature-settings:"ss01" 1;counter-reset:pag}
+.pag>*{flex-shrink:0}
+.pag{width:210mm;height:297mm;background:var(--bg);position:relative;overflow:hidden;margin:0 auto 8mm;padding:19mm 15mm 17mm;page-break-after:always;break-after:page;counter-increment:pag;display:flex;flex-direction:column;gap:4.2mm}
+@media print{html,body{background:none}.pag{margin:0}}
+
+/* cabecera y pie */
+.cab{position:absolute;top:7.5mm;left:15mm;right:15mm;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:6.2pt;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+.cab .marca{display:flex;align-items:center;gap:2mm;color:var(--t2)}
+.cab .marca img{width:5mm;height:5mm;display:block}
+.pie{position:absolute;bottom:7mm;left:15mm;right:15mm;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--l1);padding-top:2.4mm;font-size:6.6pt;color:var(--t3)}
+.pie b{font-family:var(--mono);font-weight:500;color:var(--t2);letter-spacing:.06em}
+.pie .n::after{content:counter(pag, decimal-leading-zero)}
+
+/* tipografía */
+.ojo{font-family:var(--mono);font-size:6.4pt;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ac)}
+h1{font-weight:600;letter-spacing:-.045em;line-height:1}
+h2{font-size:21pt;line-height:1.06;font-weight:600;letter-spacing:-.035em;max-width:165mm;text-wrap:balance}
+h3{font-size:10.5pt;line-height:1.2;font-weight:600;letter-spacing:-.01em}
+h4{font-size:8pt;font-weight:600;color:var(--t1)}
+p{color:var(--t2);max-width:172mm}
+p b,li b,td b{color:var(--t1);font-weight:500}
+.lead{font-size:9.6pt;line-height:1.55;color:var(--t2);max-width:168mm}
+code,.mono{font-family:var(--mono);font-size:.84em;color:var(--ac2)}
+.t3{color:var(--t3)}
+.cabsec{display:flex;flex-direction:column;gap:2.2mm}
+.secn{position:absolute;top:13mm;right:14mm;font-weight:700;font-size:58pt;line-height:1;color:rgba(70,200,232,.06);letter-spacing:-.05em}
+
+/* bloques */
+.caja{background:var(--s1);border:1px solid var(--l1);border-radius:3mm;padding:3.6mm 4mm;display:flex;flex-direction:column;gap:1.6mm;min-width:0}
+.caja.nv{border-color:rgba(168,152,255,.32)}
+.caja.at{border-color:rgba(242,180,87,.35)}
+.caja.al{border-color:rgba(236,106,168,.35)}
+.caja.ok{border-color:rgba(111,214,176,.3)}
+.caja p,.caja li{font-size:7.9pt}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:3.4mm}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3.2mm}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm}
+.fila{display:flex;gap:4mm;align-items:flex-start}
+.fila>*{min-width:0}
+.crece{flex:1}
+ul.l{list-style:none;display:flex;flex-direction:column;gap:1.1mm}
+ul.l li{position:relative;padding-left:3.6mm;color:var(--t2)}
+ul.l li::before{content:"";position:absolute;left:0;top:1.75mm;width:1.4mm;height:1.4mm;border-radius:50%;background:var(--ac)}
+ul.l.nv li::before{background:var(--nv)}ul.l.at li::before{background:var(--at)}ul.l.al li::before{background:var(--al)}ul.l.ok li::before{background:var(--ok)}
+
+/* estado */
+.est{display:inline-flex;align-items:center;gap:1.2mm;font:500 5.8pt/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:1mm 1.6mm;border-radius:9mm;border:1px solid currentColor;white-space:nowrap;align-self:flex-start}
+.est::before{content:"";width:1.2mm;height:1.2mm;border-radius:50%;background:currentColor}
+.est.ok{color:var(--ok)}.est.at{color:var(--at)}.est.al{color:var(--al)}.est.nv{color:var(--nv)}.est.ac{color:var(--ac2)}
+.cajacab{display:flex;justify-content:space-between;align-items:flex-start;gap:2mm}
+
+/* cifras */
+.cifras{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--l1);border:1px solid var(--l1);border-radius:3mm;overflow:hidden}
+.cifra{background:var(--s1);padding:2.6mm 3.4mm;display:flex;flex-direction:column;gap:.6mm}
+.cifra b{font-size:17pt;font-weight:600;letter-spacing:-.04em;line-height:1.05;font-variant-numeric:tabular-nums}
+.cifra span{font-size:6.8pt;color:var(--t2);line-height:1.35}
+
+/* tablas */
+table.t{width:100%;border-collapse:collapse;font-size:7.3pt;font-variant-numeric:tabular-nums}
+.t th{font:500 5.6pt/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--t3);text-align:left;padding:1.8mm 2mm;background:var(--s2);border-bottom:1px solid var(--l2)}
+.t td{padding:1.55mm 2mm;border-bottom:1px solid var(--l1);color:var(--t2);vertical-align:top;line-height:1.4}
+.t td:first-child{color:var(--t1);font-weight:500}
+.t tr:last-child td{border-bottom:0}
+.tw{border:1px solid var(--l1);border-radius:3mm;overflow:hidden;background:var(--s1)}
+.t .num{text-align:right;white-space:nowrap}
+.t .at{color:var(--at)}.t .al{color:var(--al)}.t .ok{color:var(--ok)}
+
+/* diagramas */
+.diag{background:var(--s1);border:1px solid var(--l1);border-radius:3mm;padding:3mm}
+.diag svg{display:block;width:100%;height:auto}
+.diag svg text{font-family:SG,sans-serif}
+.diag svg .m{font-family:'JetBrains Mono',monospace}
+.pieimg{font-size:6.6pt;color:var(--t3);line-height:1.4}
+.pieimg b{color:var(--t2);font-weight:500}
+
+/* equipos (mockups) */
+.equipo{display:flex;flex-direction:column;align-items:center;gap:0}
+.monitor{width:100%;background:#0c1118;border:1px solid #27303c;border-radius:2.6mm;padding:1.7mm;box-shadow:0 1.6mm 5mm rgba(0,0,0,.6)}
+.monitor img{display:block;width:100%;border-radius:.9mm}
+.cuello{width:13%;height:3.2mm;background:linear-gradient(#141b24,#0b1016)}
+.base{width:26%;height:1.4mm;border-radius:1mm 1mm .4mm .4mm;background:#1a222d}
+.tel{position:relative;background:#10151c;border:1px solid #2c3541;border-radius:7mm;padding:1.5mm;box-shadow:0 1.6mm 5mm rgba(0,0,0,.6);flex:none}
+.tel .pant{border-radius:5.6mm;overflow:hidden;background:#05080c}
+.tel .be{height:5.4mm;display:flex;align-items:center;justify-content:space-between;padding:0 4.6mm 0 5.2mm;font:600 5.6pt/1 SG;color:#f2f5f8;position:relative}
+.tel .be::after{content:"";position:absolute;left:50%;top:1.2mm;width:24%;height:3mm;margin-left:-12%;background:#000;border-radius:2mm}
+.tel .be i{display:flex;gap:.7mm;align-items:center}
+.tel .be i span{display:block;background:#f2f5f8;border-radius:.3mm}
+.tel img{display:block;width:100%}
+.tel .rec{aspect-ratio:393/852;overflow:hidden}
+.tel .pant::after{content:"";display:block;height:4.2mm;background:#05080c;background-image:linear-gradient(#f2f5f8,#f2f5f8);background-size:34% .9mm;background-position:center 55%;background-repeat:no-repeat;border-radius:0 0 5.6mm 5.6mm;opacity:.95}
+.tel .rec img{object-fit:cover;object-position:top;height:100%}
+.leyenda-eq{margin-top:2.4mm;text-align:center;font-size:6.8pt;color:var(--t2);line-height:1.35}
+.leyenda-eq b{display:block;color:var(--t1);font-weight:600;font-size:7.6pt}
+
+/* portada */
+.portada{padding:0;gap:0}
+.portada .foto{position:absolute;left:-30mm;right:-10mm;top:-6mm;height:205mm;background:url(img/m/tierra.jpg) 28% 40%/cover no-repeat;opacity:.95}
+.portada .velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,12,.55) 0%,rgba(5,8,12,0) 14%,rgba(5,8,12,0) 40%,rgba(5,8,12,.9) 55%,#05080c 64%)}
+.portada .contenido{position:absolute;left:16mm;right:16mm;bottom:20mm;display:flex;flex-direction:column;gap:5mm}
+.portada .arriba{position:absolute;top:14mm;left:16mm;right:16mm;display:flex;justify-content:space-between;align-items:center}
+.portada .arriba img.bn{height:9mm;opacity:.92}
+
+/* índice */
+.indice{display:grid;grid-template-columns:1fr 1fr;gap:0 6mm}
+.indice div{display:flex;gap:3mm;align-items:baseline;padding:1.7mm 0;border-bottom:1px solid var(--l1)}
+.indice span.n{font-family:var(--mono);font-size:6.6pt;color:var(--ac);width:6mm;flex:none}
+.indice b{font-weight:500;flex:1}
+.indice em{font-style:normal;font-family:var(--mono);font-size:6.6pt;color:var(--t3)}
+
+.codigo{font-family:var(--mono);font-size:6.6pt;line-height:1.55;color:var(--t2);background:var(--s2);border:1px solid var(--l1);border-radius:2.4mm;padding:2.6mm 3.2mm;white-space:pre-wrap;word-break:break-word}
+.codigo .c{color:var(--t3)}.codigo .k{color:var(--ac2)}.codigo .s{color:var(--ok)}
+.nova{display:flex;gap:3mm;align-items:center;background:var(--s2);border:1px solid rgba(168,152,255,.3);border-radius:3mm;padding:3mm 3.6mm}
+.nova img{width:9mm;height:9mm;flex:none}
+.nova p{color:var(--t1);font-size:8.2pt}
+.sep{height:1px;background:var(--l1)}
+.equipo-g{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--l1);border:1px solid var(--l1);border-radius:3mm;overflow:hidden}
+.equipo-g div{background:var(--s1);padding:2.4mm 3mm;display:flex;flex-direction:column;gap:.6mm;min-width:0}
+.equipo-g b{font-weight:600;font-size:8pt}
+.equipo-g span{font-size:6.8pt;color:var(--t2);line-height:1.38}
+</style>
+</head>
+<body>
+<!-- ============================================================ 1 · PORTADA -->
+<section class="pag portada">
+  <div class="foto"></div><div class="velo"></div>
+  <div class="arriba">
+    <span class="ojo" style="color:var(--t1)">NASA Space Apps Challenge 2026 · 14 y 15 de noviembre</span>
+    <img class="bn" src="img/logos/bn.png" alt="B&amp;N Solutions">
+  </div>
+  <div class="contenido">
+    <div style="display:flex;align-items:center;gap:4mm">
+      <img src="img/m/orbe.png" alt="" style="width:26mm;height:26mm;margin:-6mm -5mm -6mm -6mm">
+      <span class="ojo" style="font-size:7.4pt">Informe técnico · estado al 9 de noviembre de 2026</span>
+    </div>
+    <h1 style="font-size:50pt">NOVA</h1>
+    <p style="font-size:15pt;line-height:1.3;color:var(--t1);max-width:150mm;letter-spacing:-.015em">Monitoreo de salud de la tripulación que funciona entero dentro de la nave, con el software de vuelo de la NASA como núcleo.</p>
+    <p class="lead" style="max-width:150mm">Desafío <b>«Create Health Monitoring Software for Astronauts on Space Missions»</b>. Este documento describe todo lo construido hasta hoy: el núcleo de vuelo en F Prime, la pantalla de la nave, la app móvil en modo misión, los protocolos de emergencia, la biblioteca médica, los modelos que corren a bordo, el enlace con la Tierra y lo que falta.</p>
+    <div class="sep"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:6mm">
+      <div style="display:flex;flex-direction:column;gap:1mm">
+        <span class="ojo" style="color:var(--t3)">Equipo B&amp;N</span>
+        <span style="font-size:8.6pt;color:var(--t1)">Nicolás Moreno · Benjamín Campos · Nicolás Richardson · Luis González · Ambar Martínez · Daniella Mora</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:2.4mm;font-size:6.6pt;color:var(--t3);white-space:nowrap;flex:none">
+        <img src="img/logos/fprime-logo.svg" alt="F Prime" style="height:8mm">
+        <span>Núcleo construido sobre<br>F Prime · NASA JPL</span>
+      </div>
+    </div>
+    <span class="pieimg">Foto de portada: la Tierra vista desde el espacio, NASA (dominio público). Tripulación ficticia en todas las capturas.</span>
+  </div>
+</section>
+
+<!-- ============================================================ 2 · RESUMEN E ÍNDICE -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>Resumen</span></div>
+  <div class="cabsec">
+    <span class="ojo">Resumen ejecutivo</span>
+    <h2>Un médico de a bordo que sigue funcionando cuando la Tierra está a 9,5 minutos-luz</h2>
+  </div>
+  <p class="lead">En un viaje a Marte la consulta con el cirujano de vuelo tarda entre 6 y 44 minutos ida y vuelta, y durante la conjunción solar se corta por semanas. NOVA resuelve el monitoreo, la detección y la primera respuesta <b>dentro de la nave</b>: los signos vitales pasan por un núcleo de vuelo hecho con F Prime, la tripulación ve todo en una pantalla y en su teléfono, y un asistente local responde con datos reales y fuentes médicas abiertas. La Tierra recibe un informe y puede ajustar los umbrales por comando, siempre con el retraso real de la luz.</p>
+  <div class="cifras">
+    <div class="cifra"><b>18</b><span>sensores por tripulante y de cabina</span></div>
+    <div class="cifra"><b>4</b><span>componentes propios en F Prime v4.4.2</span></div>
+    <div class="cifra"><b>31</b><span>parámetros de vuelo, cambiables por comando</span></div>
+    <div class="cifra"><b>12</b><span>protocolos de emergencia con fuente y página</span></div>
+    <div class="cifra"><b>32</b><span>fuentes médicas de licencia abierta</span></div>
+    <div class="cifra"><b>14.551</b><span>fragmentos buscables en la nave</span></div>
+    <div class="cifra"><b>3</b><span>modelos locales: lenguaje, búsqueda y voz</span></div>
+    <div class="cifra"><b>0</b><span>llamadas a internet durante la misión</span></div>
+  </div>
+  <div class="g3">
+    <div class="caja ok"><h4>Principio 1 · todo a bordo</h4><p>Ninguna función crítica depende de la nube ni de la Tierra. Los modelos, la biblioteca y la voz corren en el mismo equipo de la nave.</p></div>
+    <div class="caja nv"><h4>Principio 2 · reglas fijas en lo crítico</h4><p>Los umbrales viven en el núcleo de vuelo y los pasos de emergencia salen de un archivo revisable. El modelo de lenguaje explica y acompaña, pero no decide.</p></div>
+    <div class="caja at"><h4>Principio 3 · la tripulación manda</h4><p>Lo que reporta una persona pesa más que un sensor. El ánimo, el diario y el ciclo menstrual solo se comparten con consentimiento.</p></div>
+  </div>
+  <div class="cabsec" style="margin-top:1mm"><span class="ojo">Contenido</span></div>
+  <div class="indice">
+    <div><span class="n">01</span><b>Arquitectura general</b><em>p. 03</em></div>
+    <div><span class="n">09</span><b>Consola de Tierra</b><em>p. 15</em></div>
+    <div><span class="n">02</span><b>El recorrido de un dato</b><em>p. 04</em></div>
+    <div><span class="n">10</span><b>App móvil en modo misión</b><em>p. 16</em></div>
+    <div><span class="n">03</span><b>Núcleo de vuelo F Prime</b><em>p. 05</em></div>
+    <div><span class="n">11</span><b>Enlace de la nave: API y puertos</b><em>p. 18</em></div>
+    <div><span class="n">04</span><b>Estación médica y simulador</b><em>p. 07</em></div>
+    <div><span class="n">12</span><b>Material real de la NASA y fuentes abiertas</b><em>p. 19</em></div>
+    <div><span class="n">05</span><b>NOVA PC: la pantalla de la nave</b><em>p. 08</em></div>
+    <div><span class="n">13</span><b>Modelos, stack y licencias</b><em>p. 20</em></div>
+    <div><span class="n">06</span><b>Ask NOVA y biblioteca médica</b><em>p. 10</em></div>
+    <div><span class="n">14</span><b>Seguridad clínica y privacidad</b><em>p. 21</em></div>
+    <div><span class="n">07</span><b>Emergencias</b><em>p. 12</em></div>
+    <div><span class="n">15</span><b>Pendientes, riesgos y plan</b><em>p. 22</em></div>
+    <div><span class="n">08</span><b>Misión, Casa y sistemas de a bordo</b><em>p. 13</em></div>
+    <div><span class="n">A</span><b>Anexo: cómo levantar todo</b><em>p. 23</em></div>
+  </div>
+  <div class="cabsec" style="margin-top:1mm"><span class="ojo">Equipo B&amp;N</span></div>
+  <div class="equipo-g">
+    <div><b>Nicolás Moreno</b><span>Ingeniero de software · diseño de producto. Construye NOVA PC, el núcleo y la app.</span></div>
+    <div><b>Benjamín Campos</b><span>Ingeniero físico · ciencia de datos y modelos agénticos.</span></div>
+    <div><b>Nicolás Richardson</b><span>Ingeniero físico · ciencia de datos y visión artificial.</span></div>
+    <div><b>Luis González</b><span>Ingeniero físico · hardware y robótica. Arma la estación médica.</span></div>
+    <div><b>Ambar Martínez</b><span>Psicóloga clínica y educacional · neuropsicología. Bienestar y sesión privada.</span></div>
+    <div><b>Daniella Mora</b><span>Candidata a doctora en Física (UC) · física de partículas, con experiencia en el CERN.</span></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 3 · ARQUITECTURA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>01 · Arquitectura</span></div>
+  <div class="secn">01</div>
+  <div class="cabsec">
+    <span class="ojo">01 · Arquitectura general</span>
+    <h2>Cinco capas dentro de la nave y una en la Tierra</h2>
+  </div>
+  <p class="lead">Los datos entran por la estación médica, el simulador o los teléfonos. El núcleo F Prime los valida y clasifica. El enlace de la nave los guarda, los reparte a las pantallas y se apoya en tres modelos locales. La Tierra solo se comunica con la nave a través de un canal con el retraso real de la luz.</p>
+  <div class="diag">
+    <svg viewBox="0 0 1780 1330" xmlns="http://www.w3.org/2000/svg" style="width:90%;margin:0 auto">
+      <defs>
+        <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6d7786"/></marker>
+        <marker id="fm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ec6aa8"/></marker>
+        <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a898ff"/></marker>
+      </defs>
+      <!-- zonas -->
+      <rect x="4" y="4" width="1330" height="1322" rx="22" fill="none" stroke="rgba(255,255,255,.13)"/>
+      <text x="34" y="46" fill="#6d7786" font-size="22" letter-spacing="3" class="m">NAVE · RED LOCAL · SIN INTERNET</text>
+      <rect x="1372" y="4" width="404" height="1322" rx="22" fill="none" stroke="rgba(236,106,168,.4)" stroke-dasharray="10 8"/>
+      <text x="1400" y="46" fill="#6d7786" font-size="22" letter-spacing="3" class="m">TIERRA</text>
+
+      <!-- capa 1 · fuentes -->
+      <text x="34" y="96" fill="#46c8e8" font-size="20" letter-spacing="2.5" class="m">1 · FUENTES DE DATOS</text>
+      <g data-caja><rect x="34" y="114" width="400" height="140" rx="16" fill="#0f151d" stroke="#f2b457"/>
+        <text x="58" y="158" fill="#f2f5f8" font-size="28" font-weight="600">Estación médica</text>
+        <text x="58" y="194" fill="#a5afbd" font-size="22">hardware de Luis · NDJSON</text>
+        <text x="58" y="226" fill="#f2b457" font-size="20">sensores por confirmar</text></g>
+      <g data-caja><rect x="466" y="114" width="400" height="140" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="490" y="158" fill="#f2f5f8" font-size="28" font-weight="600">Simulador</text>
+        <text x="490" y="194" fill="#a5afbd" font-size="22">PhysioNet BIDMC (real)</text>
+        <text x="490" y="226" fill="#a5afbd" font-size="22">+ 6 escenarios clínicos</text></g>
+      <g data-caja><rect x="898" y="114" width="400" height="140" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="922" y="158" fill="#f2f5f8" font-size="28" font-weight="600">Teléfonos T1–T4</text>
+        <text x="922" y="194" fill="#a5afbd" font-size="22">reloj, sueño, pasos, luz</text>
+        <text x="922" y="226" fill="#a5afbd" font-size="22">ánimo solo si se comparte</text></g>
+
+      <!-- flechas a núcleo -->
+      <path d="M380,254 L380,336" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <path d="M720,254 L720,336" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <text x="394" y="300" fill="#6d7786" font-size="19" class="m">UDP 50050</text>
+      <text x="734" y="300" fill="#6d7786" font-size="19" class="m">UDP 50050</text>
+      <path d="M1298,184 L1318,184 L1318,690 L1300,690" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <text x="1300" y="302" fill="#6d7786" font-size="19" class="m" text-anchor="end">HTTP /v1/lote</text>
+
+      <!-- capa 2 · núcleo -->
+      <text x="34" y="324" fill="#46c8e8" font-size="20" letter-spacing="2.5" class="m">2 · NÚCLEO DE VUELO</text>
+      <rect x="34" y="340" width="832" height="232" rx="18" fill="#0d131a" stroke="#6fd6b0" stroke-width="2"/>
+      <text x="58" y="382" fill="#f2f5f8" font-size="28" font-weight="600">F Prime v4.4.2 · despliegue Nova/Nave</text>
+      <g data-caja><rect x="58" y="404" width="180" height="94" rx="12" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="76" y="442" fill="#8fe6f5" font-size="23" font-weight="600">Estacion</text>
+        <text x="76" y="474" fill="#a5afbd" font-size="19">valida y recibe</text></g>
+      <g data-caja><rect x="256" y="404" width="210" height="94" rx="12" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="274" y="442" fill="#8fe6f5" font-size="23" font-weight="600">MonitorSalud</text>
+        <text x="274" y="474" fill="#a5afbd" font-size="19">clasifica 4 niveles</text></g>
+      <g data-caja><rect x="484" y="404" width="170" height="94" rx="12" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="502" y="442" fill="#8fe6f5" font-size="23" font-weight="600">Pantalla</text>
+        <text x="502" y="474" fill="#a5afbd" font-size="19">publica 1 Hz</text></g>
+      <g data-caja><rect x="672" y="404" width="170" height="94" rx="12" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="690" y="442" fill="#8fe6f5" font-size="23" font-weight="600">Salud</text>
+        <text x="690" y="474" fill="#a5afbd" font-size="19">tipos, umbrales</text></g>
+      <text x="58" y="540" fill="#6d7786" font-size="19">rate groups 1 / 0,5 / 0,25 Hz · parámetros · eventos · telemetría · CCSDS</text>
+
+      <!-- GDS -->
+      <g data-caja><rect x="898" y="340" width="400" height="150" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="922" y="384" fill="#f2f5f8" font-size="28" font-weight="600">fprime-gds</text>
+        <text x="922" y="420" fill="#a5afbd" font-size="22">sistema de tierra del JPL</text>
+        <text x="922" y="454" fill="#a5afbd" font-size="22">REST :5080 · TCP 50000</text></g>
+      <path d="M866,415 L896,415" stroke="#6d7786" stroke-width="2.5" fill="none" marker-start="url(#fa)" marker-end="url(#fa)"/>
+
+      <!-- flechas núcleo -> enlace -->
+      <path d="M560,572 L560,650" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <text x="574" y="618" fill="#6d7786" font-size="19" class="m">UDP 50051 estado · 50052 ingresos</text>
+      <path d="M1098,490 L1098,650" stroke="#6d7786" stroke-width="2.5" fill="none" marker-start="url(#fa)" marker-end="url(#fa)"/>
+      <text x="1112" y="580" fill="#6d7786" font-size="19" class="m">REST cada 1 s</text>
+
+      <!-- capa 3 · enlace -->
+      <text x="34" y="642" fill="#46c8e8" font-size="20" letter-spacing="2.5" class="m">3 · ENLACE DE LA NAVE</text>
+      <rect x="34" y="660" width="1264" height="214" rx="18" fill="#0d131a" stroke="#6fd6b0" stroke-width="2"/>
+      <text x="58" y="702" fill="#f2f5f8" font-size="28" font-weight="600">Enlace NOVA · Rust (axum + Tauri) · HTTP :8750 · flujo SSE</text>
+      <g font-size="21" fill="#a5afbd">
+        <g data-caja><rect x="58" y="724" width="190" height="56" rx="10" fill="#151c26"/><text x="78" y="760">Historia 30 d</text></g>
+        <g data-caja><rect x="262" y="724" width="190" height="56" rx="10" fill="#151c26"/><text x="282" y="760">Misión Hohmann</text></g>
+        <g data-caja><rect x="466" y="724" width="190" height="56" rx="10" fill="#151c26"/><text x="486" y="760">Ask NOVA</text></g>
+        <g data-caja><rect x="670" y="724" width="190" height="56" rx="10" fill="#151c26"/><text x="690" y="760">Biblioteca</text></g>
+        <g data-caja><rect x="874" y="724" width="190" height="56" rx="10" fill="#151c26"/><text x="894" y="760">Casa</text></g>
+        <g data-caja><rect x="1078" y="724" width="196" height="56" rx="10" fill="#151c26"/><text x="1098" y="760">Bitácora</text></g>
+        <g data-caja><rect x="58" y="794" width="394" height="56" rx="10" fill="#151c26"/><text x="78" y="830">Puente con el GDS</text></g>
+        <g data-caja><rect x="466" y="794" width="394" height="56" rx="10" fill="#151c26"/><text x="486" y="830">Cola de subida con retraso de luz</text></g>
+        <g data-caja><rect x="874" y="794" width="400" height="56" rx="10" fill="#151c26"/><text x="894" y="830">Informe para la Tierra · privado</text></g>
+      </g>
+
+      <!-- capa 4 · modelos -->
+      <path d="M560,874 L560,950" stroke="#a898ff" stroke-width="2.5" fill="none" marker-end="url(#fl)"/>
+      <text x="34" y="944" fill="#a898ff" font-size="20" letter-spacing="2.5" class="m">4 · MODELOS LOCALES</text>
+      <g data-caja><rect x="34" y="962" width="400" height="118" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="58" y="1006" fill="#f2f5f8" font-size="26" font-weight="600">Qwen3 4B Instruct</text>
+        <text x="58" y="1044" fill="#a5afbd" font-size="21">conversación · llama.cpp :8081</text></g>
+      <g data-caja><rect x="466" y="962" width="400" height="118" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="490" y="1006" fill="#f2f5f8" font-size="26" font-weight="600">nomic-embed v2 MoE</text>
+        <text x="490" y="1044" fill="#a5afbd" font-size="21">búsqueda multilingüe · :8084</text></g>
+      <g data-caja><rect x="898" y="962" width="400" height="118" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="922" y="1006" fill="#f2f5f8" font-size="26" font-weight="600">Kokoro 82M</text>
+        <text x="922" y="1044" fill="#a5afbd" font-size="21">voz af_heart / ef_dora · :8082</text></g>
+
+      <!-- capa 5 · pantallas -->
+      <text x="34" y="1146" fill="#46c8e8" font-size="20" letter-spacing="2.5" class="m">5 · PANTALLAS</text>
+      <g data-caja><rect x="34" y="1164" width="616" height="130" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="58" y="1208" fill="#f2f5f8" font-size="27" font-weight="600">NOVA PC · Tauri 2</text>
+        <text x="58" y="1246" fill="#a5afbd" font-size="21">Crew · Vitals · Systems · Library · Emergency</text></g>
+      <g data-caja><rect x="682" y="1164" width="616" height="130" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="706" y="1208" fill="#f2f5f8" font-size="27" font-weight="600">App NOVA · Expo / React Native</text>
+        <text x="706" y="1246" fill="#a5afbd" font-size="21">Hoy · Crew · Emergencia · Casa · Ciclo</text></g>
+      <path d="M450,874 L450,1160" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <path d="M882,874 L882,1160" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <text x="1298" y="1146" fill="#6d7786" font-size="19" class="m" text-anchor="end">SSE · /v1/estado cada 5 s</text>
+
+      <!-- tierra -->
+      <g data-caja><rect x="1400" y="114" width="352" height="196" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="1422" y="158" fill="#f2f5f8" font-size="27" font-weight="600">Mission Control</text>
+        <text x="1422" y="196" fill="#a5afbd" font-size="21">consola del cirujano</text>
+        <text x="1422" y="228" fill="#a5afbd" font-size="21">informe nocturno</text>
+        <text x="1422" y="260" fill="#a5afbd" font-size="21">cambia umbrales</text></g>
+      <g data-caja><rect x="1400" y="340" width="352" height="150" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="1422" y="384" fill="#f2f5f8" font-size="27" font-weight="600">Relevo Casa</text>
+        <text x="1422" y="420" fill="#a5afbd" font-size="21">mensajes y fotos</text>
+        <text x="1422" y="452" fill="#a5afbd" font-size="21">de la familia</text></g>
+      <g data-caja><rect x="1400" y="962" width="352" height="118" rx="16" fill="#0f151d" stroke="#ec6aa8" stroke-dasharray="8 6"/>
+        <text x="1422" y="1006" fill="#ec6aa8" font-size="26" font-weight="600">Ciclo nocturno</text>
+        <text x="1422" y="1044" fill="#a5afbd" font-size="21">mejoras firmadas · pendiente</text></g>
+      <!-- canal con luz -->
+      <path d="M1400,212 C1350,212 1340,700 1300,740" stroke="#ec6aa8" stroke-width="2.5" fill="none" stroke-dasharray="9 7" marker-start="url(#fm)" marker-end="url(#fm)"/>
+      <path d="M1400,415 C1360,415 1350,780 1300,812" stroke="#ec6aa8" stroke-width="2.5" fill="none" stroke-dasharray="9 7" marker-end="url(#fm)"/>
+      <text x="1400" y="600" fill="#ec6aa8" font-size="21" font-weight="600">retraso de la luz</text>
+      <text x="1400" y="632" fill="#ec6aa8" font-size="21">9,5 min hoy (día 215)</text>
+      <text x="1400" y="664" fill="#6d7786" font-size="19">3 a 22 min según la</text>
+      <text x="1400" y="692" fill="#6d7786" font-size="19">posición de los planetas</text>
+      <path d="M1400,1021 C1350,1021 1340,900 1300,860" stroke="#ec6aa8" stroke-width="2" fill="none" stroke-dasharray="6 7" marker-end="url(#fm)"/>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 1.</b> Arquitectura de NOVA. Verde: funcionando. Ámbar: depende de hardware externo. Magenta discontinuo: canal con la Tierra o pieza pendiente. Las pantallas reciben el estado por el flujo SSE del enlace; los teléfonos leen <code>/v1/estado</code> cada 5 s.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:21%">Capa</th><th style="width:30%">Tecnología</th><th>Responsabilidad</th><th style="width:13%">Estado</th></tr></thead>
+    <tbody>
+      <tr><td>1 · Fuentes</td><td>Estación de Luis (placa por definir), Python, Expo</td><td>Medir y entregar lecturas con el contrato NDJSON v1, sin importar la placa ni el sensor.</td><td><span class="est at">Estación pendiente</span></td></tr>
+      <tr><td>2 · Núcleo de vuelo</td><td>F Prime v4.4.2, C++17, FPP</td><td>Validar rangos, clasificar en 4 niveles con histéresis, emitir eventos y telemetría, aceptar comandos de la Tierra.</td><td><span class="est ok">Funciona</span></td></tr>
+      <tr><td>3 · Enlace</td><td>Rust: axum 0.8, tokio, Tauri 2</td><td>Historia, misión, Ask NOVA, biblioteca, Casa, bitácora, puente con el GDS y cola de subida.</td><td><span class="est ok">Funciona</span></td></tr>
+      <tr><td>4 · Modelos</td><td>llama.cpp, ONNX Runtime</td><td>Conversación con citas, búsqueda semántica y voz, todo en el equipo de la nave.</td><td><span class="est ok">Funciona</span></td></tr>
+      <tr><td>5 · Pantallas</td><td>HTML/JS en Tauri; Expo SDK 57, RN 0.86</td><td>Mostrar el estado, guiar emergencias, recibir ingresos manuales y mensajes de casa.</td><td><span class="est ok">Funciona</span></td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+<!-- ============================================================ 4 · RECORRIDO DE UN DATO -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>02 · Recorrido de un dato</span></div>
+  <div class="secn">02</div>
+  <div class="cabsec">
+    <span class="ojo">02 · El recorrido de un dato</span>
+    <h2>De la estación a la pantalla en menos de un segundo, y a la Tierra en 9,5 minutos</h2>
+  </div>
+  <p class="lead">Ejemplo real de la demo: el simulador aplica el escenario <code>desmayo T3</code> y el pulso de Ingrid cae a 34 lpm. Así pasa ese valor por cada pieza.</p>
+  <div class="diag">
+    <svg viewBox="0 0 1780 1220" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="sa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker>
+      <marker id="sm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ec6aa8"/></marker></defs>
+      <!-- carriles -->
+      <g font-size="22" font-weight="600" fill="#f2f5f8" text-anchor="middle">
+        <g data-caja><rect x="20" y="10" width="200" height="84" rx="14" fill="#0f151d" stroke="#f2b457"/><text x="120" y="48">Simulador</text><text x="120" y="78" font-size="17" font-weight="400" fill="#a5afbd">o estación</text></g>
+        <g data-caja><rect x="270" y="10" width="200" height="84" rx="14" fill="#0f151d" stroke="#6fd6b0"/><text x="370" y="48">Estacion</text><text x="370" y="78" font-size="17" font-weight="400" fill="#a5afbd">F Prime</text></g>
+        <g data-caja><rect x="520" y="10" width="200" height="84" rx="14" fill="#0f151d" stroke="#6fd6b0"/><text x="620" y="48">MonitorSalud</text><text x="620" y="78" font-size="17" font-weight="400" fill="#a5afbd">F Prime</text></g>
+        <g data-caja><rect x="770" y="10" width="200" height="84" rx="14" fill="#0f151d" stroke="#6fd6b0"/><text x="870" y="48">Pantalla</text><text x="870" y="78" font-size="17" font-weight="400" fill="#a5afbd">F Prime</text></g>
+        <g data-caja><rect x="1020" y="10" width="200" height="84" rx="14" fill="#0f151d" stroke="#6fd6b0"/><text x="1120" y="48">Enlace</text><text x="1120" y="78" font-size="17" font-weight="400" fill="#a5afbd">Rust :8750</text></g>
+        <g data-caja><rect x="1270" y="10" width="220" height="84" rx="14" fill="#0f151d" stroke="#6fd6b0"/><text x="1380" y="48">Pantallas</text><text x="1380" y="78" font-size="17" font-weight="400" fill="#a5afbd">PC y teléfonos</text></g>
+        <g data-caja><rect x="1540" y="10" width="220" height="84" rx="14" fill="#0f151d" stroke="#ec6aa8"/><text x="1650" y="48">Tierra</text><text x="1650" y="78" font-size="17" font-weight="400" fill="#a5afbd">cirujano de vuelo</text></g>
+      </g>
+      <g stroke="rgba(255,255,255,.12)" stroke-width="2" stroke-dasharray="4 8">
+        <path d="M120,94 V1210"/><path d="M370,94 V1210"/><path d="M620,94 V1210"/><path d="M870,94 V1210"/><path d="M1120,94 V1210"/><path d="M1380,94 V1210"/><path d="M1650,94 V1210"/>
+      </g>
+      <!-- mensajes -->
+      <g font-size="21" fill="#a5afbd">
+        <text x="20" y="150" fill="#6d7786" class="m" font-size="18">t = 0 s</text>
+        <text x="132" y="160">NDJSON · UDP 50050</text>
+        <path d="M120,176 H366" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#sa)"/>
+
+        <text x="382" y="222">valida · signoOut</text>
+        <path d="M370,238 H616" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#sa)"/>
+
+        <rect x="516" y="266" width="208" height="170" rx="10" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="532" y="298" fill="#f2f5f8" font-weight="600">clasificar()</text>
+        <text x="532" y="328">34 ≤ 35 lpm</text>
+        <text x="532" y="358" fill="#ec6aa8">AVISO_TIERRA</text>
+        <text x="532" y="388">sube al instante</text>
+        <text x="532" y="418">baja tras 10 s</text>
+
+        <text x="634" y="478">alertaOut · estadoOut</text>
+        <path d="M620,494 H866" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#sa)"/>
+        <text x="634" y="524" fill="#6d7786" font-size="18">evento WARNING_HI</text>
+
+        <text x="882" y="570">JSON · UDP 50051</text>
+        <path d="M870,586 H1116" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#sa)"/>
+        <text x="20" y="592" fill="#6d7786" class="m" font-size="18">≤ 1 s</text>
+
+        <rect x="1016" y="614" width="208" height="140" rx="10" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="1032" y="646" fill="#f2f5f8" font-weight="600">guarda</text>
+        <text x="1032" y="676">historia 1 Hz</text>
+        <text x="1032" y="706">alerta en disco</text>
+        <text x="1032" y="736">ve el desmayo</text>
+
+        <text x="1132" y="796">flujo SSE</text>
+        <path d="M1120,812 H1376" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#sa)"/>
+
+        <rect x="1266" y="840" width="230" height="170" rx="10" fill="#151c26" stroke="rgba(236,106,168,.5)"/>
+        <text x="1282" y="872" fill="#f2f5f8" font-weight="600">abre la guía</text>
+        <text x="1282" y="902">desmayo (síncope)</text>
+        <text x="1282" y="932">NOVA lee el paso</text>
+        <text x="1282" y="962">en voz alta</text>
+        <text x="1282" y="992">bitácora con hora</text>
+
+        <text x="1520" y="1064" text-anchor="end" fill="#ec6aa8" font-size="20">informe al cirujano</text>
+        <path d="M1120,1080 H1646" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="10 7" marker-end="url(#sm)"/>
+        <text x="20" y="1086" fill="#6d7786" class="m" font-size="18">+ 9,5 min</text>
+
+        <text x="1530" y="1144" text-anchor="end" fill="#ec6aa8" font-size="20">comando de umbral</text>
+        <path d="M1650,1160 H1124" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="10 7" marker-end="url(#sm)"/>
+        <text x="20" y="1166" fill="#6d7786" class="m" font-size="18">+ 19 min</text>
+        <text x="1132" y="1200" fill="#6d7786" font-size="18">al llegar, el enlace lo entrega al núcleo por el GDS</text>
+      </g>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 2.</b> Diagrama de secuencia del escenario de desmayo. Todo lo que está a la izquierda del canal magenta ocurre en la nave y no espera a la Tierra.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:24%">Paso</th><th style="width:16%">Frecuencia</th><th>Detalle técnico</th></tr></thead>
+    <tbody>
+      <tr><td>Lectura del sensor</td><td>1 Hz (simulador)</td><td>Mensaje <code>medicion</code> con <code>trip</code>, <code>sensor</code>, <code>valor</code>, <code>unidad</code> y <code>calidad</code> 0–1. Máximo 1 KB por datagrama.</td></tr>
+      <tr><td>Estacion → MonitorSalud</td><td>rate group 1 Hz</td><td>Lee el socket sin bloquear en cada ciclo, descarta JSON inválido con el evento <code>MENSAJE_INVALIDO</code> y emite por el puerto tipado <code>Nova.Signo</code>.</td></tr>
+      <tr><td>Clasificación</td><td>por lectura</td><td>Rango plausible por sensor, <code>calidad &lt; 0,5</code> no alerta, dos umbrales por lado. Subir es inmediato; bajar exige 10 s seguidos en el nivel menor.</td></tr>
+      <tr><td>Sin datos</td><td>cada ciclo</td><td>Si un sensor que ya reportó calla más de <code>SEGUNDOS_SIN_DATOS</code> (120 s), evento <code>SIN_DATOS</code>.</td></tr>
+      <tr><td>Pantalla → enlace</td><td>1 Hz + alertas</td><td>Estado completo de 4 tripulantes × 18 sensores (valor, nivel, edad) y cada alerta al instante.</td></tr>
+      <tr><td>Enlace → pantallas</td><td>flujo continuo</td><td>Server-Sent Events para NOVA PC y la consola; los teléfonos consultan <code>/v1/estado</code> cada 5 s.</td></tr>
+      <tr><td>Nave → Tierra</td><td>con retraso de luz</td><td>El informe y los resúmenes privados se leen desde <code>/v1/tierra/informe</code>; los comandos suben por la cola con la hora de llegada calculada.</td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 5 · NÚCLEO F PRIME -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>03 · Núcleo de vuelo</span></div>
+  <div class="secn">03</div>
+  <div class="cabsec">
+    <span class="ojo">03 · Núcleo de vuelo F Prime</span>
+    <h2>El mismo marco de software que voló el helicóptero Ingenuity en Marte</h2>
+  </div>
+  <div class="fila">
+    <div class="crece" style="display:flex;flex-direction:column;gap:2.4mm">
+      <p><b>F Prime</b> es el marco de software de vuelo del Jet Propulsion Laboratory de la NASA, publicado como código abierto con licencia Apache 2.0. Lo usaron Ingenuity, los CubeSats ASTERIA y Lunar Flashlight, y varios instrumentos. Organiza el software en <b>componentes</b> con <b>puertos tipados</b>, y da de serie comandos, eventos, telemetría, parámetros persistentes y comunicación CCSDS con la Tierra.</p>
+      <p>NOVA lo trae como submódulo de git en <code>vuelo/lib/fprime</code> (v4.4.2) y agrega un despliegue propio, <code>Nova/Nave</code>, que reúne los subsistemas estándar (<code>CdhCore</code>, <code>ComCcsds</code>, <code>FileHandling</code>, <code>DataProducts</code>) con los cuatro componentes de salud. Todo se modela en FPP y se compila con <code>fprime-util build</code>.</p>
+    </div>
+    <img src="img/logos/fprime-logo.svg" alt="F Prime" style="width:20mm;flex:none;margin-top:2mm;opacity:.95">
+  </div>
+  <div class="diag">
+    <svg viewBox="0 0 1780 830" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker>
+      <marker id="tg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d7786"/></marker></defs>
+      <text x="20" y="34" fill="#6d7786" font-size="18" letter-spacing="2.5" class="m">TOPOLOGÍA Nova/Nave · CONEXIONES PROPIAS</text>
+      <!-- reloj -->
+      <g data-caja><rect x="20" y="64" width="300" height="112" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="40" y="104" fill="#f2f5f8" font-size="23" font-weight="600">rateGroupDriver</text>
+        <text x="40" y="138" fill="#a5afbd" font-size="18">divide el reloj del sistema</text></g>
+      <g data-caja><rect x="20" y="226" width="300" height="214" rx="14" fill="#0f151d" stroke="#46c8e8"/>
+        <text x="40" y="266" fill="#8fe6f5" font-size="23" font-weight="600">rateGroup_1Hz</text>
+        <text x="40" y="300" fill="#a5afbd" font-size="17">tlmSend · fileDownlink</text>
+        <text x="40" y="326" fill="#a5afbd" font-size="17">systemResources · comQueue</text>
+        <text x="40" y="352" fill="#a5afbd" font-size="17">cmdDisp · aggregator</text>
+        <text x="40" y="384" fill="#f2f5f8" font-size="17">estacion · monitorSalud</text>
+        <text x="40" y="410" fill="#f2f5f8" font-size="17">pantalla</text></g>
+      <g data-caja><rect x="20" y="488" width="300" height="84" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="40" y="524" fill="#f2f5f8" font-size="20" font-weight="600">rateGroup_0_5Hz</text>
+        <text x="40" y="554" fill="#a5afbd" font-size="17">cmdSeq (secuencias)</text></g>
+      <g data-caja><rect x="20" y="620" width="300" height="110" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="40" y="656" fill="#f2f5f8" font-size="20" font-weight="600">rateGroup_0_25Hz</text>
+        <text x="40" y="686" fill="#a5afbd" font-size="17">health · buffer managers</text>
+        <text x="40" y="712" fill="#a5afbd" font-size="17">dpWriter · dpMgr</text></g>
+      <path d="M170,176 V222" stroke="#6d7786" stroke-width="2.5" marker-end="url(#tg)"/>
+      <path d="M170,440 V484" stroke="#6d7786" stroke-width="2.5" marker-end="url(#tg)"/>
+      <path d="M170,572 V616" stroke="#6d7786" stroke-width="2.5" marker-end="url(#tg)"/>
+
+      <!-- componentes -->
+      <g data-caja><rect x="470" y="64" width="330" height="190" rx="16" fill="#0f151d" stroke="#6fd6b0" stroke-width="2"/>
+        <text x="492" y="104" fill="#f2f5f8" font-size="25" font-weight="600">estacion</text>
+        <text x="492" y="138" fill="#a5afbd" font-size="17">schedIn ← 1 Hz</text>
+        <text x="492" y="164" fill="#a5afbd" font-size="17">socket UDP 50050</text>
+        <text x="492" y="190" fill="#a5afbd" font-size="17">tlm: Recibidos, Invalidos</text>
+        <text x="492" y="216" fill="#a5afbd" font-size="17">Conectada (latido 15 s)</text></g>
+      <g data-caja><rect x="470" y="330" width="330" height="270" rx="16" fill="#0f151d" stroke="#6fd6b0" stroke-width="2"/>
+        <text x="492" y="370" fill="#f2f5f8" font-size="25" font-weight="600">monitorSalud</text>
+        <text x="492" y="404" fill="#a5afbd" font-size="17">signoIn (async, cola)</text>
+        <text x="492" y="430" fill="#a5afbd" font-size="17">31 parámetros</text>
+        <text x="492" y="456" fill="#a5afbd" font-size="17">5 eventos · 14 canales</text>
+        <text x="492" y="482" fill="#a5afbd" font-size="17">cmd INGRESAR_SIGNO</text>
+        <text x="492" y="508" fill="#a5afbd" font-size="17">histéresis 10 s</text>
+        <text x="492" y="534" fill="#a5afbd" font-size="17">matriz 4 × 18 niveles</text>
+        <text x="492" y="560" fill="#a5afbd" font-size="17">prmGet / prmSet → prmDb</text></g>
+      <g data-caja><rect x="960" y="330" width="330" height="270" rx="16" fill="#0f151d" stroke="#6fd6b0" stroke-width="2"/>
+        <text x="982" y="370" fill="#f2f5f8" font-size="25" font-weight="600">pantalla</text>
+        <text x="982" y="404" fill="#a5afbd" font-size="17">estadoIn · alertaIn</text>
+        <text x="982" y="430" fill="#a5afbd" font-size="17">(guarded)</text>
+        <text x="982" y="456" fill="#a5afbd" font-size="17">UDP 50051 → enlace</text>
+        <text x="982" y="482" fill="#a5afbd" font-size="17">UDP 50052 ← ingresos</text>
+        <text x="982" y="508" fill="#a5afbd" font-size="17">tlm: Enviados,</text>
+        <text x="982" y="534" fill="#a5afbd" font-size="17">IngresosTripulacion</text></g>
+      <path d="M635,254 V326" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ta)"/>
+      <text x="650" y="296" fill="#8fe6f5" font-size="17" class="m">signoOut → signoIn</text>
+      <path d="M800,430 H956" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ta)"/>
+      <text x="812" y="420" fill="#8fe6f5" font-size="16" class="m">estadoOut</text>
+      <path d="M800,500 H956" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ta)"/>
+      <text x="812" y="490" fill="#8fe6f5" font-size="16" class="m">alertaOut</text>
+      <path d="M1125,600 V660 H635 V604" stroke="#8fe6f5" stroke-width="2.5" fill="none" marker-end="url(#ta)"/>
+      <text x="660" y="690" fill="#8fe6f5" font-size="16" class="m">signoOut (ingreso manual) → signoIn</text>
+      <path d="M320,380 H466" stroke="#6d7786" stroke-width="2" marker-end="url(#tg)"/>
+
+      <!-- servicios estándar -->
+      <g data-caja><rect x="1400" y="64" width="360" height="150" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="1420" y="102" fill="#f2f5f8" font-size="21" font-weight="600">CdhCore</text>
+        <text x="1420" y="134" fill="#a5afbd" font-size="17">cmdDisp · events · tlmSend</text>
+        <text x="1420" y="160" fill="#a5afbd" font-size="17">health · version</text>
+        <text x="1420" y="186" fill="#a5afbd" font-size="17">prmDb (parámetros)</text></g>
+      <g data-caja><rect x="1400" y="262" width="360" height="124" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="1420" y="300" fill="#f2f5f8" font-size="21" font-weight="600">ComCcsds</text>
+        <text x="1420" y="332" fill="#a5afbd" font-size="17">tramas y paquetes CCSDS</text>
+        <text x="1420" y="358" fill="#a5afbd" font-size="17">TCP 50000 ↔ GDS</text></g>
+      <g data-caja><rect x="1400" y="434" width="360" height="124" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="1420" y="472" fill="#f2f5f8" font-size="21" font-weight="600">FileHandling</text>
+        <text x="1420" y="504" fill="#a5afbd" font-size="17">uplink y downlink</text>
+        <text x="1420" y="530" fill="#a5afbd" font-size="17">de archivos</text></g>
+      <g data-caja><rect x="1400" y="606" width="360" height="124" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.16)"/>
+        <text x="1420" y="644" fill="#f2f5f8" font-size="21" font-weight="600">DataProducts</text>
+        <text x="1420" y="676" fill="#a5afbd" font-size="17">productos de datos</text>
+        <text x="1420" y="702" fill="#a5afbd" font-size="17">priorizados</text></g>
+      <path d="M1290,400 H1340 V139 H1396" stroke="#6d7786" stroke-width="2" stroke-dasharray="6 6" fill="none" marker-end="url(#tg)"/>
+      <text x="1125" y="312" text-anchor="middle" fill="#6d7786" font-size="16" class="m">eventos · tlm · prm → CdhCore</text>
+      <text x="20" y="790" fill="#6d7786" font-size="17">Flechas turquesa: puertos propios de NOVA. Gris: conexiones del marco. Las tres instancias propias corren en el grupo de 1 Hz.</text>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 3.</b> Topología del despliegue <code>Nova/Nave</code> según <code>Top/topology.fpp</code>. El monitor recibe por un puerto asíncrono con cola propia; la pantalla usa puertos protegidos por mutex.</p>
+  <div class="g2">
+    <div class="caja"><h4>Por qué F Prime y no un servicio común</h4>
+      <ul class="l"><li>Los umbrales son <b>parámetros de vuelo</b>: se cambian por comando desde la Tierra, se guardan en <code>prmDb</code> y sobreviven al reinicio.</li><li>Cada alerta es un <b>evento con severidad</b> (<code>WARNING_HI</code>, <code>WARNING_LO</code>) que el sistema de tierra ya sabe mostrar y archivar.</li><li>La comunicación con la Tierra usa <b>CCSDS</b>, el estándar de las agencias espaciales.</li></ul></div>
+    <div class="caja"><h4>Decisiones de implementación</h4>
+      <ul class="l"><li>Sin memoria dinámica en el camino de los datos: <code>JsonPlano.hpp</code> lee JSON plano sobre un búfer fijo.</li><li>Tamaños fijos: <code>TRIPULANTES = 4</code>, matrices 4 × 18 de valores, niveles y edades.</li><li>Valores imposibles se descartan con <code>SIGNO_DESCARTADO</code>: un sensor suelto no dispara una emergencia.</li></ul></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 6 · MONITOR: NIVELES Y UMBRALES -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>03 · Núcleo de vuelo</span></div>
+  <div class="cabsec">
+    <span class="ojo">03 · MonitorSalud</span>
+    <h2>Cuatro niveles, dos umbrales por lado y una regla para no alarmar de más</h2>
+  </div>
+  <div class="diag">
+    <svg viewBox="0 0 1780 520" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="na" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a5afbd"/></marker></defs>
+      <g data-caja><rect x="20" y="170" width="250" height="130" rx="65" fill="#0f151d" stroke="rgba(255,255,255,.2)"/>
+        <text x="145" y="230" text-anchor="middle" fill="#a5afbd" font-size="25" font-weight="600">SIN_DATO</text>
+        <text x="145" y="264" text-anchor="middle" fill="#6d7786" font-size="17">al arrancar</text></g>
+      <g data-caja><rect x="420" y="170" width="270" height="130" rx="65" fill="#0f151d" stroke="#6fd6b0" stroke-width="2.5"/>
+        <text x="555" y="230" text-anchor="middle" fill="#6fd6b0" font-size="25" font-weight="600">NORMAL</text>
+        <text x="555" y="264" text-anchor="middle" fill="#a5afbd" font-size="17">dentro de rango</text></g>
+      <g data-caja><rect x="900" y="170" width="300" height="130" rx="65" fill="#0f151d" stroke="#f2b457" stroke-width="2.5"/>
+        <text x="1050" y="230" text-anchor="middle" fill="#f2b457" font-size="25" font-weight="600">ATENCION</text>
+        <text x="1050" y="264" text-anchor="middle" fill="#a5afbd" font-size="17">lo resuelve la tripulación</text></g>
+      <g data-caja><rect x="1420" y="170" width="340" height="130" rx="65" fill="#0f151d" stroke="#ec6aa8" stroke-width="2.5"/>
+        <text x="1590" y="230" text-anchor="middle" fill="#ec6aa8" font-size="25" font-weight="600">AVISO_TIERRA</text>
+        <text x="1590" y="264" text-anchor="middle" fill="#a5afbd" font-size="17">avisar al cirujano</text></g>
+      <g data-caja><rect x="420" y="400" width="270" height="100" rx="50" fill="#0f151d" stroke="#a898ff" stroke-dasharray="7 6"/>
+        <text x="555" y="444" text-anchor="middle" fill="#a898ff" font-size="21" font-weight="600">ESPERADO_VUELO</text>
+        <text x="555" y="474" text-anchor="middle" fill="#6d7786" font-size="16">pendiente · OSDR</text></g>
+      <path d="M270,235 H416" stroke="#a5afbd" stroke-width="2.5" marker-end="url(#na)"/>
+      <text x="282" y="222" fill="#a5afbd" font-size="17">1.ª lectura</text>
+      <path d="M690,210 H896" stroke="#a5afbd" stroke-width="2.5" marker-end="url(#na)"/>
+      <text x="704" y="196" fill="#f2f5f8" font-size="17">cruza umbral 1</text>
+      <path d="M896,262 H694" stroke="#a5afbd" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#na)"/>
+      <text x="704" y="292" fill="#a5afbd" font-size="17">10 s en normal</text>
+      <path d="M1200,210 H1416" stroke="#a5afbd" stroke-width="2.5" marker-end="url(#na)"/>
+      <text x="1214" y="196" fill="#f2f5f8" font-size="17">cruza umbral 2</text>
+      <path d="M1416,262 H1204" stroke="#a5afbd" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#na)"/>
+      <text x="1214" y="292" fill="#a5afbd" font-size="17">10 s abajo</text>
+      <path d="M1590,170 C1590,60 555,60 555,166" stroke="#a5afbd" stroke-width="2" fill="none" marker-end="url(#na)"/>
+      <text x="1072" y="84" text-anchor="middle" fill="#ec6aa8" font-size="17">salto directo si el valor cruza el umbral 2 de una vez · evento WARNING_HI</text>
+      <text x="1072" y="124" text-anchor="middle" fill="#6d7786" font-size="16">(cada cambio relevante sale por alertaOut y queda como evento F Prime)</text>
+      <text x="780" y="400" fill="#6d7786" font-size="17">Fuera de rango plausible → SIGNO_DESCARTADO (no cambia el nivel)</text>
+      <text x="780" y="430" fill="#6d7786" font-size="17">calidad &lt; 0,5 → se guarda la lectura pero no alerta</text>
+      <text x="780" y="460" fill="#6d7786" font-size="17">sin lecturas 120 s → SIN_DATOS</text>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 4.</b> Máquina de estados por tripulante y sensor. Las flechas sólidas suben de inmediato; las discontinuas requieren 10 s seguidos en el nivel menor (<code>SEGUNDOS_PARA_BAJAR</code>).</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:21%">Indicador</th><th class="num">Atención alto</th><th class="num">Atención bajo</th><th class="num">Tierra alto</th><th class="num">Tierra bajo</th><th style="width:34%">Base del valor de partida</th></tr></thead>
+    <tbody>
+      <tr><td>Pulso (lpm)</td><td class="num at">≥ 110</td><td class="num at">≤ 45</td><td class="num al">≥ 140</td><td class="num al">≤ 35</td><td>Taquicardia &gt;100 y bradicardia &lt;50 con margen para tripulación entrenada</td></tr>
+      <tr><td>SpO₂ (%)</td><td class="num">—</td><td class="num at">≤ 94</td><td class="num">—</td><td class="num al">≤ 90</td><td>Hipoxemia bajo 90 %</td></tr>
+      <tr><td>Presión sistólica (mmHg)</td><td class="num at">≥ 140</td><td class="num at">≤ 90</td><td class="num al">≥ 180</td><td class="num al">≤ 80</td><td>ACC/AHA 2017, crisis ≥ 180, hipotensión &lt; 90</td></tr>
+      <tr><td>Presión diastólica (mmHg)</td><td class="num at">≥ 90</td><td class="num">—</td><td class="num al">≥ 120</td><td class="num">—</td><td>ACC/AHA 2017</td></tr>
+      <tr><td>Temperatura (°C)</td><td class="num at">≥ 38,0</td><td class="num at">≤ 35,5</td><td class="num al">≥ 39,5</td><td class="num al">≤ 35,0</td><td>Fiebre ≥ 38, hipotermia &lt; 35</td></tr>
+      <tr><td>Frecuencia respiratoria (rpm)</td><td class="num at">≥ 24</td><td class="num at">≤ 10</td><td class="num al">≥ 30</td><td class="num al">≤ 8</td><td>Rangos de alerta temprana clínica</td></tr>
+      <tr><td>Glucosa (mg/dL)</td><td class="num at">≥ 180</td><td class="num at">≤ 70</td><td class="num al">≥ 250</td><td class="num al">≤ 54</td><td>Hipoglucemia nivel 1 y 2 de la ADA</td></tr>
+      <tr><td>CO₂ de cabina (ppm)</td><td class="num at">≥ 2600</td><td class="num">—</td><td class="num al">≥ 5000</td><td class="num">—</td><td>NASA-STD-3001 vol. 2, límites de CO₂</td></tr>
+      <tr><td>Sueño (h)</td><td class="num">—</td><td class="num at">≤ 5,9</td><td class="num">—</td><td class="num al">≤ 3,5</td><td>Informe de evidencia de sueño del HRP</td></tr>
+      <tr><td>Ánimo y energía (1–5)</td><td class="num">—</td><td class="num at">≤ 2</td><td class="num">—</td><td class="num">—</td><td>Check-in de la app, solo si se comparte</td></tr>
+    </tbody></table></div>
+  <div class="g2">
+    <div class="caja ok"><div class="cajacab"><h4>Probado con comandos reales</h4><span class="est ok">Verificado</span></div><p>Desde la consola de Tierra se cambió <code>PULSO_ALTO_ATENCION</code> a 115 y <code>SPO2_ATENCION</code> a 93 con <code>MonitorSalud.*_PRM_SET</code>. El núcleo aplicó cada valor al llegar el comando, 9,5 minutos después, y la pantalla Systems muestra el nuevo límite.</p></div>
+    <div class="caja at"><div class="cajacab"><h4>Valores de partida</h4><span class="est at">Revisión médica</span></div><p>Son valores para el prototipo con su base anotada en <code>docs/umbrales.md</code>. Antes de una versión real los tiene que validar un médico. La variabilidad cardíaca se comparará contra la línea base de cada persona, sin umbral fijo.</p></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 7 · ESTACIÓN Y SIMULADOR -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>04 · Estación médica</span></div>
+  <div class="secn">04</div>
+  <div class="cabsec">
+    <span class="ojo">04 · Estación médica y simulador</span>
+    <h2>Un contrato de datos para conectar cualquier hardware sin tocar el núcleo</h2>
+  </div>
+  <p class="lead">La estación física la arma Luis. Para no depender de qué placa o sensor elija, NOVA fija un contrato (<code>estacion/CONTRATO.md</code>, versión 1): si un equipo manda mensajes que lo cumplen, el núcleo los entiende. El simulador habla exactamente el mismo contrato.</p>
+  <div class="g2">
+    <div class="caja"><h4>Transporte</h4><ul class="l"><li>JSON de una línea terminado en <code>\n</code> (NDJSON), UTF-8, máximo 1 KB.</li><li>Preferido: USB serie a 115.200 baudios, que no depende de red.</li><li>Alternativa: un datagrama UDP por mensaje al puerto <code>50050</code>.</li><li>Teléfonos: HTTP <code>POST /v1/lote</code> al enlace, que lo traduce al mismo contrato.</li></ul></div>
+    <div class="caja"><h4>Cuatro tipos de mensaje</h4><ul class="l"><li><b>medicion</b>: un valor con unidad y calidad 0–1.</li><li><b>onda</b>: trozo de ECG o PPG con <code>fs</code> y <code>seq</code> para detectar pérdidas.</li><li><b>latido</b>: cada 5 s; sin latido por 15 s el núcleo emite <code>PERDIDA</code>.</li><li><b>evento</b>: sin contacto, movimiento, error de sensor, tripulante identificado.</li></ul></div>
+  </div>
+  <div class="codigo" style="white-space:pre"><span class="c">// medición de SpO₂ de T2 con calidad 0,92</span>
+{<span class="k">"v"</span>:1, <span class="k">"tipo"</span>:<span class="s">"medicion"</span>, <span class="k">"est"</span>:<span class="s">"estacion-1"</span>, <span class="k">"t"</span>:1763164800123, <span class="k">"trip"</span>:<span class="s">"T2"</span>,
+ <span class="k">"sensor"</span>:<span class="s">"spo2"</span>, <span class="k">"valor"</span>:97, <span class="k">"unidad"</span>:<span class="s">"%"</span>, <span class="k">"calidad"</span>:0.92}
+<span class="c">// latido de la estación con sus sensores y batería, cada 5 s</span>
+{<span class="k">"v"</span>:1, <span class="k">"tipo"</span>:<span class="s">"latido"</span>, <span class="k">"est"</span>:<span class="s">"estacion-1"</span>, <span class="k">"t"</span>:0, <span class="k">"sensores"</span>:[<span class="s">"spo2"</span>,<span class="s">"pulso"</span>,<span class="s">"temp"</span>,<span class="s">"pa"</span>], <span class="k">"bateria"</span>:0.81}</div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:17%">Sensor</th><th style="width:10%">Unidad</th><th style="width:19%">Rango aceptado</th><th style="width:17%">Origen</th><th>Notas</th></tr></thead>
+    <tbody>
+      <tr><td>pulso · fc_reposo</td><td>lpm</td><td>20–250 · 25–130</td><td>estación · reloj</td><td>Pulso en reposo desde Health Connect o el reloj</td></tr>
+      <tr><td>spo2</td><td>%</td><td>50–100</td><td>estación</td><td>Saturación de oxígeno</td></tr>
+      <tr><td>pa (sis / dia)</td><td>mmHg</td><td>50–250 / 30–150</td><td>estación</td><td>En <code>extra</code> o como <code>pa_sis</code> y <code>pa_dia</code> separados</td></tr>
+      <tr><td>temp · fr</td><td>°C · rpm</td><td>30–43 · 4–60</td><td>estación</td><td>Temperatura corporal y respiración</td></tr>
+      <tr><td>glucosa · vfc</td><td>mg/dL · ms</td><td>20–600 · 5–250</td><td>estación</td><td>VFC como RMSSD</td></tr>
+      <tr><td>ecg · ppg</td><td>onda</td><td>—</td><td>estación</td><td>Para pulso y VFC calculados en el núcleo</td></tr>
+      <tr><td>co2 · o2 · temp cabina</td><td>ppm · % · °C</td><td>0–10.000 · 0–30 · 0–50</td><td>ambiente</td><td><code>trip</code> = <code>"CABINA"</code></td></tr>
+      <tr><td>sueno_h · pasos</td><td>h · pasos</td><td>0–16 · 0–100.000</td><td>teléfono</td><td>Sueño de la última noche y pasos del día</td></tr>
+      <tr><td>animo · energia</td><td>1–5</td><td>1–5</td><td>teléfono</td><td>Solo si la persona activa «Compartir mi día»</td></tr>
+      <tr><td>luz · ruido</td><td>lux · dB</td><td>0–150.000 · 0–140</td><td>teléfono</td><td>Ambiente para sueño y descanso</td></tr>
+    </tbody></table></div>
+  <div class="g2">
+    <div class="caja"><h4>Simulador con datos reales</h4><p>Pulso, SpO₂ y respiración usan la variabilidad de cuatro registros del <b>BIDMC PPG and Respiration Dataset</b> de PhysioNet (ODC-By 1.0) sobre la línea base de cada tripulante. El resto está modelado. Se controla por terminal o por UDP <code>50053</code> desde el enlace.</p></div>
+    <div class="caja"><h4>Escenarios clínicos de la demo</h4>
+      <table class="t" style="font-size:6.8pt"><tbody>
+        <tr><td>desmayo</td><td>pulso −26, sistólica −48 en 20 s; vuelve en 2 min</td></tr>
+        <tr><td>hipoglucemia</td><td>glucosa −46, pulso +38 en 2 min</td></tr>
+        <tr><td>fiebre</td><td>temperatura +2,0 °C, pulso +22 en 2,5 min</td></tr>
+        <tr><td>hipoxia</td><td>SpO₂ −11, respiración +10 en 1 min</td></tr>
+        <tr><td>co2</td><td>CO₂ de cabina +1500 ppm</td></tr>
+      </tbody></table></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+<!-- ============================================================ 8 · NOVA PC · CREW -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>05 · NOVA PC</span></div>
+  <div class="secn">05</div>
+  <div class="cabsec">
+    <span class="ojo">05 · NOVA PC: la pantalla de la nave</span>
+    <h2>Una pantalla que llena cualquier ventana y se lee a dos metros</h2>
+  </div>
+  <p class="lead">Aplicación de escritorio con <b>Tauri 2</b>: el proceso en Rust levanta el enlace y la ventana muestra la interfaz web. La escena llena la ventana a cualquier proporción, sin franjas negras: se diseña sobre una referencia de 1800 × 1000 y la letra crece o se achica con la ventana, mientras la grilla reparte el espacio que sobra. En inglés para el jurado, con NOVA como el único elemento con luz. Todas las capturas de este informe son de la aplicación real corriendo en el Mac de desarrollo.</p>
+  <div class="equipo">
+    <div class="monitor"><img src="img/m/pc-crew.jpg" alt="NOVA PC, vista Crew"></div>
+    <div class="cuello"></div><div class="base"></div>
+  </div>
+  <p class="pieimg" style="text-align:center"><b>Vista Crew</b> en vivo con el simulador. David tiene fiebre (38,7 °C) y su tarjeta pasa a ámbar; NOVA lo resume a la derecha con los pasos del protocolo.</p>
+  <div class="g2">
+    <div class="caja"><h4>Qué muestra cada tarjeta de tripulante</h4>
+      <ul class="l"><li>Anillo de pulso con cuántos signos están en rango (<i>6 of 7 in range</i>) y el color del peor nivel.</li><li>Trazo de ritmo cardíaco en vivo y siete signos con su antigüedad (<i>10 s ago</i>).</li><li>Gráfico de los últimos 2 minutos y lo que llega del teléfono: sueño, ánimo, energía y pasos.</li></ul></div>
+    <div class="caja"><h4>Barra superior y columna de NOVA</h4>
+      <ul class="l"><li>Día de misión y fase calculados (<i>Day 215 · cruise to Mars · Mars in 44 d</i>).</li><li>Estado de la estación, CO₂ de cabina y distancia a la Tierra en minutos-luz y kilómetros.</li><li>NOVA con su resumen, la tarjeta de lo que necesita atención, lo que cambió y la caja para preguntarle.</li></ul></div>
+  </div>
+  <div class="g4">
+    <div class="caja"><span class="est ok">Crew</span><p>Toda la tripulación de un vistazo.</p></div>
+    <div class="caja"><span class="est ok">Vitals</span><p>Series de 10 min a 7 días por persona.</p></div>
+    <div class="caja"><span class="est ok">Systems</span><p>El núcleo F Prime en lenguaje claro.</p></div>
+    <div class="caja"><span class="est ok">Library</span><p>Búsqueda en las 32 fuentes médicas.</p></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 9 · VITALS Y ALERTA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>05 · NOVA PC</span></div>
+  <div class="cabsec">
+    <span class="ojo">05 · Vitals y emergencias automáticas</span>
+    <h2>La historia de cada signo y una guía que se abre sola</h2>
+  </div>
+  <div class="fila">
+    <div style="width:118mm;flex:none"><div class="equipo"><div class="monitor"><img src="img/m/pc-vitals.jpg" alt="Vista Vitals"></div><div class="cuello"></div><div class="base"></div></div></div>
+    <div class="crece" style="display:flex;flex-direction:column;gap:2mm">
+      <h3>Vitals</h3>
+      <p>Ocho gráficos por persona con promedio y rango de la ventana, y las líneas de los umbrales vigentes dibujadas encima: ámbar para atención, magenta para avisar a la Tierra. Ventanas de 10 min, 1 h, 6 h, 24 h y 7 días.</p>
+      <p>Los datos salen de <code>historia.rs</code>: segundo a segundo por 6 horas y resumen por minuto por 30 días, en archivos NDJSON por día que se recargan al reiniciar.</p>
+    </div>
+  </div>
+  <div class="fila">
+    <div class="crece" style="display:flex;flex-direction:column;gap:2mm">
+      <h3>Guía automática</h3>
+      <p>Cuando el enlace reconoce un patrón grave en una persona (aquí, pulso de 34 y presión de 72/45 en Ingrid), abre la guía del protocolo que corresponde sin esperar a que alguien la busque.</p>
+      <p>Cada paso es una pregunta de sí o no. NOVA lo lee en voz alta con la voz local y cada respuesta queda con su hora en la bitácora para el cirujano de vuelo. Los signos de la persona siguen en vivo a la izquierda.</p>
+    </div>
+    <div style="width:118mm;flex:none"><div class="equipo"><div class="monitor"><img src="img/m/pc-alerta.jpg" alt="Guía de desmayo abierta automáticamente"></div><div class="cuello"></div><div class="base"></div></div></div>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:26%">Pieza</th><th style="width:22%">Archivo</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td>Vista general y estado</td><td><code>ui/app.js</code></td><td>Recibe el flujo SSE, pinta Crew, cambia de vista y abre el registro manual de mediciones.</td></tr>
+      <tr><td>Gráficos</td><td><code>ui/vitals.js</code>, <code>graficos.js</code></td><td>Series con <code>/v1/historia</code>, umbrales del estado y escalas automáticas.</td></tr>
+      <tr><td>Guía de emergencia</td><td><code>ui/guia.js</code></td><td>Árbol de pasos con condiciones sobre signos medidos, metrónomo y bitácora (<code>POST /v1/bitacora</code>).</td></tr>
+      <tr><td>Historia</td><td><code>src/historia.rs</code></td><td>Anillos en memoria por serie, minutos y alertas en disco, resúmenes de 24 h para el informe.</td></tr>
+      <tr><td>Ingreso manual</td><td><code>POST /v1/ingreso</code></td><td>Pasa por el núcleo (UDP 50052) con las mismas reglas que un sensor.</td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 10 · ASK NOVA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>06 · Ask NOVA</span></div>
+  <div class="secn">06</div>
+  <div class="cabsec">
+    <span class="ojo">06 · Ask NOVA</span>
+    <h2>Un asistente que responde con los datos de la nave y cita sus fuentes</h2>
+  </div>
+  <p class="lead">Cada pregunta pasa primero por un detector de emergencias con reglas fijas en inglés y español. Si es una emergencia, la respuesta es el protocolo tal cual, sin modelo de lenguaje. Si no, se arma un contexto con los datos reales y los fragmentos de la biblioteca, y responde <b>Qwen3 4B</b> en el mismo equipo.</p>
+  <div class="diag">
+    <svg viewBox="0 0 1780 600" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="qa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker>
+      <marker id="qm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ec6aa8"/></marker>
+      <marker id="ql" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a898ff"/></marker></defs>
+      <g data-caja><rect x="20" y="230" width="230" height="130" rx="16" fill="#0f151d" stroke="rgba(255,255,255,.2)"/>
+        <text x="40" y="276" fill="#f2f5f8" font-size="24" font-weight="600">Pregunta</text>
+        <text x="40" y="310" fill="#a5afbd" font-size="19">voz o texto</text>
+        <text x="40" y="338" fill="#a5afbd" font-size="19">inglés o español</text></g>
+      <path d="M250,295 H316" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#qa)"/>
+      <g data-caja><rect x="320" y="200" width="300" height="190" rx="16" fill="#0f151d" stroke="#ec6aa8"/>
+        <text x="342" y="244" fill="#f2f5f8" font-size="24" font-weight="600">¿Emergencia?</text>
+        <text x="342" y="280" fill="#a5afbd" font-size="19">10 grupos de claves</text>
+        <text x="342" y="308" fill="#a5afbd" font-size="19">sin tildes, 2 idiomas</text>
+        <text x="342" y="336" fill="#a5afbd" font-size="19">«por qué», «qué es»</text>
+        <text x="342" y="364" fill="#a5afbd" font-size="19">no cuentan</text></g>
+      <!-- rama emergencia -->
+      <path d="M470,200 V110 H716" stroke="#ec6aa8" stroke-width="2.5" fill="none" marker-end="url(#qm)"/>
+      <text x="486" y="94" fill="#ec6aa8" font-size="19">sí</text>
+      <g data-caja><rect x="720" y="40" width="520" height="140" rx="16" fill="#0f151d" stroke="#ec6aa8"/>
+        <text x="742" y="84" fill="#f2f5f8" font-size="24" font-weight="600">Respuesta fija del protocolo</text>
+        <text x="742" y="120" fill="#a5afbd" font-size="19">pasos exactos de protocolos.json, en el idioma</text>
+        <text x="742" y="148" fill="#a5afbd" font-size="19">de la pregunta, y «pulse Emergency»</text></g>
+      <!-- rama normal -->
+      <path d="M620,295 H716" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#qa)"/>
+      <text x="636" y="282" fill="#8fe6f5" font-size="19">no</text>
+      <g data-caja><rect x="720" y="230" width="250" height="130" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="740" y="274" fill="#f2f5f8" font-size="22" font-weight="600">Vector</text>
+        <text x="740" y="306" fill="#a5afbd" font-size="18">nomic v2 · 768 d</text>
+        <text x="740" y="334" fill="#a5afbd" font-size="18">:8084</text></g>
+      <path d="M970,295 H1016" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#qa)"/>
+      <g data-caja><rect x="1020" y="230" width="250" height="130" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="1040" y="274" fill="#f2f5f8" font-size="22" font-weight="600">Biblioteca</text>
+        <text x="1040" y="306" fill="#a5afbd" font-size="18">coseno + palabras</text>
+        <text x="1040" y="334" fill="#a5afbd" font-size="18">top 5 · 2 por página</text></g>
+      <path d="M1270,295 H1316" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#qa)"/>
+      <g data-caja><rect x="1320" y="200" width="440" height="370" rx="16" fill="#0f151d" stroke="#a898ff" stroke-width="2"/>
+        <text x="1342" y="244" fill="#a898ff" font-size="24" font-weight="600">Qwen3 4B · :8081</text>
+        <text x="1342" y="282" fill="#a5afbd" font-size="18">temperatura 0,2 · 400 tokens</text>
+        <text x="1342" y="310" fill="#a5afbd" font-size="18">respuesta en streaming</text>
+        <text x="1342" y="352" fill="#f2f5f8" font-size="18" font-weight="600">Contexto que recibe</text>
+        <text x="1342" y="384" fill="#a5afbd" font-size="18">7 reglas del sistema</text>
+        <text x="1342" y="412" fill="#a5afbd" font-size="18">signos con antigüedad</text>
+        <text x="1342" y="440" fill="#a5afbd" font-size="18">umbrales vigentes</text>
+        <text x="1342" y="468" fill="#a5afbd" font-size="18">últimas 15 alertas</text>
+        <text x="1342" y="496" fill="#a5afbd" font-size="18">protocolos aprobados</text>
+        <text x="1342" y="524" fill="#a5afbd" font-size="18">fragmentos numerados [1]…[5]</text></g>
+      <!-- datos -->
+      <g data-caja><rect x="720" y="430" width="550" height="140" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="742" y="474" fill="#f2f5f8" font-size="22" font-weight="600">Datos de a bordo</text>
+        <text x="742" y="508" fill="#a5afbd" font-size="18">estado del núcleo, historia, misión (luz)</text>
+        <text x="742" y="536" fill="#a5afbd" font-size="18">tripulación y check-ins compartidos</text></g>
+      <path d="M1270,500 H1316" stroke="#6fd6b0" stroke-width="2.5" marker-end="url(#qa)"/>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 5.</b> Camino de una pregunta en <code>nova.rs</code> y <code>POST /v1/preguntar</code>. Las respuestas salen en streaming a la pantalla y la voz Kokoro las lee por frases.</p>
+  <div class="fila">
+    <div style="width:112mm;flex:none"><div class="equipo"><div class="monitor"><img src="img/m/pc-chat.jpg" alt="Ask NOVA respondiendo"></div><div class="cuello"></div><div class="base"></div></div></div>
+    <div class="crece caja nv"><h4>Reglas que recibe el modelo</h4>
+      <ul class="l nv" style="font-size:7.2pt"><li>Usar solo los datos de a bordo, con unidades y antigüedad; nunca inventar lecturas.</li><li>No reemplaza al cirujano de vuelo; para actuar usa solo protocolos.</li><li>En emergencias: los pasos exactos, en orden, sin agregar nada.</li><li>Breve: hasta 5 frases cortas, sin tablas ni jerga.</li><li>El conocimiento médico solo de los fragmentos, citados como [1], [2].</li></ul></div>
+  </div>
+  <p class="pieimg">En la captura, NOVA explica la pérdida ósea citando dos fragmentos de la biblioteca y reconoce que no hay datos de sueño en ese momento, en vez de inventarlos.</p>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 11 · BIBLIOTECA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>06 · Biblioteca médica</span></div>
+  <div class="cabsec">
+    <span class="ojo">06 · Biblioteca médica a bordo</span>
+    <h2>32 fuentes abiertas, 14.551 fragmentos y búsqueda en dos idiomas sin internet</h2>
+  </div>
+  <div class="diag">
+    <svg viewBox="0 0 1780 330" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ba" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker></defs>
+      <text x="20" y="34" fill="#6d7786" font-size="18" letter-spacing="2.5" class="m">EN LA TIERRA · biblioteca/indexar.py</text>
+      <text x="1300" y="34" fill="#6d7786" font-size="18" letter-spacing="2.5" class="m">EN LA NAVE · biblioteca.rs</text>
+      <path d="M1270,20 V310" stroke="rgba(236,106,168,.5)" stroke-width="2" stroke-dasharray="8 7"/>
+      <g font-size="19" fill="#a5afbd">
+        <g data-caja><rect x="20" y="64" width="220" height="230" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.18)"/>
+          <text x="38" y="104" fill="#f2f5f8" font-size="22" font-weight="600">fuentes.json</text>
+          <text x="38" y="140">32 fuentes con</text><text x="38" y="166">licencia y URL</text><text x="38" y="192">oficial</text></g>
+        <path d="M240,180 H266" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ba)"/>
+        <g data-caja><rect x="270" y="64" width="220" height="230" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.18)"/>
+          <text x="288" y="104" fill="#f2f5f8" font-size="22" font-weight="600">Descarga</text>
+          <text x="288" y="140">PDF y HTML</text><text x="288" y="166">huella SHA-256</text><text x="288" y="192">por archivo</text></g>
+        <path d="M490,180 H516" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ba)"/>
+        <g data-caja><rect x="520" y="64" width="220" height="230" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.18)"/>
+          <text x="538" y="104" fill="#f2f5f8" font-size="22" font-weight="600">Fragmentos</text>
+          <text x="538" y="140">texto por página</text><text x="538" y="166">con sección y</text><text x="538" y="192">número de página</text></g>
+        <path d="M740,180 H766" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ba)"/>
+        <g data-caja><rect x="770" y="64" width="220" height="230" rx="14" fill="#0f151d" stroke="#a898ff"/>
+          <text x="788" y="104" fill="#f2f5f8" font-size="22" font-weight="600">Vectores</text>
+          <text x="788" y="140">nomic v2 MoE</text><text x="788" y="166">768 dimensiones</text><text x="788" y="192">normalizados</text></g>
+        <path d="M990,180 H1016" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ba)"/>
+        <g data-caja><rect x="1020" y="64" width="230" height="230" rx="14" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="1038" y="104" fill="#f2f5f8" font-size="22" font-weight="600">Paquete</text>
+          <text x="1038" y="140">catalogo.json</text><text x="1038" y="166">fragmentos.jsonl</text><text x="1038" y="192">vectores.f32</text><text x="1038" y="230" fill="#6d7786" font-size="17">≈ 56 MB</text></g>
+        <path d="M1250,180 H1296" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#ba)"/>
+        <g data-caja><rect x="1300" y="64" width="460" height="230" rx="14" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="1320" y="104" fill="#f2f5f8" font-size="22" font-weight="600">Búsqueda en memoria</text>
+          <text x="1320" y="140">producto punto sobre la matriz</text>
+          <text x="1320" y="166">+ empujón por palabras clave</text>
+          <text x="1320" y="192">máx. 2 fragmentos por página</text>
+          <text x="1320" y="218">top 5 para Ask NOVA</text>
+          <text x="1320" y="256" fill="#6d7786" font-size="17">/v1/biblioteca/buscar · /recargar</text></g>
+      </g>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 6.</b> La biblioteca se prepara en la Tierra y sube a la nave como un paquete de tres archivos. La nave solo lee: no descarga nada durante la misión. <code>/v1/biblioteca/recargar</code> cambia el paquete sin reiniciar.</p>
+  <div class="fila">
+    <div style="width:104mm;flex:none"><div class="equipo"><div class="monitor"><img src="img/m/pc-biblioteca.jpg" alt="Biblioteca médica"></div><div class="cuello"></div><div class="base"></div></div></div>
+    <div class="crece tw"><table class="t">
+      <thead><tr><th>Editor</th><th class="num">Fuentes</th><th>Licencia</th></tr></thead>
+      <tbody>
+        <tr><td>NASA HRP · informes de evidencia</td><td class="num">13</td><td>Gob. EE. UU.</td></tr>
+        <tr><td>NASA OCHMO · 8 briefs y NASA-STD-3001</td><td class="num">10</td><td>Gob. EE. UU.</td></tr>
+        <tr><td>NASA · catálogo CHeCS</td><td class="num">1</td><td>Uso público</td></tr>
+        <tr><td>Revistas científicas</td><td class="num">4</td><td>CC BY 4.0</td></tr>
+        <tr><td>OMS / CICR</td><td class="num">2</td><td>CC BY-NC-SA</td></tr>
+        <tr><td>MedlinePlus (NLM)</td><td class="num">1</td><td>Dominio público</td></tr>
+        <tr><td>OpenStax (Rice)</td><td class="num">1</td><td>CC BY 4.0</td></tr>
+      </tbody></table></div>
+  </div>
+  <div class="g3">
+    <div class="caja"><h4>Multilingüe</h4><p>El modelo de vectores es multilingüe: una pregunta en español encuentra el párrafo correcto en un informe en inglés.</p></div>
+    <div class="caja"><h4>Trazable</h4><p>Cada resultado lleva editor, título, página, sección y licencia. Ask NOVA cita con el número del fragmento.</p></div>
+    <div class="caja"><h4>Solo licencias abiertas</h4><p>Nada con derechos reservados. Los manuales comerciales de urgencias quedaron fuera a propósito.</p></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 12 · EMERGENCIAS -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>07 · Emergencias</span></div>
+  <div class="secn">07</div>
+  <div class="cabsec">
+    <span class="ojo">07 · Emergencias</span>
+    <h2>Doce protocolos fijos, revisables y con la página de donde sale cada paso</h2>
+  </div>
+  <p class="lead">Archivo único <code>protocolos.json</code> v0.2, compartido por la nave y el teléfono. Cada protocolo trae pasos en inglés y español, cuándo aplicarlo, qué avisar a la Tierra, la fuente y una guía con condiciones sobre signos medidos.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:27%">Protocolo</th><th class="num" style="width:7%">Pasos</th><th style="width:40%">Fuente</th><th style="width:13%">Páginas</th><th>Se abre por</th></tr></thead>
+    <tbody>
+      <tr><td>Paro cardíaco en microgravedad</td><td class="num">6</td><td>Hinkelbein et al., guía de RCP en microgravedad (2020), recomendaciones 1–3 y 10</td><td>2, 4, 5, 6, 8</td><td>pregunta</td></tr>
+      <tr><td>Anafilaxia</td><td class="num">4</td><td>OMS/CICR Basic Emergency Care (2018), dosis de epinefrina</td><td>119, 202, 235</td><td>pregunta</td></tr>
+      <tr><td>Atragantamiento</td><td class="num">4</td><td>OMS/CICR BEC, obstrucción de vía aérea; guía RCP 2020</td><td>155 · 4</td><td>pregunta</td></tr>
+      <tr><td>Hemorragia grave</td><td class="num">4</td><td>OMS/CICR BEC, control de sangrado y torniquete</td><td>169, 170</td><td>pregunta</td></tr>
+      <tr><td>Convulsión</td><td class="num">4</td><td>OMS/CICR BEC, manejo de convulsiones</td><td>141, 142</td><td>pregunta</td></tr>
+      <tr><td>Enfermedad por descompresión</td><td class="num">4</td><td>HRP descompresión e hipoxia (2024); OCHMO</td><td>52 · 12 · 6</td><td>pregunta</td></tr>
+      <tr><td>Posible desmayo (síncope)</td><td class="num">5</td><td>Pasos operativos del equipo</td><td>—</td><td class="al">sensores</td></tr>
+      <tr><td>Glucosa baja</td><td class="num">4</td><td>Regla 15-15 (American Diabetes Association)</td><td>—</td><td class="al">sensores</td></tr>
+      <tr><td>Fiebre</td><td class="num">3</td><td>Pasos operativos del equipo</td><td>—</td><td class="at">sensores</td></tr>
+      <tr><td>Oxígeno bajo</td><td class="num">4</td><td>Pasos operativos del equipo</td><td>—</td><td class="al">sensores</td></tr>
+      <tr><td>CO₂ de cabina en alza</td><td class="num">3</td><td>Pasos operativos; límites de NASA-STD-3001</td><td>—</td><td class="at">sensores</td></tr>
+      <tr><td>Poco sueño, ánimo o energía</td><td class="num">3</td><td>Pasos operativos; acompañamiento de Ambar</td><td>—</td><td class="at">check-in</td></tr>
+    </tbody></table></div>
+  <div class="fila">
+    <div style="width:104mm;flex:none"><div class="equipo"><div class="monitor"><img src="img/m/pc-guia.jpg" alt="Guía de paro cardíaco"></div><div class="cuello"></div><div class="base"></div></div>
+      <p class="pieimg" style="text-align:center;margin-top:1.6mm">Guía de paro cardíaco en NOVA PC con la fuente y las páginas al pie.</p></div>
+    <div class="crece" style="display:flex;flex-direction:column;gap:2.4mm">
+      <div class="caja al"><h4>Qué no hace el modelo</h4><p>Ningún paso de emergencia sale de Qwen3. El detector de <code>nova.rs</code> reconoce la emergencia y devuelve el protocolo literal; el modelo tiene prohibido agregar, cambiar o reordenar pasos.</p></div>
+      <div class="caja"><h4>RCP en microgravedad</h4><p>La guía incluye un metrónomo a ritmo de compresiones y las posiciones de la guía de 2020 para microgravedad. La bitácora registra cada paso para el informe.</p></div>
+      <div class="caja at"><h4>Seis protocolos sin página</h4><p>Desmayo, glucosa, fiebre, oxígeno, CO₂ y sueño todavía no citan página. Quedan marcados para la revisión del médico asesor.</p></div>
+    </div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+<!-- ============================================================ 13 · MISIÓN Y CASA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>08 · Misión y Casa</span></div>
+  <div class="secn">08</div>
+  <div class="cabsec">
+    <span class="ojo">08 · Misión, voz y Casa</span>
+    <h2>La nave sabe dónde está, cuánto tarda la luz y cuándo llega cada mensaje</h2>
+  </div>
+  <div class="fila">
+    <div class="diag" style="width:96mm;flex:none">
+      <svg viewBox="0 0 860 670" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="380" cy="320" r="200" fill="none" stroke="rgba(70,200,232,.45)" stroke-width="2"/>
+        <circle cx="380" cy="320" r="305" fill="none" stroke="rgba(242,180,87,.4)" stroke-width="2"/>
+        <path d="M180,320 A252.5,246.8 0 0 0 685,320" fill="none" stroke="#a898ff" stroke-width="3" stroke-dasharray="10 8"/>
+        <circle cx="380" cy="320" r="16" fill="#f2b457"/>
+        <text x="380" y="366" text-anchor="middle" fill="#a5afbd" font-size="20">Sol</text>
+        <circle cx="180" cy="320" r="8" fill="#46c8e8"/>
+        <text x="166" y="300" text-anchor="end" fill="#a5afbd" font-size="19">salida</text>
+        <text x="166" y="352" text-anchor="end" fill="#a5afbd" font-size="19">8 abr</text>
+        <circle cx="549.6" cy="214" r="11" fill="#46c8e8"/>
+        <text x="535" y="250" text-anchor="end" fill="#8fe6f5" font-size="20" font-weight="600">Tierra hoy</text>
+        <circle cx="685" cy="320" r="11" fill="#f2b457"/>
+        <text x="708" y="314" fill="#f2b457" font-size="20" font-weight="600">Marte</text>
+        <text x="708" y="340" fill="#a5afbd" font-size="18">llegada</text>
+        <text x="708" y="364" fill="#a5afbd" font-size="18">día 259</text>
+        <path d="M660,415 l12,12 l-12,12 l-12,-12 z" fill="#f2f5f8"/>
+        <text x="692" y="440" fill="#f2f5f8" font-size="20" font-weight="600">Nave</text>
+        <text x="692" y="466" fill="#a5afbd" font-size="18">día 215</text>
+        <path d="M554,224 L656,418" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="8 6"/>
+        <text x="608" y="266" fill="#ec6aa8" font-size="18" font-weight="600">9,5 min</text>
+        <text x="614" y="290" fill="#ec6aa8" font-size="18">de luz</text>
+        <text x="380" y="656" text-anchor="middle" fill="#a898ff" font-size="18">transferencia de Hohmann · 259 días</text>
+      </svg>
+    </div>
+    <div class="crece" style="display:flex;flex-direction:column;gap:2.4mm">
+      <h3>Misión calculada, no escrita a mano</h3>
+      <p><code>mision.rs</code> propaga la Tierra y Marte con los <b>elementos orbitales J2000 de Standish</b> (JPL), resuelve la ecuación de Kepler y ubica la nave sobre una transferencia de Hohmann que parte el 8 de abril de 2026, con 500 días en Marte.</p>
+      <div class="tw"><table class="t">
+        <tbody>
+          <tr><td>Día de misión</td><td class="num">215</td></tr>
+          <tr><td>Fase</td><td class="num">crucero a Marte</td></tr>
+          <tr><td>Llegada en</td><td class="num">44 días</td></tr>
+          <tr><td>Distancia a la Tierra</td><td class="num">≈ 171 millones de km</td></tr>
+          <tr><td>Retraso de la luz</td><td class="num">9,5 min, un sentido</td></tr>
+          <tr><td>Conjunción solar</td><td class="num">elongación &lt; 2°</td></tr>
+        </tbody></table></div>
+      <p>El retraso alimenta la cola de subida de comandos, la llegada de los mensajes de Casa, el texto de Ask NOVA y la barra de las pantallas. Con <code>NOVA_LANZAMIENTO</code> y <code>NOVA_ESTADIA_DIAS</code> se ensaya cualquier momento de la misión.</p>
+    </div>
+  </div>
+  <p class="pieimg"><b>Figura 7.</b> Vista desde el norte de la eclíptica, a escala. Posiciones calculadas para el 9 de noviembre de 2026. La línea magenta es el camino de la señal entre la Tierra y la nave.</p>
+  <div class="g2">
+    <div class="caja nv"><div class="cajacab"><h4>Voz de NOVA a bordo</h4><span class="est ok">Funciona</span></div><p><b>Kokoro-82M</b> en ONNX (<code>voz/servidor.py</code>, puerto 8082), audio WAV de 24 kHz. Voz <code>af_heart</code> en inglés y <code>ef_dora</code> en español, elegidas por el equipo. El enlace la expone en <code>/v1/decir</code> y la pantalla la usa para leer respuestas y pasos de emergencia.</p></div>
+    <div class="caja"><div class="cajacab"><h4>Historia a bordo</h4><span class="est ok">Funciona</span></div><p>Cada serie tripulante × sensor se guarda a 1 Hz por 6 horas y por minuto por 30 días. Minutos y alertas van a disco en NDJSON, un archivo por día, en <code>~/.nova-pc</code>; un reinicio no pierde nada.</p></div>
+  </div>
+  <div class="cabsec"><span class="ojo">Casa: la familia también viaja con la luz</span></div>
+  <div class="fila">
+    <div class="diag crece">
+      <svg viewBox="0 0 1180 560" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="ca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker>
+        <marker id="cm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ec6aa8"/></marker></defs>
+        <g data-caja><rect x="20" y="30" width="340" height="140" rx="14" fill="#0f151d" stroke="#ec6aa8"/>
+          <text x="40" y="72" fill="#f2f5f8" font-size="24" font-weight="600">Familia en la Tierra</text>
+          <text x="40" y="106" fill="#a5afbd" font-size="19">texto o foto para T1–T4</text>
+          <text x="40" y="134" fill="#a5afbd" font-size="19">tierra/casa.py enviar</text></g>
+        <path d="M360,100 H436" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#cm)"/>
+        <g data-caja><rect x="440" y="30" width="330" height="140" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.18)"/>
+          <text x="460" y="72" fill="#f2f5f8" font-size="22" font-weight="600">Comprime</text>
+          <text x="460" y="106" fill="#a5afbd" font-size="19">lado mayor 1280 px</text>
+          <text x="460" y="134" fill="#a5afbd" font-size="19">JPEG · ancho de banda</text></g>
+        <path d="M770,100 H846" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#cm)"/>
+        <g data-caja><rect x="850" y="30" width="310" height="140" rx="14" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="870" y="72" fill="#f2f5f8" font-size="22" font-weight="600">/v1/casa/subida</text>
+          <text x="870" y="106" fill="#a5afbd" font-size="19">llega = enviado</text>
+          <text x="870" y="134" fill="#a5afbd" font-size="19">+ retraso de luz</text></g>
+        <path d="M1005,170 V236" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ca)"/>
+        <g data-caja><rect x="790" y="240" width="370" height="140" rx="14" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="810" y="282" fill="#f2f5f8" font-size="22" font-weight="600">Bandeja de la nave</text>
+          <text x="810" y="316" fill="#a5afbd" font-size="19">visible solo desde la llegada</text>
+          <text x="810" y="344" fill="#a5afbd" font-size="19">~/.nova-pc/casa</text></g>
+        <path d="M790,310 H704" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ca)"/>
+        <g data-caja><rect x="380" y="240" width="320" height="140" rx="14" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="400" y="282" fill="#f2f5f8" font-size="22" font-weight="600">Teléfono y widget</text>
+          <text x="400" y="316" fill="#a5afbd" font-size="19">/v1/casa?trip=T4</text>
+          <text x="400" y="344" fill="#a5afbd" font-size="19">guardado sin enlace</text></g>
+        <path d="M540,380 V446" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ca)"/>
+        <g data-caja><rect x="380" y="450" width="320" height="96" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.18)"/>
+          <text x="400" y="490" fill="#f2f5f8" font-size="22" font-weight="600">Respuesta</text>
+          <text x="400" y="522" fill="#a5afbd" font-size="19">texto o foto</text></g>
+        <path d="M380,498 H304" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ca)"/>
+        <g data-caja><rect x="20" y="420" width="280" height="126" rx="14" fill="#0f151d" stroke="#ec6aa8"/>
+          <text x="40" y="460" fill="#f2f5f8" font-size="22" font-weight="600">Cola de bajada</text>
+          <text x="40" y="494" fill="#a5afbd" font-size="19">próximo contacto</text>
+          <text x="40" y="522" fill="#a5afbd" font-size="19">casa.py bajar</text></g>
+      </svg>
+    </div>
+    <div class="equipo" style="width:32mm;flex:none">
+      <div class="tel" style="width:32mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:3.6mm;height:1.7mm"></span></i></div><div class="rec"><img src="img/m/m-casa.jpg" alt="Casa en el teléfono"></div></div></div>
+    </div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 14 · SYSTEMS Y GDS -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>08 · Sistemas de a bordo</span></div>
+  <div class="cabsec">
+    <span class="ojo">08 · Systems: el núcleo con la interfaz de NOVA</span>
+    <h2>El sistema de tierra de F Prime, traducido a palabras de la tripulación</h2>
+  </div>
+  <p class="lead">F Prime trae su propio sistema de tierra, <b>fprime-gds</b>, con una consola web técnica. NOVA lo usa como transporte y lo muestra con su propio diseño: <code>tierra.rs</code> lee cada segundo eventos, telemetría e historial de comandos por la API REST del GDS, los traduce con los diccionarios del despliegue y los publica en <code>/v1/sistemas</code>.</p>
+  <div class="diag">
+    <svg viewBox="0 0 1780 470" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ya" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker>
+      <marker id="ym" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ec6aa8"/></marker></defs>
+      <g data-caja><rect x="20" y="40" width="300" height="170" rx="16" fill="#0f151d" stroke="#6fd6b0" stroke-width="2"/>
+        <text x="42" y="84" fill="#f2f5f8" font-size="25" font-weight="600">Núcleo F Prime</text>
+        <text x="42" y="120" fill="#a5afbd" font-size="19">239 eventos</text>
+        <text x="42" y="148" fill="#a5afbd" font-size="19">110 comandos</text>
+        <text x="42" y="176" fill="#a5afbd" font-size="19">canales de telemetría</text></g>
+      <path d="M320,125 H436" stroke="#8fe6f5" stroke-width="2.5" marker-start="url(#ya)" marker-end="url(#ya)"/>
+      <text x="334" y="110" fill="#8fe6f5" font-size="18" class="m">CCSDS</text>
+      <text x="334" y="156" fill="#8fe6f5" font-size="18" class="m">TCP 50000</text>
+      <g data-caja><rect x="440" y="40" width="300" height="170" rx="16" fill="#0f151d" stroke="rgba(255,255,255,.2)"/>
+        <text x="462" y="84" fill="#f2f5f8" font-size="25" font-weight="600">fprime-gds</text>
+        <text x="462" y="120" fill="#a5afbd" font-size="19">diccionario JSON</text>
+        <text x="462" y="148" fill="#a5afbd" font-size="19">API REST :5080</text>
+        <text x="462" y="176" fill="#a5afbd" font-size="19">sesión «nova-enlace»</text></g>
+      <path d="M740,125 H856" stroke="#8fe6f5" stroke-width="2.5" marker-start="url(#ya)" marker-end="url(#ya)"/>
+      <text x="754" y="110" fill="#8fe6f5" font-size="18" class="m">cada 1 s</text>
+      <g data-caja><rect x="860" y="40" width="420" height="170" rx="16" fill="#0f151d" stroke="#6fd6b0" stroke-width="2"/>
+        <text x="882" y="84" fill="#f2f5f8" font-size="25" font-weight="600">tierra.rs (enlace)</text>
+        <text x="882" y="120" fill="#a5afbd" font-size="19">traduce con diccionarios</text>
+        <text x="882" y="148" fill="#a5afbd" font-size="19">guarda 400 eventos</text>
+        <text x="882" y="176" fill="#a5afbd" font-size="19">en línea si hubo tlm &lt; 5 s</text></g>
+      <path d="M1280,125 H1396" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ya)"/>
+      <text x="1286" y="110" fill="#8fe6f5" font-size="15" class="m">/v1/sistemas</text>
+      <g data-caja><rect x="1400" y="40" width="360" height="170" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="1422" y="84" fill="#f2f5f8" font-size="25" font-weight="600">Pantallas</text>
+        <text x="1422" y="120" fill="#a5afbd" font-size="19">vista Systems (PC)</text>
+        <text x="1422" y="148" fill="#a5afbd" font-size="19">tarjeta «La nave»</text>
+        <text x="1422" y="176" fill="#a5afbd" font-size="19">en el teléfono</text></g>
+      <!-- subida -->
+      <text x="20" y="282" fill="#6d7786" font-size="18" letter-spacing="2.5" class="m">COLA DE SUBIDA · ESTADOS DE UN COMANDO</text>
+      <g data-caja><rect x="20" y="304" width="300" height="140" rx="16" fill="#0f151d" stroke="#ec6aa8"/>
+        <text x="42" y="346" fill="#f2f5f8" font-size="23" font-weight="600">Consola de Tierra</text>
+        <text x="42" y="380" fill="#a5afbd" font-size="18">POST /v1/sistemas/</text>
+        <text x="42" y="406" fill="#a5afbd" font-size="18">comando + motivo</text></g>
+      <path d="M320,374 H436" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#ym)"/>
+      <g data-caja><rect x="440" y="304" width="300" height="140" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="462" y="346" fill="#a898ff" font-size="23" font-weight="600">en_vuelo</text>
+        <text x="462" y="380" fill="#a5afbd" font-size="18">llega = ahora + luz</text>
+        <text x="462" y="406" fill="#a5afbd" font-size="18">cuenta regresiva</text></g>
+      <path d="M740,374 H856" stroke="#a898ff" stroke-width="2.5" marker-end="url(#ya)"/>
+      <g data-caja><rect x="860" y="304" width="420" height="140" rx="16" fill="#0f151d" stroke="rgba(255,255,255,.2)"/>
+        <text x="882" y="346" fill="#f2f5f8" font-size="23" font-weight="600">entregando</text>
+        <text x="882" y="380" fill="#a5afbd" font-size="18">al llegar, el enlace lo manda</text>
+        <text x="882" y="406" fill="#a5afbd" font-size="18">al núcleo por el GDS</text></g>
+      <path d="M1280,374 H1396" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ya)"/>
+      <g data-caja><rect x="1400" y="304" width="360" height="140" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="1422" y="346" fill="#6fd6b0" font-size="23" font-weight="600">entregado</text>
+        <text x="1422" y="380" fill="#a5afbd" font-size="18">o error con detalle</text>
+        <text x="1422" y="406" fill="#a5afbd" font-size="18">(OpCodeCompleted)</text></g>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 8.</b> Arriba, la lectura del núcleo a través del sistema de tierra del JPL. Abajo, el ciclo de vida de un comando enviado desde la Tierra: solo se aceptan nombres que existen en el diccionario del despliegue.</p>
+  <div class="equipo">
+    <div class="monitor" style="width:86%"><img src="img/m/pc-sistemas.jpg" alt="Vista Systems"></div>
+    <div class="cuello"></div><div class="base"></div>
+  </div>
+  <div class="g3">
+    <div class="caja"><h4>Tarjetas de estado</h4><p>Núcleo en línea, salud de tiempo real (ciclos perdidos, peor tiempo del grupo de 1 Hz, CPU y memoria), estación médica y comandos despachados.</p></div>
+    <div class="caja"><h4>Eventos en lenguaje claro</h4><p>«David · temperature 38.0: needs the crew's attention» en vez de <code>ALERTA_ATENCION</code>. Filtros: salud, estación, comandos, sistema.</p></div>
+    <div class="caja"><h4>Límites y subida</h4><p>Los umbrales vigentes, los mismos que usa el núcleo, y lo que viene desde la Tierra con su motivo y su estado.</p></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 15 · CONSOLA DE TIERRA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>09 · Consola de Tierra</span></div>
+  <div class="secn">09</div>
+  <div class="cabsec">
+    <span class="ojo">09 · Consola de Tierra</span>
+    <h2>Mission Control: lo que ve el cirujano de vuelo, siempre con minutos de retraso</h2>
+  </div>
+  <p class="lead">Vista web en <code>ui/tierra/</code> servida por el mismo enlace en <code>/tierra/</code>. Representa el lado de la Tierra: todo lo que muestra viene del informe de la nave y todo lo que envía viaja con el retraso de la luz calculado por la misión.</p>
+  <div class="equipo">
+    <div class="monitor"><img src="img/m/pc-tierra.jpg" alt="Consola de Tierra"></div>
+    <div class="cuello"></div><div class="base"></div>
+  </div>
+  <div class="g3">
+    <div class="caja"><h4>Tripulación y alertas</h4><p>Estado de cada tripulante «as received 1 s ago», con pulso, SpO₂, presión y temperatura. Lista de alertas de las últimas 24 h, con las marcadas para el cirujano en magenta.</p></div>
+    <div class="caja"><h4>Informe de la noche</h4><p>Resumen automático (en la captura: 37 alertas, 16 guías de emergencia y 28 preguntas a NOVA), tabla de 24 h con media y rango por persona, guías con su bitácora completa y resúmenes privados.</p></div>
+    <div class="caja"><h4>Actuar desde la Tierra</h4><p>Cambiar los límites del núcleo por signo, con el motivo que queda en la bitácora, y ver el comando en camino. También dejar un mensaje de la familia para un tripulante.</p></div>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:27%">Acción de la consola</th><th style="width:30%">Ruta del enlace</th><th>Efecto en la nave</th></tr></thead>
+    <tbody>
+      <tr><td>Leer el informe</td><td><code>GET /v1/tierra/informe</code></td><td>Resumen de 24 h, alertas, guías, conversaciones con NOVA y datos privados con consentimiento.</td></tr>
+      <tr><td>Cambiar un umbral</td><td><code>POST /v1/sistemas/comando</code></td><td>Entra a la cola de subida y se aplica como <code>*_PRM_SET</code> en el núcleo al llegar.</td></tr>
+      <tr><td>Ver lo que va en camino</td><td><code>GET /v1/sistemas</code></td><td>Cada comando con su hora de envío, hora de llegada y estado.</td></tr>
+      <tr><td>Mensaje de casa</td><td><code>POST /v1/casa/subida</code></td><td>Aparece en el teléfono y el widget del tripulante al cumplirse el retraso.</td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+<!-- ============================================================ 16 · APP MÓVIL 1 -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>10 · App móvil</span></div>
+  <div class="secn">10</div>
+  <div class="cabsec">
+    <span class="ojo">10 · App NOVA en modo misión</span>
+    <h2>El teléfono de cada astronauta, enlazado con la nave y sin internet</h2>
+  </div>
+  <p class="lead">La app NOVA (Expo SDK 57, React Native 0.86, expo-router; versión 0.9.4) tiene un <b>modo misión</b>. Con la dirección de la nave y el asiento (T1–T4) configurados, el teléfono deja de usar servicios en la nube y habla solo con el enlace de la nave por la red local: entrega sus lecturas y recibe el estado de la tripulación, la misión y Casa.</p>
+  <div style="display:flex;justify-content:space-between;gap:4mm">
+    <div class="equipo"><div class="tel" style="width:52mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:4mm;height:1.8mm"></span></i></div><div class="rec"><img src="img/m/m-hoy.jpg" alt="Hoy"></div></div></div>
+      <div class="leyenda-eq"><b>Hoy</b>Resumen de NOVA, emergencia<br>y signos que llegan de la nave</div></div>
+    <div class="equipo"><div class="tel" style="width:52mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:4mm;height:1.8mm"></span></i></div><div class="rec"><img src="img/m/m-hoy-abajo.jpg" alt="Hoy, plan del día"></div></div></div>
+      <div class="leyenda-eq"><b>Hoy · más abajo</b>Casa, check-in y el plan<br>del día en hora de la nave</div></div>
+    <div class="equipo"><div class="tel" style="width:52mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:4mm;height:1.8mm"></span></i></div><div class="rec"><img src="img/m/m-crew.jpg" alt="Crew"></div></div></div>
+      <div class="leyenda-eq"><b>Crew</b>Cada compañero en vivo<br>con el mismo código de color</div></div>
+  </div>
+  <div class="g2">
+    <div class="caja"><h4>Lo que el teléfono envía (<code>src/cuenta/nave.ts</code>)</h4>
+      <ul class="l"><li>Cada 5 s: pulso y VFC del reloj o banda, SpO₂, pasos, luz y ruido.</li><li>Cada minuto, si cambió: sueño de anoche y pulso en reposo.</li><li>Ánimo y energía del check-in solo con «Compartir mi día». Nunca el texto del diario.</li><li>Todo por <code>POST /v1/lote</code>; el núcleo lo trata igual que la estación.</li></ul></div>
+    <div class="caja"><h4>Lo que el teléfono recibe (<code>naveEstado.ts</code>)</h4>
+      <ul class="l"><li><code>/v1/estado</code> cada 5 s con la app abierta.</li><li><code>/v1/mision</code>, tripulación y <code>/v1/sistemas</code> cada minuto.</li><li><code>/v1/casa</code> cada minuto, guardado en el teléfono para verlo sin enlace.</li><li>Un único almacén para Hoy, Crew, Emergencia, Casa y el widget.</li></ul></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 17 · APP MÓVIL 2 -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>10 · App móvil</span></div>
+  <div class="cabsec">
+    <span class="ojo">10 · Emergencia, ciclo y la nave en el bolsillo</span>
+    <h2>Funciones que siguen andando aunque se caiga el enlace</h2>
+  </div>
+  <div style="display:flex;justify-content:space-between;gap:3mm">
+    <div class="equipo"><div class="tel" style="width:40mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:3.4mm;height:1.6mm"></span></i></div><div class="rec"><img src="img/m/m-emergencia.jpg" alt="Emergencia"></div></div></div>
+      <div class="leyenda-eq"><b>Emergencia</b>Quién y qué pasa</div></div>
+    <div class="equipo"><div class="tel" style="width:40mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:3.4mm;height:1.6mm"></span></i></div><div class="rec"><img src="img/m/m-rcp.jpg" alt="Guía de RCP"></div></div></div>
+      <div class="leyenda-eq"><b>Guía de RCP</b>Signos en vivo y fuente</div></div>
+    <div class="equipo"><div class="tel" style="width:40mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:3.4mm;height:1.6mm"></span></i></div><div class="rec"><img src="img/m/m-ciclo.jpg" alt="Ciclo"></div></div></div>
+      <div class="leyenda-eq"><b>Ciclo</b>Privado por defecto</div></div>
+    <div class="equipo"><div class="tel" style="width:40mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:3.4mm;height:1.6mm"></span></i></div><div class="rec"><img src="img/m/m-tu-nave.jpg" alt="La nave y sesión privada"></div></div></div>
+      <div class="leyenda-eq"><b>Tú · La nave</b>Núcleo, enlace y sesión</div></div>
+  </div>
+  <div class="g2">
+    <div class="caja al"><div class="cajacab"><h4>Emergencia</h4><span class="est at">Parcial</span></div><p>Los mismos 12 protocolos de la nave dentro de la app (<code>src/emergencia/protocolos.json</code>), así que funcionan sin la nave y sin internet. La guía muestra los signos de la persona si hay enlace y cita fuente y páginas. Falta traducir algunos pasos que el teléfono todavía muestra en inglés.</p></div>
+    <div class="caja nv"><div class="cajacab"><h4>Ciclo menstrual</h4><span class="est ok">Funciona</span></div><p>Basado en tres revisiones de licencia CC BY sobre salud femenina en vuelo. Modo de supresión con píldora continua, registro de sangrado y síntomas, aviso de píldora y cálculo de suministros hasta el fin de la misión. Se queda en el teléfono; compartir es opcional y va solo al informe privado del cirujano.</p></div>
+    <div class="caja"><div class="cajacab"><h4>La nave y sesión privada</h4><span class="est at">Sin publicar</span></div><p>La tarjeta «The ship» muestra el núcleo en línea, la distancia en minutos-luz y el último cambio enviado desde la Tierra. Debajo, la sesión privada con la psicóloga en la Tierra: NOVA envía los temas antes porque el video llega con 9 minutos de retraso. La tarjeta pasa tsc y lint y sale por OTA, pero todavía no tiene commit.</p></div>
+    <div class="caja"><div class="cajacab"><h4>Widget de Casa</h4><span class="est ok">Funciona</span></div><p>Widget de pantalla de inicio en Android (<code>react-native-android-widget</code>) con el último mensaje de la familia. Se actualiza solo cuando llega algo nuevo. Build de prueba EAS 0.9.4 lanzado desde el commit <code>e7d2aab</code>.</p></div>
+  </div>
+  <div class="caja at"><h4>Nota sobre la tarjeta «Mission dose» de Hoy</h4><p>Muestra 214 mSv y el 21 % de un límite de carrera de 1000 mSv con un valor de ejemplo fijo en <code>motor.ts</code>, basado en la tasa de crucero medida por MSL RAD (≈ 1,84 mSv/día). El cálculo real con datos de radiación es parte del módulo pendiente.</p></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 18 · API Y PUERTOS -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>11 · Enlace de la nave</span></div>
+  <div class="secn">11</div>
+  <div class="cabsec">
+    <span class="ojo">11 · Enlace de la nave: API y puertos</span>
+    <h2>Una sola puerta HTTP para pantallas, teléfonos y Tierra</h2>
+  </div>
+  <p class="lead"><code>main.rs</code> levanta un servidor axum en el puerto 8750 que sirve la interfaz, la consola de Tierra y estas rutas. Si la nave define <code>NOVA_TOKEN</code>, las rutas que escriben exigen la cabecera <code>x-nova-token</code>.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:30%">Ruta</th><th style="width:9%">Método</th><th>Para qué sirve</th><th style="width:15%">La usa</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">/v1/flujo</td><td>GET</td><td>Server-Sent Events con el estado a 1 Hz, alertas, eventos del núcleo y subidas</td><td>PC, Tierra</td></tr>
+      <tr><td class="mono">/v1/estado</td><td>GET</td><td>Estado completo: 4 tripulantes × 18 sensores, cabina y umbrales</td><td>teléfono</td></tr>
+      <tr><td class="mono">/v1/ingreso · /v1/lote</td><td>POST</td><td>Medición manual de la pantalla · lote de lecturas del teléfono hacia el núcleo</td><td>PC · teléfono</td></tr>
+      <tr><td class="mono">/v1/historia · /v1/resumen</td><td>GET</td><td>Serie de un sensor en una ventana · resumen de 24 h por tripulante</td><td>PC</td></tr>
+      <tr><td class="mono">/v1/mision</td><td>GET</td><td>Día, fase, distancia, retraso de la luz, elongación y conjunción</td><td>todas</td></tr>
+      <tr><td class="mono">/v1/preguntar · /v1/modelo</td><td>POST · GET</td><td>Ask NOVA en streaming · estado del modelo local</td><td>PC</td></tr>
+      <tr><td class="mono">/v1/decir</td><td>POST</td><td>Texto a voz con Kokoro (WAV)</td><td>PC</td></tr>
+      <tr><td class="mono">/v1/bitacora</td><td>GET · POST</td><td>Bitácora de emergencias, conversaciones e ingresos</td><td>PC, Tierra</td></tr>
+      <tr><td class="mono">/v1/privado</td><td>POST</td><td>Resumen con consentimiento que va solo al informe del cirujano</td><td>teléfono</td></tr>
+      <tr><td class="mono">/v1/escenario</td><td>POST</td><td>Escenario de demo al simulador (UDP 50053)</td><td>PC (tecla D)</td></tr>
+      <tr><td class="mono">/v1/biblioteca[/buscar|/recargar]</td><td>GET · POST</td><td>Catálogo, búsqueda semántica y recarga del paquete</td><td>PC</td></tr>
+      <tr><td class="mono">/v1/casa[/archivo|/respuesta]</td><td>GET · POST</td><td>Bandeja por tripulante, fotos y respuestas</td><td>teléfono, PC</td></tr>
+      <tr><td class="mono">/v1/casa/subida · /bajada</td><td>POST</td><td>Entrada desde la Tierra · retiro de respuestas</td><td>relevo Casa</td></tr>
+      <tr><td class="mono">/v1/sistemas · /comando</td><td>GET · POST</td><td>Núcleo traducido · comando a la cola de subida</td><td>PC, Tierra</td></tr>
+      <tr><td class="mono">/v1/tierra/informe</td><td>GET</td><td>Informe de la nave para la Tierra</td><td>Tierra</td></tr>
+      <tr><td class="mono">/v1/salud</td><td>GET</td><td>Comprobación de que el enlace está vivo</td><td>monitoreo</td></tr>
+    </tbody></table></div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:12%">Puerto</th><th style="width:12%">Protocolo</th><th style="width:30%">De → a</th><th>Contenido</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">50050</td><td>UDP</td><td>estación, simulador, enlace → núcleo</td><td>Mediciones NDJSON con el contrato v1</td></tr>
+      <tr><td class="mono">50051</td><td>UDP</td><td>núcleo → enlace</td><td>Estado a 1 Hz y alertas</td></tr>
+      <tr><td class="mono">50052</td><td>UDP</td><td>enlace → núcleo</td><td>Ingresos manuales de la tripulación</td></tr>
+      <tr><td class="mono">50053</td><td>UDP</td><td>enlace → simulador</td><td>Escenarios de demo</td></tr>
+      <tr><td class="mono">50000</td><td>TCP</td><td>núcleo ↔ fprime-gds</td><td>Tramas CCSDS: telemetría, eventos y comandos</td></tr>
+      <tr><td class="mono">5080</td><td>HTTP</td><td>enlace → fprime-gds</td><td>API REST del sistema de tierra</td></tr>
+      <tr><td class="mono">8750</td><td>HTTP</td><td>pantallas, teléfonos, Tierra → enlace</td><td>Interfaz, consola de Tierra y API v1</td></tr>
+      <tr><td class="mono">8081/82/84</td><td>HTTP</td><td>enlace → modelos</td><td>Qwen3 4B · nomic v2 · Kokoro</td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 19 · MATERIAL NASA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>12 · Material real</span></div>
+  <div class="secn">12</div>
+  <div class="cabsec">
+    <span class="ojo">12 · Material real de la NASA y fuentes abiertas</span>
+    <h2>Lo que NOVA usa de verdad, con su licencia</h2>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:23%">Recurso</th><th style="width:22%">Qué es</th><th>Cómo lo usa NOVA</th><th style="width:15%">Licencia</th><th style="width:11%">Estado</th></tr></thead>
+    <tbody>
+      <tr><td>F Prime v4.4.2</td><td>Marco de software de vuelo del JPL</td><td>Núcleo: componentes, puertos, parámetros, eventos, comandos y telemetría</td><td>Apache 2.0</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>fprime-gds</td><td>Sistema de tierra de F Prime</td><td>Transporte con el núcleo, diccionarios y API REST para Systems y la consola</td><td>Apache 2.0</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>CCSDS</td><td>Estándar de comunicaciones espaciales</td><td>Tramas y paquetes entre el núcleo y el GDS (<code>ComCcsds</code>)</td><td>Estándar abierto</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Informes de evidencia del HRP (13)</td><td>Riesgos de salud en misiones largas</td><td>Biblioteca: condiciones médicas, renal, SANS, hueso, corazón, ortostatismo, descompresión, conducta, sueño, radiación (2), fármacos, inmunidad</td><td>Gob. EE. UU.</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>NASA-STD-3001 vol. 1 y 2</td><td>Norma de salud y habitabilidad</td><td>Límites de CO₂ de cabina y criterios de salud de tripulación</td><td>Gob. EE. UU.</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Briefs técnicos de OCHMO (8)</td><td>Oficina del médico jefe de la NASA</td><td>CO₂, ortostatismo, radiación, descompresión, SANS, hueso, operaciones médicas, fármacos</td><td>Gob. EE. UU.</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Catálogo CHeCS</td><td>Equipo médico de la ISS</td><td>Saber qué hay en el botiquín al responder</td><td>Uso público</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Elementos J2000 de Standish</td><td>Efemérides aproximadas del JPL</td><td>Posición de la Tierra, Marte y la nave; retraso de la luz</td><td>Uso público</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Guía de RCP en microgravedad (2020)</td><td>Hinkelbein et al., Scand J Trauma</td><td>Protocolo de paro cardíaco y metrónomo</td><td>CC BY 4.0</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>Salud femenina en vuelo (3)</td><td>Revisiones en npj Microgravity, Exp. Physiology, Frontiers</td><td>Base del módulo de ciclo</td><td>CC BY 4.0</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>BEC y lista de medicamentos de la OMS</td><td>Atención básica de emergencias</td><td>Anafilaxia, atragantamiento, hemorragia y convulsión</td><td>CC BY-NC-SA</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>MedlinePlus · OpenStax</td><td>Salud en lenguaje claro · anatomía</td><td>Explicaciones simples en Ask NOVA</td><td>Dominio público · CC BY</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>PhysioNet BIDMC</td><td>Registros reales de PPG y respiración</td><td>Variabilidad real del simulador</td><td>ODC-By 1.0</td><td><span class="est ok">En uso</span></td></tr>
+      <tr><td>MSL RAD · DONKI</td><td>Dosis medida camino a Marte · clima espacial</td><td>Módulo de radiación (hoy solo la tasa de referencia)</td><td>Datos públicos</td><td><span class="est al">Previsto</span></td></tr>
+      <tr><td>OSDR / SOMA</td><td>Datos abiertos de biología espacial</td><td>Rangos esperados en vuelo (<code>ESPERADO_VUELO</code>)</td><td>Datos públicos</td><td><span class="est al">Previsto</span></td></tr>
+      <tr><td>Open MCT</td><td>Visor de telemetría de la NASA</td><td>Evaluado; Systems ya cumple ese papel con el diseño de NOVA</td><td>Apache 2.0</td><td><span class="est at">No usado</span></td></tr>
+    </tbody></table></div>
+  <div class="nova"><img src="img/m/orbe.png" alt=""><p>Regla del equipo: si una fuente no tiene licencia que permita llevarla a bordo, no entra. Por eso no hay manuales comerciales de urgencias en la biblioteca, aunque serían útiles.</p></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 20 · MODELOS Y STACK -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>13 · Modelos y stack</span></div>
+  <div class="secn">13</div>
+  <div class="cabsec">
+    <span class="ojo">13 · Modelos, stack y licencias</span>
+    <h2>Unos 3 GB de modelos que caben en el computador de la nave</h2>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:27%">Modelo</th><th style="width:18%">Tarea</th><th class="num" style="width:10%">Tamaño</th><th>Cómo corre</th><th style="width:11%">Licencia</th></tr></thead>
+    <tbody>
+      <tr><td>Qwen3-4B-Instruct-2507 Q4_K_M</td><td>Conversación</td><td class="num">2,3 GB</td><td>llama.cpp <code>llama-server</code>, contexto 8192, todas las capas en GPU, plantilla Jinja</td><td>Apache 2.0</td></tr>
+      <tr><td>nomic-embed-text-v2-moe Q4_K_M</td><td>Vectores</td><td class="num">337 MB</td><td>llama.cpp en modo embedding, pooling medio, 768 dimensiones</td><td>Apache 2.0</td></tr>
+      <tr><td>Kokoro-82M v1.0</td><td>Voz</td><td class="num">337 MB</td><td>ONNX Runtime en Python, 24 kHz, voces <code>af_heart</code> y <code>ef_dora</code></td><td>Apache 2.0</td></tr>
+      <tr><td>Biblioteca médica</td><td>Datos</td><td class="num">56 MB</td><td>Fragmentos y matriz float32 en memoria</td><td>según fuente</td></tr>
+    </tbody></table></div>
+  <div class="g2">
+    <div class="caja"><h4>Por qué un modelo de 4B</h4><ul class="l"><li>Cabe con holgura junto al resto de los servicios y responde en segundos en GPU local.</li><li>Las decisiones críticas ya no dependen de él: lo que importa es que explique bien y cite.</li><li>Su versión 2507 sigue instrucciones largas y responde en español o inglés según la pregunta.</li></ul></div>
+    <div class="caja"><h4>Cómo se acota el modelo</h4><ul class="l"><li>Temperatura 0,2 y 400 tokens como máximo.</li><li>Contexto armado por el enlace con datos reales, umbrales, alertas, protocolos y fragmentos.</li><li>Emergencias resueltas antes de llegar al modelo; tres pruebas de <code>cargo test</code> cubren ese detector.</li></ul></div>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:20%">Pieza</th><th style="width:36%">Tecnología</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td>Núcleo de vuelo</td><td>F Prime 4.4.2 · C++17 · FPP · CMake</td><td>Python 3.12 en un entorno propio para <code>fprime-util</code> y <code>fprime-gds</code></td></tr>
+      <tr><td>Enlace y pantalla</td><td>Rust · Tauri 2 · axum 0.8 · tokio · reqwest 0.12 · serde_json</td><td>Siete módulos: main, historia, misión, nova, biblioteca, casa, tierra (≈ 1900 líneas)</td></tr>
+      <tr><td>Interfaz de la nave</td><td>HTML, CSS y JavaScript sin framework</td><td>Space Grotesk local; vistas Crew, Vitals, Systems, Library, Emergency y consola de Tierra (≈ 1700 líneas)</td></tr>
+      <tr><td>Simulador y herramientas</td><td>Python 3</td><td>Simulador BIDMC, indexador de la biblioteca, servidor de voz, relevo Casa</td></tr>
+      <tr><td>App móvil</td><td>Expo SDK 57 · React Native 0.86 · expo-router · TypeScript</td><td>Widgets con <code>react-native-android-widget</code>; builds con EAS y actualizaciones OTA</td></tr>
+      <tr><td>Repositorios</td><td>GitHub privados</td><td><code>4mser/nova-pc</code> (último commit <code>153bcbb</code>) · <code>4mser/nova-app</code> (<code>e7d2aab</code>)</td></tr>
+    </tbody></table></div>
+  <div class="caja at"><div class="cajacab"><h4>Atención con una licencia</h4><span class="est at">Uso comercial</span></div><p>Todo el código y los modelos son Apache 2.0 o equivalentes. La excepción son el BEC y la lista de medicamentos de la OMS (CC BY-NC-SA 3.0 IGO): sirven para el hackathon y para investigación, pero un uso comercial futuro exige permiso de la OMS o reemplazarlos.</p></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 21 · SEGURIDAD Y PRIVACIDAD -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>14 · Seguridad y privacidad</span></div>
+  <div class="secn">14</div>
+  <div class="cabsec">
+    <span class="ojo">14 · Seguridad clínica y privacidad</span>
+    <h2>Reglas fijas donde hay riesgo, y la persona decide qué se comparte</h2>
+  </div>
+  <div class="g2">
+    <div class="caja al"><h4>Seguridad clínica</h4><ul class="l al">
+      <li>Umbrales en el núcleo de vuelo, con dos niveles y 10 s de histéresis para bajar.</li>
+      <li>Valores imposibles y lecturas de baja calidad no disparan alertas.</li>
+      <li>Pasos de emergencia literales desde un archivo versionado, con fuente y página.</li>
+      <li>El modelo de lenguaje no da pasos de emergencia ni diagnósticos.</li>
+      <li>Lo que reporta la tripulación manda sobre lo que dicen los sensores.</li>
+      <li>Cada guía deja bitácora con hora para el cirujano de vuelo.</li>
+    </ul></div>
+    <div class="caja nv"><h4>Privacidad</h4><ul class="l nv">
+      <li>Nada sale a internet: modelos, biblioteca y voz corren en la nave.</li>
+      <li>Ánimo y energía solo se comparten con «Compartir mi día». El texto del diario nunca sale del teléfono.</li>
+      <li>El ciclo menstrual es privado por defecto y nunca aparece en la pantalla de la tripulación.</li>
+      <li><code>/v1/privado</code> lleva resúmenes con consentimiento solo al informe del cirujano.</li>
+      <li>La sesión con la psicóloga la ven solo la persona y su terapeuta.</li>
+    </ul></div>
+  </div>
+  <div class="diag">
+    <svg viewBox="0 0 1780 340" xmlns="http://www.w3.org/2000/svg">
+      <text x="20" y="34" fill="#6d7786" font-size="18" letter-spacing="2.5" class="m">QUIÉN VE CADA DATO</text>
+      <g font-size="20">
+        <g data-caja><rect x="20" y="60" width="400" height="262" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="44" y="104" fill="#6fd6b0" font-size="24" font-weight="600">Toda la tripulación</text>
+          <text x="44" y="146" fill="#a5afbd">signos vitales</text>
+          <text x="44" y="178" fill="#a5afbd">cabina: CO₂, O₂, temperatura</text>
+          <text x="44" y="210" fill="#a5afbd">alertas y guías</text>
+          <text x="44" y="242" fill="#a5afbd">sueño y pasos</text>
+          <text x="44" y="274" fill="#a5afbd">ánimo, si se comparte</text></g>
+        <g data-caja><rect x="460" y="60" width="400" height="262" rx="16" fill="#0f151d" stroke="#ec6aa8"/>
+          <text x="484" y="104" fill="#ec6aa8" font-size="24" font-weight="600">Cirujano de vuelo</text>
+          <text x="484" y="146" fill="#a5afbd">informe de 24 h</text>
+          <text x="484" y="178" fill="#a5afbd">bitácora de guías</text>
+          <text x="484" y="210" fill="#a5afbd">preguntas a NOVA</text>
+          <text x="484" y="242" fill="#a5afbd">resúmenes privados</text>
+          <text x="484" y="274" fill="#a5afbd">con consentimiento</text></g>
+        <g data-caja><rect x="900" y="60" width="400" height="262" rx="16" fill="#0f151d" stroke="#a898ff"/>
+          <text x="924" y="104" fill="#a898ff" font-size="24" font-weight="600">Psicóloga</text>
+          <text x="924" y="146" fill="#a5afbd">temas que la persona</text>
+          <text x="924" y="178" fill="#a5afbd">elige para la sesión</text>
+          <text x="924" y="226" fill="#6d7786" font-size="18">área de Ambar</text></g>
+        <g data-caja><rect x="1340" y="60" width="420" height="262" rx="16" fill="#0f151d" stroke="rgba(255,255,255,.25)"/>
+          <text x="1364" y="104" fill="#f2f5f8" font-size="24" font-weight="600">Solo la persona</text>
+          <text x="1364" y="146" fill="#a5afbd">diario y notas</text>
+          <text x="1364" y="178" fill="#a5afbd">ciclo menstrual</text>
+          <text x="1364" y="210" fill="#a5afbd">respuestas a casa</text>
+          <text x="1364" y="242" fill="#a5afbd">hasta la bajada</text></g>
+      </g>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 9.</b> Niveles de visibilidad de los datos. Lo que no está en la primera columna solo sale del teléfono con una acción explícita de la persona.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:28%">Riesgo</th><th>Mitigación actual</th><th style="width:16%">Estado</th></tr></thead>
+    <tbody>
+      <tr><td>El modelo inventa un dato</td><td>Regla 1 del sistema, datos con antigüedad en el contexto, citas obligatorias y respuesta «no lo tengo medido»</td><td><span class="est ok">Mitigado</span></td></tr>
+      <tr><td>Paso de emergencia incorrecto</td><td>Respuesta fija sin modelo; protocolos con fuente; revisión médica pendiente</td><td><span class="est at">Parcial</span></td></tr>
+      <tr><td>Alarmas falsas por un pico</td><td>Rango plausible, calidad mínima, histéresis y umbrales ajustables por la Tierra</td><td><span class="est ok">Mitigado</span></td></tr>
+      <tr><td>Un tercero en la red de la nave</td><td><code>NOVA_TOKEN</code> opcional en rutas de escritura; red sin salida a internet</td><td><span class="est at">Básico</span></td></tr>
+      <tr><td>Actualización maliciosa desde la Tierra</td><td>Diseñada con firma ed25519 y vuelta atrás; hoy solo se aceptan comandos del diccionario</td><td><span class="est al">Pendiente</span></td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 22 · PENDIENTES -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>15 · Pendientes</span></div>
+  <div class="secn">15</div>
+  <div class="cabsec">
+    <span class="ojo">15 · Pendientes, riesgos y plan</span>
+    <h2>Lo que falta antes del 14 de noviembre</h2>
+  </div>
+  <p class="lead">Orden acordado del plan: biblioteca, emergencias y salud femenina (hechas), luego la parte preventiva. En paralelo, la estación de Luis y la revisión médica.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:24%">Pendiente</th><th>Qué incluye</th><th style="width:14%">Responsable</th><th style="width:13%">Estado</th></tr></thead>
+    <tbody>
+      <tr><td>Preventiva</td><td>Líneas base personales y tendencias (p. ej. pulso en reposo +10 lpm en 3 días), riesgo renal, SANS, pérdida ósea y sueño</td><td>Nicolás Moreno</td><td><span class="est al">Siguiente</span></td></tr>
+      <tr><td>Vistas Sleep, Mind y Body en PC</td><td>Vistas nuevas en la pantalla de la nave con los datos del teléfono y la preventiva</td><td>Nicolás Moreno</td><td><span class="est al">Pendiente</span></td></tr>
+      <tr><td>Ciclo nocturno</td><td>Informe automático cada noche y mejoras desde la Tierra como paquete firmado con ed25519, verificado a bordo y con vuelta atrás</td><td>Nicolás Moreno</td><td><span class="est at">Parcial</span></td></tr>
+      <tr><td>Radiación</td><td>Dosis acumulada con la tasa de MSL RAD y alerta por evento solar con DONKI; reemplaza el valor fijo de la app</td><td>Nicolás Moreno</td><td><span class="est al">Pendiente</span></td></tr>
+      <tr><td>Rangos esperados en vuelo</td><td>Nivel <code>ESPERADO_VUELO</code> con datos de OSDR / SOMA</td><td>Nicolás Moreno</td><td><span class="est al">Pendiente</span></td></tr>
+      <tr><td>Estación médica física</td><td>Confirmar sensores y placa; conectar por USB serie o UDP con el contrato v1</td><td>Luis González</td><td><span class="est at">Esperando</span></td></tr>
+      <tr><td>Revisión clínica</td><td>Un médico asesor revisa los 12 protocolos y los umbrales de partida</td><td>Por conseguir</td><td><span class="est al">Riesgo</span></td></tr>
+      <tr><td>Sueño, ánimo y sesión privada</td><td>Validar el protocolo de bienestar y el flujo con la psicóloga</td><td>Ambar Martínez</td><td><span class="est at">Por revisar</span></td></tr>
+      <tr><td>Pasos del teléfono en inglés</td><td>Traducir los pasos de emergencia que la app todavía muestra en inglés</td><td>Nicolás Moreno</td><td><span class="est at">Parcial</span></td></tr>
+      <tr><td>Tarjeta «La nave»</td><td>Commit y publicación por OTA de <code>EstadoNave.tsx</code></td><td>Nicolás Moreno</td><td><span class="est at">Lista</span></td></tr>
+    </tbody></table></div>
+  <div class="g2">
+    <div class="caja al"><h4>Riesgo: reglas de Space Apps</h4><p>Parte del trabajo existe antes del hackathon. Hay que revisar qué permiten las reglas sobre trabajo previo y declararlo con claridad en la entrega para no arriesgar la descalificación.</p></div>
+    <div class="caja at"><h4>Riesgo: hardware a tiempo</h4><p>Si la estación no llega, la demo usa el simulador con datos reales de PhysioNet. El núcleo no cambia: el contrato es el mismo.</p></div>
+  </div>
+  <div class="diag">
+    <svg viewBox="0 0 1780 240" xmlns="http://www.w3.org/2000/svg">
+      <path d="M60,120 H1720" stroke="rgba(255,255,255,.18)" stroke-width="3"/>
+      <g font-size="25">
+        <circle cx="120" cy="120" r="14" fill="#6fd6b0"/><text x="120" y="62" text-anchor="middle" fill="#f2f5f8" font-weight="600">Hecho</text><text x="120" y="174" text-anchor="middle" fill="#a5afbd">núcleo · PC</text><text x="120" y="210" text-anchor="middle" fill="#a5afbd">app · Tierra</text>
+        <circle cx="560" cy="120" r="14" fill="#f2b457"/><text x="560" y="62" text-anchor="middle" fill="#f2f5f8" font-weight="600">10–11 nov</text><text x="560" y="174" text-anchor="middle" fill="#a5afbd">preventiva y vistas</text><text x="560" y="210" text-anchor="middle" fill="#a5afbd">Sleep, Mind, Body</text>
+        <circle cx="1000" cy="120" r="14" fill="#f2b457"/><text x="1000" y="62" text-anchor="middle" fill="#f2f5f8" font-weight="600">12–13 nov</text><text x="1000" y="174" text-anchor="middle" fill="#a5afbd">ciclo nocturno, radiación</text><text x="1000" y="210" text-anchor="middle" fill="#a5afbd">estación de Luis</text>
+        <circle cx="1440" cy="120" r="14" fill="#ec6aa8"/><text x="1440" y="62" text-anchor="middle" fill="#f2f5f8" font-weight="600">14–15 nov</text><text x="1440" y="174" text-anchor="middle" fill="#a5afbd">hackathon: demo,</text><text x="1440" y="210" text-anchor="middle" fill="#a5afbd">video y entrega</text>
+      </g>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 10.</b> Propuesta de calendario hasta la entrega, sujeta a lo que acuerde el equipo.</p>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 23 · ANEXO -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>Anexo</span></div>
+  <div class="secn">A</div>
+  <div class="cabsec">
+    <span class="ojo">Anexo · cómo levantar todo</span>
+    <h2>Seis procesos y la nave queda andando en un solo computador</h2>
+  </div>
+  <p class="lead">Así se levantó cada captura de este informe en el Mac de desarrollo (Apple Silicon). Cada bloque corre en su propia terminal desde <code>~/nova-pc</code>.</p>
+  <div class="codigo" style="white-space:pre"><span class="c"># 1 · núcleo de vuelo y sistema de tierra (lanza Nova_Nave conectado por TCP 50000)</span>
+<span class="k">source</span> vuelo/fprime-venv/bin/activate && cd vuelo/Nova/Nave
+fprime-util build -j12
+fprime-gds -g html --gui-port 5080
+
+<span class="c"># 2 · modelo de lenguaje y modelo de búsqueda (llama.cpp)</span>
+llama-server -m ~/.nova-pc/modelos/Qwen3-4B-Instruct-2507-Q4_K_M.gguf --port 8081 -c 8192 -ngl 99 --jinja
+llama-server -m ~/.nova-pc/modelos/nomic-embed-text-v2-moe.Q4_K_M.gguf --embedding --pooling mean \
+             --port 8084 -c 2048 -ub 2048 -b 2048 -ngl 99
+
+<span class="c"># 3 · voz de NOVA (Kokoro, :8082)</span>
+cd voz && .venv/bin/python servidor.py
+
+<span class="c"># 4 · estación simulada con datos BIDMC (escenarios: desmayo T3, hipoglucemia T1, fiebre T2, hipoxia T4, co2, normal)</span>
+python3 estacion/simulador/simulador.py
+
+<span class="c"># 5 · enlace y pantalla de la nave (:8750); --sin-ventana para solo el enlace</span>
+cd tripulacion/src-tauri && cargo run
+./target/debug/nova-tripulacion --sin-ventana
+
+<span class="c"># 6 · pruebas del detector de emergencias</span>
+cargo test</div>
+  <div class="g2">
+    <div class="codigo" style="white-space:pre"><span class="c"># preparar la biblioteca (en la Tierra)</span>
+cd biblioteca && .venv/bin/python indexar.py
+<span class="c"># → ~/.nova-pc/biblioteca</span>
+
+<span class="c"># mensaje de la familia</span>
+python3 tierra/casa.py enviar --trip T2 \
+  --de "Ana" --relacion "wife" \
+  --texto "We miss you!" --foto playa.jpg
+python3 tierra/casa.py bajar</div>
+    <div class="codigo" style="white-space:pre"><span class="c"># app móvil (~/nova-app)</span>
+npx expo start
+<span class="c"># en la app: modo misión + enlazar la nave</span>
+<span class="c"># url http://&lt;ip-del-pc&gt;:8750 · asiento T1–T4</span>
+
+<span class="c"># consola de Tierra</span>
+open http://127.0.0.1:8750/tierra/
+
+<span class="c"># escenario de demo desde la pantalla</span>
+<span class="c"># tecla D en NOVA PC</span></div>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:26%">Dato de este informe</th><th>De dónde sale</th></tr></thead>
+    <tbody>
+      <tr><td>Umbrales y eventos</td><td><code>vuelo/Nova/Components/MonitorSalud/MonitorSalud.fpp</code> y <code>.cpp</code></td></tr>
+      <tr><td>Topología y rate groups</td><td><code>vuelo/Nova/Nave/Top/topology.fpp</code></td></tr>
+      <tr><td>Contrato y sensores</td><td><code>estacion/CONTRATO.md</code> · <code>Components/Salud/Salud.fpp</code></td></tr>
+      <tr><td>Rutas y puertos</td><td><code>tripulacion/src-tauri/src/main.rs</code></td></tr>
+      <tr><td>Protocolos</td><td><code>tripulacion/ui/protocolos.json</code> v0.2</td></tr>
+      <tr><td>Fuentes y fragmentos</td><td><code>~/.nova-pc/biblioteca/catalogo.json</code> (32 fuentes, 14.551 fragmentos)</td></tr>
+      <tr><td>Capturas</td><td>Aplicaciones reales con el simulador, 9 de noviembre de 2026; tripulación ficticia</td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+<script>
+// Control de desborde y choques: cada página revisa que nada pase el pie, y que los bloques hermanos no se pisen.
+document.fonts.ready.then(() => setTimeout(() => {
+  const problemas = [];
+  document.querySelectorAll('.pag').forEach((pg, i) => {
+    const pie = pg.querySelector('.pie'); if (!pie) return;
+    const lim = pie.getBoundingClientRect().top - 2;
+    let max = 0;
+    pg.querySelectorAll('*').forEach(e => {
+      if (e.closest('.pie') || e.closest('.cab') || e.classList.contains('secn') || e.closest('.foto') || e.closest('.velo') || e.closest('svg')) return;
+      const r = e.getBoundingClientRect(); if (r.height && r.bottom > max) max = r.bottom;
+    });
+    if (max > lim) problemas.push(`pag ${i + 1} desborda ${Math.round(max - lim)}px`);
+    pg.querySelectorAll('.tw,.caja,.diag,.monitor,.tel').forEach(e => { if (e.scrollHeight > e.clientHeight + 2) problemas.push(`pag ${i + 1} contenido recortado en .${e.className.split(' ')[0]}`); });
+    // textos de SVG que se salen de su caja o se pisan entre sí
+    pg.querySelectorAll('svg').forEach(s => {
+      const vb = s.viewBox.baseVal, ts = [...s.querySelectorAll('text')].map(t => ({ t, b: t.getBBox() }));
+      ts.forEach(({ t, b }) => { if (b.x < vb.x - 1 || b.y < vb.y - 1 || b.x + b.width > vb.x + vb.width + 1 || b.y + b.height > vb.y + vb.height + 1) problemas.push(`pag ${i + 1} texto fuera del SVG: «${t.textContent.slice(0, 30)}»`); });
+      for (let a = 0; a < ts.length; a++) for (let c = a + 1; c < ts.length; c++) {
+        const A = ts[a].b, B = ts[c].b;
+        if (A.x < B.x + B.width - 1 && B.x < A.x + A.width - 1 && A.y < B.y + B.height - 2 && B.y < A.y + A.height - 2) problemas.push(`pag ${i + 1} textos chocan: «${ts[a].t.textContent.slice(0, 22)}» / «${ts[c].t.textContent.slice(0, 22)}»`);
+      }
+      // texto que se sale de la caja (rect) que lo contiene, marcada con data-caja
+      s.querySelectorAll('[data-caja]').forEach(g => {
+        const r = g.querySelector('rect'); if (!r) return; const R = r.getBBox();
+        g.querySelectorAll('text').forEach(t => { const b = t.getBBox(); if (b.x < R.x + 2 || b.x + b.width > R.x + R.width - 2 || b.y < R.y + 1 || b.y + b.height > R.y + R.height - 1) problemas.push(`pag ${i + 1} texto sale de su caja: «${t.textContent.slice(0, 30)}»`); });
+      });
+    });
+  });
+  document.title = problemas.length ? 'PROBLEMAS: ' + problemas.join(' | ') : 'NOVA · Informe técnico';
+  document.body.dataset.listo = '1';
+}, 300));
+</script>
+</body>
+</html>

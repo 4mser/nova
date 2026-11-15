@@ -1,0 +1,10 @@
+register_fprime_module(
+  AUTOCODER_INPUTS
+    "${CMAKE_CURRENT_LIST_DIR}/Estacion.fpp"
+  SOURCES
+    "${CMAKE_CURRENT_LIST_DIR}/Estacion.cpp"
+  HEADERS
+    "${CMAKE_CURRENT_LIST_DIR}/Estacion.hpp"
+  DEPENDS
+    Nova_Components_Salud
+)

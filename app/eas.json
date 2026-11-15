@@ -1,0 +1,31 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "channel": "development"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_VOZ_URL": "https://nova-voz.fly.dev",
+        "EXPO_PUBLIC_VOZ_TOKEN": "<pídelo a Nicolás Moreno · no se sube al repo>",
+        "EXPO_PUBLIC_API_URL": "https://nova-bn-api.fly.dev"
+      },
+      "channel": "preview"
+    },
+    "production": {
+      "channel": "production"
+    }
+  }
+}

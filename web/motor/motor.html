@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>NOVA · Space Apps 2026</title>
+<style>
+@font-face{font-family:SG;src:url(fonts/space-grotesk-300-latin.woff2);font-weight:300}
+@font-face{font-family:SG;src:url(fonts/space-grotesk-400-latin.woff2);font-weight:400}
+@font-face{font-family:SG;src:url(fonts/space-grotesk-500-latin.woff2);font-weight:500}
+@font-face{font-family:SG;src:url(fonts/space-grotesk-600-latin.woff2);font-weight:600}
+@font-face{font-family:SG;src:url(fonts/space-grotesk-700-latin.woff2);font-weight:700}
+@font-face{font-family:PM;src:url(fonts/ibm-plex-mono-400-latin.woff2);font-weight:400}
+@font-face{font-family:PM;src:url(fonts/ibm-plex-mono-500-latin.woff2);font-weight:500}
+:root{--bg:#04070b;--bg2:#060a10;--pet:#0b3140;--pet2:#0f4a5c;--vio:#2a1d52;--cian:#46c8e8;--cian2:#8fe6f5;--lila:#9d8bff;--mag:#e2589b;--amb:#f2b457;
+  --ink:#e8eef5;--ink2:#c5cfdb;--mut:#8c99a9;--dim:#5d6a7a;--linea:rgba(150,185,215,.12);--linea2:rgba(150,185,215,.22)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body,#stage{width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+#stage{position:relative;font-family:SG;color:var(--ink)}
+.capa{position:absolute;inset:0}
+#fondo{background:radial-gradient(60% 70% at var(--fx,62%) var(--fy,48%),rgba(15,74,92,.42),transparent 70%),radial-gradient(45% 55% at 80% 75%,rgba(42,29,82,.5),transparent 70%),radial-gradient(40% 40% at 18% 22%,rgba(11,49,64,.35),transparent 70%),var(--bg)}
+canvas.capa{width:1920px;height:1080px}
+.grano{opacity:.07;mix-blend-mode:overlay;pointer-events:none}
+#vig{background:radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(0,0,0,.55))}
+.esc{position:absolute;inset:0;display:none;will-change:transform,opacity,filter}
+/* titulares */
+.h{position:absolute;font-weight:500;letter-spacing:-.045em;line-height:1.02;display:none}
+.h .w{display:inline-block;margin-right:.24em;will-change:transform,opacity,filter}
+.g,.w.g{background:linear-gradient(95deg,#8fe6f5 0%,#46c8e8 55%,#9d8bff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.w.g{padding-right:.16em;margin-right:.08em}
+.rot{font-family:PM;font-weight:500;font-size:15px;letter-spacing:.24em;color:var(--cian2);text-transform:uppercase}
+.mono{font-family:PM}
+/* foto */
+.foto{position:absolute;overflow:hidden;border-radius:28px}
+.foto img{position:absolute;width:100%;height:100%;object-fit:cover}
+.foto .tinte{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,7,11,0) 40%,rgba(4,7,11,.85)),linear-gradient(120deg,rgba(15,74,92,.35),rgba(42,29,82,.25));mix-blend-mode:normal}
+.foto .et{position:absolute;left:24px;bottom:22px;right:24px}
+.foto .et b{display:block;font:600 26px SG;letter-spacing:-.02em}
+.foto .et span{font:500 12px PM;letter-spacing:.2em;color:var(--cian2)}
+.cred{position:absolute;right:40px;bottom:34px;font:400 11px PM;letter-spacing:.2em;color:rgba(197,207,219,.45)}
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:12px;padding:14px 22px;border-radius:999px;border:1px solid var(--linea2);background:rgba(15,22,32,.7);font:500 15px PM;letter-spacing:.16em;color:var(--ink2);backdrop-filter:blur(10px)}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--cian);box-shadow:0 0 12px var(--cian)}
+/* teléfono PSYFIELD */
+.tel{position:absolute;width:320px;height:664px;border-radius:54px;padding:12px;background:linear-gradient(150deg,#2b3542,#0b1017 40%,#1a222c);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.08),0 0 0 1px #05080c,0 50px 100px -30px rgba(0,0,0,.95),0 0 140px -40px rgba(70,200,232,.6);transform-origin:50% 50%}
+.tel::before{content:'';position:absolute;inset:12px;border-radius:42px;background:radial-gradient(120% 60% at 50% 0%,#10233a 0%,#070b12 55%,#05080d 100%)}
+.tel .isla{position:absolute;top:22px;left:50%;width:100px;height:29px;margin-left:-50px;border-radius:20px;background:#05080c;z-index:3}
+.tel .estado{position:absolute;top:12px;left:12px;right:12px;height:48px;padding:16px 28px 0 32px;font:600 14px SG;color:#e8eef5;display:flex;justify-content:space-between;z-index:2}
+.tel .pant{position:absolute;top:60px;left:12px;right:12px;bottom:92px;overflow:hidden;padding:6px 18px 16px}
+.tel .scr{position:absolute;inset:6px 18px 16px}
+.tel .tabs{position:absolute;left:12px;right:12px;bottom:12px;height:80px;display:grid;grid-template-columns:repeat(4,1fr);padding:10px 8px 22px;border-radius:0 0 42px 42px;background:rgba(8,12,18,.82);border-top:1px solid rgba(150,185,215,.1)}
+.tel .tabs div{display:flex;flex-direction:column;align-items:center;gap:4px;font:600 10px SG;color:#5d6a7a}
+.tel .tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tel .tabs .on{color:#8fe6f5}.tel .tabs .on svg{filter:drop-shadow(0 0 6px rgba(70,200,232,.8))}
+.tel .home{position:absolute;bottom:20px;left:50%;width:110px;height:4px;margin-left:-55px;border-radius:4px;background:#e8eef5;opacity:.8}
+.ta-top{display:flex;justify-content:space-between;align-items:center;font:500 10px PM;letter-spacing:.14em;color:#5d6a7a;text-transform:uppercase;margin-bottom:10px}
+.ta-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#8fe6f5,#9d8bff);color:#031018;font:700 13px SG;display:grid;place-items:center;box-shadow:0 0 14px rgba(70,200,232,.55)}
+.ta-h{font:500 24px/1.1 SG;letter-spacing:-.035em;color:#f2f6fa}
+.ta-p{font-size:13.5px;color:#8c99a9;margin-top:3px}
+.ta-card{background:linear-gradient(180deg,rgba(22,30,42,.85),rgba(12,17,25,.85));border:1px solid rgba(150,185,215,.1);border-radius:20px;padding:12px 14px;margin-bottom:9px}
+.ta-lbl{display:flex;justify-content:space-between;font-size:12.5px;color:#c5cfdb}
+.ta-lbl em{font:500 11px PM;font-style:normal;color:#8fe6f5}
+.ta-big{font:600 26px SG;letter-spacing:-.03em;margin-top:2px}.ta-big small{font-size:13px;color:#8c99a9;font-weight:500;margin-left:4px}
+.ta-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.demo{position:absolute;font:500 9.5px PM;letter-spacing:.18em;color:#ffcfe5;background:rgba(226,88,155,.14);border:1px solid rgba(226,88,155,.35);padding:4px 8px;border-radius:999px}
+.ta-btn{border-radius:16px;padding:12px;text-align:center;background:linear-gradient(95deg,#8fe6f5,#46c8e8 55%,#9d8bff);font:600 15px SG;color:#031018}
+/* tarjetas vidrio */
+.vid{position:absolute;border-radius:22px;background:linear-gradient(180deg,rgba(18,26,37,.78),rgba(9,13,20,.82));border:1px solid rgba(150,185,215,.14);box-shadow:0 30px 80px -30px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.04);backdrop-filter:blur(14px)}
+/* chat NOVA */
+.burb{position:absolute;max-width:520px;padding:18px 22px;border-radius:22px 22px 22px 8px;background:linear-gradient(180deg,rgba(20,34,46,.9),rgba(10,18,26,.92));border:1px solid rgba(143,230,245,.22);font:400 21px/1.42 SG;color:#e8eef5;box-shadow:0 20px 60px -20px rgba(0,0,0,.8),0 0 40px -18px rgba(70,200,232,.5)}
+.burb b{font-weight:600;color:#8fe6f5}
+.burb.al{border-color:rgba(226,88,155,.5);box-shadow:0 20px 60px -20px rgba(0,0,0,.8),0 0 50px -14px rgba(226,88,155,.55)}
+.burb.al b{color:#ff9cc8}
+.btns{display:flex;gap:10px;margin-top:14px}
+.btns span{padding:10px 18px;border-radius:12px;font:600 16px SG;border:1px solid var(--linea2);color:var(--ink2)}
+.btns span.pri{background:linear-gradient(95deg,#8fe6f5,#46c8e8 55%,#9d8bff);color:#031018;border:0}
+.quien{font:500 12px PM;letter-spacing:.2em;color:var(--cian2);margin-bottom:8px}
+.pant{position:absolute;left:0;top:0;width:1920px;height:1080px;border-radius:26px;overflow:hidden;transform-origin:0 0;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 60px 140px -40px rgba(0,0,0,.95);background:#05080c}
+.pant iframe{width:1920px;height:1080px;border:0;display:block}
+#narr{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);display:flex;align-items:center;gap:16px;padding:10px 26px 10px 12px;border-radius:40px;background:rgba(5,8,12,.82);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px);z-index:40;opacity:0;max-width:1500px}
+#narrN{width:58px;height:58px;overflow:visible;flex:none}
+#narrT{font:400 23px/1.35 SG;color:#eef3f8;letter-spacing:-.01em;white-space:nowrap}
+#narrT b{font-weight:600;color:#a898ff;margin-right:10px}
+#pMovilA,#pMovilB,#pCheckin,#pCiclo,#pModelos,#pRuta{box-shadow:none;border-radius:0;background:transparent}
+.cic{padding:26px 28px;border-radius:26px;background:#0a0f15;border:1px solid rgba(255,255,255,.08)}.cic b{display:block;font:600 23px SG;letter-spacing:-.025em}.cic span{display:block;font:400 17px/1.45 SG;color:#9aa4b2;margin-top:10px}
+
+/* en el teléfono: sin desenfoques de fondo ni capas forzadas (parpadeos por memoria gráfica) */
+.vert *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.vert .esc,.vert .h .w{will-change:auto!important}
+/* modo vertical: todo lo que no cabe en la ventana (x 600–1320) se reacomoda */
+#stage.vert #narr{display:none}
+.vert #rIntro{left:640px!important;top:300px!important}
+.vert #h1{left:650px!important;width:620px!important;font-size:66px!important;top:350px!important}
+.vert #h2{left:640px!important;width:640px!important;font-size:96px!important;top:360px!important}
+.vert #marteI{left:410px!important;top:150px!important;width:1100px!important;height:1100px!important}
+.vert #credI,.vert #credF{right:640px!important}
+.vert #rDist{top:200px!important}
+.vert #nDist{font-size:92px!important;top:236px!important}
+.vert #nDist span{font-size:34px!important}
+.vert #h3,.vert #h4{left:640px!important;right:640px!important;font-size:52px!important;top:800px!important}
+.vert #h5,.vert #h6{left:640px!important;width:640px!important;font-size:60px!important;top:110px!important}
+.vert #f1{left:640px!important;top:330px!important;width:200px!important;height:420px!important}
+.vert #f2{left:860px!important;top:330px!important;width:200px!important;height:420px!important}
+.vert #f3{left:1080px!important;top:330px!important;width:200px!important;height:420px!important}
+.vert .foto .et b{font-size:20px}.vert .foto .et span{font-size:11px}
+.vert #chips{left:640px!important;width:640px!important;top:790px!important}
+.vert .chip{font-size:11px;padding:8px 11px;gap:7px;letter-spacing:.1em}.vert #chips>div:last-child{gap:8px!important}
+.vert #novaN{left:640px!important;right:640px!important}
+.vert #novaS{font-size:30px!important;line-height:1.35}
+.vert #h7{left:640px!important;right:640px!important;top:900px!important;font-size:44px!important}
+.vert #hAb{left:640px!important;right:640px!important;top:880px!important;font-size:50px!important}
+.vert #hCi{left:640px!important;right:640px!important;top:100px!important;font-size:60px!important}
+.vert #ciG{left:640px!important;right:640px!important;top:330px!important;grid-template-columns:1fr 1fr!important;gap:14px!important}
+.vert .cic{padding:18px}.vert .cic b{font-size:19px}.vert .cic span{font-size:14.5px}
+.vert #cM span{font-size:130px!important}
+.vert #h12{left:640px!important;right:640px!important}
+.vert #cFirma{left:640px!important;right:640px!important}
+
+/* escenas con capturas reales */
+.hN .w.g{padding-bottom:.14em}
+.pant video{width:1920px;height:1080px;display:block;object-fit:cover}
+.real{position:absolute;left:50%;top:22px;transform:translateX(-50%);font:500 12px PM;letter-spacing:.24em;color:#8fe6f5;opacity:0;padding:7px 14px;border-radius:999px;background:rgba(5,8,12,.8);border:1px solid rgba(143,230,245,.25);z-index:5;white-space:nowrap}
+.disp{position:absolute;border-radius:30px;overflow:hidden;background:#05080c;box-shadow:0 0 0 10px #111821,0 0 0 11px rgba(255,255,255,.08),0 60px 140px -40px rgba(0,0,0,.95)}
+.disp video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.disp .lab{position:absolute;left:0;right:0;top:-54px;font:500 14px PM;letter-spacing:.24em;text-align:center}
+.vert .real{top:170px}
+.vert #hEsc1,.vert #hEsc2{left:560px!important;width:1260px!important;top:930px!important;font-size:80px!important}
+.vert #hRcp{display:none!important}
+.vert #dMarte .lab,.vert #dMicro .lab{font-size:22px;top:-70px}
+
+/* teléfonos con la app real */
+.fono{position:absolute;width:344px;height:764px;border-radius:46px;overflow:hidden;background:#05080c;box-shadow:0 0 0 9px #111821,0 0 0 10px rgba(255,255,255,.1),0 50px 120px -30px rgba(0,0,0,.95);opacity:0}
+.fono img{width:100%;display:block}
+.pt{display:flex;align-items:center;gap:14px;font:400 26px SG;color:#c5cfdb;margin-top:22px;opacity:0}.pt i{width:10px;height:10px;border-radius:50%;flex:none}
+.vert #hChk,.vert #hPriv,.vert #hMuj,.vert .pts,.vert #fMuj{display:none!important}
+</style></head><body>
+<div id="stage">
+  <div id="fondo" class="capa"></div>
+  <canvas id="cv" class="capa"></canvas>
+
+  <!-- 01 · INTRO: foto de Artemis II -->
+  <div class="esc" id="eIntro">
+    <div class="foto" id="fIntro" style="left:0;top:0;width:1920px;height:1080px;border-radius:0">
+      <img src="img/intro.jpg" style="object-position:50% 14%;filter:saturate(.9) contrast(1.05) brightness(.95)">
+      <div class="tinte" style="background:linear-gradient(90deg,rgba(4,7,11,.9) 0%,rgba(4,7,11,.6) 30%,rgba(4,7,11,0) 55%),linear-gradient(0deg,rgba(4,7,11,.8),transparent 40%),linear-gradient(120deg,rgba(15,74,92,.35),rgba(42,29,82,.25))"></div>
+    </div>
+    <div id="marte" style="position:absolute;inset:0;opacity:0;background:#000"><img id="marteI" src="img/mars.jpg" style="position:absolute;left:820px;top:-160px;width:1400px;height:1400px;object-fit:cover;border-radius:50%"><div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,7,11,.95) 0%,rgba(4,7,11,.55) 38%,rgba(4,7,11,0) 60%)"></div></div>
+    <div class="rot" id="rIntro" style="position:absolute;left:150px;top:330px">ARTEMIS II · APRIL 2026</div>
+    <p class="h" id="h1" style="left:150px;top:380px;font-size:92px;width:900px"><span class="w">Four</span><span class="w">humans</span><span class="w">just</span><span class="w">flew</span><span class="w">around</span><span class="w">the</span><span class="w g">Moon.</span></p>
+    <p class="h" id="h2" style="left:150px;top:420px;font-size:120px;width:900px"><span class="w">Next</span><span class="w">stop:</span><span class="w g">Mars.</span></p>
+    <div class="cred" id="credI">PHOTO · NASA / ARTEMIS II</div>
+  </div>
+
+  <!-- 02 · DISTANCIA -->
+  <div class="esc" id="eDist">
+    <svg class="capa" id="svDist" viewBox="0 0 1920 1080"></svg>
+    <div class="rot" id="rDist" style="position:absolute;left:0;right:0;top:250px;text-align:center">EARTH → MARS · AVERAGE DISTANCE</div>
+    <div id="nDist" style="position:absolute;left:0;right:0;top:285px;text-align:center;font:500 132px SG;letter-spacing:-.05em">0</div>
+    <p class="h" id="h3" style="left:0;right:0;top:820px;font-size:60px;text-align:center"><span class="w">The</span><span class="w">nearest</span><span class="w">doctor</span><span class="w">stays</span><span class="w g">behind.</span></p>
+    <p class="h" id="h4" style="left:0;right:0;top:820px;font-size:60px;text-align:center"><span class="w">Every</span><span class="w">message</span><span class="w">takes</span><span class="w">up</span><span class="w">to</span><span class="w g">22</span><span class="w g">minutes.</span><span class="w">One</span><span class="w">way.</span></p>
+  </div>
+
+  <!-- 03 · EL CUERPO -->
+  <div class="esc" id="eCuerpo">
+    <p class="h" id="h5" style="left:130px;top:150px;font-size:76px;width:760px"><span class="w">Long</span><span class="w">missions</span><span class="w">change</span><span class="w">the</span><span class="w g">body.</span></p>
+    <div class="foto" id="f1" style="left:980px;top:120px;width:250px;height:600px"><img src="img/iss034e035949_v.jpg" style="object-position:58% 50%"><div class="tinte"></div><div class="et"><span>EYES</span><b>Vision shifts</b></div></div>
+    <div class="foto" id="f2" style="left:1250px;top:120px;width:250px;height:600px"><img src="img/iss073e0076065_v.jpg" style="object-position:40% 50%"><div class="tinte"></div><div class="et"><span>HEART</span><b>Deconditioning</b></div></div>
+    <div class="foto" id="f3" style="left:1520px;top:120px;width:250px;height:600px"><img src="img/iss040e074772_v.jpg" style="object-position:50% 40%"><div class="tinte"></div><div class="et"><span>BONE</span><b>−1.5 % / month</b></div></div>
+    <div id="chips" style="position:absolute;left:130px;top:790px;width:1680px">
+      <div class="rot" style="margin-bottom:22px;color:#8c99a9">NASA · THE FIVE HAZARDS OF HUMAN SPACEFLIGHT</div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <span class="chip"><i></i>RADIATION</span><span class="chip"><i style="background:#9d8bff;box-shadow:0 0 12px #9d8bff"></i>ISOLATION &amp; CONFINEMENT</span><span class="chip"><i style="background:#f2b457;box-shadow:0 0 12px #f2b457"></i>DISTANCE FROM EARTH</span><span class="chip"><i style="background:#7fe3c4;box-shadow:0 0 12px #7fe3c4"></i>GRAVITY FIELDS</span><span class="chip"><i style="background:#e2589b;box-shadow:0 0 12px #e2589b"></i>HOSTILE ENVIRONMENTS</span>
+      </div>
+    </div>
+    <p class="h" id="h6" style="left:130px;top:300px;font-size:64px;width:780px;color:#c5cfdb"><span class="w">And</span><span class="w">the</span><span class="w">crew</span><span class="w">has</span><span class="w">to</span><span class="w">spot</span><span class="w">it</span><span class="w g">themselves.</span></p>
+    <div class="cred" id="credF">PHOTOS · NASA / ISS</div>
+  </div>
+
+  <!-- 04 · REVEAL HALO -->
+  <div class="esc" id="eReveal">
+    <svg class="capa" id="svBand" viewBox="0 0 1920 1080"></svg>
+    <p class="h" id="h7" style="left:0;right:0;top:790px;font-size:64px;text-align:center"><span class="w">One</span><span class="w">medical</span><span class="w">station.</span><span class="w" style="color:#8fe6f5">Every</span><span class="w" style="color:#8fe6f5">signal.</span></p>
+  </div>
+
+  <!-- NOVA se presenta -->
+  <div class="esc" id="eNova">
+    <svg class="capa" id="svNova" viewBox="0 0 1920 1080"></svg>
+    <div id="novaN" style="position:absolute;left:0;right:0;top:700px;text-align:center">
+      <div id="novaT" style="font:600 120px/1 SG;letter-spacing:-.045em" class="g">NOVA</div>
+      <div id="novaS" style="font:400 26px SG;color:#c5cfdb;margin-top:22px;letter-spacing:-.01em">A crew health system with an AI that lives on board</div>
+    </div>
+  </div>
+  <!-- pantallas reales (iframes) -->
+
+  <!-- la app real -->
+  <div class="esc" id="eFonos"><p class="h" id="hFon"></p><div class="fono" id="fHoy" style="left:348px;top:158px"><img src="clips/app/hoy.png"></div><div class="fono" id="fCuerpo" style="left:788px;top:158px"><img src="clips/app/cuerpo.png"></div><div class="fono" id="fMente" style="left:1228px;top:158px"><img src="clips/app/mente.png"></div><div class="real" id="tFon">NOVA APP · REAL SCREENS</div></div>
+  <div class="esc" id="eCheck"><p class="h hN" id="hChk" style="left:150px;top:300px;font-size:80px;width:760px"><span class="w">A</span><span class="w">one-minute</span><span class="w" style="color:#8fe6f5">check-in.</span></p>
+    <div class="pts" style="position:absolute;left:150px;top:520px"><div class="pt"><i style="background:#8fe6f5"></i>Six quick questions, one tap each</div><div class="pt"><i style="background:#a898ff"></i>How they feel, and one good thing</div><div class="pt"><i style="background:#6fd6b0"></i>What they write never leaves the phone</div></div><div class="fono" id="fCheck" style="left:1068px;top:158px"><img class="ckp" src="clips/app/ck/p00.jpg" style="position:absolute;inset:0;opacity:1"><img class="ckp" src="clips/app/ck/p01.jpg" style="position:absolute;inset:0;opacity:0"><img class="ckp" src="clips/app/ck/p02.jpg" style="position:absolute;inset:0;opacity:0"><img class="ckp" src="clips/app/ck/p03.jpg" style="position:absolute;inset:0;opacity:0"><img class="ckp" src="clips/app/ck/p04.jpg" style="position:absolute;inset:0;opacity:0"><img class="ckp" src="clips/app/ck/p05.jpg" style="position:absolute;inset:0;opacity:0"><img class="ckp" src="clips/app/ck/p06.jpg" style="position:absolute;inset:0;opacity:0"><img class="ckp" src="clips/app/ck/p07.jpg" style="position:absolute;inset:0;opacity:0"><img class="ckp" src="clips/app/ck/p08.jpg" style="position:absolute;inset:0;opacity:0"><img class="ckp" src="clips/app/ck/p09.jpg" style="position:absolute;inset:0;opacity:0"><img class="ckp" src="clips/app/ck/p10.jpg" style="position:absolute;inset:0;opacity:0"></div></div>
+  <div class="esc" id="ePriv"><p class="h hN" id="hPriv" style="left:150px;top:300px;font-size:80px;width:760px"><span class="w">They</span><span class="w">decide</span><span class="w">what</span><span class="w">to</span><span class="w" style="color:#8fe6f5">share.</span></p>
+    <div class="pts" style="position:absolute;left:150px;top:520px"><div class="pt"><i style="background:#8fe6f5"></i>Vital signs → the flight surgeon</div><div class="pt"><i style="background:#a898ff"></i>Mood → only if they share their day</div><div class="pt"><i style="background:#6fd6b0"></i>Journal → stays on their phone</div></div><div class="fono" id="fCrew" style="left:1068px;top:158px"><img src="clips/app/crew.png"></div></div>
+  <!-- la estación real -->
+  <div class="esc" id="eCrewS"><div class="pant" id="pCrewS"><video id="vCrewS" src="clips/st-crew.webm" muted playsinline preload="auto"></video></div><div class="real" id="tCrewS">NOVA PC · REAL CAPTURE</div></div>
+  <div class="esc" id="eVitS"><div class="pant" id="pVitS"><video id="vVitS" src="clips/vitals.webm" muted playsinline preload="auto"></video></div><div class="real" id="tVitS">NOVA PC · REAL CAPTURE</div></div>
+  <div class="esc" id="eGemS"><div class="pant" id="pGemS"><video id="vGemS" src="clips/st-gemelo.webm" muted playsinline preload="auto"></video></div><div class="real" id="tGemS">NOVA PC · REAL CAPTURE</div></div>
+  <div class="esc" id="eEjer"><div class="pant" id="pEjer"><video id="vEjer" src="clips/st-ejercicio.webm" muted playsinline preload="auto"></video></div><div class="real" id="tEjer">NOVA PC · REAL CAPTURE · EXERCISE PLAN ON, THEN OFF</div></div>
+  <div class="esc" id="eMuj"><p class="h hN" id="hMuj" style="left:150px;top:250px;font-size:76px;width:800px"><span class="w">Women's</span><span class="w">health,</span><span class="w" style="color:#8fe6f5">built</span><span class="w" style="color:#8fe6f5">in.</span></p>
+    <div class="pts" style="position:absolute;left:150px;top:470px"><div class="pt"><i style="background:#a898ff"></i>Cycle care that stays on her phone</div><div class="pt"><i style="background:#ec6aa8"></i>Neck, leg or chest signs never wait</div><div class="pt"><i style="background:#8fe6f5"></i>The neck-vein ultrasound NASA now requires</div><div class="pt"><i style="background:#f2b457"></i>One radiation limit, 600 mSv, set for women</div></div>
+    <div class="fono" id="fCicloApp" style="left:1068px;top:158px"><img id="iCiclo" src="clips/app/ciclo.png"></div>
+    <div class="cred" id="fMuj" style="left:150px;right:auto;bottom:150px;opacity:0">SOURCES · NASA OCHMO-MTB-007 (2026) · MARSHALL-GOEBEL, JAMA NETW OPEN 2019 · NPJ MICROGRAVITY 2025 · NASA-STD-3001</div>
+    <div class="real" id="tMuj">NOVA APP · REAL SCREEN</div></div>
+  <div class="esc" id="eMenS"><div class="pant" id="pMenS"><video id="vMenS" src="clips/st-mente.webm" muted playsinline preload="auto"></video></div><div class="real" id="tMenS">NOVA PC · REAL CAPTURE</div></div>
+  <!-- capturas reales: emergencia, escáner, RCP por gravedad, kit, biblioteca, pronóstico -->
+  <div class="esc" id="eEmerg"><div class="pant" id="pEmerg"><video id="vEmerg" src="clips/emerg.webm" muted playsinline preload="auto"></video></div><div class="real" id="tEmerg">NOVA PC · REAL CAPTURE</div></div>
+  <div class="esc" id="eEscaner">
+    <p class="h hN" id="hEsc1" style="left:130px;top:360px;font-size:66px;width:380px"><span class="w">Sees</span><span class="w">the</span><span class="w" style="color:#8fe6f5">body.</span></p>
+    <p class="h hN" id="hEsc2" style="left:130px;top:360px;font-size:66px;width:380px"><span class="w">Guides</span><span class="w">the</span><span class="w" style="color:#8fe6f5">hands.</span></p>
+    <div class="disp" id="dEsc" style="left:560px;top:180px;width:1280px;height:720px"><video id="vEscBase" src="clips/escBase.webm" muted playsinline preload="auto"></video><video id="vEscRcp" src="clips/escRcp.webm" muted playsinline preload="auto" style="opacity:0"></video></div>
+    <div class="real" id="tEsc">BODY SCAN · PHONE CAMERA · VISION ON THE SHIP</div>
+    <div class="cred">CPR VIDEO · PRIMEROSAUXILIOS · CC BY-SA 3.0 · WIKIMEDIA COMMONS</div>
+  </div>
+  <div class="esc" id="eRcpG">
+    <p class="h hN" id="hRcp" style="left:0;right:0;top:110px;font-size:62px;text-align:center"><span class="w">CPR</span><span class="w">for</span><span class="w">every</span><span class="w" style="color:#8fe6f5">gravity.</span></p>
+    <div class="disp" id="dMarte" style="left:110px;top:330px;width:830px;height:467px;overflow:visible"><div class="lab" style="color:#f2b457">MARS · 0.38 G</div><div style="position:absolute;inset:0;border-radius:30px;overflow:hidden"><video id="vMarte" src="clips/escMarte.webm" muted playsinline preload="auto"></video></div></div>
+    <div class="disp" id="dMicro" style="left:980px;top:330px;width:830px;height:467px;overflow:visible"><div class="lab" style="color:#a898ff">MICROGRAVITY · 0 G</div><div style="position:absolute;inset:0;border-radius:30px;overflow:hidden"><video id="vMicro" src="clips/escMicro.webm" muted playsinline preload="auto"></video></div></div>
+    <div class="real" id="tRcp" style="top:auto;bottom:150px">GUIDANCE · DGLRM/ESAM 2020 · SRIHARAN 2021</div>
+    <div class="cred">CPR VIDEO · PRIMEROSAUXILIOS · CC BY-SA 3.0 · WIKIMEDIA COMMONS</div>
+  </div>
+  <div class="esc" id="eKit"><div class="pant" id="pKit"><video id="vKit" src="clips/kit2.webm" muted playsinline preload="auto"></video></div><div class="real" id="tKit">NOVA PC · REAL CAPTURE</div></div>
+  <div class="esc" id="eBib"><div class="pant" id="pBib"><video id="vBib" src="clips/biblio.webm" muted playsinline preload="auto"></video></div><div class="real" id="tBib">NOVA PC · REAL CAPTURE</div></div>
+  <div class="esc" id="ePron"><div class="pant" id="pPron"><video id="vPron" src="clips/vitals.webm" muted playsinline preload="auto"></video></div><div class="real" id="tPron">NOVA PC · REAL CAPTURE</div></div>
+  <!-- piensa a bordo -->
+  <div class="esc" id="eAbordo">
+    <svg class="capa" id="svAbordo" viewBox="0 0 1920 1080"></svg>
+    <p class="h" id="hAb" style="left:0;right:0;top:820px;font-size:60px;text-align:center"><span class="w">Thinks</span><span class="w">on</span><span class="w">board.</span><span class="w g">No</span><span class="w g">waiting</span><span class="w g">for</span><span class="w g">Earth.</span></p>
+  </div>
+  <!-- ciencia de NASA -->
+  <div class="esc" id="eCiencia">
+    <p class="h" id="hCi" style="left:0;right:0;top:170px;font-size:72px;text-align:center"><span class="w">Built</span><span class="w">on</span><span class="w g">NASA</span><span class="w g">science.</span></p>
+    <div id="ciG" style="position:absolute;left:150px;right:150px;top:300px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+      <div class="cic"><b>Human Research Program</b><span>The five hazards of spaceflight and the evidence behind each health risk.</span></div>
+      <div class="cic"><b>NASA Twins Study</b><span>One year in space, compared with an identical twin on Earth.</span></div>
+      <div class="cic"><b>MSL Radiation Assessment Detector</b><span>Radiation measured on the way to Mars: about 1.8 mSv a day.</span></div>
+      <div class="cic"><b>NASA Open Science Data Repository</b><span>Open spaceflight biology and health data to train and test models.</span></div>
+      <div class="cic"><b>CPR in microgravity</b><span>The DGLRM/ESAM guideline (2020) behind every CPR step Nova coaches.</span></div>
+      <div class="cic"><b>NASA-STD-3001</b><span>NASA's crew health standard: exposure limits and medical care.</span></div>
+    </div>
+  </div>
+  <div class="esc" id="eCiclo"><div class="pant" id="pCiclo"><iframe id="fCiclo" src="ui/ciclo.html?v=1791048873#0"></iframe></div></div>
+  <div class="esc" id="eModelos"><div class="pant" id="pModelos"><iframe id="fModelos" src="ui/modelos.html?v=1791048873#0"></iframe></div></div>
+  <div class="esc" id="eRuta"><div class="pant" id="pRuta"><iframe id="fRuta" src="ui/ruta.html?v=1791048873#0"></iframe></div></div>
+  <!-- cierre -->
+  <div class="esc" id="eCierre">
+    <svg class="capa" id="svCierre" viewBox="0 0 1920 1080"></svg>
+    <div id="cM" style="position:absolute;left:0;right:0;top:610px;text-align:center"><span class="g" style="font:600 150px/1 SG;letter-spacing:-.05em">NOVA</span></div>
+    <p class="h" id="h12" style="left:0;right:0;top:790px;font-size:44px;text-align:center;color:#c5cfdb"><span class="w">Health</span><span class="w">that</span><span class="w">travels</span><span class="w g">with</span><span class="w g">you.</span></p>
+    <div id="cFirma" style="position:absolute;left:0;right:0;bottom:64px;text-align:center">
+      <img src="img/logo-bn.png" style="height:42px;opacity:.95">
+      <div style="margin-top:14px;font:400 15px SG;color:#8c99a9">Team B&amp;N · NASA Space Apps Challenge 2026 · Santiago, Chile</div>
+    </div>
+  </div>
+  <!-- NOVA narra: subtítulos -->
+  <div id="narr"><svg id="narrN" viewBox="0 0 90 90"></svg><div id="narrT"></div></div>
+  <canvas id="hud" class="capa"></canvas>
+  <div id="flash" class="capa" style="background:radial-gradient(circle at 50% 50%,rgba(143,230,245,.9),rgba(70,200,232,.3) 40%,transparent 70%);opacity:0;pointer-events:none"></div>
+  <div id="vig" class="capa"></div>
+  <svg class="capa grano"><filter id="gr"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3"/></filter><rect width="100%" height="100%" filter="url(#gr)"/></svg>
+</div>
+<script src="mascota-base.js?v=1791048873"></script>
+<script src="mascota-orbes.js?v=1791048873"></script>
+<script src="halo3.js?v=1791048873"></script>
+<script src="unir-degradados.js?v=1791048873"></script>
+<script>
+window.render = render; window.DUR = DUR; window.V = V; window.S = S; window.focoV = focoV; window.ponerVert = ponerVert;
+ponerVert(VERT);
+if (!/[?&]render/.test(location.search)){ const t0 = performance.now(); document.fonts.ready.then(()=>{ (function loop(){ render(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); })(); }); }
+else { const vids = [...document.querySelectorAll('video')].map(v => new Promise(r => { if (v.readyState >= 2) r(); else { v.addEventListener('loadeddata', r, { once: true }); v.load(); } }));
+  Promise.all([document.fonts.ready, ...vids]).then(() => { render(0); return window.__esperar(); }).then(() => { window.__listo = true; }); }
+</script>
+</body></html>

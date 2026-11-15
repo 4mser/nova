@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOVA · Camera guide</title>
+<!-- Camera guide (AR on the screen): the camera finds the patient and the rescuer's hands, Nova draws where to push and
+     coaches the rhythm. The camera source and the output are separate pieces so smart glasses can plug in later. -->
+<style>
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-400-latin.woff2);font-weight:400}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-500-latin.woff2);font-weight:500}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-600-latin.woff2);font-weight:600}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-700-latin.woff2);font-weight:700}
+:root{--bg:#05080c;--s1:#0a0f15;--s2:#0f151d;--s3:#141b25;--l1:rgba(255,255,255,.06);--l2:rgba(255,255,255,.1);--l3:rgba(255,255,255,.16);
+  --t1:#f2f5f8;--t2:#9aa4b2;--t3:#5b6573;--ac:#46c8e8;--ac2:#8fe6f5;--nv:#a898ff;--at:#f2b457;--al:#ec6aa8;--ok:#6fd6b0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:SG;color:var(--t1);-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1;display:grid;grid-template-columns:minmax(0,1fr) 440px;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+[hidden]{display:none!important}
+
+.vista{position:relative;display:grid;place-items:center;padding:28px;min-width:0;min-height:0}
+.marco{position:relative;max-width:100%;max-height:100%;border-radius:28px;overflow:hidden;background:var(--s1);border:1px solid var(--l1)}
+.marco video,.marco canvas{position:absolute;inset:0;width:100%;height:100%}
+.marco.espejo video,.marco.espejo canvas{transform:scaleX(-1)}
+.etiqueta{position:absolute;left:20px;top:20px;display:flex;gap:8px}
+.pil{display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:20px;background:rgba(5,8,12,.72);border:1px solid var(--l2);font:500 14px SG;color:var(--t2);white-space:nowrap;backdrop-filter:blur(8px)}
+.pil b{color:var(--t1);font-weight:600}
+.pil i{width:7px;height:7px;border-radius:50%;background:var(--ac2)}
+.pil.ok{color:#c8f5e4;border-color:rgba(111,214,176,.45)}.pil.ok i{background:var(--ok)}
+.pil.at{color:#ffe2b5;border-color:rgba(242,180,87,.45)}.pil.at i{background:var(--at)}
+.aviso{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);max-width:80%;padding:16px 26px;border-radius:22px;background:rgba(5,8,12,.82);border:1px solid var(--l2);font:600 26px/1.2 SG;text-align:center;backdrop-filter:blur(8px);letter-spacing:-.01em}
+.aviso.ok{border-color:rgba(111,214,176,.5);color:#d8fbef}.aviso.at{border-color:rgba(242,180,87,.5);color:#ffe8c7}
+.vacio{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--t2);font:500 18px/1.5 SG;padding:40px}
+.vacio b{display:block;color:var(--t1);font:600 26px SG;margin-bottom:8px}
+
+.panel{border-left:1px solid var(--l1);padding:32px 32px 24px;display:flex;flex-direction:column;gap:18px;min-height:0;overflow:auto}
+.cab{display:flex;align-items:center;gap:14px}
+.cab svg{width:64px;height:54px;flex:none;overflow:visible}
+.cab h1{font:600 26px SG;letter-spacing:-.03em}
+.cab p{font:400 14px SG;color:var(--t2);margin-top:2px}
+.caja{background:var(--s1);border:1px solid var(--l1);border-radius:22px;padding:18px 20px}
+.caja h2{font:500 13px SG;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.paso{font:500 20px/1.35 SG}
+.filas{display:grid;gap:10px}
+.fila{display:flex;align-items:center;gap:12px;font:500 16px SG;color:var(--t2)}
+.fila i{width:9px;height:9px;border-radius:50%;background:var(--t3);flex:none}
+.fila b{margin-left:auto;color:var(--t1);font-weight:600}
+.fila.ok i{background:var(--ok)}.fila.at i{background:var(--at)}.fila.al i{background:var(--al)}
+.ritmo{display:flex;align-items:flex-end;gap:10px}
+.ritmo b{font:700 64px/1 SG;letter-spacing:-.04em}
+.ritmo span{font:500 16px SG;color:var(--t2);padding-bottom:8px}
+.barra{position:relative;height:12px;border-radius:6px;background:var(--s3);margin-top:14px;overflow:hidden}
+.barra .zona{position:absolute;top:0;bottom:0;background:rgba(111,214,176,.22)}
+.barra .aguja{position:absolute;top:-2px;bottom:-2px;width:4px;border-radius:2px;background:var(--t1);transition:left .25s}
+.escala{display:flex;justify-content:space-between;font:400 12px SG;color:var(--t3);margin-top:6px}
+.nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.num{background:var(--s1);border:1px solid var(--l1);border-radius:18px;padding:14px 16px}
+.num span{font:500 12px SG;color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
+.num b{display:block;font:600 28px SG;margin-top:4px}
+.fuente{display:grid;gap:8px}
+.opc{display:flex;align-items:center;gap:10px;height:42px;padding:0 14px;border-radius:14px;border:1px solid var(--l1);font:500 14px SG;color:var(--t2)}
+.opc.on{border-color:rgba(143,230,245,.45);color:var(--t1);background:var(--s2)}
+.opc em{margin-left:auto;font-style:normal;font-size:12px;color:var(--t3)}
+.acc{display:flex;gap:8px;margin-top:auto}
+.acc button{flex:1;height:46px;border-radius:23px;background:var(--s2);border:1px solid var(--l2);font:600 15px SG}
+.acc button.pri{background:var(--t1);color:var(--bg);border-color:var(--t1)}
+.pie{font:400 12px/1.45 SG;color:var(--t3)}
+</style>
+</head>
+<body>
+<section class="vista">
+  <div class="marco" id="marco">
+    <video id="video" playsinline muted></video>
+    <canvas id="lienzo"></canvas>
+    <div class="etiqueta"><div class="pil" id="pilCam"><i></i><b>Camera</b> starting</div><div class="pil" id="pilPac"><i></i>Patient</div><div class="pil" id="pilManos"><i></i>Hands</div></div>
+    <div class="aviso" id="aviso" hidden></div>
+    <div class="vacio" id="vacio"><div><b>Starting the camera</b>Nova runs the vision models on board. Nothing leaves the ship.</div></div>
+  </div>
+</section>
+<aside class="panel">
+  <div class="cab"><svg id="nova" viewBox="0 0 120 100"></svg><div><h1>CPR · camera guide</h1><p id="quien">Nova shows where to push and keeps the rhythm</p></div></div>
+  <div class="caja"><h2>Now</h2><div class="paso" id="paso">Show Nova the patient's chest.</div></div>
+  <div class="caja filas">
+    <div class="fila" id="fPac"><i></i>Patient found<b id="vPac">—</b></div>
+    <div class="fila" id="fManos"><i></i>Hands on the chest<b id="vManos">—</b></div>
+    <div class="fila" id="fPausa"><i></i>Hands-off time<b id="vPausa">0 s</b></div>
+  </div>
+  <div class="caja">
+    <h2>Compression rate</h2>
+    <div class="ritmo"><b id="vRitmo">—</b><span>per minute · target 100–120</span></div>
+    <div class="barra"><div class="zona" style="left:50%;width:20%"></div><div class="aguja" id="aguja" style="left:0"></div></div>
+    <div class="escala"><span>50</span><span>100</span><span>120</span><span>150</span></div>
+  </div>
+  <div class="nums">
+    <div class="num"><span>Count</span><b id="vCuenta">0</b></div>
+    <div class="num"><span>Cycle</span><b id="vCiclo">0:00</b></div>
+    <div class="num"><span>Depth</span><b style="font-size:20px;padding-top:6px">5–6 cm</b></div>
+  </div>
+  <div class="caja fuente">
+    <h2>View from</h2>
+    <div class="opc on" id="srcCam">This screen's camera<em>active</em></div>
+    <div class="opc" id="srcGafas">Smart glasses<em>next</em></div>
+  </div>
+  <div class="acc"><button id="bPractica">Practice on me</button><button id="bMetro" class="pri">Beat on</button><button id="bCerrar">Close</button></div>
+  <div class="pie">Demo, pending flight surgeon review. The camera checks hand position and rhythm; it cannot measure depth. Nova guides, the crew decides.</div>
+</aside>
+<script>const BASE = location.port === '8750' ? '' : 'http://127.0.0.1:8750';</script>
+<script src="voz.js?v=1794434207"></script>
+<script src="lib/mascota-base.js"></script>
+<script src="lib/mascota-orbes.js"></script>
+<script type="module" src="guia-ar.js?v=2"></script>
+</body>
+</html>

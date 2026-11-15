@@ -1,0 +1,7 @@
+Clips de las escenas nuevas (nov 2026): capturas reales de NOVA PC (estación y escáner del cuerpo), grabadas con
+puppeteer contra la nave local en modo de solo lectura (sin escribir en la nave ni enviar al visor de la estación).
+
+El escáner corre sobre el video «RCP.ogv» de Wikimedia Commons, autor Primerosauxilios, licencia CC BY-SA 3.0
+(https://commons.wikimedia.org/wiki/File:RCP.ogv). Tramos usados: 5-23 s y 74-104 s. Las capas de NOVA encima del video
+son una obra derivada: esos tramos del video de NOVA quedan bajo CC BY-SA 3.0 con el mismo crédito.
+Guías de RCP por gravedad: DGLRM/ESAM (Hinkelbein et al., 2020, CC BY 4.0) y Sriharan et al. 2021.

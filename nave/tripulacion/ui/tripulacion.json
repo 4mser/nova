@@ -1,0 +1,6 @@
+[
+  { "id": "T1", "nombre": "Mara Reyes", "corto": "Mara", "rol": "Commander", "ini": "MR", "col": "#8fe6f5", "pronombre": "she/her" },
+  { "id": "T2", "nombre": "David Okafor", "corto": "David", "rol": "Pilot", "ini": "DO", "col": "#8fe6f5", "pronombre": "he/him" },
+  { "id": "T3", "nombre": "Ingrid Lindqvist", "corto": "Ingrid", "rol": "Flight engineer", "ini": "IL", "col": "#8fe6f5", "pronombre": "she/her" },
+  { "id": "T4", "nombre": "Kenji Tanaka", "corto": "Kenji", "rol": "Mission specialist", "ini": "KT", "col": "#c3b8ff", "pronombre": "he/him" }
+]

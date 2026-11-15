@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="nova_viva_nombre">Nova</string>
+  <string name="nova_viva_desc">Nova breathing in her orbit. The arc is your readiness and her face follows your day. Tap to talk.</string>
+  <string name="nova_hoy_nombre">Nova · Today</string>
+  <string name="nova_hoy_desc">Nova breathing, her line for today, readiness, sleep and your check-in.</string>
+</resources>

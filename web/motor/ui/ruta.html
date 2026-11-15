@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>NOVA · roadmap</title>
+<link rel="stylesheet" href="ui.css?v=1791048873">
+<style>
+html,body{margin:0;width:1920px;height:1080px;background:transparent;overflow:hidden}
+h2{position:absolute;left:0;right:0;top:150px;text-align:center;font:600 64px/1.05 SG;letter-spacing:-.045em}
+.sub{position:absolute;left:0;right:0;top:236px;text-align:center;font:400 22px SG;color:var(--t2)}
+svg.capa{position:absolute;inset:0;width:1920px;height:1080px;overflow:visible}
+.et{position:absolute;width:300px;margin-left:-150px;text-align:center}
+.et b{display:block;font:600 24px SG;letter-spacing:-.025em}.et span{display:block;font:400 16px/1.4 SG;color:var(--t2);margin-top:6px}
+.et em{display:inline-block;font:500 13px SG;font-style:normal;color:var(--ac2);margin-bottom:8px}
+html.vert h2{left:640px;right:640px;top:90px;font-size:52px}
+html.vert .sub{left:640px;right:640px;top:220px;font-size:20px;line-height:1.35}
+html.vert .et{width:420px;margin-left:0;text-align:left}
+</style></head><body>
+<h2>From a hackathon to Mars.</h2><div class="sub">NASA's goal for Mars: medical care that doesn't depend on Earth</div>
+<svg class="capa" id="ruta" viewBox="0 0 1920 1080"></svg>
+<div id="ets"></div>
+<script src="../mascota-base.js"></script><script src="../mascota-orbes.js"></script><script src="ui.js?v=1791048873"></script>
+<script>
+const cl = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v)), pr = (t, a, d) => cl((t - a) / d), eIO = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2, eOut = x => 1 - Math.pow(2, -10 * x);
+const E5 = [['Now', 'Prototype', 'Built at NASA Space Apps 2026 · AR on a phone, smart glasses next'], ['Step 1', 'HERA', '45-day analog mission in Houston'], ['Step 2', 'CHAPEA', 'One year in a simulated Mars habitat'], ['Step 3', 'Space station', 'Technology demo with a real crew'], ['Goal', 'Artemis and Mars', 'A crew that cares for itself']];
+const V_ = () => document.documentElement.classList.contains('vert');
+const X = i => V_() ? 720 : 260 + i * 350, Yi = i => V_() ? 360 + i * 150 : 560;
+function dibujarRuta(t){
+  document.documentElement.classList.toggle('vert', !!(parent.esVert && parent.esVert())); const Y = 560, v = V_();
+  const k = eIO(pr(t, .6, 9)); let h = `<line x1="${X(0)}" y1="${Yi(0)}" x2="${X(4)}" y2="${Yi(4)}" stroke="rgba(255,255,255,.12)" stroke-width="2"/>`;
+  h += `<line x1="${X(0)}" y1="${Yi(0)}" x2="${X(0) + (X(4) - X(0)) * k}" y2="${Yi(0) + (Yi(4) - Yi(0)) * k}" stroke="#8fe6f5" stroke-width="2.5"/>`;
+  E5.forEach((e, i) => { const on = k * 4 >= i - .02; h += `<circle cx="${X(i)}" cy="${Yi(i)}" r="${on ? 11 : 8}" fill="${on ? (i === 4 ? '#f2b457' : '#8fe6f5') : '#0f151d'}" stroke="${on ? 'none' : 'rgba(255,255,255,.25)'}" stroke-width="2"/>`; });
+  const xn = X(0) + (X(4) - X(0)) * k, yn = Yi(0) + (Yi(4) - Yi(0)) * k;
+  document.getElementById('ruta').innerHTML = h + mascotaOrbes({ x: xn, y: v ? yn : Y - 92, R: v ? 24 : 36, t, expr: k > .98 ? 'feliz' : 'normal', orbes: 4 });
+  document.getElementById('ets').innerHTML = E5.map(([a, b, c], i) => { const o = eOut(cl((k * 4 - i + .15) / .35)); return `<div class="et" style="left:${v ? X(i) + 40 : X(i)}px;top:${v ? Yi(i) - 30 : Y + 40}px;opacity:${o};transform:translateY(${(1 - o) * 16}px)"><em>${a}</em><b>${b}</b><span>${c}</span></div>`; }).join('');
+}
+dibujarRuta(+(location.hash.slice(1) || 10));
+</script></body></html>

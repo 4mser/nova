@@ -1,0 +1,236 @@
+<!-- ============================================================ 1 · PORTADA -->
+<section class="pag portada">
+  <div class="foto"></div><div class="velo"></div>
+  <div class="arriba">
+    <span class="ojo" style="color:var(--t1)">NASA Space Apps Challenge 2026 · 14 y 15 de noviembre</span>
+    <img class="bn" src="img/logos/bn.png" alt="B&amp;N Solutions">
+  </div>
+  <div class="contenido">
+    <div style="display:flex;align-items:center;gap:4mm">
+      <img src="img/m/orbe.png" alt="" style="width:26mm;height:26mm;margin:-6mm -5mm -6mm -6mm">
+      <span class="ojo" style="font-size:7.4pt">Informe técnico · estado al 9 de noviembre de 2026</span>
+    </div>
+    <h1 style="font-size:50pt">NOVA</h1>
+    <p style="font-size:15pt;line-height:1.3;color:var(--t1);max-width:150mm;letter-spacing:-.015em">Monitoreo de salud de la tripulación que funciona entero dentro de la nave, con el software de vuelo de la NASA como núcleo.</p>
+    <p class="lead" style="max-width:150mm">Desafío <b>«Create Health Monitoring Software for Astronauts on Space Missions»</b>. Este documento describe todo lo construido hasta hoy: el núcleo de vuelo en F Prime, la pantalla de la nave, la app móvil en modo misión, los protocolos de emergencia, la biblioteca médica, los modelos que corren a bordo, el enlace con la Tierra y lo que falta.</p>
+    <div class="sep"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:6mm">
+      <div style="display:flex;flex-direction:column;gap:1mm">
+        <span class="ojo" style="color:var(--t3)">Equipo B&amp;N</span>
+        <span style="font-size:8.6pt;color:var(--t1)">Nicolás Moreno · Benjamín Campos · Nicolás Richardson · Luis González · Ambar Martínez · Daniella Mora</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:2.4mm;font-size:6.6pt;color:var(--t3);white-space:nowrap;flex:none">
+        <img src="img/logos/fprime-logo.svg" alt="F Prime" style="height:8mm">
+        <span>Núcleo construido sobre<br>F Prime · NASA JPL</span>
+      </div>
+    </div>
+    <span class="pieimg">Foto de portada: la Tierra vista desde el espacio, NASA (dominio público). Tripulación ficticia en todas las capturas.</span>
+  </div>
+</section>
+
+<!-- ============================================================ 2 · RESUMEN E ÍNDICE -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>Resumen</span></div>
+  <div class="cabsec">
+    <span class="ojo">Resumen ejecutivo</span>
+    <h2>Un médico de a bordo que sigue funcionando cuando la Tierra está a 9,5 minutos-luz</h2>
+  </div>
+  <p class="lead">En un viaje a Marte la consulta con el cirujano de vuelo tarda entre 6 y 44 minutos ida y vuelta, y durante la conjunción solar se corta por semanas. NOVA resuelve el monitoreo, la detección y la primera respuesta <b>dentro de la nave</b>: los signos vitales pasan por un núcleo de vuelo hecho con F Prime, la tripulación ve todo en una pantalla y en su teléfono, y un asistente local responde con datos reales y fuentes médicas abiertas. La Tierra recibe un informe y puede ajustar los umbrales por comando, siempre con el retraso real de la luz.</p>
+  <div class="cifras">
+    <div class="cifra"><b>18</b><span>sensores por tripulante y de cabina</span></div>
+    <div class="cifra"><b>4</b><span>componentes propios en F Prime v4.4.2</span></div>
+    <div class="cifra"><b>31</b><span>parámetros de vuelo, cambiables por comando</span></div>
+    <div class="cifra"><b>12</b><span>protocolos de emergencia con fuente y página</span></div>
+    <div class="cifra"><b>32</b><span>fuentes médicas de licencia abierta</span></div>
+    <div class="cifra"><b>14.551</b><span>fragmentos buscables en la nave</span></div>
+    <div class="cifra"><b>3</b><span>modelos locales: lenguaje, búsqueda y voz</span></div>
+    <div class="cifra"><b>0</b><span>llamadas a internet durante la misión</span></div>
+  </div>
+  <div class="g3">
+    <div class="caja ok"><h4>Principio 1 · todo a bordo</h4><p>Ninguna función crítica depende de la nube ni de la Tierra. Los modelos, la biblioteca y la voz corren en el mismo equipo de la nave.</p></div>
+    <div class="caja nv"><h4>Principio 2 · reglas fijas en lo crítico</h4><p>Los umbrales viven en el núcleo de vuelo y los pasos de emergencia salen de un archivo revisable. El modelo de lenguaje explica y acompaña, pero no decide.</p></div>
+    <div class="caja at"><h4>Principio 3 · la tripulación manda</h4><p>Lo que reporta una persona pesa más que un sensor. El ánimo, el diario y el ciclo menstrual solo se comparten con consentimiento.</p></div>
+  </div>
+  <div class="cabsec" style="margin-top:1mm"><span class="ojo">Contenido</span></div>
+  <div class="indice">
+    <div><span class="n">01</span><b>Arquitectura general</b><em>p. 03</em></div>
+    <div><span class="n">09</span><b>Consola de Tierra</b><em>p. 15</em></div>
+    <div><span class="n">02</span><b>El recorrido de un dato</b><em>p. 04</em></div>
+    <div><span class="n">10</span><b>App móvil en modo misión</b><em>p. 16</em></div>
+    <div><span class="n">03</span><b>Núcleo de vuelo F Prime</b><em>p. 05</em></div>
+    <div><span class="n">11</span><b>Enlace de la nave: API y puertos</b><em>p. 18</em></div>
+    <div><span class="n">04</span><b>Estación médica y simulador</b><em>p. 07</em></div>
+    <div><span class="n">12</span><b>Material real de la NASA y fuentes abiertas</b><em>p. 19</em></div>
+    <div><span class="n">05</span><b>NOVA PC: la pantalla de la nave</b><em>p. 08</em></div>
+    <div><span class="n">13</span><b>Modelos, stack y licencias</b><em>p. 20</em></div>
+    <div><span class="n">06</span><b>Ask NOVA y biblioteca médica</b><em>p. 10</em></div>
+    <div><span class="n">14</span><b>Seguridad clínica y privacidad</b><em>p. 21</em></div>
+    <div><span class="n">07</span><b>Emergencias</b><em>p. 12</em></div>
+    <div><span class="n">15</span><b>Pendientes, riesgos y plan</b><em>p. 22</em></div>
+    <div><span class="n">08</span><b>Misión, Casa y sistemas de a bordo</b><em>p. 13</em></div>
+    <div><span class="n">A</span><b>Anexo: cómo levantar todo</b><em>p. 23</em></div>
+  </div>
+  <div class="cabsec" style="margin-top:1mm"><span class="ojo">Equipo B&amp;N</span></div>
+  <div class="equipo-g">
+    <div><b>Nicolás Moreno</b><span>Ingeniero de software · diseño de producto. Construye NOVA PC, el núcleo y la app.</span></div>
+    <div><b>Benjamín Campos</b><span>Ingeniero físico · ciencia de datos y modelos agénticos.</span></div>
+    <div><b>Nicolás Richardson</b><span>Ingeniero físico · ciencia de datos y visión artificial.</span></div>
+    <div><b>Luis González</b><span>Ingeniero físico · hardware y robótica. Arma la estación médica.</span></div>
+    <div><b>Ambar Martínez</b><span>Psicóloga clínica y educacional · neuropsicología. Bienestar y sesión privada.</span></div>
+    <div><b>Daniella Mora</b><span>Candidata a doctora en Física (UC) · física de partículas, con experiencia en el CERN.</span></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 3 · ARQUITECTURA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>01 · Arquitectura</span></div>
+  <div class="secn">01</div>
+  <div class="cabsec">
+    <span class="ojo">01 · Arquitectura general</span>
+    <h2>Cinco capas dentro de la nave y una en la Tierra</h2>
+  </div>
+  <p class="lead">Los datos entran por la estación médica, el simulador o los teléfonos. El núcleo F Prime los valida y clasifica. El enlace de la nave los guarda, los reparte a las pantallas y se apoya en tres modelos locales. La Tierra solo se comunica con la nave a través de un canal con el retraso real de la luz.</p>
+  <div class="diag">
+    <svg viewBox="0 0 1780 1330" xmlns="http://www.w3.org/2000/svg" style="width:90%;margin:0 auto">
+      <defs>
+        <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6d7786"/></marker>
+        <marker id="fm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ec6aa8"/></marker>
+        <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a898ff"/></marker>
+      </defs>
+      <!-- zonas -->
+      <rect x="4" y="4" width="1330" height="1322" rx="22" fill="none" stroke="rgba(255,255,255,.13)"/>
+      <text x="34" y="46" fill="#6d7786" font-size="22" letter-spacing="3" class="m">NAVE · RED LOCAL · SIN INTERNET</text>
+      <rect x="1372" y="4" width="404" height="1322" rx="22" fill="none" stroke="rgba(236,106,168,.4)" stroke-dasharray="10 8"/>
+      <text x="1400" y="46" fill="#6d7786" font-size="22" letter-spacing="3" class="m">TIERRA</text>
+
+      <!-- capa 1 · fuentes -->
+      <text x="34" y="96" fill="#46c8e8" font-size="20" letter-spacing="2.5" class="m">1 · FUENTES DE DATOS</text>
+      <g data-caja><rect x="34" y="114" width="400" height="140" rx="16" fill="#0f151d" stroke="#f2b457"/>
+        <text x="58" y="158" fill="#f2f5f8" font-size="28" font-weight="600">Estación médica</text>
+        <text x="58" y="194" fill="#a5afbd" font-size="22">hardware de Luis · NDJSON</text>
+        <text x="58" y="226" fill="#f2b457" font-size="20">sensores por confirmar</text></g>
+      <g data-caja><rect x="466" y="114" width="400" height="140" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="490" y="158" fill="#f2f5f8" font-size="28" font-weight="600">Simulador</text>
+        <text x="490" y="194" fill="#a5afbd" font-size="22">PhysioNet BIDMC (real)</text>
+        <text x="490" y="226" fill="#a5afbd" font-size="22">+ 6 escenarios clínicos</text></g>
+      <g data-caja><rect x="898" y="114" width="400" height="140" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="922" y="158" fill="#f2f5f8" font-size="28" font-weight="600">Teléfonos T1–T4</text>
+        <text x="922" y="194" fill="#a5afbd" font-size="22">reloj, sueño, pasos, luz</text>
+        <text x="922" y="226" fill="#a5afbd" font-size="22">ánimo solo si se comparte</text></g>
+
+      <!-- flechas a núcleo -->
+      <path d="M380,254 L380,336" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <path d="M720,254 L720,336" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <text x="394" y="300" fill="#6d7786" font-size="19" class="m">UDP 50050</text>
+      <text x="734" y="300" fill="#6d7786" font-size="19" class="m">UDP 50050</text>
+      <path d="M1298,184 L1318,184 L1318,690 L1300,690" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <text x="1300" y="302" fill="#6d7786" font-size="19" class="m" text-anchor="end">HTTP /v1/lote</text>
+
+      <!-- capa 2 · núcleo -->
+      <text x="34" y="324" fill="#46c8e8" font-size="20" letter-spacing="2.5" class="m">2 · NÚCLEO DE VUELO</text>
+      <rect x="34" y="340" width="832" height="232" rx="18" fill="#0d131a" stroke="#6fd6b0" stroke-width="2"/>
+      <text x="58" y="382" fill="#f2f5f8" font-size="28" font-weight="600">F Prime v4.4.2 · despliegue Nova/Nave</text>
+      <g data-caja><rect x="58" y="404" width="180" height="94" rx="12" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="76" y="442" fill="#8fe6f5" font-size="23" font-weight="600">Estacion</text>
+        <text x="76" y="474" fill="#a5afbd" font-size="19">valida y recibe</text></g>
+      <g data-caja><rect x="256" y="404" width="210" height="94" rx="12" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="274" y="442" fill="#8fe6f5" font-size="23" font-weight="600">MonitorSalud</text>
+        <text x="274" y="474" fill="#a5afbd" font-size="19">clasifica 4 niveles</text></g>
+      <g data-caja><rect x="484" y="404" width="170" height="94" rx="12" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="502" y="442" fill="#8fe6f5" font-size="23" font-weight="600">Pantalla</text>
+        <text x="502" y="474" fill="#a5afbd" font-size="19">publica 1 Hz</text></g>
+      <g data-caja><rect x="672" y="404" width="170" height="94" rx="12" fill="#151c26" stroke="rgba(255,255,255,.14)"/>
+        <text x="690" y="442" fill="#8fe6f5" font-size="23" font-weight="600">Salud</text>
+        <text x="690" y="474" fill="#a5afbd" font-size="19">tipos, umbrales</text></g>
+      <text x="58" y="540" fill="#6d7786" font-size="19">rate groups 1 / 0,5 / 0,25 Hz · parámetros · eventos · telemetría · CCSDS</text>
+
+      <!-- GDS -->
+      <g data-caja><rect x="898" y="340" width="400" height="150" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="922" y="384" fill="#f2f5f8" font-size="28" font-weight="600">fprime-gds</text>
+        <text x="922" y="420" fill="#a5afbd" font-size="22">sistema de tierra del JPL</text>
+        <text x="922" y="454" fill="#a5afbd" font-size="22">REST :5080 · TCP 50000</text></g>
+      <path d="M866,415 L896,415" stroke="#6d7786" stroke-width="2.5" fill="none" marker-start="url(#fa)" marker-end="url(#fa)"/>
+
+      <!-- flechas núcleo -> enlace -->
+      <path d="M560,572 L560,650" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <text x="574" y="618" fill="#6d7786" font-size="19" class="m">UDP 50051 estado · 50052 ingresos</text>
+      <path d="M1098,490 L1098,650" stroke="#6d7786" stroke-width="2.5" fill="none" marker-start="url(#fa)" marker-end="url(#fa)"/>
+      <text x="1112" y="580" fill="#6d7786" font-size="19" class="m">REST cada 1 s</text>
+
+      <!-- capa 3 · enlace -->
+      <text x="34" y="642" fill="#46c8e8" font-size="20" letter-spacing="2.5" class="m">3 · ENLACE DE LA NAVE</text>
+      <rect x="34" y="660" width="1264" height="214" rx="18" fill="#0d131a" stroke="#6fd6b0" stroke-width="2"/>
+      <text x="58" y="702" fill="#f2f5f8" font-size="28" font-weight="600">Enlace NOVA · Rust (axum + Tauri) · HTTP :8750 · flujo SSE</text>
+      <g font-size="21" fill="#a5afbd">
+        <g data-caja><rect x="58" y="724" width="190" height="56" rx="10" fill="#151c26"/><text x="78" y="760">Historia 30 d</text></g>
+        <g data-caja><rect x="262" y="724" width="190" height="56" rx="10" fill="#151c26"/><text x="282" y="760">Misión Hohmann</text></g>
+        <g data-caja><rect x="466" y="724" width="190" height="56" rx="10" fill="#151c26"/><text x="486" y="760">Ask NOVA</text></g>
+        <g data-caja><rect x="670" y="724" width="190" height="56" rx="10" fill="#151c26"/><text x="690" y="760">Biblioteca</text></g>
+        <g data-caja><rect x="874" y="724" width="190" height="56" rx="10" fill="#151c26"/><text x="894" y="760">Casa</text></g>
+        <g data-caja><rect x="1078" y="724" width="196" height="56" rx="10" fill="#151c26"/><text x="1098" y="760">Bitácora</text></g>
+        <g data-caja><rect x="58" y="794" width="394" height="56" rx="10" fill="#151c26"/><text x="78" y="830">Puente con el GDS</text></g>
+        <g data-caja><rect x="466" y="794" width="394" height="56" rx="10" fill="#151c26"/><text x="486" y="830">Cola de subida con retraso de luz</text></g>
+        <g data-caja><rect x="874" y="794" width="400" height="56" rx="10" fill="#151c26"/><text x="894" y="830">Informe para la Tierra · privado</text></g>
+      </g>
+
+      <!-- capa 4 · modelos -->
+      <path d="M560,874 L560,950" stroke="#a898ff" stroke-width="2.5" fill="none" marker-end="url(#fl)"/>
+      <text x="34" y="944" fill="#a898ff" font-size="20" letter-spacing="2.5" class="m">4 · MODELOS LOCALES</text>
+      <g data-caja><rect x="34" y="962" width="400" height="118" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="58" y="1006" fill="#f2f5f8" font-size="26" font-weight="600">Qwen3 4B Instruct</text>
+        <text x="58" y="1044" fill="#a5afbd" font-size="21">conversación · llama.cpp :8081</text></g>
+      <g data-caja><rect x="466" y="962" width="400" height="118" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="490" y="1006" fill="#f2f5f8" font-size="26" font-weight="600">nomic-embed v2 MoE</text>
+        <text x="490" y="1044" fill="#a5afbd" font-size="21">búsqueda multilingüe · :8084</text></g>
+      <g data-caja><rect x="898" y="962" width="400" height="118" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="922" y="1006" fill="#f2f5f8" font-size="26" font-weight="600">Kokoro 82M</text>
+        <text x="922" y="1044" fill="#a5afbd" font-size="21">voz af_heart / ef_dora · :8082</text></g>
+
+      <!-- capa 5 · pantallas -->
+      <text x="34" y="1146" fill="#46c8e8" font-size="20" letter-spacing="2.5" class="m">5 · PANTALLAS</text>
+      <g data-caja><rect x="34" y="1164" width="616" height="130" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="58" y="1208" fill="#f2f5f8" font-size="27" font-weight="600">NOVA PC · Tauri 2</text>
+        <text x="58" y="1246" fill="#a5afbd" font-size="21">Crew · Vitals · Systems · Library · Emergency</text></g>
+      <g data-caja><rect x="682" y="1164" width="616" height="130" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="706" y="1208" fill="#f2f5f8" font-size="27" font-weight="600">App NOVA · Expo / React Native</text>
+        <text x="706" y="1246" fill="#a5afbd" font-size="21">Hoy · Crew · Emergencia · Casa · Ciclo</text></g>
+      <path d="M450,874 L450,1160" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <path d="M882,874 L882,1160" stroke="#6d7786" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>
+      <text x="1298" y="1146" fill="#6d7786" font-size="19" class="m" text-anchor="end">SSE · /v1/estado cada 5 s</text>
+
+      <!-- tierra -->
+      <g data-caja><rect x="1400" y="114" width="352" height="196" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="1422" y="158" fill="#f2f5f8" font-size="27" font-weight="600">Mission Control</text>
+        <text x="1422" y="196" fill="#a5afbd" font-size="21">consola del cirujano</text>
+        <text x="1422" y="228" fill="#a5afbd" font-size="21">informe nocturno</text>
+        <text x="1422" y="260" fill="#a5afbd" font-size="21">cambia umbrales</text></g>
+      <g data-caja><rect x="1400" y="340" width="352" height="150" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="1422" y="384" fill="#f2f5f8" font-size="27" font-weight="600">Relevo Casa</text>
+        <text x="1422" y="420" fill="#a5afbd" font-size="21">mensajes y fotos</text>
+        <text x="1422" y="452" fill="#a5afbd" font-size="21">de la familia</text></g>
+      <g data-caja><rect x="1400" y="962" width="352" height="118" rx="16" fill="#0f151d" stroke="#ec6aa8" stroke-dasharray="8 6"/>
+        <text x="1422" y="1006" fill="#ec6aa8" font-size="26" font-weight="600">Ciclo nocturno</text>
+        <text x="1422" y="1044" fill="#a5afbd" font-size="21">mejoras firmadas · pendiente</text></g>
+      <!-- canal con luz -->
+      <path d="M1400,212 C1350,212 1340,700 1300,740" stroke="#ec6aa8" stroke-width="2.5" fill="none" stroke-dasharray="9 7" marker-start="url(#fm)" marker-end="url(#fm)"/>
+      <path d="M1400,415 C1360,415 1350,780 1300,812" stroke="#ec6aa8" stroke-width="2.5" fill="none" stroke-dasharray="9 7" marker-end="url(#fm)"/>
+      <text x="1400" y="600" fill="#ec6aa8" font-size="21" font-weight="600">retraso de la luz</text>
+      <text x="1400" y="632" fill="#ec6aa8" font-size="21">9,5 min hoy (día 215)</text>
+      <text x="1400" y="664" fill="#6d7786" font-size="19">3 a 22 min según la</text>
+      <text x="1400" y="692" fill="#6d7786" font-size="19">posición de los planetas</text>
+      <path d="M1400,1021 C1350,1021 1340,900 1300,860" stroke="#ec6aa8" stroke-width="2" fill="none" stroke-dasharray="6 7" marker-end="url(#fm)"/>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 1.</b> Arquitectura de NOVA. Verde: funcionando. Ámbar: depende de hardware externo. Magenta discontinuo: canal con la Tierra o pieza pendiente. Las pantallas reciben el estado por el flujo SSE del enlace; los teléfonos leen <code>/v1/estado</code> cada 5 s.</p>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:21%">Capa</th><th style="width:30%">Tecnología</th><th>Responsabilidad</th><th style="width:13%">Estado</th></tr></thead>
+    <tbody>
+      <tr><td>1 · Fuentes</td><td>Estación de Luis (placa por definir), Python, Expo</td><td>Medir y entregar lecturas con el contrato NDJSON v1, sin importar la placa ni el sensor.</td><td><span class="est at">Estación pendiente</span></td></tr>
+      <tr><td>2 · Núcleo de vuelo</td><td>F Prime v4.4.2, C++17, FPP</td><td>Validar rangos, clasificar en 4 niveles con histéresis, emitir eventos y telemetría, aceptar comandos de la Tierra.</td><td><span class="est ok">Funciona</span></td></tr>
+      <tr><td>3 · Enlace</td><td>Rust: axum 0.8, tokio, Tauri 2</td><td>Historia, misión, Ask NOVA, biblioteca, Casa, bitácora, puente con el GDS y cola de subida.</td><td><span class="est ok">Funciona</span></td></tr>
+      <tr><td>4 · Modelos</td><td>llama.cpp, ONNX Runtime</td><td>Conversación con citas, búsqueda semántica y voz, todo en el equipo de la nave.</td><td><span class="est ok">Funciona</span></td></tr>
+      <tr><td>5 · Pantallas</td><td>HTML/JS en Tauri; Expo SDK 57, RN 0.86</td><td>Mostrar el estado, guiar emergencias, recibir ingresos manuales y mensajes de casa.</td><td><span class="est ok">Funciona</span></td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>

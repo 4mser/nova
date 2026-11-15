@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>NOVA · Informe técnico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Sistema HALO v3 «flight deck» de NOVA llevado a papel A4: superficies planas y oscuras, un borde fino,
+   color por función (turquesa = en vivo / funciona, lila = NOVA, ámbar = atención o parcial, magenta = aviso a Tierra o pendiente). */
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-300-latin.woff2);font-weight:300}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-400-latin.woff2);font-weight:400}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-500-latin.woff2);font-weight:500}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-600-latin.woff2);font-weight:600}
+@font-face{font-family:SG;src:url(fuentes/space-grotesk-700-latin.woff2);font-weight:700}
+:root{
+  --bg:#05080c;--s1:#0a0f15;--s2:#0f151d;--s3:#151c26;--l1:rgba(255,255,255,.075);--l2:rgba(255,255,255,.13);--l3:rgba(255,255,255,.2);
+  --t1:#f2f5f8;--t2:#a5afbd;--t3:#6d7786;--ac:#46c8e8;--ac2:#8fe6f5;--nv:#a898ff;--at:#f2b457;--al:#ec6aa8;--ok:#6fd6b0;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+@page{size:210mm 297mm;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#222}
+body{font-family:SG,system-ui,sans-serif;color:var(--t1);font-size:8.5pt;line-height:1.52;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-feature-settings:"ss01" 1;counter-reset:pag}
+.pag>*{flex-shrink:0}
+.pag{width:210mm;height:297mm;background:var(--bg);position:relative;overflow:hidden;margin:0 auto 8mm;padding:19mm 15mm 17mm;page-break-after:always;break-after:page;counter-increment:pag;display:flex;flex-direction:column;gap:4.2mm}
+@media print{html,body{background:none}.pag{margin:0}}
+
+/* cabecera y pie */
+.cab{position:absolute;top:7.5mm;left:15mm;right:15mm;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:6.2pt;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+.cab .marca{display:flex;align-items:center;gap:2mm;color:var(--t2)}
+.cab .marca img{width:5mm;height:5mm;display:block}
+.pie{position:absolute;bottom:7mm;left:15mm;right:15mm;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--l1);padding-top:2.4mm;font-size:6.6pt;color:var(--t3)}
+.pie b{font-family:var(--mono);font-weight:500;color:var(--t2);letter-spacing:.06em}
+.pie .n::after{content:counter(pag, decimal-leading-zero)}
+
+/* tipografía */
+.ojo{font-family:var(--mono);font-size:6.4pt;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ac)}
+h1{font-weight:600;letter-spacing:-.045em;line-height:1}
+h2{font-size:21pt;line-height:1.06;font-weight:600;letter-spacing:-.035em;max-width:165mm;text-wrap:balance}
+h3{font-size:10.5pt;line-height:1.2;font-weight:600;letter-spacing:-.01em}
+h4{font-size:8pt;font-weight:600;color:var(--t1)}
+p{color:var(--t2);max-width:172mm}
+p b,li b,td b{color:var(--t1);font-weight:500}
+.lead{font-size:9.6pt;line-height:1.55;color:var(--t2);max-width:168mm}
+code,.mono{font-family:var(--mono);font-size:.84em;color:var(--ac2)}
+.t3{color:var(--t3)}
+.cabsec{display:flex;flex-direction:column;gap:2.2mm}
+.secn{position:absolute;top:13mm;right:14mm;font-weight:700;font-size:58pt;line-height:1;color:rgba(70,200,232,.06);letter-spacing:-.05em}
+
+/* bloques */
+.caja{background:var(--s1);border:1px solid var(--l1);border-radius:3mm;padding:3.6mm 4mm;display:flex;flex-direction:column;gap:1.6mm;min-width:0}
+.caja.nv{border-color:rgba(168,152,255,.32)}
+.caja.at{border-color:rgba(242,180,87,.35)}
+.caja.al{border-color:rgba(236,106,168,.35)}
+.caja.ok{border-color:rgba(111,214,176,.3)}
+.caja p,.caja li{font-size:7.9pt}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:3.4mm}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3.2mm}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm}
+.fila{display:flex;gap:4mm;align-items:flex-start}
+.fila>*{min-width:0}
+.crece{flex:1}
+ul.l{list-style:none;display:flex;flex-direction:column;gap:1.1mm}
+ul.l li{position:relative;padding-left:3.6mm;color:var(--t2)}
+ul.l li::before{content:"";position:absolute;left:0;top:1.75mm;width:1.4mm;height:1.4mm;border-radius:50%;background:var(--ac)}
+ul.l.nv li::before{background:var(--nv)}ul.l.at li::before{background:var(--at)}ul.l.al li::before{background:var(--al)}ul.l.ok li::before{background:var(--ok)}
+
+/* estado */
+.est{display:inline-flex;align-items:center;gap:1.2mm;font:500 5.8pt/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:1mm 1.6mm;border-radius:9mm;border:1px solid currentColor;white-space:nowrap;align-self:flex-start}
+.est::before{content:"";width:1.2mm;height:1.2mm;border-radius:50%;background:currentColor}
+.est.ok{color:var(--ok)}.est.at{color:var(--at)}.est.al{color:var(--al)}.est.nv{color:var(--nv)}.est.ac{color:var(--ac2)}
+.cajacab{display:flex;justify-content:space-between;align-items:flex-start;gap:2mm}
+
+/* cifras */
+.cifras{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--l1);border:1px solid var(--l1);border-radius:3mm;overflow:hidden}
+.cifra{background:var(--s1);padding:2.6mm 3.4mm;display:flex;flex-direction:column;gap:.6mm}
+.cifra b{font-size:17pt;font-weight:600;letter-spacing:-.04em;line-height:1.05;font-variant-numeric:tabular-nums}
+.cifra span{font-size:6.8pt;color:var(--t2);line-height:1.35}
+
+/* tablas */
+table.t{width:100%;border-collapse:collapse;font-size:7.3pt;font-variant-numeric:tabular-nums}
+.t th{font:500 5.6pt/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--t3);text-align:left;padding:1.8mm 2mm;background:var(--s2);border-bottom:1px solid var(--l2)}
+.t td{padding:1.55mm 2mm;border-bottom:1px solid var(--l1);color:var(--t2);vertical-align:top;line-height:1.4}
+.t td:first-child{color:var(--t1);font-weight:500}
+.t tr:last-child td{border-bottom:0}
+.tw{border:1px solid var(--l1);border-radius:3mm;overflow:hidden;background:var(--s1)}
+.t .num{text-align:right;white-space:nowrap}
+.t .at{color:var(--at)}.t .al{color:var(--al)}.t .ok{color:var(--ok)}
+
+/* diagramas */
+.diag{background:var(--s1);border:1px solid var(--l1);border-radius:3mm;padding:3mm}
+.diag svg{display:block;width:100%;height:auto}
+.diag svg text{font-family:SG,sans-serif}
+.diag svg .m{font-family:'JetBrains Mono',monospace}
+.pieimg{font-size:6.6pt;color:var(--t3);line-height:1.4}
+.pieimg b{color:var(--t2);font-weight:500}
+
+/* equipos (mockups) */
+.equipo{display:flex;flex-direction:column;align-items:center;gap:0}
+.monitor{width:100%;background:#0c1118;border:1px solid #27303c;border-radius:2.6mm;padding:1.7mm;box-shadow:0 1.6mm 5mm rgba(0,0,0,.6)}
+.monitor img{display:block;width:100%;border-radius:.9mm}
+.cuello{width:13%;height:3.2mm;background:linear-gradient(#141b24,#0b1016)}
+.base{width:26%;height:1.4mm;border-radius:1mm 1mm .4mm .4mm;background:#1a222d}
+.tel{position:relative;background:#10151c;border:1px solid #2c3541;border-radius:7mm;padding:1.5mm;box-shadow:0 1.6mm 5mm rgba(0,0,0,.6);flex:none}
+.tel .pant{border-radius:5.6mm;overflow:hidden;background:#05080c}
+.tel .be{height:5.4mm;display:flex;align-items:center;justify-content:space-between;padding:0 4.6mm 0 5.2mm;font:600 5.6pt/1 SG;color:#f2f5f8;position:relative}
+.tel .be::after{content:"";position:absolute;left:50%;top:1.2mm;width:24%;height:3mm;margin-left:-12%;background:#000;border-radius:2mm}
+.tel .be i{display:flex;gap:.7mm;align-items:center}
+.tel .be i span{display:block;background:#f2f5f8;border-radius:.3mm}
+.tel img{display:block;width:100%}
+.tel .rec{aspect-ratio:393/852;overflow:hidden}
+.tel .pant::after{content:"";display:block;height:4.2mm;background:#05080c;background-image:linear-gradient(#f2f5f8,#f2f5f8);background-size:34% .9mm;background-position:center 55%;background-repeat:no-repeat;border-radius:0 0 5.6mm 5.6mm;opacity:.95}
+.tel .rec img{object-fit:cover;object-position:top;height:100%}
+.leyenda-eq{margin-top:2.4mm;text-align:center;font-size:6.8pt;color:var(--t2);line-height:1.35}
+.leyenda-eq b{display:block;color:var(--t1);font-weight:600;font-size:7.6pt}
+
+/* portada */
+.portada{padding:0;gap:0}
+.portada .foto{position:absolute;left:-30mm;right:-10mm;top:-6mm;height:205mm;background:url(img/m/tierra.jpg) 28% 40%/cover no-repeat;opacity:.95}
+.portada .velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,12,.55) 0%,rgba(5,8,12,0) 14%,rgba(5,8,12,0) 40%,rgba(5,8,12,.9) 55%,#05080c 64%)}
+.portada .contenido{position:absolute;left:16mm;right:16mm;bottom:20mm;display:flex;flex-direction:column;gap:5mm}
+.portada .arriba{position:absolute;top:14mm;left:16mm;right:16mm;display:flex;justify-content:space-between;align-items:center}
+.portada .arriba img.bn{height:9mm;opacity:.92}
+
+/* índice */
+.indice{display:grid;grid-template-columns:1fr 1fr;gap:0 6mm}
+.indice div{display:flex;gap:3mm;align-items:baseline;padding:1.7mm 0;border-bottom:1px solid var(--l1)}
+.indice span.n{font-family:var(--mono);font-size:6.6pt;color:var(--ac);width:6mm;flex:none}
+.indice b{font-weight:500;flex:1}
+.indice em{font-style:normal;font-family:var(--mono);font-size:6.6pt;color:var(--t3)}
+
+.codigo{font-family:var(--mono);font-size:6.6pt;line-height:1.55;color:var(--t2);background:var(--s2);border:1px solid var(--l1);border-radius:2.4mm;padding:2.6mm 3.2mm;white-space:pre-wrap;word-break:break-word}
+.codigo .c{color:var(--t3)}.codigo .k{color:var(--ac2)}.codigo .s{color:var(--ok)}
+.nova{display:flex;gap:3mm;align-items:center;background:var(--s2);border:1px solid rgba(168,152,255,.3);border-radius:3mm;padding:3mm 3.6mm}
+.nova img{width:9mm;height:9mm;flex:none}
+.nova p{color:var(--t1);font-size:8.2pt}
+.sep{height:1px;background:var(--l1)}
+.equipo-g{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--l1);border:1px solid var(--l1);border-radius:3mm;overflow:hidden}
+.equipo-g div{background:var(--s1);padding:2.4mm 3mm;display:flex;flex-direction:column;gap:.6mm;min-width:0}
+.equipo-g b{font-weight:600;font-size:8pt}
+.equipo-g span{font-size:6.8pt;color:var(--t2);line-height:1.38}
+</style>
+</head>
+<body>

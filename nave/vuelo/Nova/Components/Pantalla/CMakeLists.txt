@@ -1,0 +1,10 @@
+register_fprime_module(
+  AUTOCODER_INPUTS
+    "${CMAKE_CURRENT_LIST_DIR}/Pantalla.fpp"
+  SOURCES
+    "${CMAKE_CURRENT_LIST_DIR}/Pantalla.cpp"
+  HEADERS
+    "${CMAKE_CURRENT_LIST_DIR}/Pantalla.hpp"
+  DEPENDS
+    Nova_Components_Salud
+)

@@ -1,0 +1,205 @@
+<!-- ============================================================ 13 · MISIÓN Y CASA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>08 · Misión y Casa</span></div>
+  <div class="secn">08</div>
+  <div class="cabsec">
+    <span class="ojo">08 · Misión, voz y Casa</span>
+    <h2>La nave sabe dónde está, cuánto tarda la luz y cuándo llega cada mensaje</h2>
+  </div>
+  <div class="fila">
+    <div class="diag" style="width:96mm;flex:none">
+      <svg viewBox="0 0 860 670" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="380" cy="320" r="200" fill="none" stroke="rgba(70,200,232,.45)" stroke-width="2"/>
+        <circle cx="380" cy="320" r="305" fill="none" stroke="rgba(242,180,87,.4)" stroke-width="2"/>
+        <path d="M180,320 A252.5,246.8 0 0 0 685,320" fill="none" stroke="#a898ff" stroke-width="3" stroke-dasharray="10 8"/>
+        <circle cx="380" cy="320" r="16" fill="#f2b457"/>
+        <text x="380" y="366" text-anchor="middle" fill="#a5afbd" font-size="20">Sol</text>
+        <circle cx="180" cy="320" r="8" fill="#46c8e8"/>
+        <text x="166" y="300" text-anchor="end" fill="#a5afbd" font-size="19">salida</text>
+        <text x="166" y="352" text-anchor="end" fill="#a5afbd" font-size="19">8 abr</text>
+        <circle cx="549.6" cy="214" r="11" fill="#46c8e8"/>
+        <text x="535" y="250" text-anchor="end" fill="#8fe6f5" font-size="20" font-weight="600">Tierra hoy</text>
+        <circle cx="685" cy="320" r="11" fill="#f2b457"/>
+        <text x="708" y="314" fill="#f2b457" font-size="20" font-weight="600">Marte</text>
+        <text x="708" y="340" fill="#a5afbd" font-size="18">llegada</text>
+        <text x="708" y="364" fill="#a5afbd" font-size="18">día 259</text>
+        <path d="M660,415 l12,12 l-12,12 l-12,-12 z" fill="#f2f5f8"/>
+        <text x="692" y="440" fill="#f2f5f8" font-size="20" font-weight="600">Nave</text>
+        <text x="692" y="466" fill="#a5afbd" font-size="18">día 215</text>
+        <path d="M554,224 L656,418" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="8 6"/>
+        <text x="608" y="266" fill="#ec6aa8" font-size="18" font-weight="600">9,5 min</text>
+        <text x="614" y="290" fill="#ec6aa8" font-size="18">de luz</text>
+        <text x="380" y="656" text-anchor="middle" fill="#a898ff" font-size="18">transferencia de Hohmann · 259 días</text>
+      </svg>
+    </div>
+    <div class="crece" style="display:flex;flex-direction:column;gap:2.4mm">
+      <h3>Misión calculada, no escrita a mano</h3>
+      <p><code>mision.rs</code> propaga la Tierra y Marte con los <b>elementos orbitales J2000 de Standish</b> (JPL), resuelve la ecuación de Kepler y ubica la nave sobre una transferencia de Hohmann que parte el 8 de abril de 2026, con 500 días en Marte.</p>
+      <div class="tw"><table class="t">
+        <tbody>
+          <tr><td>Día de misión</td><td class="num">215</td></tr>
+          <tr><td>Fase</td><td class="num">crucero a Marte</td></tr>
+          <tr><td>Llegada en</td><td class="num">44 días</td></tr>
+          <tr><td>Distancia a la Tierra</td><td class="num">≈ 171 millones de km</td></tr>
+          <tr><td>Retraso de la luz</td><td class="num">9,5 min, un sentido</td></tr>
+          <tr><td>Conjunción solar</td><td class="num">elongación &lt; 2°</td></tr>
+        </tbody></table></div>
+      <p>El retraso alimenta la cola de subida de comandos, la llegada de los mensajes de Casa, el texto de Ask NOVA y la barra de las pantallas. Con <code>NOVA_LANZAMIENTO</code> y <code>NOVA_ESTADIA_DIAS</code> se ensaya cualquier momento de la misión.</p>
+    </div>
+  </div>
+  <p class="pieimg"><b>Figura 7.</b> Vista desde el norte de la eclíptica, a escala. Posiciones calculadas para el 9 de noviembre de 2026. La línea magenta es el camino de la señal entre la Tierra y la nave.</p>
+  <div class="g2">
+    <div class="caja nv"><div class="cajacab"><h4>Voz de NOVA a bordo</h4><span class="est ok">Funciona</span></div><p><b>Kokoro-82M</b> en ONNX (<code>voz/servidor.py</code>, puerto 8082), audio WAV de 24 kHz. Voz <code>af_heart</code> en inglés y <code>ef_dora</code> en español, elegidas por el equipo. El enlace la expone en <code>/v1/decir</code> y la pantalla la usa para leer respuestas y pasos de emergencia.</p></div>
+    <div class="caja"><div class="cajacab"><h4>Historia a bordo</h4><span class="est ok">Funciona</span></div><p>Cada serie tripulante × sensor se guarda a 1 Hz por 6 horas y por minuto por 30 días. Minutos y alertas van a disco en NDJSON, un archivo por día, en <code>~/.nova-pc</code>; un reinicio no pierde nada.</p></div>
+  </div>
+  <div class="cabsec"><span class="ojo">Casa: la familia también viaja con la luz</span></div>
+  <div class="fila">
+    <div class="diag crece">
+      <svg viewBox="0 0 1180 560" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="ca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker>
+        <marker id="cm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ec6aa8"/></marker></defs>
+        <g data-caja><rect x="20" y="30" width="340" height="140" rx="14" fill="#0f151d" stroke="#ec6aa8"/>
+          <text x="40" y="72" fill="#f2f5f8" font-size="24" font-weight="600">Familia en la Tierra</text>
+          <text x="40" y="106" fill="#a5afbd" font-size="19">texto o foto para T1–T4</text>
+          <text x="40" y="134" fill="#a5afbd" font-size="19">tierra/casa.py enviar</text></g>
+        <path d="M360,100 H436" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#cm)"/>
+        <g data-caja><rect x="440" y="30" width="330" height="140" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.18)"/>
+          <text x="460" y="72" fill="#f2f5f8" font-size="22" font-weight="600">Comprime</text>
+          <text x="460" y="106" fill="#a5afbd" font-size="19">lado mayor 1280 px</text>
+          <text x="460" y="134" fill="#a5afbd" font-size="19">JPEG · ancho de banda</text></g>
+        <path d="M770,100 H846" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#cm)"/>
+        <g data-caja><rect x="850" y="30" width="310" height="140" rx="14" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="870" y="72" fill="#f2f5f8" font-size="22" font-weight="600">/v1/casa/subida</text>
+          <text x="870" y="106" fill="#a5afbd" font-size="19">llega = enviado</text>
+          <text x="870" y="134" fill="#a5afbd" font-size="19">+ retraso de luz</text></g>
+        <path d="M1005,170 V236" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ca)"/>
+        <g data-caja><rect x="790" y="240" width="370" height="140" rx="14" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="810" y="282" fill="#f2f5f8" font-size="22" font-weight="600">Bandeja de la nave</text>
+          <text x="810" y="316" fill="#a5afbd" font-size="19">visible solo desde la llegada</text>
+          <text x="810" y="344" fill="#a5afbd" font-size="19">~/.nova-pc/casa</text></g>
+        <path d="M790,310 H704" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ca)"/>
+        <g data-caja><rect x="380" y="240" width="320" height="140" rx="14" fill="#0f151d" stroke="#6fd6b0"/>
+          <text x="400" y="282" fill="#f2f5f8" font-size="22" font-weight="600">Teléfono y widget</text>
+          <text x="400" y="316" fill="#a5afbd" font-size="19">/v1/casa?trip=T4</text>
+          <text x="400" y="344" fill="#a5afbd" font-size="19">guardado sin enlace</text></g>
+        <path d="M540,380 V446" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ca)"/>
+        <g data-caja><rect x="380" y="450" width="320" height="96" rx="14" fill="#0f151d" stroke="rgba(255,255,255,.18)"/>
+          <text x="400" y="490" fill="#f2f5f8" font-size="22" font-weight="600">Respuesta</text>
+          <text x="400" y="522" fill="#a5afbd" font-size="19">texto o foto</text></g>
+        <path d="M380,498 H304" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ca)"/>
+        <g data-caja><rect x="20" y="420" width="280" height="126" rx="14" fill="#0f151d" stroke="#ec6aa8"/>
+          <text x="40" y="460" fill="#f2f5f8" font-size="22" font-weight="600">Cola de bajada</text>
+          <text x="40" y="494" fill="#a5afbd" font-size="19">próximo contacto</text>
+          <text x="40" y="522" fill="#a5afbd" font-size="19">casa.py bajar</text></g>
+      </svg>
+    </div>
+    <div class="equipo" style="width:32mm;flex:none">
+      <div class="tel" style="width:32mm"><div class="pant"><div class="be"><span>9:41</span><i><span style="width:1mm;height:1mm;border-radius:50%"></span><span style="width:3.6mm;height:1.7mm"></span></i></div><div class="rec"><img src="img/m/m-casa.jpg" alt="Casa en el teléfono"></div></div></div>
+    </div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 14 · SYSTEMS Y GDS -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>08 · Sistemas de a bordo</span></div>
+  <div class="cabsec">
+    <span class="ojo">08 · Systems: el núcleo con la interfaz de NOVA</span>
+    <h2>El sistema de tierra de F Prime, traducido a palabras de la tripulación</h2>
+  </div>
+  <p class="lead">F Prime trae su propio sistema de tierra, <b>fprime-gds</b>, con una consola web técnica. NOVA lo usa como transporte y lo muestra con su propio diseño: <code>tierra.rs</code> lee cada segundo eventos, telemetría e historial de comandos por la API REST del GDS, los traduce con los diccionarios del despliegue y los publica en <code>/v1/sistemas</code>.</p>
+  <div class="diag">
+    <svg viewBox="0 0 1780 470" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ya" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8fe6f5"/></marker>
+      <marker id="ym" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ec6aa8"/></marker></defs>
+      <g data-caja><rect x="20" y="40" width="300" height="170" rx="16" fill="#0f151d" stroke="#6fd6b0" stroke-width="2"/>
+        <text x="42" y="84" fill="#f2f5f8" font-size="25" font-weight="600">Núcleo F Prime</text>
+        <text x="42" y="120" fill="#a5afbd" font-size="19">239 eventos</text>
+        <text x="42" y="148" fill="#a5afbd" font-size="19">110 comandos</text>
+        <text x="42" y="176" fill="#a5afbd" font-size="19">canales de telemetría</text></g>
+      <path d="M320,125 H436" stroke="#8fe6f5" stroke-width="2.5" marker-start="url(#ya)" marker-end="url(#ya)"/>
+      <text x="334" y="110" fill="#8fe6f5" font-size="18" class="m">CCSDS</text>
+      <text x="334" y="156" fill="#8fe6f5" font-size="18" class="m">TCP 50000</text>
+      <g data-caja><rect x="440" y="40" width="300" height="170" rx="16" fill="#0f151d" stroke="rgba(255,255,255,.2)"/>
+        <text x="462" y="84" fill="#f2f5f8" font-size="25" font-weight="600">fprime-gds</text>
+        <text x="462" y="120" fill="#a5afbd" font-size="19">diccionario JSON</text>
+        <text x="462" y="148" fill="#a5afbd" font-size="19">API REST :5080</text>
+        <text x="462" y="176" fill="#a5afbd" font-size="19">sesión «nova-enlace»</text></g>
+      <path d="M740,125 H856" stroke="#8fe6f5" stroke-width="2.5" marker-start="url(#ya)" marker-end="url(#ya)"/>
+      <text x="754" y="110" fill="#8fe6f5" font-size="18" class="m">cada 1 s</text>
+      <g data-caja><rect x="860" y="40" width="420" height="170" rx="16" fill="#0f151d" stroke="#6fd6b0" stroke-width="2"/>
+        <text x="882" y="84" fill="#f2f5f8" font-size="25" font-weight="600">tierra.rs (enlace)</text>
+        <text x="882" y="120" fill="#a5afbd" font-size="19">traduce con diccionarios</text>
+        <text x="882" y="148" fill="#a5afbd" font-size="19">guarda 400 eventos</text>
+        <text x="882" y="176" fill="#a5afbd" font-size="19">en línea si hubo tlm &lt; 5 s</text></g>
+      <path d="M1280,125 H1396" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ya)"/>
+      <text x="1286" y="110" fill="#8fe6f5" font-size="15" class="m">/v1/sistemas</text>
+      <g data-caja><rect x="1400" y="40" width="360" height="170" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="1422" y="84" fill="#f2f5f8" font-size="25" font-weight="600">Pantallas</text>
+        <text x="1422" y="120" fill="#a5afbd" font-size="19">vista Systems (PC)</text>
+        <text x="1422" y="148" fill="#a5afbd" font-size="19">tarjeta «La nave»</text>
+        <text x="1422" y="176" fill="#a5afbd" font-size="19">en el teléfono</text></g>
+      <!-- subida -->
+      <text x="20" y="282" fill="#6d7786" font-size="18" letter-spacing="2.5" class="m">COLA DE SUBIDA · ESTADOS DE UN COMANDO</text>
+      <g data-caja><rect x="20" y="304" width="300" height="140" rx="16" fill="#0f151d" stroke="#ec6aa8"/>
+        <text x="42" y="346" fill="#f2f5f8" font-size="23" font-weight="600">Consola de Tierra</text>
+        <text x="42" y="380" fill="#a5afbd" font-size="18">POST /v1/sistemas/</text>
+        <text x="42" y="406" fill="#a5afbd" font-size="18">comando + motivo</text></g>
+      <path d="M320,374 H436" stroke="#ec6aa8" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#ym)"/>
+      <g data-caja><rect x="440" y="304" width="300" height="140" rx="16" fill="#0f151d" stroke="#a898ff"/>
+        <text x="462" y="346" fill="#a898ff" font-size="23" font-weight="600">en_vuelo</text>
+        <text x="462" y="380" fill="#a5afbd" font-size="18">llega = ahora + luz</text>
+        <text x="462" y="406" fill="#a5afbd" font-size="18">cuenta regresiva</text></g>
+      <path d="M740,374 H856" stroke="#a898ff" stroke-width="2.5" marker-end="url(#ya)"/>
+      <g data-caja><rect x="860" y="304" width="420" height="140" rx="16" fill="#0f151d" stroke="rgba(255,255,255,.2)"/>
+        <text x="882" y="346" fill="#f2f5f8" font-size="23" font-weight="600">entregando</text>
+        <text x="882" y="380" fill="#a5afbd" font-size="18">al llegar, el enlace lo manda</text>
+        <text x="882" y="406" fill="#a5afbd" font-size="18">al núcleo por el GDS</text></g>
+      <path d="M1280,374 H1396" stroke="#8fe6f5" stroke-width="2.5" marker-end="url(#ya)"/>
+      <g data-caja><rect x="1400" y="304" width="360" height="140" rx="16" fill="#0f151d" stroke="#6fd6b0"/>
+        <text x="1422" y="346" fill="#6fd6b0" font-size="23" font-weight="600">entregado</text>
+        <text x="1422" y="380" fill="#a5afbd" font-size="18">o error con detalle</text>
+        <text x="1422" y="406" fill="#a5afbd" font-size="18">(OpCodeCompleted)</text></g>
+    </svg>
+  </div>
+  <p class="pieimg"><b>Figura 8.</b> Arriba, la lectura del núcleo a través del sistema de tierra del JPL. Abajo, el ciclo de vida de un comando enviado desde la Tierra: solo se aceptan nombres que existen en el diccionario del despliegue.</p>
+  <div class="equipo">
+    <div class="monitor" style="width:86%"><img src="img/m/pc-sistemas.jpg" alt="Vista Systems"></div>
+    <div class="cuello"></div><div class="base"></div>
+  </div>
+  <div class="g3">
+    <div class="caja"><h4>Tarjetas de estado</h4><p>Núcleo en línea, salud de tiempo real (ciclos perdidos, peor tiempo del grupo de 1 Hz, CPU y memoria), estación médica y comandos despachados.</p></div>
+    <div class="caja"><h4>Eventos en lenguaje claro</h4><p>«David · temperature 38.0: needs the crew's attention» en vez de <code>ALERTA_ATENCION</code>. Filtros: salud, estación, comandos, sistema.</p></div>
+    <div class="caja"><h4>Límites y subida</h4><p>Los umbrales vigentes, los mismos que usa el núcleo, y lo que viene desde la Tierra con su motivo y su estado.</p></div>
+  </div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>
+
+<!-- ============================================================ 15 · CONSOLA DE TIERRA -->
+<section class="pag">
+  <div class="cab"><span class="marca"><img src="img/m/orbe.png" alt="">NOVA · Informe técnico</span><span>09 · Consola de Tierra</span></div>
+  <div class="secn">09</div>
+  <div class="cabsec">
+    <span class="ojo">09 · Consola de Tierra</span>
+    <h2>Mission Control: lo que ve el cirujano de vuelo, siempre con minutos de retraso</h2>
+  </div>
+  <p class="lead">Vista web en <code>ui/tierra/</code> servida por el mismo enlace en <code>/tierra/</code>. Representa el lado de la Tierra: todo lo que muestra viene del informe de la nave y todo lo que envía viaja con el retraso de la luz calculado por la misión.</p>
+  <div class="equipo">
+    <div class="monitor"><img src="img/m/pc-tierra.jpg" alt="Consola de Tierra"></div>
+    <div class="cuello"></div><div class="base"></div>
+  </div>
+  <div class="g3">
+    <div class="caja"><h4>Tripulación y alertas</h4><p>Estado de cada tripulante «as received 1 s ago», con pulso, SpO₂, presión y temperatura. Lista de alertas de las últimas 24 h, con las marcadas para el cirujano en magenta.</p></div>
+    <div class="caja"><h4>Informe de la noche</h4><p>Resumen automático (en la captura: 37 alertas, 16 guías de emergencia y 28 preguntas a NOVA), tabla de 24 h con media y rango por persona, guías con su bitácora completa y resúmenes privados.</p></div>
+    <div class="caja"><h4>Actuar desde la Tierra</h4><p>Cambiar los límites del núcleo por signo, con el motivo que queda en la bitácora, y ver el comando en camino. También dejar un mensaje de la familia para un tripulante.</p></div>
+  </div>
+  <div class="tw"><table class="t">
+    <thead><tr><th style="width:27%">Acción de la consola</th><th style="width:30%">Ruta del enlace</th><th>Efecto en la nave</th></tr></thead>
+    <tbody>
+      <tr><td>Leer el informe</td><td><code>GET /v1/tierra/informe</code></td><td>Resumen de 24 h, alertas, guías, conversaciones con NOVA y datos privados con consentimiento.</td></tr>
+      <tr><td>Cambiar un umbral</td><td><code>POST /v1/sistemas/comando</code></td><td>Entra a la cola de subida y se aplica como <code>*_PRM_SET</code> en el núcleo al llegar.</td></tr>
+      <tr><td>Ver lo que va en camino</td><td><code>GET /v1/sistemas</code></td><td>Cada comando con su hora de envío, hora de llegada y estado.</td></tr>
+      <tr><td>Mensaje de casa</td><td><code>POST /v1/casa/subida</code></td><td>Aparece en el teléfono y el widget del tripulante al cumplirse el retraso.</td></tr>
+    </tbody></table></div>
+  <div class="pie"><span>B&amp;N · NASA Space Apps 2026</span><b class="n"></b></div>
+</section>

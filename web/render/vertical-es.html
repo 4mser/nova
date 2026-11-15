@@ -1,0 +1,24 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><style>
+@font-face{font-family:SG;src:url(/motor-es/fonts/space-grotesk-400-latin.woff2);font-weight:400}
+@font-face{font-family:SG;src:url(/motor-es/fonts/space-grotesk-600-latin.woff2);font-weight:600}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#04070b}
+#ven{position:absolute;left:0;top:150px;width:1080px;height:1540px;overflow:hidden}
+#ven iframe{position:absolute;left:0;top:0;width:1920px;height:1080px;border:0;transform-origin:0 0}
+#sub{position:absolute;left:50%;bottom:108px;transform:translateX(-50%);display:flex;align-items:center;gap:22px;width:max-content;max-width:1000px;padding:18px 40px 18px 18px;border-radius:80px;background:rgba(5,8,12,.94);border:2px solid rgba(255,255,255,.08);font:400 40px/1.32 SG;color:#eef3f8;letter-spacing:-.01em;opacity:0}
+#sub svg{width:104px;height:104px;flex:none;overflow:visible}#sub b{font-weight:600;color:#a898ff;margin-right:14px}
+</style></head><body>
+<div id="ven"><iframe id="m" src="/motor-es/motor.html?render&v=1"></iframe></div>
+<div id="sub"><svg id="subN" viewBox="0 0 90 90"></svg><span id="subT"></span></div>
+<script>
+const f = document.getElementById('m'), VW = 1080, VH = 1540;
+f.addEventListener('load', function esperar(){ const w = f.contentWindow; if (!w.__listo || !w.focoV){ setTimeout(esperar, 100); return; }
+  window.DUR = w.DUR; window.__esperar = () => (w.__esperar ? w.__esperar() : Promise.resolve());
+  window.render = t => { w.render(t); const c = w.focoV(t), s = Math.min(VH / 1080, VW / 760) * c.z;
+    const tx = Math.min(0, Math.max(VW - 1920 * s, VW / 2 - c.x * s)), ty = 1080 * s <= VH + .5 ? 0 : Math.min(0, Math.max(VH - 1080 * s, VH / 2 - c.y * s));
+    f.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+    const n = w.document.getElementById('narr'), op = +(n.style.opacity || 0), sub = document.getElementById('sub'); sub.style.opacity = op;
+    if (op > .02){ document.getElementById('subT').innerHTML = w.document.getElementById('narrT').innerHTML; const v = w.voz(t);
+      document.getElementById('subN').innerHTML = w.mascotaOrbes({ x: 45, y: 46, R: 25, t, expr: 'normal', orbes: 3, apertura: .9, habla: v ? v.amp : 0, mira: [.4, 0], sinHalo: true }); } };
+  document.fonts.ready.then(() => { window.render(0); window.__listo = true; }); });
+</script></body></html>

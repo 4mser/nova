@@ -1,0 +1,1104 @@
+{
+  "version": "0.2",
+  "estado": "demo, pending flight surgeon review",
+  "protocolos": [
+    {
+      "id": "paro_cardiaco",
+      "titulo": "Cardiac arrest in microgravity",
+      "cuando": "A crew member is unresponsive and not breathing normally.",
+      "pasos": [
+        "Shout for the whole crew; one person brings the AED and the medical kit to the Crew Medical Restraint System (CMRS).",
+        "Start chest compressions where you are with the Evetts-Russomano method; switch to the reverse bear hug if you cannot push well.",
+        "Push hard and fast: 100 to 120 compressions a minute, about 5 to 6 cm deep.",
+        "Once the patient is strapped to the CMRS, use the handstand method; if there is no room, the restrained standard or straddling position.",
+        "Use the AED only with the patient strapped to the CMRS and nobody touching them during the shock.",
+        "Swap rescuers every 2 minutes. Tell the flight surgeon now."
+      ],
+      "tierra": "Always, immediately.",
+      "fuente": "Hinkelbein et al., CPR in microgravity guideline (2020), recommendations 1-3 and 10",
+      "fuentes": [
+        {
+          "id": "cpr_microgravity_guideline_2020",
+          "pagina": 2
+        },
+        {
+          "id": "cpr_microgravity_guideline_2020",
+          "pagina": 4
+        },
+        {
+          "id": "cpr_microgravity_guideline_2020",
+          "pagina": 5
+        },
+        {
+          "id": "cpr_microgravity_guideline_2020",
+          "pagina": 6
+        },
+        {
+          "id": "cpr_microgravity_guideline_2020",
+          "pagina": 8
+        }
+      ],
+      "guia": [
+        {
+          "id": "confirmar",
+          "tipo": "pregunta",
+          "texto": "Is {nombre} unresponsive and not breathing normally?",
+          "texto_es": "¿{Nombre} no responde y no respira con normalidad?",
+          "mira": [
+            "spo2",
+            "fr",
+            "pulso"
+          ],
+          "si": "alarma",
+          "no": "no_paro"
+        },
+        {
+          "id": "alarma",
+          "tipo": "accion",
+          "texto": "Shout for the whole crew now. One person brings the AED and the medical kit to the medical restraint, the CMRS.",
+          "texto_es": "Llama a toda la tripulación ahora. Una persona trae el DEA y el kit médico a la camilla de sujeción médica, el CMRS.",
+          "sig": "er",
+          "grave": true
+        },
+        {
+          "id": "er",
+          "tipo": "accion",
+          "texto": "Start compressions right here with the Evetts-Russomano method: your left leg over {su} right shoulder, your right leg around {su} torso, ankles locked behind {su} back, both hands on the center of {su} chest.",
+          "texto_es": "Empieza las compresiones aquí mismo con el método Evetts-Russomano: tu pierna izquierda sobre su hombro derecho, tu pierna derecha alrededor de su torso, los tobillos cruzados detrás de su espalda y ambas manos en el centro de su pecho.",
+          "sig": "ritmo",
+          "grave": true,
+          "metronomo": 110
+        },
+        {
+          "id": "ritmo",
+          "tipo": "accion",
+          "texto": "Push hard and fast with the beat: 100 to 120 a minute, about 5 to 6 cm deep, letting the chest come back up. If you cannot push well, switch to the reverse bear hug from behind.",
+          "texto_es": "Empuja fuerte y rápido al ritmo: 100 a 120 por minuto, unos 5 a 6 cm de profundidad, dejando que el pecho vuelva a subir. Si no logras empujar bien, cambia al abrazo de oso invertido desde atrás.",
+          "sig": "cmrs",
+          "grave": true,
+          "metronomo": 110
+        },
+        {
+          "id": "cmrs",
+          "tipo": "accion",
+          "texto": "When {el} is strapped to the CMRS, switch to the handstand method: feet on the opposite wall, hands on {su} breastbone, push with your legs. No room? Use the restrained standard or straddling position.",
+          "texto_es": "Cuando {nombre} esté sujet{o} al CMRS, cambia al método de la vertical: pies en la pared opuesta, manos sobre su esternón, empuja con las piernas. ¿No hay espacio? Usa la posición estándar sujeta o a horcajadas.",
+          "sig": "dea",
+          "grave": true,
+          "metronomo": 110
+        },
+        {
+          "id": "dea",
+          "tipo": "accion",
+          "texto": "Attach the AED pads and follow its voice. Shock only with {lo} strapped to the CMRS and nobody touching {lo}. Restart compressions right after.",
+          "texto_es": "Pon los parches del DEA y sigue su voz. Descarga solo con {nombre} sujet{o} al CMRS y sin que nadie le toque. Retoma las compresiones justo después.",
+          "sig": "dos_min",
+          "grave": true,
+          "metronomo": 110
+        },
+        {
+          "id": "dos_min",
+          "tipo": "espera",
+          "seg": 120,
+          "texto": "Keep compressions going. Swap rescuers every 2 minutes so the pushes stay strong.",
+          "texto_es": "Sigue con las compresiones. Cambien de rescatista cada 2 minutos para que los empujes sigan fuertes.",
+          "mira": [
+            "pulso",
+            "spo2"
+          ],
+          "si_recupera": "revisar",
+          "no_recupera": "revisar",
+          "metronomo": 110,
+          "grave": true
+        },
+        {
+          "id": "revisar",
+          "tipo": "pregunta",
+          "texto": "Is {el} breathing normally or moving now?",
+          "texto_es": "¿{Nombre} respira con normalidad o se mueve ahora?",
+          "mira": [
+            "pulso",
+            "spo2",
+            "fr"
+          ],
+          "si": "rosc",
+          "no": "dos_min"
+        },
+        {
+          "id": "no_paro",
+          "tipo": "fin",
+          "texto": "{Nombre} is breathing, so this is not cardiac arrest. If {el} is pale or dizzy, open the fainting guide.",
+          "texto_es": "{Nombre} respira, así que no es un paro cardíaco. Si está pálid{o} o maread{o}, abre la guía de desmayo."
+        },
+        {
+          "id": "rosc",
+          "tipo": "fin",
+          "texto": "{Nombre} has circulation back. Keep {lo} strapped to the CMRS, check {su} breathing every minute, and tell the flight surgeon now.",
+          "texto_es": "{Nombre} recuperó la circulación. Mantenle sujet{o} al CMRS, revisa su respiración cada minuto y avisa ahora al cirujano de vuelo.",
+          "grave": true
+        }
+      ],
+      "titulo_es": "Paro cardiaco en microgravedad",
+      "pasos_es": [
+        "Grita para que venga toda la tripulación; una persona lleva el desfibrilador (DEA) y el botiquín a la camilla médica (CMRS).",
+        "Empieza las compresiones donde estás con el método Evetts-Russomano; si no logras empujar bien, cambia al abrazo de oso inverso.",
+        "Empuja fuerte y rápido: de 100 a 120 compresiones por minuto, de unos 5 a 6 cm de profundidad.",
+        "Cuando el paciente esté sujeto a la CMRS, usa el método de la parada de manos; si no hay espacio, la posición estándar o a horcajadas, ambos sujetos.",
+        "Usa el DEA solo con el paciente sujeto a la CMRS y sin que nadie lo toque durante la descarga.",
+        "Turnen al rescatista cada 2 minutos. Avisen ahora al cirujano de vuelo."
+      ]
+    },
+    {
+      "id": "desmayo",
+      "titulo": "Possible fainting (syncope)",
+      "cuando": "Heart rate and blood pressure drop together (slow heart rate plus low blood pressure), or a crew member stops responding.",
+      "pasos": [
+        "Go to the crew member now. Call their name and tap their shoulder. Check if they respond.",
+        "Check they are breathing. Read oxygen saturation from the sensor.",
+        "Keep them secured and still in a restraint. Loosen anything tight.",
+        "Measure blood pressure again in 2 minutes.",
+        "If they do not respond or are not breathing normally, start the emergency medical checklist and call the whole crew."
+      ],
+      "tierra": "Always goes to the flight surgeon.",
+      "guia": [
+        {
+          "id": "responde",
+          "tipo": "pregunta",
+          "texto": "Go to {nombre} now. Call {su} name and tap {su} shoulder. Does {el} respond?",
+          "texto_es": "Ve con {nombre} ahora. Di su nombre y tócale el hombro. ¿Responde?",
+          "si": "respira",
+          "no": "critico"
+        },
+        {
+          "id": "respira",
+          "tipo": "pregunta",
+          "texto": "Is {el} breathing normally?",
+          "texto_es": "¿Respira con normalidad?",
+          "mira": [
+            "spo2",
+            "fr"
+          ],
+          "si": "asegurar",
+          "no": "critico"
+        },
+        {
+          "id": "asegurar",
+          "tipo": "accion",
+          "texto": "Keep {nombre} secured and still in a restraint. Loosen anything tight.",
+          "texto_es": "Mantén a {nombre} sujet{o} y quiet{o} en una sujeción. Suelta todo lo que apriete.",
+          "sig": "medir"
+        },
+        {
+          "id": "medir",
+          "tipo": "espera",
+          "seg": 120,
+          "texto": "Measure {su} blood pressure again in 2 minutes.",
+          "texto_es": "Vuelve a medir su presión arterial en 2 minutos.",
+          "medir": "pa",
+          "mira": [
+            "pulso",
+            "pa_sis",
+            "pa_dia"
+          ],
+          "si_recupera": "fin_ok",
+          "no_recupera": "sigue_bajo",
+          "recupera": {
+            "pulso": [
+              50,
+              null
+            ],
+            "pa_sis": [
+              90,
+              null
+            ]
+          }
+        },
+        {
+          "id": "sigue_bajo",
+          "tipo": "accion",
+          "texto": "Still low. Keep {lo} secured and still, and measure again in 5 minutes. This goes to the flight surgeon now.",
+          "texto_es": "Sigue baja. Mantén a {nombre} sujet{o} y quiet{o}, y vuelve a medir en 5 minutos. Esto va ahora al cirujano de vuelo.",
+          "sig": "medir2",
+          "grave": true
+        },
+        {
+          "id": "medir2",
+          "tipo": "espera",
+          "seg": 300,
+          "texto": "Measure {su} blood pressure again.",
+          "texto_es": "Vuelve a medir su presión arterial.",
+          "medir": "pa",
+          "mira": [
+            "pulso",
+            "pa_sis",
+            "pa_dia"
+          ],
+          "si_recupera": "fin_ok",
+          "no_recupera": "critico",
+          "recupera": {
+            "pulso": [
+              50,
+              null
+            ],
+            "pa_sis": [
+              90,
+              null
+            ]
+          }
+        },
+        {
+          "id": "critico",
+          "tipo": "fin",
+          "texto": "Start the emergency medical checklist now and call the whole crew. Nova keeps the log and flags the flight surgeon.",
+          "texto_es": "Empieza ahora la lista de emergencia médica y llama a toda la tripulación. Nova lleva la bitácora y avisa al cirujano de vuelo.",
+          "grave": true
+        },
+        {
+          "id": "fin_ok",
+          "tipo": "fin",
+          "texto": "{Nombre} is recovering: heart rate and blood pressure are back in range. Let {lo} rest, and give fluids when {el} is fully alert.",
+          "texto_es": "{Nombre} se está recuperando: el pulso y la presión volvieron al rango. Déjale descansar y dale líquidos cuando esté del todo alerta."
+        }
+      ],
+      "titulo_es": "Posible desmayo (síncope)",
+      "pasos_es": [
+        "Ve con la persona ahora. Llámala por su nombre y tócale el hombro. Revisa si responde.",
+        "Revisa que respire. Lee la saturación de oxígeno en el sensor.",
+        "Mantenla sujeta y quieta en una camilla o sujeción. Suelta lo que le apriete.",
+        "Vuelve a medir la presión en 2 minutos.",
+        "Si no responde o no respira normal, empieza la lista de emergencia médica y llama a toda la tripulación."
+      ]
+    },
+    {
+      "id": "hipoglucemia",
+      "titulo": "Low blood sugar",
+      "cuando": "Blood sugar under 70 mg/dL.",
+      "pasos": [
+        "Give 15 g of fast sugar: a juice pouch or glucose gel.",
+        "Measure blood sugar again in 15 minutes.",
+        "If it is still under 70 mg/dL, repeat.",
+        "Once above 70 mg/dL, have a snack with protein or a meal."
+      ],
+      "fuente": "15-15 rule for low blood sugar (American Diabetes Association)",
+      "tierra": "Tell the flight surgeon if under 54 mg/dL or if it happens again.",
+      "guia": [
+        {
+          "id": "azucar",
+          "tipo": "accion",
+          "texto": "Give {nombre} 15 g of fast sugar: a juice pouch or glucose gel.",
+          "texto_es": "Dale a {nombre} 15 g de azúcar rápida: un jugo en bolsa o gel de glucosa.",
+          "sig": "esperar"
+        },
+        {
+          "id": "esperar",
+          "tipo": "espera",
+          "seg": 900,
+          "texto": "Measure {su} blood sugar again in 15 minutes.",
+          "texto_es": "Vuelve a medir su glucosa en 15 minutos.",
+          "medir": "glucosa",
+          "mira": [
+            "glucosa",
+            "pulso"
+          ],
+          "si_recupera": "comida",
+          "no_recupera": "repetir",
+          "recupera": {
+            "glucosa": [
+              70,
+              null
+            ]
+          }
+        },
+        {
+          "id": "repetir",
+          "tipo": "accion",
+          "texto": "Still under 70 mg/dL. Give another 15 g of fast sugar.",
+          "texto_es": "Sigue bajo 70 mg/dL. Dale otros 15 g de azúcar rápida.",
+          "sig": "esperar2",
+          "grave": true
+        },
+        {
+          "id": "esperar2",
+          "tipo": "espera",
+          "seg": 900,
+          "texto": "Measure {su} blood sugar again in 15 minutes.",
+          "texto_es": "Vuelve a medir su glucosa en 15 minutos.",
+          "medir": "glucosa",
+          "mira": [
+            "glucosa",
+            "pulso"
+          ],
+          "si_recupera": "comida",
+          "no_recupera": "fin_tierra",
+          "recupera": {
+            "glucosa": [
+              70,
+              null
+            ]
+          }
+        },
+        {
+          "id": "comida",
+          "tipo": "fin",
+          "texto": "Blood sugar is back over 70 mg/dL. {Nombre} should now have a snack with protein or a meal.",
+          "texto_es": "La glucosa volvió a más de 70 mg/dL. Ahora {nombre} debería comer un snack con proteína o una comida."
+        },
+        {
+          "id": "fin_tierra",
+          "tipo": "fin",
+          "texto": "Blood sugar is still low after two treatments. Keep treating every 15 minutes and tell the flight surgeon now.",
+          "texto_es": "La glucosa sigue baja después de dos tratamientos. Sigue tratando cada 15 minutos y avisa ahora al cirujano de vuelo.",
+          "grave": true
+        }
+      ],
+      "fuentes": [],
+      "titulo_es": "Azúcar baja en la sangre",
+      "pasos_es": [
+        "Dale 15 g de azúcar rápida: un sobre de jugo o gel de glucosa.",
+        "Vuelve a medir la glucosa en 15 minutos.",
+        "Si sigue bajo 70 mg/dL, repite.",
+        "Cuando supere 70 mg/dL, que coma un snack con proteína o una comida."
+      ]
+    },
+    {
+      "id": "fiebre",
+      "titulo": "Fever",
+      "cuando": "Body temperature 38.0 °C or higher.",
+      "pasos": [
+        "Rest and fluids. Keep the rest of the crew at a distance for now.",
+        "Measure temperature again in 30 minutes.",
+        "Tell the flight surgeon if it reaches 39.5 °C."
+      ],
+      "tierra": "At 39.5 °C or higher.",
+      "guia": [
+        {
+          "id": "reposo",
+          "tipo": "accion",
+          "texto": "{Nombre} rests and drinks fluids. Keep the rest of the crew at a distance for now.",
+          "texto_es": "{Nombre} descansa y toma líquidos. Por ahora, el resto de la tripulación mantiene distancia.",
+          "sig": "medir"
+        },
+        {
+          "id": "medir",
+          "tipo": "espera",
+          "seg": 1800,
+          "texto": "Measure {su} temperature again in 30 minutes.",
+          "texto_es": "Vuelve a medir su temperatura en 30 minutos.",
+          "medir": "temp",
+          "mira": [
+            "temp",
+            "pulso"
+          ],
+          "si_recupera": "fin_ok",
+          "no_recupera": "alta",
+          "recupera": {
+            "temp": [
+              null,
+              38.0
+            ]
+          }
+        },
+        {
+          "id": "alta",
+          "tipo": "pregunta",
+          "texto": "Is {su} temperature 39.5 °C or higher?",
+          "texto_es": "¿Su temperatura es de 39,5 °C o más?",
+          "mira": [
+            "temp"
+          ],
+          "si": "fin_tierra",
+          "no": "medir"
+        },
+        {
+          "id": "fin_tierra",
+          "tipo": "fin",
+          "texto": "Tell the flight surgeon now. Keep {lo} resting with fluids.",
+          "texto_es": "Avisa ahora al cirujano de vuelo. {Nombre} sigue en reposo y con líquidos.",
+          "grave": true
+        },
+        {
+          "id": "fin_ok",
+          "tipo": "fin",
+          "texto": "Temperature is back under 38 °C. Keep resting today and measure again tonight.",
+          "texto_es": "La temperatura volvió a menos de 38 °C. Sigue en reposo hoy y vuelve a medir esta noche."
+        }
+      ],
+      "titulo_es": "Fiebre",
+      "pasos_es": [
+        "Reposo y líquidos. Por ahora, que el resto de la tripulación mantenga distancia.",
+        "Vuelve a medir la temperatura en 30 minutos.",
+        "Avisa al cirujano de vuelo si llega a 39,5 °C."
+      ]
+    },
+    {
+      "id": "oxigeno_bajo",
+      "titulo": "Low oxygen saturation",
+      "cuando": "SpO2 under 94 %.",
+      "pasos": [
+        "Check the finger sensor is on properly and the hand is still and warm.",
+        "Have the crew member sit still and breathe slowly for one minute.",
+        "Check cabin oxygen and CO2.",
+        "If SpO2 stays under 90 %, start oxygen per the medical checklist."
+      ],
+      "tierra": "Under 90 % sustained.",
+      "guia": [
+        {
+          "id": "sensor",
+          "tipo": "accion",
+          "texto": "Check the finger sensor is on properly and {su} hand is still and warm.",
+          "texto_es": "Revisa que el sensor del dedo esté bien puesto y que su mano esté quieta y tibia.",
+          "sig": "calma"
+        },
+        {
+          "id": "calma",
+          "tipo": "espera",
+          "seg": 60,
+          "texto": "Have {nombre} sit still and breathe slowly for one minute.",
+          "texto_es": "Pide a {nombre} que se quede quiet{o} y respire lento durante un minuto.",
+          "mira": [
+            "spo2",
+            "fr",
+            "pulso"
+          ],
+          "si_recupera": "fin_ok",
+          "no_recupera": "cabina",
+          "recupera": {
+            "spo2": [
+              94,
+              null
+            ]
+          }
+        },
+        {
+          "id": "cabina",
+          "tipo": "accion",
+          "texto": "Check cabin oxygen and CO2 now.",
+          "texto_es": "Revisa ahora el oxígeno y el CO2 de la cabina.",
+          "sig": "oxigeno",
+          "mira_cabina": true
+        },
+        {
+          "id": "oxigeno",
+          "tipo": "pregunta",
+          "texto": "Is {su} oxygen still under 90%?",
+          "texto_es": "¿Su oxígeno sigue bajo 90 %?",
+          "mira": [
+            "spo2"
+          ],
+          "si": "fin_oxigeno",
+          "no": "fin_vigilar"
+        },
+        {
+          "id": "fin_oxigeno",
+          "tipo": "fin",
+          "texto": "Start oxygen per the medical checklist and tell the flight surgeon.",
+          "texto_es": "Inicia oxígeno según la lista médica y avisa al cirujano de vuelo.",
+          "grave": true
+        },
+        {
+          "id": "fin_vigilar",
+          "tipo": "fin",
+          "texto": "Oxygen is between 90 and 94%. Keep {nombre} resting and watch it closely.",
+          "texto_es": "El oxígeno está entre 90 y 94 %. {Nombre} sigue en reposo; vigílal{o} de cerca."
+        },
+        {
+          "id": "fin_ok",
+          "tipo": "fin",
+          "texto": "Oxygen is back over 94%. It was likely the sensor or a moment of shallow breathing.",
+          "texto_es": "El oxígeno volvió a más de 94 %. Probablemente fue el sensor o un momento de respiración superficial."
+        }
+      ],
+      "titulo_es": "Saturación de oxígeno baja",
+      "pasos_es": [
+        "Revisa que el sensor del dedo esté bien puesto y que la mano esté quieta y tibia.",
+        "Que la persona se quede quieta y respire lento durante un minuto.",
+        "Revisa el oxígeno y el CO2 de la cabina.",
+        "Si la saturación sigue bajo 90 %, inicia oxígeno según la lista médica."
+      ]
+    },
+    {
+      "id": "co2",
+      "titulo": "Cabin CO2 rising",
+      "cuando": "Cabin CO2 above the mission limit.",
+      "pasos": [
+        "Check the CO2 scrubber status.",
+        "Ask the crew about headaches or trouble focusing.",
+        "Reduce exercise in the affected module until CO2 is back under the limit."
+      ],
+      "tierra": "Above the tell-Earth limit.",
+      "titulo_es": "CO2 de cabina en alza",
+      "pasos_es": [
+        "Revisa el estado del depurador de CO2.",
+        "Pregunta a la tripulación si tiene dolor de cabeza o le cuesta concentrarse.",
+        "Reduce el ejercicio en el módulo afectado hasta que el CO2 vuelva bajo el límite."
+      ]
+    },
+    {
+      "id": "sueno_animo",
+      "titulo": "Short sleep, low mood or low energy",
+      "cuando": "Less than 6 h of sleep, or mood or energy 2 of 5 or lower in the check-in (shared with consent).",
+      "pasos": [
+        "Check in with the crew member in person, privately.",
+        "Protect the next night: dim, warm light in the quarters from 21:30.",
+        "Move demanding tasks (spacewalk prep, piloting) to later if possible."
+      ],
+      "tierra": "Mood is never sent to Earth automatically; the crew member decides what the psychologist sees.",
+      "titulo_es": "Poco sueño, ánimo o energía bajos",
+      "pasos_es": [
+        "Conversa con la persona en privado.",
+        "Protege la próxima noche: luz tenue y cálida en su cabina desde las 21:30.",
+        "Si se puede, mueve las tareas exigentes (preparar una caminata espacial, pilotear) para más tarde."
+      ]
+    },
+    {
+      "id": "anafilaxia",
+      "titulo": "Severe allergic reaction (anaphylaxis)",
+      "cuando": "Trouble breathing, swelling of the face or throat, or faintness after a possible allergen (food, medication, sting).",
+      "pasos": [
+        "Give epinephrine 0.5 mg intramuscular (0.5 ml of 1:1000) in the outer mid-thigh for an adult of 50 kg or more.",
+        "Repeat every 5 minutes if there is no improvement.",
+        "Check breathing and blood pressure; give oxygen if breathing is hard.",
+        "Remove the cause if known. Tell the flight surgeon."
+      ],
+      "tierra": "Always.",
+      "fuente": "WHO/ICRC Basic Emergency Care (2018): severe allergic reaction and epinephrine dosing",
+      "fuentes": [
+        {
+          "id": "who_basic_emergency_care",
+          "pagina": 119
+        },
+        {
+          "id": "who_basic_emergency_care",
+          "pagina": 202
+        },
+        {
+          "id": "who_basic_emergency_care",
+          "pagina": 235
+        }
+      ],
+      "guia": [
+        {
+          "id": "signos",
+          "tipo": "pregunta",
+          "texto": "After a possible allergen, does {nombre} have trouble breathing, swelling of the face or throat, or feel faint?",
+          "texto_es": "Después de un posible alérgeno, ¿{nombre} tiene dificultad para respirar, hinchazón de la cara o la garganta, o se siente a punto de desmayarse?",
+          "mira": [
+            "spo2",
+            "pa_sis",
+            "pulso"
+          ],
+          "si": "epi",
+          "no": "vigilar"
+        },
+        {
+          "id": "epi",
+          "tipo": "accion",
+          "texto": "Give epinephrine now: 0.5 milligrams intramuscular, that is 0.5 ml of 1 to 1000, into the outer middle of the thigh. It is in the medical kit.",
+          "texto_es": "Pon epinefrina ahora: 0,5 miligramos intramuscular, o sea 0,5 ml de 1 en 1000, en la cara externa del muslo, a media altura. Está en el kit médico.",
+          "sig": "apoyo",
+          "grave": true
+        },
+        {
+          "id": "apoyo",
+          "tipo": "accion",
+          "texto": "Remove the cause if you know it. Keep {lo} secured and resting, and give oxygen if breathing is hard.",
+          "texto_es": "Retira la causa si la conoces. Mantén a {nombre} sujet{o} y en reposo, y dale oxígeno si le cuesta respirar.",
+          "sig": "esperar"
+        },
+        {
+          "id": "esperar",
+          "tipo": "espera",
+          "seg": 300,
+          "texto": "Watch {su} breathing and blood pressure for 5 minutes.",
+          "texto_es": "Vigila su respiración y su presión durante 5 minutos.",
+          "mira": [
+            "spo2",
+            "pa_sis",
+            "pulso",
+            "fr"
+          ],
+          "recupera": {
+            "spo2": [
+              94,
+              null
+            ],
+            "pa_sis": [
+              90,
+              null
+            ]
+          },
+          "si_recupera": "mejor",
+          "no_recupera": "repetir"
+        },
+        {
+          "id": "repetir",
+          "tipo": "accion",
+          "texto": "Not better: give a second dose of epinephrine, 0.5 milligrams in the other thigh. Tell the flight surgeon now.",
+          "texto_es": "No mejora: pon una segunda dosis de epinefrina, 0,5 miligramos en el otro muslo. Avisa ahora al cirujano de vuelo.",
+          "sig": "esperar2",
+          "grave": true
+        },
+        {
+          "id": "esperar2",
+          "tipo": "espera",
+          "seg": 300,
+          "texto": "Watch {su} breathing and blood pressure for 5 more minutes.",
+          "texto_es": "Vigila su respiración y su presión 5 minutos más.",
+          "mira": [
+            "spo2",
+            "pa_sis",
+            "pulso",
+            "fr"
+          ],
+          "recupera": {
+            "spo2": [
+              94,
+              null
+            ],
+            "pa_sis": [
+              90,
+              null
+            ]
+          },
+          "si_recupera": "mejor",
+          "no_recupera": "fin_grave"
+        },
+        {
+          "id": "vigilar",
+          "tipo": "fin",
+          "texto": "Watch {lo} closely for the next hour. If breathing gets hard or {su} face swells, open this guide again.",
+          "texto_es": "Vigila de cerca a {nombre} durante la próxima hora. Si le cuesta respirar o se le hincha la cara, vuelve a abrir esta guía."
+        },
+        {
+          "id": "mejor",
+          "tipo": "fin",
+          "texto": "{Nombre} is improving. Keep watching closely for the next hours, because reactions can come back, and tell the flight surgeon.",
+          "texto_es": "{Nombre} está mejorando. Sigue vigilando de cerca las próximas horas, porque la reacción puede volver, y avisa al cirujano de vuelo."
+        },
+        {
+          "id": "fin_grave",
+          "tipo": "fin",
+          "texto": "Still not better after two doses. Keep giving epinephrine every 5 minutes, give oxygen, and tell the flight surgeon now.",
+          "texto_es": "No mejora después de dos dosis. Sigue poniendo epinefrina cada 5 minutos, da oxígeno y avisa ahora al cirujano de vuelo.",
+          "grave": true
+        }
+      ],
+      "titulo_es": "Reacción alérgica grave (anafilaxia)",
+      "pasos_es": [
+        "Pon adrenalina 0,5 mg intramuscular (0,5 ml de 1:1000) en la cara externa del muslo, para un adulto de 50 kg o más.",
+        "Repite cada 5 minutos si no mejora.",
+        "Revisa la respiración y la presión; da oxígeno si le cuesta respirar.",
+        "Retira la causa si la conoces. Avisa al cirujano de vuelo."
+      ]
+    },
+    {
+      "id": "atragantamiento",
+      "titulo": "Choking",
+      "cuando": "Sudden trouble breathing while eating, clutching the throat, unable to speak or cough.",
+      "pasos": [
+        "If the person can cough or make sounds, let them cough; do not intervene.",
+        "If they cannot speak or cough: 5 abdominal thrusts from behind, fist between the belly button and the bottom of the breastbone, in and up.",
+        "Then 5 back blows between the shoulder blades. Repeat until the object comes out.",
+        "If they become unconscious, start chest compressions (cardiac arrest guide)."
+      ],
+      "tierra": "Report in tonight's report; immediately if they lost consciousness.",
+      "fuente": "WHO/ICRC Basic Emergency Care (2018): foreign body airway obstruction",
+      "fuentes": [
+        {
+          "id": "who_basic_emergency_care",
+          "pagina": 155
+        },
+        {
+          "id": "cpr_microgravity_guideline_2020",
+          "pagina": 4
+        }
+      ],
+      "nota": "Bracing against a wall or handhold is a microgravity adaptation pending flight surgeon review.",
+      "guia": [
+        {
+          "id": "tos",
+          "tipo": "pregunta",
+          "texto": "Can {nombre} cough or make sounds?",
+          "texto_es": "¿{Nombre} puede toser o emitir sonidos?",
+          "si": "dejar_toser",
+          "no": "abdominales"
+        },
+        {
+          "id": "abdominales",
+          "tipo": "accion",
+          "texto": "Tell {lo} you are going to help. From behind, brace your feet, put your fist between {su} belly button and the bottom of the breastbone, cover it with your other hand, and pull in and up 5 times, hard and fast.",
+          "texto_es": "Dile a {nombre} que le vas a ayudar. Desde atrás, afirma los pies, pon tu puño entre su ombligo y la parte baja del esternón, cúbrelo con la otra mano y tira hacia adentro y arriba 5 veces, fuerte y rápido.",
+          "sig": "espalda",
+          "grave": true
+        },
+        {
+          "id": "espalda",
+          "tipo": "accion",
+          "texto": "If it is still stuck, give 5 firm back blows between the shoulder blades with the heel of your hand.",
+          "texto_es": "Si sigue atascado, da 5 golpes firmes en la espalda, entre los omóplatos, con el talón de la mano.",
+          "sig": "revisar",
+          "grave": true
+        },
+        {
+          "id": "revisar",
+          "tipo": "pregunta",
+          "texto": "Can {el} breathe, speak or cough now?",
+          "texto_es": "¿Ahora puede respirar, hablar o toser?",
+          "si": "despejado",
+          "no": "consciente"
+        },
+        {
+          "id": "consciente",
+          "tipo": "pregunta",
+          "texto": "Is {el} still awake?",
+          "texto_es": "¿Sigue despiert{o}?",
+          "si": "abdominales",
+          "no": "inconsciente"
+        },
+        {
+          "id": "dejar_toser",
+          "tipo": "fin",
+          "texto": "Encourage {lo} to keep coughing and stay with {lo}. Do not hit {su} back while {el} can cough.",
+          "texto_es": "Anima a {nombre} a seguir tosiendo y quédate a su lado. No le golpees la espalda mientras pueda toser."
+        },
+        {
+          "id": "inconsciente",
+          "tipo": "fin",
+          "texto": "{Nombre} is unconscious. Open the cardiac arrest guide and start chest compressions now: they can push the object out.",
+          "texto_es": "{Nombre} está inconsciente. Abre la guía de paro cardíaco y empieza las compresiones ahora: pueden expulsar el objeto.",
+          "grave": true
+        },
+        {
+          "id": "despejado",
+          "tipo": "fin",
+          "texto": "The airway is clear. Keep watching {su} breathing and tell the flight surgeon in tonight's report.",
+          "texto_es": "La vía aérea está despejada. Sigue vigilando su respiración e informa al cirujano de vuelo en el informe de esta noche."
+        }
+      ],
+      "titulo_es": "Atragantamiento",
+      "pasos_es": [
+        "Si la persona puede toser o hacer sonidos, déjala toser; no intervengas.",
+        "Si no puede hablar ni toser: 5 compresiones abdominales desde atrás, con el puño entre el ombligo y la parte baja del esternón, hacia adentro y hacia arriba.",
+        "Luego 5 golpes en la espalda entre los omóplatos. Repite hasta que salga el objeto.",
+        "Si pierde la conciencia, empieza compresiones de pecho (guía de paro cardiaco)."
+      ]
+    },
+    {
+      "id": "hemorragia",
+      "titulo": "Severe bleeding",
+      "cuando": "A wound that bleeds heavily and does not stop on its own.",
+      "pasos": [
+        "Gloves on. Firm direct pressure on the bleeding with gauze, two or three fingers.",
+        "If the gauze soaks through, add more on top; do not remove the first one.",
+        "Last resort, only for life-threatening bleeding on an arm or leg: a tourniquet above the wound, tightened until the bleeding stops; write down the time.",
+        "A tourniquet needs the flight surgeon within 2 hours."
+      ],
+      "tierra": "Immediately if a tourniquet is used or bleeding does not stop.",
+      "fuente": "WHO/ICRC Basic Emergency Care (2018): bleeding control and tourniquet",
+      "fuentes": [
+        {
+          "id": "who_basic_emergency_care",
+          "pagina": 169
+        },
+        {
+          "id": "who_basic_emergency_care",
+          "pagina": 170
+        }
+      ],
+      "guia": [
+        {
+          "id": "presion",
+          "tipo": "accion",
+          "texto": "Put on gloves. Press firmly right on the bleeding with gauze, using two or three fingers.",
+          "texto_es": "Ponte guantes. Presiona firme justo sobre el sangrado con gasa, usando dos o tres dedos.",
+          "sig": "mantener",
+          "grave": true
+        },
+        {
+          "id": "mantener",
+          "tipo": "espera",
+          "seg": 120,
+          "texto": "Keep firm pressure for 2 minutes without lifting to look. If the gauze soaks through, add more on top. Do not remove it.",
+          "texto_es": "Mantén la presión firme 2 minutos sin levantar para mirar. Si la gasa se empapa, agrega más encima. No la saques.",
+          "mira": [
+            "pulso",
+            "pa_sis"
+          ],
+          "si_recupera": "parado",
+          "no_recupera": "parado"
+        },
+        {
+          "id": "parado",
+          "tipo": "pregunta",
+          "texto": "Has the bleeding stopped?",
+          "texto_es": "¿Paró el sangrado?",
+          "si": "vendar",
+          "no": "extremidad"
+        },
+        {
+          "id": "extremidad",
+          "tipo": "pregunta",
+          "texto": "Is the wound on an arm or a leg, and still bleeding heavily?",
+          "texto_es": "¿La herida está en un brazo o una pierna, y sigue sangrando mucho?",
+          "si": "torniquete",
+          "no": "seguir_presion"
+        },
+        {
+          "id": "torniquete",
+          "tipo": "accion",
+          "texto": "Last resort: put a tourniquet, or the blood pressure cuff, above the wound, not on the wound or a joint, and tighten until the bleeding stops. Note the time.",
+          "texto_es": "Último recurso: pon un torniquete, o el manguito de presión, por encima de la herida, no sobre la herida ni sobre una articulación, y aprieta hasta que pare el sangrado. Anota la hora.",
+          "sig": "fin_torniquete",
+          "grave": true
+        },
+        {
+          "id": "fin_torniquete",
+          "tipo": "fin",
+          "texto": "Write the time on the tourniquet. Tell the flight surgeon now: it should not stay on more than 2 hours without their advice.",
+          "texto_es": "Escribe la hora en el torniquete. Avisa ahora al cirujano de vuelo: no debe quedar puesto más de 2 horas sin su indicación.",
+          "grave": true
+        },
+        {
+          "id": "seguir_presion",
+          "tipo": "fin",
+          "texto": "Keep firm pressure, add gauze on top, and tell the flight surgeon now.",
+          "texto_es": "Mantén la presión firme, agrega gasa encima y avisa ahora al cirujano de vuelo.",
+          "grave": true
+        },
+        {
+          "id": "vendar",
+          "tipo": "fin",
+          "texto": "Bleeding has stopped. Bandage over the first dressing, and keep watching {su} pulse and blood pressure.",
+          "texto_es": "El sangrado paró. Venda sobre el primer apósito y sigue vigilando su pulso y su presión."
+        }
+      ],
+      "titulo_es": "Hemorragia grave",
+      "pasos_es": [
+        "Ponte guantes. Presión directa y firme sobre el sangrado con gasa, con dos o tres dedos.",
+        "Si la gasa se empapa, agrega más encima; no saques la primera.",
+        "Último recurso, solo para un sangrado que amenaza la vida en un brazo o una pierna: torniquete por encima de la herida, apretado hasta que pare el sangrado; anota la hora.",
+        "Un torniquete necesita al cirujano de vuelo antes de 2 horas."
+      ]
+    },
+    {
+      "id": "convulsion",
+      "titulo": "Seizure",
+      "cuando": "Sudden jerking movements with loss of awareness.",
+      "pasos": [
+        "Protect the person from injury; put nothing in their mouth.",
+        "Turn them on their side if possible; give oxygen if the seizure is prolonged.",
+        "If it does not stop, give the benzodiazepine from the medical kit as the checklist says and watch breathing.",
+        "Check blood sugar. Tell the flight surgeon."
+      ],
+      "tierra": "Always.",
+      "fuente": "WHO/ICRC Basic Emergency Care (2018): seizure/convulsion management",
+      "fuentes": [
+        {
+          "id": "who_basic_emergency_care",
+          "pagina": 141
+        },
+        {
+          "id": "who_basic_emergency_care",
+          "pagina": 142
+        }
+      ],
+      "guia": [
+        {
+          "id": "proteger",
+          "tipo": "accion",
+          "texto": "Keep {nombre} from hitting anything: move objects away and hold {lo} loosely. Put nothing in {su} mouth.",
+          "texto_es": "Evita que {nombre} se golpee: aleja los objetos y sujétale sin apretar. No le pongas nada en la boca.",
+          "sig": "cronometro",
+          "grave": true
+        },
+        {
+          "id": "cronometro",
+          "tipo": "espera",
+          "seg": 300,
+          "texto": "Time the seizure. Turn {lo} on {su} side if you can.",
+          "texto_es": "Cronometra la convulsión. Ponle de lado si puedes.",
+          "mira": [
+            "spo2",
+            "pulso"
+          ],
+          "si_recupera": "paro",
+          "no_recupera": "paro"
+        },
+        {
+          "id": "paro",
+          "tipo": "pregunta",
+          "texto": "Has the seizure stopped?",
+          "texto_es": "¿Paró la convulsión?",
+          "si": "despues",
+          "no": "benzo"
+        },
+        {
+          "id": "benzo",
+          "tipo": "accion",
+          "texto": "It has gone on too long. Give the benzodiazepine from the medical kit as the checklist says, and give oxygen. Tell the flight surgeon now.",
+          "texto_es": "Ya duró demasiado. Da la benzodiacepina del kit médico como indica la lista, y da oxígeno. Avisa ahora al cirujano de vuelo.",
+          "sig": "cronometro2",
+          "grave": true
+        },
+        {
+          "id": "cronometro2",
+          "tipo": "espera",
+          "seg": 300,
+          "texto": "Watch {su} breathing closely.",
+          "texto_es": "Vigila de cerca su respiración.",
+          "mira": [
+            "spo2",
+            "fr",
+            "pulso"
+          ],
+          "si_recupera": "paro2",
+          "no_recupera": "paro2"
+        },
+        {
+          "id": "paro2",
+          "tipo": "pregunta",
+          "texto": "Has the seizure stopped now?",
+          "texto_es": "¿Ya paró la convulsión?",
+          "si": "despues",
+          "no": "fin_grave"
+        },
+        {
+          "id": "despues",
+          "tipo": "fin",
+          "texto": "The seizure is over. Keep {lo} on {su} side, check {su} blood sugar, and stay with {lo} until {el} is fully awake. Tell the flight surgeon.",
+          "texto_es": "La convulsión terminó. Mantén a {nombre} de lado, mide su glucosa y quédate a su lado hasta que esté del todo despiert{o}. Avisa al cirujano de vuelo."
+        },
+        {
+          "id": "fin_grave",
+          "tipo": "fin",
+          "texto": "Seizures continue. Repeat the benzodiazepine as the checklist allows, watch breathing closely, and tell the flight surgeon now.",
+          "texto_es": "Las convulsiones siguen. Repite la benzodiacepina según lo que permita la lista, vigila de cerca la respiración y avisa ahora al cirujano de vuelo.",
+          "grave": true
+        }
+      ],
+      "titulo_es": "Convulsión",
+      "pasos_es": [
+        "Protege a la persona de golpes; no le pongas nada en la boca.",
+        "Ponla de lado si puedes; da oxígeno si la convulsión se alarga.",
+        "Si no para, dale la benzodiacepina del botiquín según la lista médica y vigila su respiración.",
+        "Mide la glucosa. Avisa al cirujano de vuelo."
+      ]
+    },
+    {
+      "id": "descompresion",
+      "titulo": "Decompression sickness",
+      "cuando": "After a spacewalk or a pressure change: joint pain, tingling or numbness, skin itching or rash, or confusion and weakness.",
+      "pasos": [
+        "Stop the spacewalk and bring the crew member in.",
+        "Treat with the suit pressurized inside the cabin: cabin plus suit pressure (about 19 psia) with more than 95% oxygen.",
+        "If symptoms do not resolve, add the Bend Treatment Apparatus to raise suit pressure, per the EVA checklist.",
+        "Confusion, weakness or trouble breathing is serious (type 2). Tell the flight surgeon."
+      ],
+      "tierra": "Always; immediately for type 2 symptoms.",
+      "fuente": "NASA HRP Decompression Sickness evidence report (2024) and OCHMO technical briefs",
+      "fuentes": [
+        {
+          "id": "hrp_er_dcs_hypoxia_2024",
+          "pagina": 52
+        },
+        {
+          "id": "ochmo_tb_habitable_atmosphere_co2",
+          "pagina": 12
+        },
+        {
+          "id": "ochmo_tb_dcs",
+          "pagina": 6
+        }
+      ],
+      "guia": [
+        {
+          "id": "sintomas",
+          "tipo": "pregunta",
+          "texto": "After the spacewalk or a pressure change, does {nombre} have joint pain, tingling or numbness, itchy skin, or confusion or weakness?",
+          "texto_es": "Después de la caminata espacial o de un cambio de presión, ¿{nombre} tiene dolor en las articulaciones, hormigueo o adormecimiento, picazón en la piel, o confusión o debilidad?",
+          "si": "traje",
+          "no": "vigilar"
+        },
+        {
+          "id": "traje",
+          "tipo": "accion",
+          "texto": "Stop the spacewalk and bring {lo} in. Keep {lo} in the suit with it pressurized inside the cabin: that is the onboard treatment, with more than 95 percent oxygen.",
+          "texto_es": "Detén la caminata espacial y trae a {nombre} adentro. Mantenle en el traje presurizado dentro de la cabina: ese es el tratamiento a bordo, con más de 95 por ciento de oxígeno.",
+          "sig": "grave_q",
+          "grave": true
+        },
+        {
+          "id": "grave_q",
+          "tipo": "pregunta",
+          "texto": "Is {el} confused, weak on one side, or short of breath?",
+          "texto_es": "¿Está confundid{o}, débil de un lado o le falta el aire?",
+          "si": "tipo2",
+          "no": "tratar"
+        },
+        {
+          "id": "tipo2",
+          "tipo": "accion",
+          "texto": "These are serious symptoms. Keep the suit treatment going and tell the flight surgeon now.",
+          "texto_es": "Son síntomas graves. Sigue con el tratamiento en el traje y avisa ahora al cirujano de vuelo.",
+          "sig": "tratar",
+          "grave": true
+        },
+        {
+          "id": "tratar",
+          "tipo": "espera",
+          "seg": 600,
+          "texto": "Keep the treatment going and ask {lo} about the symptoms every few minutes.",
+          "texto_es": "Sigue con el tratamiento y pregúntale por los síntomas cada pocos minutos.",
+          "mira": [
+            "spo2",
+            "pulso"
+          ],
+          "si_recupera": "resuelto",
+          "no_recupera": "resuelto"
+        },
+        {
+          "id": "resuelto",
+          "tipo": "pregunta",
+          "texto": "Have the symptoms gone away?",
+          "texto_es": "¿Se le pasaron los síntomas?",
+          "si": "fin_ok",
+          "no": "bta"
+        },
+        {
+          "id": "bta",
+          "tipo": "accion",
+          "texto": "Not resolved: add the Bend Treatment Apparatus to raise suit pressure, following the EVA checklist. Tell the flight surgeon now.",
+          "texto_es": "No se resolvió: agrega el Bend Treatment Apparatus para subir la presión del traje, según la lista de EVA. Avisa ahora al cirujano de vuelo.",
+          "sig": "fin_tierra",
+          "grave": true
+        },
+        {
+          "id": "vigilar",
+          "tipo": "fin",
+          "texto": "No symptoms now. Ask {lo} again over the next hours: they can appear later.",
+          "texto_es": "Ahora no tiene síntomas. Vuelve a preguntarle en las próximas horas: pueden aparecer más tarde."
+        },
+        {
+          "id": "fin_ok",
+          "tipo": "fin",
+          "texto": "Symptoms resolved. Keep {lo} resting under watch and tell the flight surgeon.",
+          "texto_es": "Los síntomas se resolvieron. {Nombre} queda en reposo y en observación; avisa al cirujano de vuelo."
+        },
+        {
+          "id": "fin_tierra",
+          "tipo": "fin",
+          "texto": "Keep the raised suit pressure and stay with {lo}. The flight surgeon guides the next steps.",
+          "texto_es": "Mantén la presión elevada del traje y quédate con {nombre}. El cirujano de vuelo guía los próximos pasos.",
+          "grave": true
+        }
+      ],
+      "titulo_es": "Enfermedad por descompresión",
+      "pasos_es": [
+        "Detén la caminata espacial y trae a la persona adentro.",
+        "Trátala con el traje presurizado dentro de la cabina: presión de cabina más traje (unos 19 psia) con más de 95 % de oxígeno.",
+        "Si los síntomas no se resuelven, agrega el aparato de tratamiento (Bend Treatment Apparatus) para subir la presión del traje, según la lista de la caminata espacial.",
+        "Confusión, debilidad o falta de aire son graves (tipo 2). Avisa al cirujano de vuelo."
+      ]
+    }
+  ]
+}

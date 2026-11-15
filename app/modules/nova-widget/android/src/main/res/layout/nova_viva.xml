@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- NOVA (2×2): cielo, anillo con marcas, arco de preparación (lo dibuja el código) y NOVA respirando en un bucle
+     de 28 cuadros (ViewFlipper: Android lo pasa solo y lo pausa cuando la pantalla de inicio no se ve). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/raiz"
+  android:layout_width="match_parent" android:layout_height="match_parent" android:background="@drawable/nova_viva_fondo">
+  <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@drawable/nova_estrellas" />
+  <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_anillo" />
+  <ImageView android:id="@+id/arco" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" />
+  <ViewFlipper android:id="@+id/flip" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:autoStart="true" android:flipInterval="143" android:padding="40dp">
+      <ImageView android:id="@+id/f00" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_00" />
+      <ImageView android:id="@+id/f01" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_01" />
+      <ImageView android:id="@+id/f02" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_02" />
+      <ImageView android:id="@+id/f03" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_03" />
+      <ImageView android:id="@+id/f04" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_04" />
+      <ImageView android:id="@+id/f05" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_05" />
+      <ImageView android:id="@+id/f06" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_06" />
+      <ImageView android:id="@+id/f07" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_07" />
+      <ImageView android:id="@+id/f08" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_08" />
+      <ImageView android:id="@+id/f09" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_09" />
+      <ImageView android:id="@+id/f10" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_10" />
+      <ImageView android:id="@+id/f11" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_11" />
+      <ImageView android:id="@+id/f12" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_12" />
+      <ImageView android:id="@+id/f13" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_13" />
+      <ImageView android:id="@+id/f14" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_14" />
+      <ImageView android:id="@+id/f15" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_15" />
+      <ImageView android:id="@+id/f16" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_16" />
+      <ImageView android:id="@+id/f17" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_17" />
+      <ImageView android:id="@+id/f18" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_18" />
+      <ImageView android:id="@+id/f19" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_19" />
+      <ImageView android:id="@+id/f20" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_20" />
+      <ImageView android:id="@+id/f21" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_21" />
+      <ImageView android:id="@+id/f22" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_22" />
+      <ImageView android:id="@+id/f23" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_23" />
+      <ImageView android:id="@+id/f24" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_24" />
+      <ImageView android:id="@+id/f25" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_25" />
+      <ImageView android:id="@+id/f26" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_26" />
+      <ImageView android:id="@+id/f27" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:src="@drawable/nova_feliz_27" />
+  </ViewFlipper>
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="top" android:orientation="horizontal" android:padding="13dp">
+    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Nova"
+      android:textColor="#FFA898FF" android:textSize="12sp" android:fontFamily="@font/nova_grotesk_semibold" />
+    <TextView android:id="@+id/prep" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="82"
+      android:textColor="#FF8FE6F5" android:textSize="12sp" android:fontFamily="@font/nova_grotesk_medium" />
+  </LinearLayout>
+  <TextView android:id="@+id/frase" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom"
+    android:gravity="center" android:paddingBottom="12dp" android:text="Tap to talk" android:textColor="#FF9AA4B2" android:textSize="12sp"
+    android:fontFamily="@font/nova_grotesk_medium" />
+</FrameLayout>
