@@ -250,6 +250,18 @@ Honest status at the end of the hackathon (15 Nov 2026).
 | On-board library, speech and voice, all offline | |
 | Signed knowledge updates from Earth, delayed by the real light time | Automatic rollback, scheduled downlink, holding traffic during solar conjunction |
 
+## How NOVA was built
+
+We want judges to see exactly what was done and when.
+
+| When | What |
+|---|---|
+| 5 – 13 Nov 2026, before the event | Architecture and the base system: F Prime project and health components, NOVA PC ship app, local AI (Ask NOVA), on-board medical library, emergency guides, body twin, the ship ↔ Earth loop with signed updates, and the first AR body scan with CPR coaching |
+| 14 – 15 Nov 2026, Space Apps Santiago | Integration into one working system and live testing: the ship supervising its own services, vitals by the five hazards with MSL RAD dose, NOVA Station on a tablet with NFC and QR sign-in, AR control from the station, the research tracks (eye-health computer vision, Earth → space transfer learning) and the technical report |
+| 15 Nov 2026 | Project submitted, then this public repository published in English with a clean history |
+
+The exact state at the submission deadline is tagged [`space-apps-2026-submission`](../../tree/space-apps-2026-submission). The full working history (79 commits, 5 – 15 Nov 2026, with authors and timestamps) lives in a private repository and is available to the organizers and judges on request.
+
 <p align="center">
   <img src=".github/media/hackathon.gif" width="300" alt="Live test at the hackathon"><br>
   <sub>Testing NOVA live at NASA Space Apps Santiago 2026.</sub>
@@ -276,7 +288,7 @@ Honest status at the end of the hackathon (15 Nov 2026).
 | ISS Crew Health Care System and medical kit evaluations (NTRS) | The medical kit model |
 | Apollo 17 "Blue Marble" | Imagery |
 
-Every number in NOVA has a source; see [`nave/docs/umbrales.md`](nave/docs/umbrales.md) for the thresholds.
+Every threshold lists its source and its verification status in [`nave/docs/umbrales.md`](nave/docs/umbrales.md). The starting thresholds are still pending clinical review by flight surgeons.
 
 ## Team
 
