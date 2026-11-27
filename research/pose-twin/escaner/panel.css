@@ -1,0 +1,62 @@
+/* pose-twin: el panel ocupa una columna propia; la figura y los controles del escáner usan el resto. */
+:root { --pt-ancho: 360px; --pt-alto: 0px; }
+
+#pantalla { inset: 0 auto auto 0; width: calc(100% - var(--pt-ancho)); height: calc(100% - var(--pt-alto)); }
+.barra { right: calc(var(--pt-ancho) + 12px); bottom: calc(var(--pt-alto) + max(14px, env(safe-area-inset-bottom))); }
+.hoja, .qcpr { right: calc(var(--pt-ancho) + 16px); }
+.sugiere { left: calc((100% - var(--pt-ancho)) / 2); }
+.proc { bottom: calc(var(--pt-alto) + max(14px, env(safe-area-inset-bottom)) + 70px); }
+.inicio { z-index: 1; right: var(--pt-ancho); bottom: var(--pt-alto); }
+
+.pt { position: fixed; top: 0; right: 0; bottom: 0; width: var(--pt-ancho); overflow-y: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column; gap: 12px; padding: 18px 16px; background: rgba(10, 15, 21, .92);
+  color-scheme: dark; border-left: 1px solid var(--l2); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  user-select: text; -webkit-user-select: text; }
+body.visor .pt { display: none; }
+body.visor { --pt-ancho: 0px; --pt-alto: 0px; }
+
+.pt h2 { font: 600 17px SG, system-ui, sans-serif; letter-spacing: -.01em; }
+.pt p { font: 400 12.5px/1.45 SG, system-ui, sans-serif; color: var(--t2); }
+.pt .pt-ahora { font-size: 15px; font-weight: 500; color: var(--t1); padding: 12px 14px; border-radius: 14px;
+  background: rgba(143, 230, 245, .09); border: 1px solid rgba(143, 230, 245, .3); }
+.pt .pt-ahora[data-tono="aviso"] { background: rgba(242, 180, 87, .1); border-color: rgba(242, 180, 87, .45); }
+.pt .pt-ahora[data-tono="mal"] { background: rgba(236, 106, 168, .12); border-color: rgba(236, 106, 168, .55); }
+.pt-cuenta { font: 600 64px/1 SG, system-ui, sans-serif; text-align: center; color: var(--at); font-variant-numeric: tabular-nums; }
+.pt progress { width: 100%; height: 10px; accent-color: var(--ok); }
+.pt ol { padding-left: 20px; display: grid; gap: 4px; font: 400 12.5px/1.45 SG, system-ui, sans-serif; color: var(--t2); }
+.pt li[data-activo] { color: var(--t1); font-weight: 600; }
+
+.pt-acciones { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.pt label { display: flex; align-items: center; gap: 8px; width: 100%; font: 400 12.5px SG, system-ui, sans-serif; color: var(--t2); }
+.pt input { flex: 1; min-width: 0; height: 34px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--l2);
+  background: var(--s1); color: var(--t1); font: 400 14px SG, system-ui, sans-serif; }
+.pt button { min-height: 38px; padding: 0 14px; border-radius: 19px; border: 1px solid var(--l2); background: var(--s2); font: 600 13px SG, system-ui, sans-serif; }
+.pt button.pri { background: var(--t1); color: var(--bg); border-color: var(--t1); }
+.pt button[aria-pressed="true"] { border-color: var(--ac2); background: rgba(70, 200, 232, .16); }
+.pt button:disabled, .pt input:disabled { opacity: .45; cursor: default; }
+.pt :focus-visible { outline: 2px solid var(--ac2); outline-offset: 2px; }
+
+.pt table { width: 100%; border-collapse: collapse; font: 400 13.5px SG, system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.pt caption { text-align: left; padding-bottom: 6px; font-weight: 600; }
+.pt caption[data-calidad="buena"] { color: var(--ok); }
+.pt caption[data-calidad="regular"] { color: var(--at); }
+.pt caption[data-calidad="baja"] { color: var(--al); }
+.pt th, .pt td { padding: 5px 0; border-top: 1px solid var(--l1); text-align: right; }
+.pt thead th { font-weight: 500; font-size: 11.5px; color: var(--t2); }
+.pt th:first-child { text-align: left; font-weight: 400; }
+.pt td.v { font-weight: 600; font-size: 15px; }
+.pt td.d { color: var(--ac2); width: 84px; }
+.pt section { display: flex; flex-direction: column; gap: 10px; }
+.pt .pt-reps { font: 600 24px/1.2 SG, system-ui, sans-serif; color: var(--ok); font-variant-numeric: tabular-nums; }
+.pt table.pt-serie { font-size: 12px; table-layout: auto; font-variant-numeric: tabular-nums; }
+.pt table.pt-serie th, .pt table.pt-serie td { padding: 4px 2px; text-align: right; }
+.pt table.pt-serie thead th { font-size: 10.5px; vertical-align: bottom; }
+.pt .pt-resumen { white-space: pre-line; color: var(--t1); }
+
+@media (max-width: 819px) {
+  :root { --pt-ancho: 0px; --pt-alto: 48vh; }
+  .pt { top: auto; left: 0; width: auto; height: var(--pt-alto); border-left: 0; border-top: 1px solid var(--l2); }
+  /* los controles del escáner en una sola fila que se desliza, para no tapar la figura */
+  .barra { color-scheme: dark; scrollbar-width: thin; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; width: auto; max-width: calc(100% - 24px); }
+  .grupo { flex: none; }
+}

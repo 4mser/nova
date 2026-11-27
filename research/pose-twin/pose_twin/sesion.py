@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 
 from . import perfil as perfil_mod
+from . import sentadilla as sentadilla_mod
 from .diagnostico import Cronometro
 from .dibujo import dibujar
 from .filtros import FiltroAngulos
@@ -22,6 +23,7 @@ DATA = RAIZ / "data"
 CARPETA_PERFILES = DATA / "perfiles"
 CARPETA_SESIONES = DATA / "sesiones"
 CARPETA_GRABACIONES = DATA / "grabaciones"
+CARPETA_SENTADILLAS = DATA / "sentadillas"
 
 
 class RegistroCSV:
@@ -99,6 +101,9 @@ class Procesador:
         self._aviso_hasta = 0.0
         self._calib_pendiente = False
         self.crono = Cronometro(activo=False)
+        self.serie: sentadilla_mod.SerieSentadilla | None = None
+        self._serie_guardada = True
+        self.ruta_serie: Path | None = None
 
     @property
     def enderezar(self) -> bool:
@@ -113,7 +118,44 @@ class Procesador:
         self.aviso = txt.encode("ascii", "ignore").decode() if txt else ""
         self._aviso_hasta = time.monotonic() + seg
 
+    @property
+    def serie_activa(self) -> bool:
+        return self.serie is not None and not self.serie.terminada
+
+    def alternar_sentadilla(self, segundos_preparacion: float = 8.0, segundos_fin: float | None = 8.0) -> None:
+        """Empieza una serie de sentadillas; si ya hay una, la termina."""
+        if self._calib_pendiente or self.calibrador.activo:
+            self.decir("Espera a que termine la calibracion")
+        elif self.serie_activa:
+            self.terminar_sentadilla()
+        else:
+            self.serie = sentadilla_mod.SerieSentadilla(segundos_preparacion, segundos_fin)
+            self._serie_guardada = False
+            self.ruta_serie = None
+            self.decir("Serie de sentadillas: ponte de lado, cuerpo completo")
+
+    def terminar_sentadilla(self) -> None:
+        """Cierra y guarda la serie en curso (tecla, fin del archivo o salida del programa)."""
+        if self.serie is not None:
+            self.serie.terminar()
+            self._guardar_serie()
+
+    def _guardar_serie(self) -> None:
+        """Guarda en disco una serie terminada (una sola vez)."""
+        if self.serie is None or not self.serie.terminada or self._serie_guardada:
+            return
+        self._serie_guardada = True
+        if not self.serie.repeticiones:
+            self.decir("Serie sin repeticiones completas: no se guarda", 6)
+            return
+        self.ruta_serie = sentadilla_mod.guardar(self.serie.resultado(), CARPETA_SENTADILLAS)
+        self.decir(f"Serie guardada: {self.ruta_serie.name} y .csv", 6)
+
     def iniciar_calibracion(self) -> None:
+        if self.serie_activa:
+            self.decir("Termina la serie (S) antes de calibrar")
+            return
+        self.serie = None
         if not self.nombre_perfil:
             self.nombre_perfil = "perfil"
         self._calib_pendiente = True
@@ -149,19 +191,35 @@ class Procesador:
             self.calibrador.iniciar(t_s)
             self._calib_pendiente = False
         if self.calibrador.activo:
+            self.calibrador.contar(t_s)
             if pose is not None and pose.mundo is not None:
                 self.calibrador.agregar(pose.mundo, crudos, cal_txt)
             calibrando = self.calibrador.progreso(t_s)
             if self.calibrador.terminado(t_s):
                 calibrando = None
+                luz = (f" Aviso: solo {self.calibrador.fps_captura:.0f} cuadros/s (poca luz o equipo lento): "
+                       "usa mas luz." if self.calibrador.pocos_fps else "")
+                anterior = " El perfil anterior se mantiene." if self.perfil is not None else ""
                 try:
                     self.perfil = self.calibrador.construir(self.nombre_perfil)
                     ruta = perfil_mod.guardar(self.perfil, CARPETA_PERFILES)
-                    self.resultado_calibracion = "Calibracion guardada. Ya puedes moverte."
-                    self.decir(f"Perfil guardado: {ruta.name} ({self.perfil['muestras']} cuadros)", 5)
+                    self.resultado_calibracion = "Calibracion guardada. Ya puedes moverte." + luz
+                    self.decir(f"Perfil guardado: {ruta.name} ({self.perfil['muestras']} cuadros).{luz}", 5)
+                except perfil_mod.CalibracionConMovimiento as e:
+                    self.resultado_calibracion = (f"No se pudo calibrar, te moviste ({e.detalle}). Quedate de pie y "
+                                                  f"quieto toda la captura y pulsa C otra vez.{anterior}{luz}")
+                    self.decir(str(e) + anterior + luz, 6)
                 except ValueError as e:
-                    self.resultado_calibracion = "No se pudo calibrar: aparece completo, quieto y con luz. Pulsa C otra vez."
-                    self.decir(str(e), 6)
+                    self.resultado_calibracion = ("No se pudo calibrar: aparece completo, quieto y con luz. "
+                                                  f"Pulsa C otra vez.{anterior}{luz}")
+                    self.decir(str(e) + anterior + luz, 6)
+
+        sentadilla = None
+        if self.serie is not None:
+            vis_lado = sentadilla_mod.visibilidad_lados(pose.visibilidad) if pose is not None else None
+            self.serie.paso(angulos, t_s, vis_lado)
+            self._guardar_serie()
+            sentadilla = self.serie.estado(t_s)
 
         diferencias = None
         if self.perfil is not None:
@@ -175,6 +233,7 @@ class Procesador:
             "diferencias": diferencias, "perfil": self.perfil["nombre"] if self.perfil else None,
             "grabando": self.grabador is not None, "calibrando": calibrando,
             "preparando": preparando, "resultado_calibracion": self.resultado_calibracion,
+            "sentadilla": sentadilla,
             "aviso": self.aviso if time.monotonic() < self._aviso_hasta else "",
         }
         # latencia: desde que llegó el cuadro (t_captura) hasta tenerlo dibujado
@@ -201,6 +260,7 @@ class Procesador:
             self.decir(f"Video guardado: {ruta}")
 
     def cerrar(self) -> None:
+        self.terminar_sentadilla()
         if self.grabador:
             ruta = self.grabador.cerrar()
             print(f"Video guardado: {ruta}")

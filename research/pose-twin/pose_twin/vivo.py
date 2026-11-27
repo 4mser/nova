@@ -6,12 +6,13 @@ from pathlib import Path
 
 import cv2
 
+from . import sentadilla
 from .diagnostico import Ausencia
-from .dibujo import guiar
+from .dibujo import dibujar, guiar
 from .fuente import EXT_IMAGEN, Reloj, abrir_fuente, describir_camara
 from .sesion import CARPETA_SESIONES, Grabador, Procesador, estado_a_json
 
-VENTANA = "pose-twin  [q] salir  [g] grabar  [c] calibrar  [e] enderezar"
+VENTANA = "pose-twin  [q] salir  [c] calibrar  [s] sentadilla  [g] grabar  [e] enderezar"
 
 
 def _csv_por_defecto() -> Path:
@@ -110,6 +111,8 @@ def ejecutar_vivo(args) -> int:
                 ordenes.append("calibrar")
             if tecla == ord("e"):
                 ordenes.append("enderezar")
+            if tecla == ord("s"):
+                ordenes.append("sentadilla")
             for o in ordenes:
                 if o == "grabar" and tam_ultimo:
                     proc.alternar_grabacion(fuente.fps if fuente.es_archivo else max(5.0, min(30.0, reloj.fps or 15)), tam_ultimo)
@@ -117,6 +120,8 @@ def ejecutar_vivo(args) -> int:
                     proc.iniciar_calibracion()
                 elif o == "enderezar":
                     proc.alternar_enderezado()
+                elif o == "sentadilla":
+                    proc.alternar_sentadilla()
     except KeyboardInterrupt:
         pass
     finally:
@@ -153,11 +158,17 @@ def ejecutar_video(args) -> int:
     n, detectados, t0 = 0, 0, time.perf_counter()
     reloj = Reloj()
     ultima = None
+    medir = getattr(args, "sentadilla", False)
+    estado, limpia = None, None
     try:
+        if medir:  # en un archivo no hay cuenta regresiva ni cierre por quietud: la serie dura todo el video
+            proc.alternar_sentadilla(segundos_preparacion=0.0, segundos_fin=None)
         while True:
             ok, img, t_ms = fuente.leer()
             if not ok:
                 break
+            if medir:
+                limpia = img.copy()
             anotada, estado = proc.paso(img, t_ms, reloj.tic())
             n += 1
             detectados += estado["pose"] is not None
@@ -170,6 +181,17 @@ def ejecutar_video(args) -> int:
                 break
             if n % 50 == 0:
                 print(f"  {n} cuadros...", flush=True)
+        if medir and estado is not None:
+            proc.terminar_sentadilla()
+            estado["sentadilla"] = proc.serie.estado(estado["t_s"])
+            ultima = dibujar(limpia, estado, args.umbral_vis)
+            if grab:  # el video termina con 3 s del resultado y su instruccion en pantalla
+                final = cv2.resize(guiar(ultima, estado, args.umbral_vis), grab.tam)
+                for _ in range(int(3 * fuente.fps)):
+                    grab.escribir(final)
+            print(sentadilla.texto(proc.serie.resultado()))
+            if proc.ruta_serie:
+                print(f"Medidas: {proc.ruta_serie} y .csv")
     finally:
         if grab:
             grab.cerrar()

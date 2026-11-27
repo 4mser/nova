@@ -58,6 +58,8 @@ def construir_parser() -> argparse.ArgumentParser:
     vd.add_argument("--sin-csv", action="store_true")
     vd.add_argument("--max-cuadros", type=int, default=0)
     vd.add_argument("--repeticiones", type=int, default=30, help="si la entrada es imagen: cuadros a generar")
+    vd.add_argument("--sentadilla", action="store_true",
+                    help="mide las sentadillas del video (vista de lado) y guarda JSON y CSV en data/sentadillas/")
     _comunes(vd)
 
     cb = sub.add_parser("calibrar", help="crea un perfil personal sin ventana")

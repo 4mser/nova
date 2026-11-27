@@ -29,3 +29,9 @@ Rama `pose-estimation-irl`. Primera medida: ángulos articulares. Entrada: webca
 ### Tarea 12: validar ángulos contra una referencia (goniómetro) y repetir poses
 
 ### Tarea 13: ajustar el plan con el tríptico que enviará el equipo
+
+## Actualización 27 nov: hacia el monitoreo
+
+Orden: terminar la tarea 3 (rechazar capturas con movimiento), tarea 14, tarea 12. La tarea 9 no hace falta para la copia del escáner, que calcula en el navegador.
+
+### Tarea 14: medir sentadilla de lado (flexión máxima, repeticiones, tiempos y diferencia entre lados)

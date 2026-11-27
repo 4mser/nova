@@ -1,6 +1,8 @@
 """Dibujo del esqueleto y del panel. Texto solo ASCII (las fuentes Hershey de OpenCV no tienen tildes)."""
 from __future__ import annotations
 
+import math
+
 import cv2
 import numpy as np
 
@@ -71,6 +73,16 @@ def dibujar(img: np.ndarray, estado: dict, umbral_vis: float) -> np.ndarray:
     if estado.get("grabando"):
         cv2.circle(img, (w - int(24 * k), int(24 * k)), int(9 * k), (0, 0, 255), -1, cv2.LINE_AA)
         _texto(img, "REC", (w - int(80 * k), int(30 * k)), 0.6 * k, (0, 0, 255), g)
+    serie = estado.get("sentadilla")
+    if serie:
+        _dibujar_sentadilla(img, serie, k)
+    cuenta = estado.get("preparando")
+    if cuenta is None and serie and serie["fase"] == "preparando":
+        cuenta = serie["faltan_s"]
+    if cuenta is not None:
+        txt = str(math.ceil(cuenta))
+        tw = cv2.getTextSize(txt, cv2.FONT_HERSHEY_SIMPLEX, 4 * k, int(6 * k))[0][0]
+        _texto(img, txt, ((w - tw) // 2, h // 2), 4 * k, (0, 220, 255), int(6 * k))
     cal_prog = estado.get("calibrando")
     if cal_prog is not None:
         x0, x1, yb = int(w * 0.25), int(w * 0.75), int(h * 0.9)
@@ -80,9 +92,78 @@ def dibujar(img: np.ndarray, estado: dict, umbral_vis: float) -> np.ndarray:
     return img
 
 
+def _num(v, formato: str = "{:.0f}") -> str:
+    return "--" if v is None else formato.format(v)
+
+
+def _dibujar_sentadilla(img: np.ndarray, s: dict, k: float) -> None:
+    """Cuadro arriba a la derecha: contador, ultima repeticion y, al terminar, resumen de la serie."""
+    w = img.shape[1]
+    lineas = [f"SENTADILLA  repeticiones: {s['n']}"]
+    if s["descartadas"]:
+        lineas.append(f"no contadas: {s['descartadas']}")
+    if s["fase"] == "fin":
+        if s["n"]:
+            lineas.append("rep rod cad baja sube dif calidad")
+        for r in s["repeticiones"][-8:]:
+            lineas.append(f"{r['n']}  {_num(r['rodilla_min'])}  {_num(r['cadera_min'])}  "
+                          f"{_num(r['bajada_s'], '{:.1f}')}  {_num(r['subida_s'], '{:.1f}')}  "
+                          f"{_num(r['dif_rodilla'], '{:+.0f}')}  {r['calidad']}")
+        for clave, nombre, unidad, f in (("rodilla_min", "Rodilla min", "gr", "{:.0f}"),
+                                         ("cadera_min", "Cadera min", "gr", "{:.0f}"),
+                                         ("bajada_s", "Bajada", "s", "{:.1f}"), ("subida_s", "Subida", "s", "{:.1f}")):
+            e = s["resumen"][clave]
+            if e["n"]:
+                lineas.append(f"{nombre}: media {_num(e['media'], f)} DE {_num(e['de'], f)} {unidad} (n={e['n']})")
+    elif s["ultima"]:
+        r = s["ultima"]
+        lineas += [f"Ultima: rodilla min {_num(r['rodilla_min'])} gr", f"cadera min {_num(r['cadera_min'])} gr",
+                   f"baja {_num(r['bajada_s'], '{:.1f}')} s  sube {_num(r['subida_s'], '{:.1f}')} s",
+                   f"calidad {r['calidad']}"]
+    lineas.append("no validado, no es medicion medica")
+    e, g = 0.5 * k, max(1, int(k))
+    margen = int(16 * k)
+    largo = max(cv2.getTextSize(t, cv2.FONT_HERSHEY_SIMPLEX, e, g)[0][0] for t in lineas)
+    maximo = w - int(260 * k)  # no tapa el panel de angulos de la izquierda
+    if largo + margen > maximo > margen:  # en imagenes angostas se reduce la letra
+        e *= (maximo - margen) / largo
+        largo = maximo - margen
+    ancho, paso, y0 = largo + margen, int(20 * k), int(44 * k)
+    overlay = img.copy()
+    cv2.rectangle(overlay, (w - ancho, y0), (w, y0 + paso * len(lineas) + int(8 * k)), (20, 20, 20), -1)
+    cv2.addWeighted(overlay, 0.65, img, 0.35, 0, img)
+    for i, t in enumerate(lineas):
+        _texto(img, t, (w - ancho + margen // 2, y0 + paso * (i + 1) - int(3 * k)), e, (255, 255, 255), g)
+
+
+def pasos_sentadilla(s: dict) -> str:
+    fase = s["fase"]
+    if fase == "preparando":
+        return (f"Ponte DE LADO a la camara, a 2-3 m, cuerpo completo y de pie. "
+                f"Empieza en {math.ceil(s['faltan_s'])} s. S cancela")
+    if fase == "buscando":
+        if s["sin_vista"]:
+            return "No veo tu pierna: ponte de lado, con cadera, rodilla y pie a la vista, y con luz"
+        return "De lado, de pie y quieto un segundo para tomar el punto de partida"
+    if fase in ("listo", "abajo"):
+        if s["sin_vista"]:
+            return "No veo tu pierna: vuelve a mostrar cadera, rodilla y pie, de lado"
+        if fase == "abajo":
+            return f"Sube hasta quedar de pie. Repeticiones: {s['n']}"
+        if s["n"] == 0:
+            return "YA: haz sentadillas a tu ritmo, de lado, y vuelve a quedar de pie en cada una"
+        fin = "pulsa S" if s["fin_en_s"] is None else f"quedate de pie {math.ceil(s['fin_en_s'])} s o pulsa S"
+        return f"Repeticiones: {s['n']}. Sigue, o para terminar {fin}"
+    if s["n"]:
+        return f"Serie terminada: {s['n']} repeticiones. Resultado a la derecha. S hace otra serie"
+    return "No se conto ninguna repeticion. De lado y de pie al inicio; baja y vuelve a subir. S repite"
+
+
 def pasos(estado: dict, umbral_vis: float) -> str:
     """Instruccion del momento para quien esta frente a la camara."""
     pose = estado.get("pose")
+    if estado.get("sentadilla"):
+        return pasos_sentadilla(estado["sentadilla"])
     if estado.get("preparando") is not None:
         return f"Alejate y ponte de pie, brazos algo separados. Empieza en {estado['preparando']:.0f} s"
     if estado.get("calibrando") is not None:
@@ -94,20 +175,41 @@ def pasos(estado: dict, umbral_vis: float) -> str:
     if estado.get("resultado_calibracion"):
         return estado["resultado_calibracion"]
     if estado.get("perfil"):
-        return "Muevete: dobla codos y rodillas. G graba tu prueba"
-    return "Cuerpo completo visible. Pulsa C para calibrar"
+        return "Muevete: dobla codos y rodillas. S mide sentadillas. G graba tu prueba"
+    return "Cuerpo completo visible. Pulsa C para calibrar o S para medir sentadillas"
+
+
+def _partir(txt: str, ancho: int, escala: float) -> list[str]:
+    lineas: list[str] = []
+    for palabra in txt.split():
+        prueba = f"{lineas[-1]} {palabra}" if lineas else palabra
+        if lineas and cv2.getTextSize(prueba, cv2.FONT_HERSHEY_SIMPLEX, escala, 1)[0][0] <= ancho:
+            lineas[-1] = prueba
+        else:
+            lineas.append(palabra)
+    return lineas
 
 
 def guiar(img: np.ndarray, estado: dict, umbral_vis: float) -> np.ndarray:
-    """Franja de instrucciones bajo la imagen (solo para la ventana; no queda en la grabacion)."""
+    """Franja de instrucciones bajo la imagen (solo para la ventana; no queda en la grabacion).
+
+    La instruccion se parte en hasta 3 renglones; el alto de la franja es fijo para que la ventana no salte.
+    """
     w = img.shape[1]
     k = max(w, 640) / 640
-    franja = np.zeros((int(76 * k), w, 3), dtype=img.dtype)
-    teclas = "C calibrar | G " + ("DETENER grabacion" if estado.get("grabando") else "grabar") + " | E enderezar | Q salir"
-    lineas = ((pasos(estado, umbral_vis), 0.55, (0, 230, 255), 30), (teclas, 0.5, (255, 255, 255), 60))
-    for txt, escala, color, y in lineas:
-        ancho = cv2.getTextSize(txt, cv2.FONT_HERSHEY_SIMPLEX, escala * k, 1)[0][0]
-        escala_k = escala * k * min(1.0, (w - 16) / ancho)
-        _texto(franja, txt, (8, int(y * k)), escala_k, color, 1)
+    franja = np.zeros((int(100 * k), w, 3), dtype=img.dtype)
+    serie = estado.get("sentadilla")
+    teclas = ("C calibrar | S " + ("TERMINAR serie" if serie and serie["fase"] != "fin" else "sentadilla")
+              + " | G " + ("DETENER grabacion" if estado.get("grabando") else "grabar") + " | E enderezar | Q salir")
+    texto = pasos(estado, umbral_vis)
+    escala = 0.55 * k
+    renglones = _partir(texto, w - 16, escala)
+    while len(renglones) > 3:
+        escala *= 0.92
+        renglones = _partir(texto, w - 16, escala)
+    lineas = [(t, escala, (0, 230, 255), 22 + 22 * i) for i, t in enumerate(renglones)]
+    lineas.append((teclas, 0.5 * k, (255, 255, 255), 90))
+    for txt, esc, color, y in lineas:
+        ancho = cv2.getTextSize(txt, cv2.FONT_HERSHEY_SIMPLEX, esc, 1)[0][0]
+        _texto(franja, txt, (8, int(y * k)), esc * min(1.0, (w - 16) / ancho), color, 1)
     return np.vstack([img, franja])
-
