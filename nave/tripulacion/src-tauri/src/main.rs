@@ -14,6 +14,7 @@ mod biblioteca;
 mod casa;
 mod cerebro;
 mod escaner;
+mod espejo;
 mod aprende;
 mod historia;
 mod kit;
@@ -78,6 +79,7 @@ struct Nave {
     salida: Arc<UdpSocket>,
     token: Option<String>,
     escaner: escaner::Escaner,
+    espejo: espejo::Espejo,
     nfc: nfc::Nfc,
     fuentes: fuentes::Fuentes,
 }
@@ -1062,6 +1064,9 @@ async fn servir(nave: Nave) {
         .route("/v1/escaner/flujo", get(escaner::flujo))
         .route("/v1/escaner/visores", get(escaner::visores))
         .route("/v1/escaner/orden", post(escaner::orden))
+        .route("/v1/espejo/vista", post(espejo::vista))
+        .route("/v1/espejo/flujo", get(espejo::flujo))
+        .route("/v1/espejo/camaras", get(espejo::camaras))
         .route("/v1/fuentes", get(fuentes::ver))
         .route("/tripulacion.json", get(tripulacion::ver))
         .route("/v1/tripulacion", post(tripulacion::cambiar))
@@ -1124,6 +1129,7 @@ fn preparar() -> Nave {
         salida: Arc::new(salida),
         token: std::env::var("NOVA_TOKEN").ok().filter(|t| !t.is_empty()),
         escaner: escaner::Escaner::nuevo(),
+        espejo: espejo::Espejo::nuevo(),
         nfc: nfc::Nfc::cargar(),
         fuentes: fuentes::Fuentes::default(),
     };

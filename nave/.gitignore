@@ -16,3 +16,10 @@ voz/muestras/
 biblioteca/.venv/
 vision/.venv/
 vision/__pycache__/
+# gemelo: modelos y entornos que se descargan (ver docs/gemelo-espejo.md)
+vision/sam3d/.venv/
+vision/sam3d/repo/
+vision/mhr/assets/
+vision/mhr/repo/
+vision/mhr/*.zip
+vision/mhr/mhr-assets-v1.json

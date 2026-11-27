@@ -91,6 +91,8 @@ body.visor #proc,body.visor #sugiere,body.visor #hoja,body.visor #qcpr{display:n
 @media (max-width:619px){.proc{bottom:calc(max(14px,env(safe-area-inset-bottom)) + 112px)}.ptxt{font-size:15px}}
 @media (max-width:619px){#gTrip{display:none}}@media (min-width:620px){.solo-angosto{display:none}}
 @media (max-width:560px){.barra{gap:4px;padding:6px;border-radius:22px}.grupo{padding:0 2px}.grupo+.grupo{padding-left:4px}.b{height:36px;padding:0 8px;font-size:13px}.grupo+.grupo{border-left:0}}
+.qtec{display:grid;gap:6px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}.qtec div{display:flex;justify-content:space-between;align-items:baseline;font:500 12px SG;color:var(--t2)}.qtec b{font:600 14px SG}.qtec b.ok{color:#7fe0c0}.qtec b.mal{color:#f4b860}.qtec b.gris{color:var(--t3)}
+.qfat{display:grid;gap:6px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}.qfat span{font:600 10.5px SG;letter-spacing:.12em;text-transform:uppercase;color:#ff9db4}.qfat em{font:600 12.5px SG;font-style:normal;color:var(--t2)}.qfat em.av{color:#ffd3e6}.qfat em.mal{color:#f4b860}
 </style>
 </head>
 <body>
@@ -104,6 +106,7 @@ body.visor #proc,body.visor #sugiere,body.visor #hoja,body.visor #qcpr{display:n
   <div class="grupo">
     <button class="b on" data-capa="organos">Hologram</button>
     <button class="b rcp" data-capa="rcp">CPR</button>
+    <button class="b" data-capa="vitales">Vitals</button>
   </div>
   <div class="grupo">
     <button class="b g" id="bGrav" title="Which gravity the procedure uses">Gravity: mission</button>
@@ -138,6 +141,6 @@ body.visor #proc,body.visor #sugiere,body.visor #hoja,body.visor #qcpr{display:n
 <script src="voz.js"></script>
 <script src="lib/mascota-base.js"></script>
 <script src="lib/mascota-orbes.js"></script>
-<script type="module" src="escaner.js?v=17"></script>
+<script type="module" src="escaner.js?v=19"></script>
 </body>
 </html>

@@ -1,0 +1,506 @@
+<title>NOVA Station P2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: plano técnico de producto. Columna de lectura de 1080 px, figuras a escala real en mm, tablas de ingeniería.
+   Sistema HALO de NOVA: turquesa = en vivo, lila = NOVA, ámbar = atención, magenta = emergencia. Oscuro por identidad. */
+:root{
+  --bg:#04070b; --s1:#0a1018; --s2:#0f1722; --s3:#152030;
+  --l1:rgba(150,185,215,.12); --l2:rgba(150,185,215,.24); --l3:rgba(150,185,215,.4);
+  --ink:#eef3f8; --ink2:#c2ccd8; --mut:#8693a3; --dim:#5d6a7a;
+  --ac:#46c8e8; --cian:#8fe6f5; --lila:#a898ff; --amb:#f2b457; --mag:#ec6aa8; --ok:#6fd6b0;
+  --f-d:'Space Grotesk',system-ui,sans-serif; --f-m:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink2);font:400 16px/1.6 var(--f-d);
+  background-image:radial-gradient(60% 40% at 80% 0%,rgba(20,90,112,.22),transparent 70%),radial-gradient(50% 30% at 0% 30%,rgba(42,29,82,.28),transparent 70%);background-repeat:no-repeat}
+.w{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-d);color:var(--ink);text-wrap:balance;margin:0}
+h2{font-size:clamp(26px,3.4vw,36px);font-weight:600;letter-spacing:-.02em;line-height:1.12}
+h3{font-size:18px;font-weight:600;line-height:1.25}
+p{margin:0;max-width:68ch}
+.k{font:500 11.5px var(--f-m);letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.k.c{color:var(--cian)}
+.mono{font-family:var(--f-m);font-variant-numeric:tabular-nums}
+section{padding-block:72px 8px;display:grid;gap:22px}
+.lead{font-size:18px;color:var(--ink2)}
+
+/* hero */
+.hero{padding-block:72px 24px;display:grid;gap:28px}
+.hero h1{font-size:clamp(44px,8vw,96px);font-weight:700;letter-spacing:-.045em;line-height:.92}
+.hero h1 span{color:var(--cian);font-weight:500}
+.hero .lead{font-size:clamp(18px,2.1vw,22px);max-width:60ch;color:var(--ink2)}
+.cifras{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-top:1px solid var(--l2);border-bottom:1px solid var(--l2)}
+.cifras div{padding:16px 14px;border-left:1px solid var(--l1);min-width:0}
+.cifras div:first-child{border-left:0;padding-left:0}
+.cifras b{display:block;font:600 clamp(24px,3vw,34px)/1 var(--f-d);color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.cifras span{display:block;margin-top:8px;font-size:12.5px;line-height:1.35;color:var(--mut)}
+@media (max-width:820px){.cifras{grid-template-columns:repeat(3,minmax(0,1fr))}.cifras div:nth-child(4){border-left:0;padding-left:0}.cifras div:nth-child(-n+3){border-bottom:1px solid var(--l1)}}
+
+/* principios */
+.prin{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--l1);border:1px solid var(--l1);border-radius:14px;overflow:hidden}
+.prin div{background:var(--s1);padding:20px;display:grid;gap:8px;align-content:start;min-width:0}
+.prin p{font-size:14.5px;line-height:1.5}
+@media (max-width:820px){.prin{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.prin{grid-template-columns:1fr}}
+
+/* tablas */
+.tw{overflow-x:auto;border:1px solid var(--l1);border-radius:14px;background:var(--s1)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.45}
+th{font:500 11px var(--f-m);letter-spacing:.12em;text-transform:uppercase;color:var(--mut);text-align:left;padding:12px 14px;border-bottom:1px solid var(--l2);white-space:nowrap;background:var(--s2)}
+td{padding:11px 14px;border-bottom:1px solid var(--l1);vertical-align:top;color:var(--ink2)}
+tr:last-child td{border-bottom:0}
+td b{color:var(--ink);font-weight:600}
+td .mono{font-size:12.5px;color:var(--mut)}
+.num{text-align:right;font-family:var(--f-m);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font:500 10.5px var(--f-m);letter-spacing:.08em;padding:2px 7px;border-radius:5px;border:1px solid var(--l2);color:var(--mut);white-space:nowrap}
+.tag.h{color:var(--cian);border-color:rgba(143,230,245,.35)}
+.tag.e{color:var(--lila);border-color:rgba(168,152,255,.4)}
+.tag.x{color:var(--mag);border-color:rgba(236,106,168,.45)}
+.v1{color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(236,106,168,.6)}
+
+/* figuras */
+figure{margin:0;display:grid;gap:12px}
+.fig{overflow-x:auto;border:1px solid var(--l1);border-radius:14px;background:var(--s1);padding:18px}
+.fig svg{display:block;min-width:640px;width:100%;height:auto}
+figcaption{font-size:13.5px;color:var(--mut);max-width:80ch}
+svg text{font-family:var(--f-m);fill:var(--ink2)}
+.two{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+
+/* sonda */
+.puntas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.punta{border:1px solid var(--l1);border-radius:14px;padding:18px;background:var(--s1);display:grid;gap:8px;align-content:start;min-width:0}
+.punta p{font-size:14px;line-height:1.5}
+.punta .k{color:var(--cian)}
+@media (max-width:820px){.puntas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.puntas{grid-template-columns:1fr}}
+
+/* modos */
+.modos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.modo{border-radius:16px;padding:22px;background:var(--s1);border:1px solid var(--l1);display:grid;gap:12px;align-content:start;min-width:0}
+.modo.h{border-top:3px solid var(--ac)}.modo.e{border-top:3px solid var(--lila)}.modo.x{border-top:3px solid var(--mag)}
+.modo ol{margin:0;padding-left:20px;display:grid;gap:7px;font-size:14.5px;line-height:1.45}
+.modo ol li::marker{font-family:var(--f-m);color:var(--mut);font-size:12px}
+.modo .para{font-size:13.5px;color:var(--mut);border-top:1px solid var(--l1);padding-top:10px}
+@media (max-width:900px){.modos{grid-template-columns:1fr}}
+
+/* fuera */
+.fuera{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--l1);border:1px solid var(--l1);border-radius:14px;overflow:hidden}
+.fuera div{background:var(--s1);padding:18px 20px;display:grid;gap:6px;min-width:0}
+.fuera h3{font-size:16px}
+.fuera p{font-size:14px;line-height:1.5}
+@media (max-width:640px){.fuera{grid-template-columns:1fr}}
+
+pre{margin:0;overflow-x:auto;background:var(--s2);border:1px solid var(--l1);border-radius:12px;padding:16px 18px;font:400 12.5px/1.65 var(--f-m);color:var(--ink2)}
+pre .c{color:var(--dim)} pre .s{color:var(--cian)} pre .n{color:var(--amb)}
+
+.fases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:1px solid var(--l2)}
+.fase{padding:18px 18px 4px 0;display:grid;gap:8px;align-content:start;min-width:0;position:relative}
+.fase::before{content:"";position:absolute;top:-5px;left:0;width:9px;height:9px;border-radius:50%;background:var(--bg);border:2px solid var(--cian)}
+.fase p{font-size:14px;line-height:1.5}
+@media (max-width:820px){.fases{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:18px}}
+@media (max-width:480px){.fases{grid-template-columns:1fr}}
+
+.nota{border-left:2px solid var(--amb);padding:4px 0 4px 16px;font-size:14.5px;color:var(--ink2)}
+.nota b{color:var(--amb)}
+footer{padding-block:64px 48px;color:var(--dim);font-size:13px}
+a{color:var(--cian)}
+:focus-visible{outline:2px solid var(--cian);outline-offset:2px}
+</style>
+
+<header class="w hero">
+  <span class="k c">NOVA Station · concepto P2 · 26 nov 2026</span>
+  <h1>NOVA Station <span>P2</span></h1>
+  <p class="lead">Un consultorio de atención primaria en 3,7 litros. Una sola pieza que se abre como un maletín, mide lo que un médico mediría en los primeros diez minutos, decide localmente qué tan grave es y, si hace falta, llama con los datos ya firmados. Pensada para una casa con un adulto mayor, un niño asmático o un diabético, y para la sala de primeros auxilios de una faena o una oficina.</p>
+  <div class="cifras">
+    <div><b>3,7 L</b><span>300 × 210 × 58 mm cerrada</span></div>
+    <div><b>≈2,6 kg</b><span>con manguito y sonda</span></div>
+    <div><b>12</b><span>mediciones clínicas reales</span></div>
+    <div><b>0</b><span>PC puente ni cables sueltos</span></div>
+    <div><b>72 Wh</b><span>bajo el límite de avión (100 Wh)</span></div>
+    <div><b>100 %</b><span>local: NOVA corre dentro</span></div>
+  </div>
+</header>
+
+<main class="w">
+
+<section>
+  <span class="k">Cuatro reglas de diseño</span>
+  <div class="prin">
+    <div><h3>Cada sensor responde una pregunta clínica</h3><p>Si una medición no cambia lo que la persona o el médico harían después, no entra. Por eso no hay ecógrafo integrado ni desfibrilador.</p></div>
+    <div><h3>Lo que toca al paciente va aislado</h3><p>Todo lo que tiene contacto eléctrico con el cuerpo vive en una isla separada por una barrera de 2 × MOPP. Se puede medir con la estación enchufada.</p></div>
+    <div><h3>La alarma no depende de la IA</h3><p>Un microcontrolador médico vigila los signos y maneja el botón SOS. Si el computador se cuelga, la alarma y la llamada siguen funcionando.</p></div>
+    <div><h3>Una pieza, una conexión</h3><p>Una sola sonda con puntas intercambiables reemplaza cuatro aparatos. El contrato de datos de la v1 sigue igual, solo crece.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="k">De la v1 a la P2</span>
+  <h2>Lo que cambia y por qué</h2>
+  <p class="lead">La v1 de Luis probó la idea: tarjeta, ECG en vivo y el núcleo F Prime entendiendo el contrato. La P2 conserva todo el software y cambia el cuerpo para que funcione sin un técnico al lado.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Parte</th><th>v1 (hackathon)</th><th>P2</th><th>Qué se gana</th></tr></thead>
+    <tbody>
+      <tr><td><b>Cómputo</b></td><td class="v1">Tablet + PC cercano con lector_nova.py</td><td>Módulo Jetson Orin dentro de la base</td><td>NOVA, la voz, la visión y las reglas corren en la estación. Sin red ni PC.</td></tr>
+      <tr><td><b>Adquisición</b></td><td class="v1">Arduino Uno, 2 KB de RAM, Dupont</td><td>Hub médico STM32H5 en PCB, conectores con traba</td><td>Tiempo real garantizado, alarmas propias, nada se suelta en el transporte.</td></tr>
+      <tr><td><b>ECG</b></td><td class="v1">AD8232, 1 derivación, 250 Hz</td><td>ADS1298R, 12 derivaciones a 500 Hz + modo pulgar</td><td>Se puede ver un infarto (ST), no solo el pulso. Respiración por impedancia gratis.</td></tr>
+      <tr><td><b>Identidad</b></td><td>RC522 al costado</td><td>PN7160 bajo el marco de la pantalla + QR</td><td>Lee tarjetas y teléfonos (NFC Forum). Mismo flujo «Link a card».</td></tr>
+      <tr><td><b>Pantalla</b></td><td>Tablet de consumo inclinada 30°</td><td>10,1″ 1920×1200, 800 nits, pegada ópticamente, en la tapa</td><td>Se lee con luz de faena y con guantes. La tapa es el atril.</td></tr>
+      <tr><td><b>Energía</b></td><td class="v1">Enchufe del PC</td><td>72 Wh internos, USB-C PD 100 W</td><td>≈2,9 h de uso continuo, 4 días en reposo. Funciona en un corte de luz.</td></tr>
+      <tr><td><b>Seguridad eléctrica</b></td><td class="v1">Sin aislamiento</td><td>Isla del paciente tipo BF, ECG a prueba de desfibrilación</td><td>Condición mínima para usarla en personas fuera de una demo.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <span class="k">Anatomía</span>
+  <h2>Tres capas en 58 milímetros</h2>
+  <p class="lead">La tapa muestra y escucha. La bandeja guarda todo lo que se toma con la mano, cada cosa en su hueco. La base guarda lo que no se toca: baterías, cómputo y el hub médico.</p>
+  <div class="two">
+    <figure>
+      <div class="fig">
+        <svg viewBox="0 0 640 452" role="img" aria-label="Vista superior de la bandeja abierta a escala, 300 por 210 milímetros">
+          <defs>
+            <pattern id="rej" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M10 0H0V10" fill="none" stroke="rgba(150,185,215,.06)" stroke-width="1"/></pattern>
+            <pattern id="ven" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="3" height="6" fill="rgba(143,230,245,.28)"/></pattern>
+          </defs>
+          <!-- escala 2 px = 1 mm, origen 20,24 -->
+          <rect x="20" y="24" width="600" height="420" rx="20" fill="#0f1722" stroke="rgba(150,185,215,.4)" stroke-width="1.5"/>
+          <rect x="20" y="24" width="600" height="420" rx="20" fill="url(#rej)"/>
+          <!-- bisagra -->
+          <rect x="140" y="16" width="360" height="10" rx="5" fill="#152030" stroke="rgba(150,185,215,.4)"/>
+          <text x="320" y="11" text-anchor="middle" font-size="10" fill="#8693a3">BISAGRA · LA TAPA CON LA PANTALLA SUBE A 105°</text>
+          <!-- A presión -->
+          <rect x="40" y="44" width="180" height="220" rx="12" fill="rgba(70,200,232,.07)" stroke="#46c8e8" stroke-width="1.2"/>
+          <path d="M58 70h144M58 92h144M58 114h144M58 136h144" stroke="rgba(70,200,232,.35)" stroke-width="8" stroke-linecap="round"/>
+          <rect x="70" y="170" width="120" height="70" rx="8" fill="#0a1018" stroke="rgba(70,200,232,.6)" stroke-dasharray="4 3"/>
+          <text x="130" y="200" text-anchor="middle" font-size="10" fill="#8fe6f5">MÓDULO PRESIÓN</text>
+          <text x="130" y="214" text-anchor="middle" font-size="10" fill="#8693a3">bomba + válvula, debajo</text>
+          <text x="52" y="160" font-size="11" fill="#eef3f8" font-weight="500">A · Manguito</text>
+          <!-- B ECG -->
+          <rect x="40" y="276" width="180" height="148" rx="12" fill="rgba(70,200,232,.07)" stroke="#46c8e8" stroke-width="1.2"/>
+          <circle cx="130" cy="350" r="48" fill="none" stroke="rgba(70,200,232,.4)" stroke-width="10"/>
+          <circle cx="130" cy="350" r="22" fill="#0a1018" stroke="rgba(70,200,232,.6)"/>
+          <text x="52" y="296" font-size="11" fill="#eef3f8" font-weight="500">B · ECG 12</text>
+          <text x="130" y="354" text-anchor="middle" font-size="9" fill="#8693a3">carrete</text>
+          <!-- C sonda -->
+          <rect x="236" y="44" width="168" height="280" rx="12" fill="rgba(168,152,255,.07)" stroke="#a898ff" stroke-width="1.2"/>
+          <rect x="292" y="60" width="56" height="248" rx="28" fill="#0a1018" stroke="#a898ff" stroke-width="1.4"/>
+          <circle cx="320" cy="92" r="16" fill="none" stroke="rgba(168,152,255,.7)"/>
+          <text x="320" y="200" text-anchor="middle" font-size="10" fill="#a898ff" transform="rotate(-90 320 200)">SONDA · 140 mm</text>
+          <g fill="#0a1018" stroke="rgba(168,152,255,.55)">
+            <circle cx="262" cy="88" r="16"/><circle cx="262" cy="148" r="16"/><circle cx="378" cy="88" r="16"/><circle cx="378" cy="148" r="16"/>
+          </g>
+          <g font-size="8.5" fill="#c2ccd8" text-anchor="middle">
+            <text x="262" y="91">ESTE</text><text x="262" y="151">DERM</text><text x="378" y="91">OTO</text><text x="378" y="151">IR</text>
+          </g>
+          <text x="248" y="300" font-size="11" fill="#eef3f8" font-weight="500">C · Sonda</text>
+          <text x="248" y="314" font-size="9" fill="#8693a3">dock magnético, carga</text>
+          <!-- D spo2 espiro -->
+          <rect x="236" y="336" width="168" height="88" rx="12" fill="rgba(70,200,232,.07)" stroke="#46c8e8" stroke-width="1.2"/>
+          <rect x="252" y="362" width="56" height="40" rx="14" fill="#0a1018" stroke="rgba(70,200,232,.6)"/>
+          <rect x="324" y="370" width="64" height="24" rx="12" fill="#0a1018" stroke="rgba(70,200,232,.6)"/>
+          <text x="248" y="354" font-size="11" fill="#eef3f8" font-weight="500">D · SpO₂ + espirómetro</text>
+          <!-- E aire -->
+          <rect x="420" y="44" width="180" height="84" rx="12" fill="rgba(111,214,176,.06)" stroke="#6fd6b0" stroke-width="1.2"/>
+          <rect x="560" y="56" width="28" height="60" fill="url(#ven)"/>
+          <text x="432" y="66" font-size="11" fill="#eef3f8" font-weight="500">E · Cámara de aire</text>
+          <text x="432" y="82" font-size="9" fill="#8693a3">CO · CO₂ · PM2,5 · COV</text>
+          <text x="432" y="96" font-size="9" fill="#8693a3">aislada del calor interno</text>
+          <!-- F insumos -->
+          <rect x="420" y="140" width="180" height="284" rx="12" fill="rgba(242,180,87,.05)" stroke="#f2b457" stroke-width="1.2"/>
+          <g stroke="rgba(242,180,87,.35)" fill="none"><path d="M436 196h148M436 252h148M436 308h148M436 364h148"/></g>
+          <g font-size="9.5" fill="#c2ccd8"><text x="440" y="186">electrodos ×30</text><text x="440" y="242">tiras ×25 · lancetas</text><text x="440" y="298">boquillas ×10</text><text x="440" y="354">fundas de sonda</text><text x="440" y="410">guantes · gasa</text></g>
+          <text x="432" y="160" font-size="11" fill="#eef3f8" font-weight="500">F · Insumos</text>
+          <!-- puerto tiras -->
+          <rect x="614" y="250" width="12" height="30" rx="3" fill="#f2b457"/>
+          <text x="604" y="244" font-size="9" fill="#f2b457" text-anchor="end">puerto de tiras →</text>
+          <!-- pulgares -->
+          <rect x="12" y="330" width="10" height="60" rx="4" fill="#8fe6f5"/>
+          <rect x="618" y="330" width="10" height="60" rx="4" fill="#8fe6f5"/>
+          <!-- SOS -->
+          <circle cx="320" cy="444" r="12" fill="#ec6aa8"/>
+          <text x="338" y="440" font-size="9" fill="#ec6aa8">SOS físico</text>
+          <!-- cota -->
+          <g stroke="#5d6a7a" stroke-width="1"><path d="M20 448v4M620 448v4"/></g>
+        </svg>
+      </div>
+      <figcaption>Bandeja abierta, vista desde arriba, a escala (2 px = 1 mm). En celeste los electrodos de pulgar a cada costado, que dan un ECG de una derivación en 30 s sin abrir nada. El botón SOS queda en el borde frontal, alcanzable con la estación cerrada.</figcaption>
+    </figure>
+    <figure>
+      <div class="fig">
+        <svg viewBox="0 0 420 470" role="img" aria-label="Corte de las tres capas de la estación" style="min-width:360px">
+          <!-- tapa -->
+          <text x="14" y="26" font-size="11" fill="#8fe6f5">TAPA · 9 mm</text>
+          <rect x="14" y="36" width="392" height="30" rx="8" fill="#152030" stroke="rgba(150,185,215,.4)"/>
+          <rect x="34" y="42" width="352" height="12" rx="2" fill="rgba(70,200,232,.25)"/>
+          <g font-size="9.5" fill="#c2ccd8"><text x="14" y="86">pantalla 10,1″ pegada · cámara 5 MP · 4 micrófonos</text><text x="14" y="101">NFC PN7160 bajo el marco · tapa física de cámara</text></g>
+          <!-- bandeja -->
+          <text x="14" y="142" font-size="11" fill="#a898ff">BANDEJA · 28 mm</text>
+          <rect x="14" y="152" width="392" height="92" rx="8" fill="#0f1722" stroke="rgba(150,185,215,.4)"/>
+          <g fill="#0a1018" stroke="rgba(150,185,215,.3)">
+            <rect x="26" y="162" width="104" height="72" rx="6"/><rect x="140" y="162" width="104" height="72" rx="6"/><rect x="254" y="162" width="140" height="72" rx="6"/>
+          </g>
+          <g font-size="9.5" text-anchor="middle" fill="#c2ccd8"><text x="78" y="196">manguito</text><text x="78" y="210">+ presión</text><text x="192" y="196">sonda</text><text x="192" y="210">+ SpO₂</text><text x="324" y="196">insumos</text><text x="324" y="210">+ aire</text></g>
+          <g font-size="9.5" fill="#c2ccd8"><text x="14" y="264">bandeja de PC-ABS V-0 sacable para lavar</text></g>
+          <!-- base -->
+          <text x="14" y="306" font-size="11" fill="#f2b457">BASE · 21 mm</text>
+          <rect x="14" y="316" width="392" height="70" rx="8" fill="#152030" stroke="rgba(150,185,215,.4)"/>
+          <rect x="24" y="326" width="120" height="22" rx="3" fill="rgba(242,180,87,.25)"/>
+          <rect x="24" y="354" width="120" height="22" rx="3" fill="rgba(242,180,87,.25)"/>
+          <rect x="154" y="326" width="120" height="50" rx="3" fill="rgba(168,152,255,.18)" stroke="rgba(168,152,255,.5)"/>
+          <rect x="284" y="326" width="58" height="50" rx="3" fill="rgba(70,200,232,.18)" stroke="rgba(70,200,232,.6)" stroke-dasharray="3 2"/>
+          <circle cx="374" cy="351" r="18" fill="none" stroke="rgba(150,185,215,.5)"/>
+          <g font-size="8.5" text-anchor="middle" fill="#eef3f8"><text x="84" y="341">batería 36 Wh</text><text x="84" y="369">batería 36 Wh</text><text x="214" y="349">Orin + módem</text><text x="214" y="361">portadora</text><text x="313" y="349">hub</text><text x="313" y="361">aislado</text><text x="374" y="354">vent.</text></g>
+          <g font-size="9.5" fill="#c2ccd8"><text x="14" y="406">aire frío entra por abajo, sale por la bisagra</text><text x="14" y="421">el aire caliente nunca pasa por la cámara E</text></g>
+          <!-- cota total -->
+          <path d="M414 36V386" stroke="#5d6a7a"/><path d="M410 36h8M410 386h8" stroke="#5d6a7a"/>
+          <text x="406" y="452" font-size="11" text-anchor="end" fill="#eef3f8">58 mm cerrada</text>
+        </svg>
+      </div>
+      <figcaption>Corte en capas (no a escala vertical). La isla del paciente, con línea discontinua, está separada físicamente del resto de la base.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <span class="k">Qué mide</span>
+  <h2>Doce mediciones, cada una con un motivo</h2>
+  <p class="lead">La lista sale de lo que pide un triage de urgencia y de las enfermedades crónicas más comunes en Chile: hipertensión, diabetes, asma y EPOC, arritmias, y la intoxicación por monóxido en invierno.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Medición</th><th>Cómo</th><th>La pregunta que responde</th><th>Uso</th></tr></thead>
+    <tbody>
+      <tr><td><b>ECG de 12 derivaciones</b></td><td>ADS1298R, 24 bit, 500 Hz, 0,05–150 Hz <span class="mono">· 10 electrodos</span></td><td>¿Es un infarto? ¿Qué arritmia es? Se manda al cardiólogo tal cual se haría en un SAMU.</td><td><span class="tag x">urgencia</span></td></tr>
+      <tr><td><b>ECG rápido</b></td><td>Dos placas de pulgar en los costados, derivación I</td><td>¿Tengo fibrilación auricular? 30 s, a diario, sin abrir la estación.</td><td><span class="tag h">hogar</span></td></tr>
+      <tr><td><b>Respiración</b></td><td>Impedancia torácica del mismo ADS1298R</td><td>Frecuencia respiratoria sin otro sensor: es el signo vital que más se olvida.</td><td><span class="tag x">urgencia</span></td></tr>
+      <tr><td><b>SpO₂, pulso, perfusión</b></td><td>Módulo OEM certificado ISO 80601-2-61</td><td>¿Le falta oxígeno? ¿Está mal perfundido?</td><td><span class="tag h">hogar</span> <span class="tag x">urgencia</span></td></tr>
+      <tr><td><b>Presión arterial</b></td><td>Módulo OEM oscilométrico, manguito M–L</td><td>Control de hipertensión con promedio de tres tomas, como pide la guía.</td><td><span class="tag h">hogar</span> <span class="tag e">empresa</span></td></tr>
+      <tr><td><b>Temperatura</b></td><td>Infrarrojo MLX90632 grado médico, ±0,2 °C, en la sonda</td><td>¿Fiebre? Sin contacto, sirve con niños dormidos.</td><td><span class="tag h">hogar</span></td></tr>
+      <tr><td><b>Auscultación</b></td><td>Diafragma piezo + MEMS en la sonda, sincronizado con el ECG</td><td>Soplos, crepitaciones, sibilancias. Grabado para que lo escuche un médico.</td><td><span class="tag h">hogar</span> <span class="tag x">urgencia</span></td></tr>
+      <tr><td><b>Piel y heridas</b></td><td>Cámara 8 MP con luz polarizada cruzada, 10×</td><td>¿Esa herida se infectó? ¿Ese lunar cambió? Fotos comparables en el tiempo.</td><td><span class="tag h">hogar</span> <span class="tag e">empresa</span></td></tr>
+      <tr><td><b>Oído y garganta</b></td><td>La misma cámara con espéculo y luz coaxial</td><td>Otitis en niños, la consulta pediátrica más común.</td><td><span class="tag h">hogar</span></td></tr>
+      <tr><td><b>Glucosa, cetonas, lactato</b></td><td>Puerto de tiras electroquímicas (AFE LMP91000)</td><td>¿Hipoglucemia? ¿Cetoacidosis? El lactato ayuda a sospechar sepsis.</td><td><span class="tag h">hogar</span> <span class="tag x">urgencia</span></td></tr>
+      <tr><td><b>Espirometría</b></td><td>Neumotacógrafo con boquilla desechable y Sensirion SDP810</td><td>FEV₁, FVC y flujo máximo: ¿la crisis de asma está empeorando?</td><td><span class="tag h">hogar</span> <span class="tag e">empresa</span></td></tr>
+      <tr><td><b>Aire del lugar</b></td><td>Sensirion SEN66 + celda electroquímica de CO</td><td>¿El brasero o el calefón está intoxicando a la familia? ¿Polvo en la faena?</td><td><span class="tag h">hogar</span> <span class="tag e">empresa</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="nota"><b>Además, sin hardware nuevo:</b> la cámara frontal de la tapa sigue haciendo lo que ya hace NOVA: Eyes (cansancio por los ojos), pulso por la cara (rPPG) como respaldo y la guía de RCP con el esqueleto en vivo. Por BLE se suman balanzas, sensores continuos de glucosa y relojes que la persona ya tenga.</p>
+</section>
+
+<section>
+  <span class="k">La sonda</span>
+  <h2>Un mango, cuatro puntas</h2>
+  <p class="lead">El mango de 140 mm lleva la electrónica: cámara, micrófono, IMU, LEDs y batería pequeña. Las puntas son pasivas y se cambian con un giro de bayoneta; un imán dentro de cada una le dice al mango cuál tiene puesta. Así un estetoscopio, un dermatoscopio, un otoscopio y un termómetro ocupan el lugar de uno.</p>
+  <div class="puntas">
+    <div class="punta"><span class="k">Punta 1</span><h3>Estetoscopio</h3><p>Diafragma de 38 mm. Filtros de campana y diafragma por software. NOVA muestra en el gemelo 3D dónde apoyar la sonda y la cámara de la tapa confirma que está en el foco correcto.</p></div>
+    <div class="punta"><span class="k">Punta 2</span><h3>Dermatoscopio</h3><p>Lente de contacto 10× y anillo de 8 LEDs polarizados. Cada foto queda con escala y fecha para comparar la misma lesión semana a semana.</p></div>
+    <div class="punta"><span class="k">Punta 3</span><h3>Otoscopio</h3><p>Espéculo con funda desechable y luz coaxial. El video va a la pantalla grande, así el padre ve lo mismo que verá el pediatra.</p></div>
+    <div class="punta"><span class="k">Punta 4</span><h3>Termómetro</h3><p>Ventana infrarroja a 3 cm de la frente o la sien. La IMU avisa si la mano se movió durante la toma.</p></div>
+  </div>
+  <p>Lo nuevo de verdad está en el guiado. La estación ya sabe dónde está el cuerpo por la visión de NOVA (MediaPipe Pose), así que puede seguir la sonda sobre el pecho y decir «un poco más a la izquierda, segundo espacio intercostal». Es la misma idea de los procedimientos guiados del escáner, aplicada a una persona sin formación.</p>
+</section>
+
+<section>
+  <span class="k">Electrónica</span>
+  <h2>Dos computadores con trabajos distintos</h2>
+  <p class="lead">El hub médico mide, valida y alarma. El Orin piensa, habla y conversa con el mundo. Entre ellos va el mismo contrato NDJSON de la v1, ahora por UART a 921 600 baudios en vez de USB a un PC.</p>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 980 400" role="img" aria-label="Diagrama de bloques: isla del paciente, barrera de aislamiento, hub médico, cómputo y conectividad" style="min-width:820px">
+        <defs><marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8693a3"/></marker>
+        <marker id="flr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ec6aa8"/></marker></defs>
+        <!-- isla -->
+        <rect x="10" y="20" width="230" height="300" rx="14" fill="rgba(70,200,232,.06)" stroke="#46c8e8" stroke-dasharray="6 4"/>
+        <text x="26" y="44" font-size="11" fill="#8fe6f5">ISLA DEL PACIENTE · TIPO BF</text>
+        <g font-size="11" fill="#eef3f8">
+          <rect x="26" y="58" width="198" height="34" rx="7" fill="#0a1018" stroke="rgba(150,185,215,.3)"/><text x="38" y="80">ECG 12 · ADS1298R + resp.</text>
+          <rect x="26" y="100" width="198" height="34" rx="7" fill="#0a1018" stroke="rgba(150,185,215,.3)"/><text x="38" y="122">SpO₂ · módulo OEM</text>
+          <rect x="26" y="142" width="198" height="34" rx="7" fill="#0a1018" stroke="rgba(150,185,215,.3)"/><text x="38" y="164">Tiras · LMP91000</text>
+          <rect x="26" y="184" width="198" height="34" rx="7" fill="#0a1018" stroke="rgba(150,185,215,.3)"/><text x="38" y="206">Placas de pulgar</text>
+          <rect x="26" y="226" width="198" height="34" rx="7" fill="#0a1018" stroke="rgba(150,185,215,.3)"/><text x="38" y="248">Fuente aislada · &lt;10 µA fuga</text>
+        </g>
+        <text x="26" y="290" font-size="9.5" fill="#8693a3">protección de desfibrilación</text>
+        <text x="26" y="304" font-size="9.5" fill="#8693a3">en las 10 entradas de ECG</text>
+        <!-- barrera -->
+        <path d="M262 20V320" stroke="#ec6aa8" stroke-width="2" stroke-dasharray="2 5"/>
+        <text x="270" y="40" font-size="10" fill="#ec6aa8">BARRERA</text>
+        <text x="270" y="54" font-size="10" fill="#ec6aa8">2 × MOPP</text>
+        <text x="270" y="68" font-size="10" fill="#8693a3">ISO7741 +</text>
+        <text x="270" y="82" font-size="10" fill="#8693a3">DC/DC 5 kV</text>
+        <!-- hub -->
+        <rect x="350" y="20" width="230" height="300" rx="14" fill="rgba(242,180,87,.05)" stroke="#f2b457"/>
+        <text x="366" y="44" font-size="11" fill="#f2b457">HUB MÉDICO · STM32H573</text>
+        <g font-size="11" fill="#c2ccd8">
+          <text x="366" y="72">• adquisición con tiempo fijo</text>
+          <text x="366" y="94">• presión: bomba y válvula</text>
+          <text x="366" y="116">• sonda: I2S + I2C por USB-C</text>
+          <text x="366" y="138">• aire: SEN66 + CO</text>
+          <text x="366" y="160">• NFC PN7160</text>
+          <text x="366" y="182">• umbrales críticos propios</text>
+          <text x="366" y="204">• zumbador y LED independientes</text>
+          <text x="366" y="226">• vigila al Orin (watchdog)</text>
+        </g>
+        <rect x="366" y="248" width="198" height="56" rx="8" fill="rgba(236,106,168,.1)" stroke="#ec6aa8"/>
+        <text x="378" y="270" font-size="11" fill="#ec6aa8">Botón SOS → módem directo</text>
+        <text x="378" y="288" font-size="9.5" fill="#c2ccd8">ubicación + últimos signos por SMS</text>
+        <!-- compute -->
+        <rect x="670" y="20" width="300" height="196" rx="14" fill="rgba(168,152,255,.06)" stroke="#a898ff"/>
+        <text x="686" y="44" font-size="11" fill="#a898ff">CÓMPUTO · JETSON ORIN (SO-DIMM)</text>
+        <g font-size="11" fill="#c2ccd8">
+          <text x="686" y="72">• núcleo F Prime · componente Estacion</text>
+          <text x="686" y="94">• NOVA local · modelo 7–8 B a 4 bit</text>
+          <text x="686" y="116">• oído y voz (Whisper · Kokoro)</text>
+          <text x="686" y="138">• visión: Pose, Hands, Eyes, rPPG</text>
+          <text x="686" y="160">• lectura de ECG, auscultación, piel</text>
+          <text x="686" y="182">• station.html a pantalla completa</text>
+          <text x="686" y="204">• base cifrada · llave en SE050</text>
+        </g>
+        <!-- mundo -->
+        <rect x="670" y="236" width="300" height="84" rx="14" fill="#0a1018" stroke="rgba(150,185,215,.35)"/>
+        <text x="686" y="260" font-size="11" fill="#eef3f8">AFUERA</text>
+        <text x="686" y="280" font-size="10.5" fill="#c2ccd8">Wi-Fi 6 · BLE 5.3 · LTE con eSIM y GNSS</text>
+        <text x="686" y="298" font-size="10.5" fill="#c2ccd8">SOS satelital NTN · USB-C accesorios</text>
+        <!-- flechas -->
+        <path d="M240 170H346" stroke="#8693a3" stroke-width="1.5" marker-end="url(#fl)"/>
+        <path d="M580 110H666" stroke="#8693a3" stroke-width="1.5" marker-end="url(#fl)"/>
+        <text x="590" y="100" font-size="9.5" fill="#8693a3">NDJSON</text>
+        <text x="590" y="128" font-size="9.5" fill="#8693a3">UART</text>
+        <path d="M820 216V232" stroke="#8693a3" stroke-width="1.5" marker-end="url(#fl)"/>
+        <path d="M564 290H666" stroke="#ec6aa8" stroke-width="1.5" marker-end="url(#flr)"/>
+        <!-- leyenda -->
+        <text x="10" y="356" font-size="10.5" fill="#8693a3">Si el Orin se cuelga o se reinicia: el hub sigue midiendo, sigue alarmando con su propio zumbador y el SOS sigue llamando.</text>
+        <text x="10" y="376" font-size="10.5" fill="#8693a3">El Orin Nano 8 GB y el Orin NX 16 GB comparten conector: la misma placa sirve para la versión hogar y la versión empresa.</text>
+      </svg>
+    </div>
+    <figcaption>Cada medición cruza la barrera ya digitalizada. La única energía que entra a la isla pasa por un convertidor aislado de baja fuga.</figcaption>
+  </figure>
+  <p>El contrato de la v1 no se rompe. Se agregan sensores a la tabla y un campo para las imágenes, y el componente Estacion del núcleo sigue validando igual:</p>
+<pre><span class="c">// CONTRATO v2: mismos campos que v1, más sensores</span>
+{<span class="s">"v"</span>:<span class="n">2</span>,<span class="s">"tipo"</span>:<span class="s">"onda"</span>,<span class="s">"est"</span>:<span class="s">"p2-0042"</span>,<span class="s">"trip"</span>:<span class="s">"CASA-3"</span>,<span class="s">"sensor"</span>:<span class="s">"ecg12"</span>,<span class="s">"fs"</span>:<span class="n">500</span>,<span class="s">"seq"</span>:<span class="n">118</span>,<span class="s">"deriv"</span>:[<span class="s">"I"</span>,<span class="s">"II"</span>,<span class="s">"V1"</span>,…,<span class="s">"V6"</span>],<span class="s">"muestras"</span>:[[…]]}
+{<span class="s">"v"</span>:<span class="n">2</span>,<span class="s">"tipo"</span>:<span class="s">"medicion"</span>,<span class="s">"sensor"</span>:<span class="s">"espiro"</span>,<span class="s">"valor"</span>:<span class="n">2.61</span>,<span class="s">"unidad"</span>:<span class="s">"L"</span>,<span class="s">"extra"</span>:{<span class="s">"fev1"</span>:<span class="n">2.61</span>,<span class="s">"fvc"</span>:<span class="n">3.40</span>,<span class="s">"pef"</span>:<span class="n">412</span>}}
+{<span class="s">"v"</span>:<span class="n">2</span>,<span class="s">"tipo"</span>:<span class="s">"imagen"</span>,<span class="s">"sensor"</span>:<span class="s">"derm"</span>,<span class="s">"archivo"</span>:<span class="s">"sha256:9f2c…"</span>,<span class="s">"escala_mm_px"</span>:<span class="n">0.012</span>}
+<span class="c">// nuevos: ecg12 · pcg · espiro · cetona · lactato · co_amb · pm25 · cov · derm · oto · alcohol (solo empresa)</span></pre>
+</section>
+
+<section>
+  <span class="k">Tres modos</span>
+  <h2>La misma estación, tres trabajos</h2>
+  <div class="modos">
+    <div class="modo h">
+      <span class="k c">Hogar</span>
+      <h3>Seguimiento de la familia</h3>
+      <ol>
+        <li>Cada persona toca su tarjeta o el QR de su teléfono.</li>
+        <li>NOVA pide solo lo que toca hoy: presión al despertar al hipertenso, flujo máximo al asmático, nada al resto.</li>
+        <li>Detecta tendencias, no valores sueltos: «tu presión subió 9 mmHg en dos semanas».</li>
+        <li>Si algo cambia, prepara un informe para el médico de cabecera en FHIR y PDF.</li>
+        <li>Vigila el aire de noche y despierta a la casa si sube el CO.</li>
+      </ol>
+      <p class="para">Para: adultos mayores que viven solos, familias con un enfermo crónico, niños con asma o diabetes tipo 1.</p>
+    </div>
+    <div class="modo e">
+      <span class="k" style="color:var(--lila)">Empresa</span>
+      <h3>Sala de primeros auxilios</h3>
+      <ol>
+        <li>El trabajador entra con su credencial.</li>
+        <li>Control preventivo en 3 minutos: presión, SpO₂, Eyes para fatiga y, si la política lo exige, alcohol con cartucho opcional.</li>
+        <li>La empresa recibe solo «apto», «no apto» o «ver con salud ocupacional». Los valores quedan en la estación y con el médico.</li>
+        <li>Lesiones: foto de la herida con escala y registro para la mutualidad.</li>
+        <li>Altura: SpO₂ y frecuencia respiratoria para mal agudo de montaña en faenas sobre 3 000 m.</li>
+      </ol>
+      <p class="para">Para: faenas mineras, plantas, bodegas, oficinas grandes, colegios.</p>
+    </div>
+    <div class="modo x">
+      <span class="k" style="color:var(--mag)">Emergencia</span>
+      <h3>Un botón, nada más</h3>
+      <ol>
+        <li>SOS rojo o «NOVA, ayuda». Se salta toda identificación.</li>
+        <li>Si no responde ni respira, guía de RCP con la cámara y pide el DEA más cercano.</li>
+        <li>Si está consciente: ECG de 12, SpO₂ y presión en paralelo, en menos de 2 minutos.</li>
+        <li>Llama al 131 o a la central de la empresa y manda ubicación, signos y ECG firmados.</li>
+        <li>Sin señal, el SOS sale por satélite como texto.</li>
+      </ol>
+      <p class="para">Funciona aunque NOVA no esté lista: el camino del botón vive en el hub médico.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="k">Presupuestos</span>
+  <h2>Espacio y energía, número por número</h2>
+  <div class="two">
+    <div class="tw"><table>
+      <thead><tr><th>Volumen</th><th class="num">cm³</th><th class="num">%</th></tr></thead>
+      <tbody>
+        <tr><td>Pantalla y tapa</td><td class="num">567</td><td class="num">15</td></tr>
+        <tr><td>Manguito + módulo de presión</td><td class="num">554</td><td class="num">15</td></tr>
+        <tr><td>Insumos</td><td class="num">515</td><td class="num">14</td></tr>
+        <tr><td>Sonda, puntas, SpO₂, espirómetro</td><td class="num">470</td><td class="num">13</td></tr>
+        <tr><td>Baterías (2 × 36 Wh planas)</td><td class="num">360</td><td class="num">10</td></tr>
+        <tr><td>Cómputo, hub, módem, ventilador</td><td class="num">420</td><td class="num">11</td></tr>
+        <tr><td>ECG 12 en carrete</td><td class="num">370</td><td class="num">10</td></tr>
+        <tr><td>Cámara de aire</td><td class="num">106</td><td class="num">3</td></tr>
+        <tr><td>Paredes, bisagra, flujo de aire</td><td class="num">292</td><td class="num">8</td></tr>
+        <tr><td><b>Total cerrada</b></td><td class="num"><b>3 654</b></td><td class="num"><b>100</b></td></tr>
+      </tbody>
+    </table></div>
+    <div class="tw"><table>
+      <thead><tr><th>Energía</th><th class="num">W</th></tr></thead>
+      <tbody>
+        <tr><td>Orin en sesión (modo 15 W)</td><td class="num">15,0</td></tr>
+        <tr><td>Pantalla a 60 % de brillo</td><td class="num">4,5</td></tr>
+        <tr><td>Hub, sensores, sonda</td><td class="num">1,5</td></tr>
+        <tr><td>Radios</td><td class="num">1,0</td></tr>
+        <tr><td><b>Sesión activa</b></td><td class="num"><b>22,0</b></td></tr>
+        <tr><td>Reposo vigilando aire + LTE</td><td class="num">0,6</td></tr>
+      </tbody>
+    </table>
+    <div style="padding:14px;border-top:1px solid var(--l1);font-size:14px;line-height:1.55;display:grid;gap:6px">
+      <div><span class="mono" style="color:var(--cian)">72 Wh × 0,9 ÷ 22 W ≈ 2,9 h</span> de uso continuo.</div>
+      <div><span class="mono" style="color:var(--cian)">72 Wh × 0,9 ÷ 0,6 W ≈ 108 h</span> en reposo, unos 4 días.</div>
+      <div>Un día típico de hogar (5 sesiones de 6 min) gasta ≈ 25 Wh: casi 3 días sin enchufe. El 20 % final queda reservado para emergencia.</div>
+    </div></div>
+  </div>
+</section>
+
+<section>
+  <span class="k">Lo que dejamos fuera</span>
+  <h2>Decisiones de no poner</h2>
+  <div class="fuera">
+    <div><h3>Desfibrilador integrado</h3><p>Duplica el tamaño y la regulación. La estación detecta el paro, guía la RCP y pide el DEA de la pared. El ECG resiste una descarga si el DEA se usa con los electrodos puestos.</p></div>
+    <div><h3>Ecógrafo integrado</h3><p>Útil, pero necesita formación. Queda como sonda USB-C opcional: el puerto y el software para mostrarlo ya están.</p></div>
+    <div><h3>Analizador de sangre con cartuchos</h3><p>Cada cartucho cuesta más que una consulta. Glucosa, cetonas y lactato en tira cubren las urgencias que importan en casa.</p></div>
+    <div><h3>Reconocimiento facial</h3><p>Tarjeta o QR identifican igual de rápido sin guardar caras. En una empresa, además, evita un problema con la ley 21.719 de datos personales.</p></div>
+    <div><h3>Impresora</h3><p>El informe sale firmado por la red o se muestra con QR al médico. Un papel no lleva el ECG en bruto.</p></div>
+    <div><h3>Pantalla extraíble</h3><p>Una tablet suelta se pierde, se descarga y no es médica. La pantalla fija en la tapa hace de atril y protege la bandeja.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="k">Para que llegue a una persona real</span>
+  <h2>Normas y camino</h2>
+  <p class="lead">Como dispositivo médico, la P2 sería clase IIa ante el ISP y en Europa. Usar módulos OEM ya certificados para SpO₂ y presión reduce mucho las pruebas propias. Lo que diseñamos nosotros es el ECG, la sonda, la isla aislada y el software.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Norma</th><th>Qué cubre en la P2</th></tr></thead>
+    <tbody>
+      <tr><td><b>IEC 60601-1</b> <span class="mono">· 60601-1-2 · 60601-1-11</span></td><td>Seguridad eléctrica, compatibilidad electromagnética y uso en casa sin personal de salud.</td></tr>
+      <tr><td><b>IEC 60601-2-25</b></td><td>ECG diagnóstico de 12 derivaciones.</td></tr>
+      <tr><td><b>ISO 80601-2-61 · IEC 80601-2-30</b></td><td>Oxímetro y presión no invasiva (ya cubiertos por los módulos OEM).</td></tr>
+      <tr><td><b>IEC 62304 · ISO 14971 · ISO 13485</b></td><td>Ciclo de vida del software médico, gestión de riesgos y calidad. El firmware del hub es clase B; NOVA queda como apoyo a la decisión, nunca como diagnóstico.</td></tr>
+      <tr><td><b>HL7 FHIR · HL7 aECG</b></td><td>Los informes y el ECG salen en formatos que un hospital ya sabe leer.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="fases">
+    <div class="fase"><span class="k c">Dic – ene</span><h3>Hub en mesa</h3><p>STM32 en placa de desarrollo con la placa de evaluación del ADS1298R. Contrato v2. Sale el PC puente: el hub habla directo con un Orin Nano de desarrollo.</p></div>
+    <div class="fase"><span class="k c">Feb – mar</span><h3>Prototipo en caja</h3><p>Carcasa impresa en las tres capas, módulos OEM de SpO₂ y presión, sonda v0 con estetoscopio y termómetro.</p></div>
+    <div class="fase"><span class="k c">Abr – jun</span><h3>PCB integrada</h3><p>Isla aislada en la placa, ensayos previos de 60601 en laboratorio, carcasa en PC-ABS inyectable.</p></div>
+    <div class="fase"><span class="k c">2º semestre</span><h3>Piloto</h3><p>10 casas y 2 salas de primeros auxilios. Comparación contra equipos clínicos y revisión por médicos.</p></div>
+  </div>
+  <p class="nota"><b>Costo de materiales estimado:</b> entre US$ 1 300 (hogar, Orin Nano 8 GB) y US$ 1 700 (empresa, Orin NX 16 GB) por unidad en lotes de 100. Lo más caro es el cómputo, seguido de los módulos OEM de presión y SpO₂. Son cifras de orden de magnitud para decidir, no una cotización.</p>
+</section>
+
+</main>
+<footer class="w">NOVA · concepto de NOVA Station P2 sobre la estación v1 de Luis González. Las marcas y modelos de componentes son referencias de diseño, sujetas a selección final.</footer>

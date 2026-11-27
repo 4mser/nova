@@ -860,3 +860,43 @@ input{font:inherit;color:inherit}
 .rvcanal b{display:block;font:600 12.5px SG}.rvcanal span{font:400 11px SG;color:var(--t3)}.rvcanal em{font:500 11.5px SG;font-style:normal;color:var(--t2);white-space:nowrap}
 .rvdet code{font-size:11px;color:var(--t2)}
 .rvev{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--l1)}.rvev b{font:600 12.5px SG}.rvev span{font:400 12px SG;color:var(--t2)}.rvev.on b,.rvev.on span{color:#ffd28a}
+
+/* NOVA 2 · emergency live on the ship's screen */
+.scaja.s2 h4{display:flex;align-items:center;gap:8px}.s2tag{margin-left:auto;font:600 10px SG;letter-spacing:.12em;color:#8fe6f5;padding:3px 8px;border-radius:999px;background:rgba(143,230,245,.1)}
+.s2big{display:flex;gap:18px;align-items:baseline;margin-bottom:10px}.s2big div{display:grid}.s2big b{font:600 34px/1 SG;letter-spacing:-.02em;font-feature-settings:"tnum" 1}.s2big span{font:500 11px SG;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.s2big b.ok{color:#7fe0c0}.s2big b.mal{color:#f4b860}.s2big b.al{color:#ff7a9c}
+.s2graf{display:block;width:100%;height:96px;margin:4px 0 8px}
+.s2aviso{font:600 13px SG;color:#ffd3e6;padding:8px 10px;border-radius:10px;background:rgba(236,106,168,.12);margin-bottom:8px}
+.s2aviso.ok{color:#bff5e2;background:rgba(127,224,192,.1)}
+.sctl.s2plegado #sCtlCuerpo{max-height:0;overflow:hidden}.sctl.s2plegado h4{margin-bottom:0}
+
+/* Body twin · foco: solo el modelo (la tabla, las tarjetas, las líneas y el escaneo se esconden; F alterna) */
+.gem .gfocosal{display:none}
+.gem.foco .gpanel,.gem.foco .glineas,.gem.foco .gnom,.gem.foco #gHud,.gem.foco #gCams,.gem.foco .gtop,.gem.foco .getq{display:none!important}
+.gem.foco .gfocosal{display:block;position:absolute;top:14px;right:14px;z-index:6;height:32px;padding:0 14px;border-radius:16px;background:rgba(4,14,24,.6);border:1px solid rgba(143,230,245,.28);color:#dff6fb;font:500 12px var(--sans,system-ui);backdrop-filter:blur(6px);opacity:.55;transition:opacity .2s}
+.gem.foco .gfocosal:hover{opacity:1}
+.gem:fullscreen{background:#03060a}
+.gem.foco .g3d{right:0!important}
+.gem.foco .gpie,.gem.foco .glinea,.gem.foco .gcarga:empty{display:none!important}
+.gem.foco{margin:0 24px 24px}
+
+/* Body twin · vista de cámara: el video llena el escenario y el gemelo se dibuja encima, calzado */
+.gem.camara .g3d{right:0!important}
+.gem.camara .gpanel,.gem.camara .glineas,.gem.camara .gnom,.gem.camara .gpie,.gem.camara .glinea,.gem.camara #gCams{display:none!important}
+#gMezclaBar{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:22px;
+  background:rgba(4,14,24,.72);border:1px solid rgba(143,230,245,.28);backdrop-filter:blur(8px);font:500 12px var(--sans,system-ui);color:#cfe9f0}
+#gMezclaBar input{width:200px;accent-color:#46c8e8}
+#gMezclaBar i{width:1px;height:18px;background:rgba(143,230,245,.25)}
+#gMezclaBar button{height:28px;padding:0 11px;border-radius:14px;color:#cfe9f0;border:1px solid transparent}
+#gMezclaBar button.on{background:rgba(70,200,232,.16);border-color:rgba(143,230,245,.4);color:#fff}
+/* galería de poses del gemelo */
+#gPoses{position:absolute;left:16px;top:176px;z-index:6;display:flex;flex-direction:column;align-items:stretch;gap:2px;padding:6px;border-radius:16px;max-height:calc(100% - 290px);overflow-y:auto;scrollbar-width:none;
+  background:rgba(4,14,24,.72);border:1px solid rgba(143,230,245,.28);backdrop-filter:blur(8px);font:500 12px var(--sans,system-ui);color:#cfe9f0}
+#gPoses[hidden]{display:none}
+#gPoses i{flex:none;height:1px;margin:3px 6px;background:rgba(143,230,245,.25)}
+#gPoses b{padding:4px 10px 2px;font:600 10px var(--mono,ui-monospace,monospace);letter-spacing:.12em;color:#8fe6f5}
+#gPoses button{flex:none;height:26px;padding:0 11px;border-radius:13px;text-align:left;color:#cfe9f0;border:1px solid transparent;white-space:nowrap}
+#gPoses button:hover{border-color:rgba(143,230,245,.3)}
+#gPoses button.on{background:rgba(70,200,232,.22);border-color:rgba(143,230,245,.55);color:#fff}
+#gPoses button.vivo{color:#8fe6f5;border-color:rgba(143,230,245,.35)}
+#gem.foco #gPoses,#gem.camara #gPoses{display:none}

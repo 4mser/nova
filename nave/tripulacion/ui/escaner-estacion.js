@@ -39,7 +39,7 @@ function pintar() {
   $('sDisp').textContent = `${desde} ${modo}`;
   const v = c.vision || {};
   $('sRed').textContent = `${cuadros.length / 2 | 0} fps here · ${c.fps || '—'} fps on device · ${v.donde === 'ship' ? `vision on this computer (${v.gpu || 'GPU'}) ${v.ms} ms` : v.donde === 'phone' ? 'vision on the phone' : 'vision starting'}`;
-  $('sQuienTxt').innerHTML = vivo ? `<b>${c.nombre || 'Unknown'}</b><br>${desde} ${modo} · ${c.cuerpo ? 'body found' : 'looking for the body'}<br>Layers: ${(c.capas || []).map(x => ({ organos: 'organs', esqueleto: 'skeleton', rcp: 'CPR point' })[x] || x).join(', ')}` : 'Nobody right now';
+  $('sQuienTxt').innerHTML = vivo ? `<b>${c.nombre || 'Unknown'}</b><br>${desde} ${modo} · ${c.cuerpo ? 'body found' : 'looking for the body'}<br>Layers: ${(c.capas || []).map(x => ({ organos: 'organs', esqueleto: 'skeleton', rcp: 'CPR point', vitales: 'camera vitals' })[x] || x).join(', ')}` : 'Nobody right now';
   $('sFoco').textContent = vivo ? (c.foco || (c.cuerpo ? 'Whole body' : 'Looking for the body')) : '—';
   // the procedure on the phone and what Nova did: confirmed, corrected, decided (an instructor's timeline)
   const pr = vivo && c.proc;
@@ -51,6 +51,7 @@ function pintar() {
     const NOM = { paso: 'Instructed', confirmar: 'Confirmed', corregir: 'Corrected', seguimiento: 'Followed up', decision: 'Decided', herida: 'Marked', inicio: 'Started', fin: 'Closed' };
     $('sTl').innerHTML = (c.intervenciones || []).slice().reverse().map(x => `<div><i style="background:${ICON[x.tipo] || 'var(--t3)'}"></i><span><b>${NOM[x.tipo] || x.tipo}</b> ${x.texto}</span><time>${new Date(x.t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</time></div>`).join('');
   }
+  pintarNova2(vivo ? c : null);
   const g = c.gravedad || {}, r = c.rcp;
   const reg = { micro: 'Microgravity', marte: 'Mars 0.38 g', tierra: 'Earth 1 g' }[g.regimen] || '—';
   $('sGrav').innerHTML = vivo ? `<div><i style="background:${g.regimen === 'micro' ? 'var(--nv)' : g.regimen === 'marte' ? 'var(--at)' : 'var(--ok)'}"></i>Procedure gravity<b>${reg}</b></div>`
@@ -175,3 +176,36 @@ document.addEventListener('click', e => { if (e.target.closest('[data-vista="esc
 conectar();
 enlaceTelefono(); setInterval(enlaceTelefono, 15000);
 setInterval(() => { pintar(); pintarControl(); }, 250);
+
+/* ── NOVA 2: the emergency, measured live: CPR quality with its trend and forecast, and the vitals the camera reads ── */
+function pintarNova2(c) {
+  const r = c && c.rcp, v = c && c.vitales;
+  $('sRcpCaja').hidden = !r; $('sVitCaja').hidden = !v;
+  // during an emergency the live measurements go to the top, where they are seen without scrolling; the join code steps aside
+  const qr = $('sQr')?.closest('.scaja'), quien = $('sQuien'), ctl = $('sCtl');
+  if (qr) qr.hidden = !!(r || v);
+  if ((r || v) && quien && quien.nextElementSibling !== $('sRcpCaja')) { quien.after($('sRcpCaja')); $('sRcpCaja').after($('sVitCaja')); }
+  if (ctl) ctl.classList.toggle('s2plegado', !!(r || v));
+  if (r) {
+    const f = r.fatiga, ok = x => (x ? 'ok' : 'mal');
+    let graf = '';
+    if (f && f.puntos.length) {
+      const W = 300, H = 90, lo = f.unidad === 'cm' ? 3 : 50, hi = f.unidad === 'cm' ? 7 : 120, X = s => (s + 25) / 65 * W, Y = q => H - (Math.max(lo, Math.min(hi, q)) - lo) / (hi - lo) * H;
+      const fin = f.ahora + f.pendiente * 40;
+      graf = `<svg class="s2graf" viewBox="0 0 ${W} ${H + 6}" preserveAspectRatio="none"><rect x="0" y="0" width="${W}" height="${Y(f.piso)}" fill="rgba(127,224,192,.07)"/><line x1="0" x2="${W}" y1="${Y(f.piso)}" y2="${Y(f.piso)}" stroke="rgba(255,255,255,.3)" stroke-dasharray="3 5"/><line x1="${X(0)}" x2="${X(0)}" y1="0" y2="${H}" stroke="rgba(255,255,255,.25)"/>`
+        + f.puntos.map(([s, q]) => `<circle cx="${X(s)}" cy="${Y(q)}" r="2.2" fill="#8fe6f5"/>`).join('')
+        + `<line x1="${X(0)}" y1="${Y(f.ahora)}" x2="${X(40)}" y2="${Y(fin)}" stroke="#ec6aa8" stroke-width="2.2" stroke-dasharray="4 4"/></svg>`;
+    }
+    const aviso = f && f.cruce != null && f.cruce < 60 ? `<div class="s2aviso">${f.cruce <= 0 ? 'Below target: swap rescuers now' : `Fatigue forecast: below target in ~${f.cruce} s · prepare the swap`}</div>` : f ? '<div class="s2aviso ok">Quality holding steady</div>' : '';
+    $('sRcp').innerHTML = `<div class="s2big"><div><b class="${r.ritmo ? ok(r.ritmo >= 100 && r.ritmo <= 120) : ''}">${r.ritmo || '—'}</b><span>per min</span></div><div><b class="${r.prof != null ? ok(r.prof >= 5 && r.prof <= 6) : ''}">${r.prof != null ? r.prof.toFixed(1) : '—'}</b><span>cm depth</span></div><div><b>${r.cuenta}</b><span>compressions</span></div></div>
+      ${graf}${aviso}<div class="sfilas">
+      <div><i style="background:${r.manos == null ? 'var(--t3)' : r.manos < 2.5 ? 'var(--ok)' : 'var(--at)'}"></i>Hands on the sternum<b>${r.manos == null ? '—' : r.manos < 2.5 ? 'Centered' : r.manos + ' cm off'}</b></div>
+      <div><i style="background:${r.retroceso == null ? 'var(--t3)' : r.retroceso > 90 ? 'var(--ok)' : 'var(--at)'}"></i>Chest recoil<b>${r.retroceso == null ? '—' : r.retroceso + '%'}</b></div>
+      <div><i style="background:${r.codo == null ? 'var(--t3)' : r.codo > 155 ? 'var(--ok)' : 'var(--at)'}"></i>Rescuer's arms<b>${r.codo == null ? '—' : (r.codo > 155 ? 'Locked ' : 'Bent ') + r.codo + '°'}</b></div></div>`;
+  }
+  if (v) {
+    const on = v.onda || [], W = 300, H = 50, d = on.map((q, i) => `${i ? 'L' : 'M'}${(i / Math.max(1, on.length - 1) * W).toFixed(1)} ${(H / 2 - q * H / 2.2).toFixed(1)}`).join('');
+    $('sVitCam').innerHTML = `<div class="s2big"><div><b class="${v.pulso ? 'al' : ''}">${v.pulso || '—'}</b><span>bpm · camera</span></div><div><b>${v.resp || '—'}</b><span>breaths/min</span></div><div><b>${v.conf}%</b><span>confidence</span></div></div>
+      ${on.length > 4 ? `<svg class="s2graf" style="height:56px" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="#ff7a9c" stroke-width="2"/></svg>` : `<div class="sfilas"><div><i style="background:var(--t3)"></i>${v.cara ? 'Reading the skin · hold still' : 'Looking for a face'}<b>${Math.round((v.progreso || 0) * 100)}%</b></div></div>`}`;
+  }
+}

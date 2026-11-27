@@ -18,8 +18,9 @@
    The anatomy is the reference atlas fitted to this person (shoulder line, torso axis, turn from the 3D landmarks). It is
    an estimate from proportions, not an image of the inside, and the screen says so. */
 import * as THREE from './lib/three.module.min.js';
-import { FilesetResolver, PoseLandmarker, HandLandmarker } from './lib/mediapipe/vision_bundle.mjs';
+import { FilesetResolver, PoseLandmarker, HandLandmarker, FaceLandmarker } from './lib/mediapipe/vision_bundle.mjs';
 import { AR as AR_PASOS, Procedimiento, corregir, NOMBRE_VITAL } from './procedimientos.js';
+import { vit, cargarVitales, medirVitales, lecturaVitales, pintarMalla, pintarVitales } from './vitales.mjs?v=2';
 import { ojos, cargarOjos, medirOjos, pintarOjos, pintarFijacion, panelOjos, empezarRevision, terminarRevision } from './ojos.mjs?v=4';
 
 const $ = id => document.getElementById(id);
@@ -33,6 +34,10 @@ const G0 = 9.80665;
 let CREW = [], estado = null, mision = null, tripI = 0;
 const capas = new Set(P.has('limpio') ? [] : ['organos', 'esqueleto']); // the hologram of the body systems; ?limpio starts with nothing on
 if (P.has('rcp')) capas.add('rcp');
+if (P.has('vitales')) capas.add('vitales');
+// ?cara y ?manos: malla de la cara (478 puntos) y esqueleto de las manos (21 puntos) dibujados sobre la imagen
+if (P.has('cara')) capas.add('cara');
+if (P.has('manos')) capas.add('manos');
 let visor = false, frente = !MOVIL;
 let modoG = P.get('g') || 'auto';               // auto (mission) · tierra · marte · micro
 let tecnica = 'er';                              // microgravity CPR technique
@@ -256,11 +261,12 @@ function cargarLocal() {
         try { return await Clase.createFromOptions(fs, { baseOptions: { modelAssetPath: modelo, delegate }, runningMode: 'VIDEO', ...extra }); } catch (e) { if (delegate === 'CPU') throw e; }
       }
     };
-    const [pose, manos] = await Promise.all([
+    const [pose, manos, cara] = await Promise.all([
       crear(PoseLandmarker, `lib/mediapipe/modelos/pose_landmarker_${MOVIL ? 'lite' : 'full'}.task`, { numPoses: 1, outputSegmentationMasks: true }),
       crear(HandLandmarker, 'lib/mediapipe/modelos/hand_landmarker.task', { numHands: 2 }),
+      capas.has('cara') ? crear(FaceLandmarker, 'lib/mediapipe/modelos/face_landmarker.task', { numFaces: 1, outputFaceBlendshapes: true }).catch(() => null) : null,
     ]);
-    localListo = { pose, manos };
+    localListo = { pose, manos, cara };
     return localListo;
   })();
   return vis.local;
@@ -281,6 +287,10 @@ function visionLocal(m, ahora) {
     if (mascaraLocal.width !== w || mascaraLocal.height !== h) { mascaraLocal.width = w; mascaraLocal.height = h; }
     const img = mlctx.createImageData(w, h); for (let i = 0; i < d.length; i++) { const v = d[i] * 255; img.data[i * 4] = img.data[i * 4 + 1] = img.data[i * 4 + 2] = v; img.data[i * 4 + 3] = 255; }
     mlctx.putImageData(img, 0, 0); mascara = mascaraLocal; mk.close?.();
+  }
+  if (m.cara) {   // la cara a resolución completa: los 478 puntos necesitan más detalle que el cuerpo
+    try { const rf = m.cara.detectForVideo(video, tsLocal); caraUlt = rf.faceLandmarks?.[0] || null; tCara = ahora;
+      gestos = {}; (rf.faceBlendshapes?.[0]?.categories || []).forEach(c => { gestos[c.categoryName] = c.score; }); } catch {}
   }
   const manos = (rm.landmarks || []).map((lm, i) => ({ lado: rm.handednesses?.[i]?.[0]?.categoryName || '', lm: lm.map(p => ({ x: p.x, y: p.y, z: p.z })) }));
   recibir({ poses, manos, mascara }, ahora, 'local');
@@ -322,8 +332,10 @@ function elegirPaciente(poses) {
   if (mejor) pacPrev = { x: (mejor.lm[11].x + mejor.lm[12].x) / 2, y: (mejor.lm[11].y + mejor.lm[12].y) / 2 };
   return mejor;
 }
+let rescUlt = null;
 function recibir(r, tc, fuente) {
   const p = elegirPaciente(r.poses);
+  const otra = r.poses.find(q => q !== p); if (otra) rescUlt = { lm: otra.lm, tc: performance.now() };
   if (p) {
     for (const i of PUNTOS) {
       const q = p.lm[i]; if (!q) continue;
@@ -667,10 +679,11 @@ function medirDeriva(aj, t) {
 }
 
 /* ── compressions from the rescuer's hands near the CPR point ── */
-const comp = { suave: null, base: null, fase: 0, golpes: [], cuenta: 0, ultima: 0, t: 0, manos: false, buenas: 0, prof: null, inicio: 0, pausa: 0, tCiclo: 0 };
+const comp = { suave: null, base: null, fase: 0, golpes: [], cuenta: 0, ultima: 0, t: 0, manos: false, buenas: 0, prof: null, inicio: 0, pausa: 0, tCiclo: 0, serie: [], ant: null, desvio: null, codo: null };
 function contar(t, aj, W, H) {
   comp.manos = false;
-  if (!aj || !manosUlt.length || performance.now() - tManos > 400) { comp.suave = comp.base = null; return; }
+  if (!aj || !manosUlt.length || performance.now() - tManos > 400) { comp.suave = comp.base = null; comp.ymax = comp.ymin = null; comp.ant = null; return; }
+  if (comp.ultima && t - comp.ultima > 1.5 && comp.fase !== 1) { comp.ant = null; } // after a pause (breaths), recoil starts over
   const { sx, sy, sw, sh, vw, vh } = recorte;
   const pr = aPantalla(REF.rcp, aj.M, W, H), cerca = [];
   for (const m of manosUlt) {
@@ -678,8 +691,15 @@ function contar(t, aj, W, H) {
     const x = (c.x * vw - sx) / sw * W, y = (c.y * vh - sy) / sh * H;
     if (Math.hypot(x - pr.x, y - pr.y) < aj.escala * .25) cerca.push({ x, y });
   }
-  if (!cerca.length) { comp.suave = comp.base = null; return; }
+  if (!cerca.length) { comp.suave = comp.base = null; comp.ymax = comp.ymin = null; comp.ant = null; return; }
   comp.manos = true;
+  // where the hands are against the CPR point, in cm at the chest
+  const hc = cerca.reduce((a, q) => ({ x: a.x + q.x / cerca.length, y: a.y + q.y / cerca.length }), { x: 0, y: 0 }), dcm = { x: (hc.x - pr.x) * aj.mpp * 100, y: (hc.y - pr.y) * aj.mpp * 100 };
+  comp.desvio = comp.desvio ? { x: comp.desvio.x + (dcm.x - comp.desvio.x) * .15, y: comp.desvio.y + (dcm.y - comp.desvio.y) * .15 } : dcm;
+  // the rescuer's elbows (the other person in view): locked arms put the body's weight into each push
+  if (rescUlt && performance.now() - rescUlt.tc < 500) { const L = rescUlt.lm, ang = (a, b, c) => { const sx = recorte.vw, sy = recorte.vh, v1 = [(L[a].x - L[b].x) * sx, (L[a].y - L[b].y) * sy], v2 = [(L[c].x - L[b].x) * sx, (L[c].y - L[b].y) * sy]; return Math.acos(Math.max(-1, Math.min(1, (v1[0] * v2[0] + v1[1] * v2[1]) / (Math.hypot(...v1) * Math.hypot(...v2) || 1)))) * 57.3; };
+    const vis = i => (L[i]?.v ?? 0) > .65, cs = []; if (vis(11) && vis(13) && vis(15)) cs.push(ang(11, 13, 15)); if (vis(12) && vis(14) && vis(16)) cs.push(ang(12, 14, 16));
+    if (cs.length && Math.min(...cs) > 70) { const m = Math.min(...cs); comp.codo = comp.codo == null ? m : comp.codo + (m - comp.codo) * .2; } } else comp.codo = null;
   // the hands' vertical motion in the picture, normalized by the body's size (tuned on a real CPR recording)
   const y = cerca.reduce((s, p) => s + p.y, 0) / cerca.length / aj.escala;
   const dt = comp.t ? Math.min(.2, t - comp.t) : 1 / 30; comp.t = t;
@@ -692,12 +712,32 @@ function contar(t, aj, W, H) {
   if (comp.fase <= 0 && d > u) comp.fase = 1;
   else if (comp.fase === 1 && d < -u * .2 && t - comp.ultima > .3) {
     const prof = (comp.ymax - comp.ymin) * aj.escala * aj.mpp * 100; // cm
+    // recoil: how far the chest came back up before this push, against the last push's depth
+    if (comp.ant) { const rec = (comp.ant.ymax - comp.ymin) / Math.max(1e-6, comp.ant.ymax - comp.ant.ymin); comp.ant.rec = Math.max(0, Math.min(1.2, rec)); }
+    const reg1 = { t, prof, amp: comp.ymax - comp.ymin, ymin: comp.ymin, ymax: comp.ymax, rec: null }; comp.serie.push(reg1); comp.ant = reg1; comp.serie = comp.serie.filter(x => t - x.t < 60);
     comp.prof = comp.prof == null ? prof : comp.prof + (prof - comp.prof) * .3;
     const iv = comp.ultima ? t - comp.ultima : null;
     comp.fase = -1; comp.cuenta++; comp.ultima = t; comp.golpes.push(t); comp.golpes = comp.golpes.filter(g => t - g < 6);
     // a compression is "good" when its rate is in 100-120/min (and its depth in 5-6 cm when depth can be seen)
     const lateral = (aj.frente ?? 1) < .6, rOk = iv && 60 / iv >= 100 && 60 / iv <= 120, pOk = !lateral || (prof >= 4.5 && prof <= 6.5);
     comp.buenas += rOk && pOk ? 1 : 0; comp.ymax = comp.ymin = null;
+  }
+}
+/* ?demorcp: a demonstration for when no one can kneel by a patient. A rescuer is simulated (110 a minute, depth falling
+   slowly with fatigue, a little noise) and fed to the same measurement and forecast code; the screen says so. */
+function demoRcp(t, aj) {
+  if (!aj) return;
+  comp.demo = comp.demo || { t0: t, n: 0 };
+  const D = comp.demo, iv = 60 / (110 + 3 * Math.sin(t * .7)), e = t - D.t0, ruido = k => (Math.sin(D.n * 12.9898 + k) * 43758.5453 % 1) - .5;
+  comp.manos = true; comp.desvio = { x: .4 + .3 * Math.sin(t * .5), y: .8 + (e > 14 && e < 19 ? 2.6 : 0) }; comp.codo = 168 + 4 * Math.sin(t * .3);
+  if (!comp.ultima || t - comp.ultima >= iv) {
+    const prof = Math.max(3.6, 5.9 - Math.max(0, e - 12) * .022 + ruido(1) * .25), amp = prof / 100;
+    const reg1 = { t, prof, amp, ymin: 0, ymax: amp, rec: null };
+    if (comp.ant) comp.ant.rec = Math.max(.7, .97 - Math.max(0, e - 30) * .003 + ruido(2) * .03);
+    comp.serie.push(reg1); comp.ant = reg1; comp.serie = comp.serie.filter(x => t - x.t < 60);
+    comp.prof = comp.prof == null ? prof : comp.prof + (prof - comp.prof) * .3;
+    comp.cuenta++; comp.golpes.push(t); comp.golpes = comp.golpes.filter(g => t - g < 6);
+    comp.buenas += prof >= 5 && prof <= 6 ? 1 : 0; comp.ultima = t; D.n++;
   }
 }
 function ritmo(t) {
@@ -804,7 +844,8 @@ function etiquetas(c, aj, W, H, k, L) {
     if (!grupos[g] || !grupos[g].visible || !centros[g]) continue;
     const p = aPantalla(centros[g], g === 'cerebro' ? aj.C : aj.M, W, H);
     if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) continue;
-    dentro.push({ g, p, d: GRUPOS[g].dato(datos) });
+    if (P.has('anon') && !['corazon', 'pulmones'].includes(g)) continue; // a stranger has no twin data: a few organs, by name only
+    dentro.push({ g, p, d: P.has('anon') ? { v: 'position estimated', nivel: 'sin_dato' } : GRUPOS[g].dato(datos) });
   }
   const mitad = aPantalla(REF.hombros, aj.M, W, H).x, ancho = aj.escala * REF.anchoHombros;
   const conEtiqueta = visor || capas.has('rcp') ? [] : dentro;
@@ -899,6 +940,35 @@ function estadoRcp(t) {
 }
 
 /* the rescuer's hands stay in front of the hologram (occlusion), with a faint outline */
+/* malla de la cara y esqueleto de las manos, calzados sobre la imagen */
+let caraUlt = null, tCara = 0, gestos = {};
+const CARA_MALLA = FaceLandmarker.FACE_LANDMARKS_TESSELATION, CARA_RASGOS = [FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,
+  FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW, FaceLandmarker.FACE_LANDMARKS_LIPS, FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS, FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS].filter(Boolean);
+const MANO_HUESOS = [[0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [7, 8], [5, 9], [9, 10], [10, 11], [11, 12], [9, 13], [13, 14], [14, 15], [15, 16], [13, 17], [0, 17], [17, 18], [18, 19], [19, 20]];
+function capaCaraManos(c, W, H, k) {
+  const { sx, sy, sw, sh, vw, vh } = recorte, aP = p => [(p.x * vw - sx) / sw * W, (p.y * vh - sy) / sh * H];
+  c.save(); if (frente) { c.translate(W, 0); c.scale(-1, 1); }
+  c.lineCap = 'round'; c.lineJoin = 'round';
+  if (capas.has('cara') && caraUlt && performance.now() - tCara < 400) {
+    const pts = caraUlt.map(aP);
+    c.globalCompositeOperation = 'lighter';
+    c.strokeStyle = 'rgba(120,220,255,.22)'; c.lineWidth = .8 * k; c.beginPath();
+    for (const { start, end } of CARA_MALLA || []) { c.moveTo(...pts[start]); c.lineTo(...pts[end]); }
+    c.stroke();
+    c.strokeStyle = 'rgba(160,236,255,.85)'; c.lineWidth = 1.6 * k; c.beginPath();
+    for (const g of CARA_RASGOS) for (const { start, end } of g) { c.moveTo(...pts[start]); c.lineTo(...pts[end]); }
+    c.stroke(); c.globalCompositeOperation = 'source-over';
+  }
+  if (capas.has('manos') && manosUlt.length && performance.now() - tManos < 400) {
+    for (const m of manosUlt) {
+      const pts = m.lm.map(aP);
+      c.strokeStyle = 'rgba(143,230,245,.9)'; c.lineWidth = 2.2 * k; c.beginPath();
+      for (const [a, b] of MANO_HUESOS) { c.moveTo(...pts[a]); c.lineTo(...pts[b]); } c.stroke();
+      c.fillStyle = '#eafcff'; for (const p of pts) { c.beginPath(); c.arc(p[0], p[1], 2.6 * k, 0, 7); c.fill(); }
+    }
+  }
+  c.restore();
+}
 function ocluirManos(c, W, H, k) {
   if (!manosUlt.length || performance.now() - tManos > 400) return;
   const { sx, sy, sw, sh, vw, vh } = recorte;
@@ -1058,7 +1128,7 @@ function panelSistema(c, aj, W, H, k, t) {
   [[px, py, 1, 1], [px + pw, py, -1, 1], [px, py + ph, 1, -1], [px + pw, py + ph, -1, -1]].forEach(([x, y, sx2, sy2]) => { c.beginPath(); c.moveTo(x, y + sy2 * L); c.lineTo(x, y); c.lineTo(x + sx2 * L, y); c.stroke(); });
   c.restore();
   texto(c, px + 16 * k, py + 26 * k, S.n.toUpperCase(), { f: 11 * k, w: 600, col: S.col, esp: 2 * k });
-  texto(c, px + pw - 16 * k, py + 26 * k, cm.corto || '', { f: 11 * k, col: TENUE, alin: 'right' });
+  texto(c, px + pw - 16 * k, py + 26 * k, P.has('anon') ? 'DEMO' : (cm.corto || ''), { f: 11 * k, col: TENUE, alin: 'right' });
   if (S.vit) S.vit.forEach(([kk, n, u, dec], i) => {
     const y = py + (52 + i * 64) * k, val = d?.[kk], nivel = d?.niveles?.[kk], col = NIVEL_COL[nivel] || BLANCO, vivo = d?.edades?.[kk] > 0 && d.edades[kk] <= 30;
     texto(c, px + 16 * k, y + 4 * k, n, { f: 11.5 * k, col: TENUE });
@@ -1176,20 +1246,47 @@ function planCambio(t, rt) {
   ];
   return opciones.sort((a, b) => a.costo - b.costo);
 }
+// NOVA 2 · measured fatigue: a line through the last 25 s of compressions (depth in cm seen from the side, else the
+// stroke's size relative to the first ones). If it is falling, when does it cross the floor? That is the swap moment.
+function fatigaMedida(t, lateral) {
+  const ciclo = comp.serie.filter(x => x.t >= comp.tCiclo && x.amp > 0); if (ciclo.length < 10) return null;
+  if (!comp.ref || comp.refCiclo !== comp.tCiclo) { comp.ref = ciclo.slice(0, 10).map(x => x.amp).sort((a, b) => a - b)[5]; comp.refCiclo = comp.tCiclo; }
+  const v = x => lateral ? x.prof : x.amp / comp.ref * 100, piso = lateral ? 5 : 85;
+  const S = ciclo.filter(x => t - x.t < 25 && (lateral ? x.prof > 1 && x.prof < 10 : v(x) > 30 && v(x) < 200)); if (S.length < 10) return null;
+  const n = S.length, mt = S.reduce((a, x) => a + x.t, 0) / n, mv = S.reduce((a, x) => a + v(x), 0) / n;
+  const b = S.reduce((a, x) => a + (x.t - mt) * (v(x) - mv), 0) / (S.reduce((a, x) => a + (x.t - mt) ** 2, 0) || 1), a0 = mv - b * mt, ahora = a0 + b * t;
+  // only a real fall counts: a clear slope (t-statistic) and a meaningful size, not noise
+  const res = S.reduce((a, x) => a + (v(x) - (a0 + b * x.t)) ** 2, 0) / Math.max(1, n - 2), sxx = S.reduce((a, x) => a + (x.t - mt) ** 2, 0) || 1, tb = b / Math.sqrt(res / sxx || 1e-9);
+  const cae = tb < -2 && b < (lateral ? -.006 : -.15);
+  const cruce = cae && ahora > piso ? (piso - ahora) / b : ahora <= piso ? 0 : null;
+  return { b, ahora, piso, cruce, unidad: lateral ? 'cm' : '%', puntos: S.map(x => [x.t - t, v(x)]), linea: [a0 + b * (t - 25), ahora] };
+}
 function pintarQcpr(t, dt, aj) {
   const el = $('qcpr'), activo = capas.has('rcp') && !!aj;
   if (!activo) { el.hidden = true; comp.inicio = 0; return; }
-  if (!comp.inicio) { comp.inicio = t; comp.tCiclo = t; comp.pausa = 0; comp.cuenta = 0; comp.buenas = 0; }
+  if (!comp.inicio) { comp.inicio = t; comp.tCiclo = t; comp.pausa = 0; comp.cuenta = 0; comp.buenas = 0; comp.serie = []; comp.ant = null; comp.ref = null; }
   const sinComprimir = t - (comp.ultima || comp.inicio) > 1.5; if (sinComprimir) comp.pausa += dt;
   if (t - tQcpr < .1) return; tQcpr = t;
   el.hidden = false;
   const rt = ritmo(t), total = t - comp.inicio, ccf = total > 3 ? Math.max(0, 1 - comp.pausa / total) : null;
-  const lateral = (aj.frente ?? 1) < .6, prof = lateral ? comp.prof : null, swap = Math.max(0, 120 - (t - comp.tCiclo));
-  if (swap <= 0) { comp.tCiclo = t; registrar('paso', 'Two minutes: swap rescuers now'); decir('Two minutes. Swap rescuers now, without stopping.'); }
+  const lateral = P.has('demorcp') || (aj.frente ?? 1) < .6, prof = lateral && comp.prof != null && comp.prof > 1 && comp.prof < 10 ? comp.prof : null, swap = Math.max(0, 120 - (t - comp.tCiclo));
+  if (swap <= 0) { comp.tCiclo = t; comp.serie = []; comp.ant = null; registrar('paso', 'Two minutes: swap rescuers now'); decir('Two minutes. Swap rescuers now, without stopping.'); }
   const pos = v => Math.max(0, Math.min(100, (v - 60) / (160 - 60) * 100)), posP = v => Math.max(0, Math.min(100, v / 8 * 100));
   const enR = rt && rt >= 100 && rt <= 120, enP = prof != null && prof >= 5 && prof <= 6;
   const score = comp.cuenta >= 5 ? Math.round(comp.buenas / comp.cuenta * 100) : null;
-  const plan = planCambio(t, rt);
+  const plan = planCambio(t, rt), fat = fatigaMedida(t, lateral);
+  const rec = comp.serie.filter(x => x.rec != null && t - x.t < 10).map(x => x.rec), recM = rec.length >= 3 ? rec.reduce((a, b) => a + b, 0) / rec.length : null;
+  const dv0 = comp.manos && comp.desvio ? Math.hypot(comp.desvio.x, comp.desvio.y) : null, dv = dv0 != null && dv0 < 12 ? dv0 : null;
+  const reg = regimen(gravedadActiva().g), codoCuenta = reg !== 'micro' && comp.codo != null;
+  const tec = [['Hands', dv == null ? '—' : dv < 2.5 ? 'On the sternum' : `${dv.toFixed(1)} cm off`, dv == null ? 'gris' : dv < 2.5 ? 'ok' : 'mal'],
+    ['Recoil', recM == null ? '—' : recM > .9 ? 'Full' : `Leaning · ${Math.round(recM * 100)}%`, recM == null ? 'gris' : recM > .9 ? 'ok' : 'mal'],
+    ['Arms', codoCuenta ? (comp.codo > 155 ? `Locked · ${Math.round(comp.codo)}°` : `Bent · ${Math.round(comp.codo)}°`) : reg === 'micro' ? 'Per technique' : fuenteObs !== 'mac' ? 'Needs ship vision' : '—', codoCuenta ? (comp.codo > 155 ? 'ok' : 'mal') : 'gris']];
+  let graf = '';
+  if (fat) { const Wg = 264, Hg = 70, lo = fat.unidad === 'cm' ? 3 : 50, hi = fat.unidad === 'cm' ? 7 : 120, X = s => (s + 25) / 65 * Wg, Y = v => Hg - (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo) * Hg;
+    const pts = fat.puntos.map(([s, v]) => `<circle cx="${X(s).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2" fill="#8fe6f5"/>`).join(''), fin = fat.ahora + fat.b * 40;
+    graf = `<svg width="${Wg}" height="${Hg + 14}" style="display:block;overflow:visible"><rect x="0" y="0" width="${Wg}" height="${Y(fat.piso)}" fill="rgba(127,224,192,.07)"/><line x1="0" x2="${Wg}" y1="${Y(fat.piso)}" y2="${Y(fat.piso)}" stroke="rgba(255,255,255,.3)" stroke-dasharray="3 5"/><line x1="${X(0)}" x2="${X(0)}" y1="0" y2="${Hg}" stroke="rgba(255,255,255,.25)"/>${pts}<line x1="${X(-25)}" y1="${Y(fat.linea[0])}" x2="${X(0)}" y2="${Y(fat.linea[1])}" stroke="#8fe6f5" stroke-width="2"/><line x1="${X(0)}" y1="${Y(fat.ahora)}" x2="${X(40)}" y2="${Y(fin)}" stroke="#ec6aa8" stroke-width="2" stroke-dasharray="4 4"/><text x="${X(0) + 4}" y="${Hg + 12}" fill="rgba(255,255,255,.45)" font-size="10">now</text><text x="${Wg}" y="${Y(fat.piso) - 4}" text-anchor="end" fill="rgba(255,255,255,.45)" font-size="10">${fat.piso}${fat.unidad === 'cm' ? ' cm' : '%'}</text></svg>`; }
+  const aviso = fat && fat.cruce != null && fat.cruce < 60 ? (fat.cruce <= 0 ? 'Depth below target: swap now' : `Fatigue: below target in ~${Math.round(fat.cruce)} s`) : null;
+  if (aviso && fat.cruce > 0 && fat.cruce < 45 && t - (comp.tAvisoF || -99) > 25) { comp.tAvisoF = t; registrar('decision', `Measured trend: ${aviso.toLowerCase()}`); decir(`Your compressions are getting shallower. Get ready to swap in about ${Math.round(fat.cruce / 5) * 5} seconds.`); }
   el.innerHTML = `<div class="qt">CPR quality</div>
     <div class="qbloque"><div class="qn"><b class="${rt ? (enR ? 'ok' : 'mal') : ''}">${rt ? Math.round(rt) : '—'}</b><span>compressions/min</span></div>
       <div class="qgauge"><i class="qband" style="left:${pos(100)}%;width:${pos(120) - pos(100)}%"></i>${rt ? `<i class="qneedle" style="left:${pos(rt)}%"></i>` : ''}</div>
@@ -1198,6 +1295,8 @@ function pintarQcpr(t, dt, aj) {
       <div class="qgauge"><i class="qband" style="left:${posP(5)}%;width:${posP(6) - posP(5)}%"></i>${prof != null ? `<i class="qneedle" style="left:${posP(prof)}%"></i>` : ''}</div>
       <div class="qesc"><span>0</span><span>5</span><span>6</span><span>8 cm</span></div></div>
     <div class="qfila"><div><b>${comp.cuenta}</b><span>compressions</span></div><div><b>${ccf != null ? Math.round(ccf * 100) + '%' : '—'}</b><span>hands-on time</span></div><div><b>${Math.floor(swap / 60)}:${String(Math.floor(swap % 60)).padStart(2, '0')}</b><span>swap in</span></div></div>
+    <div class="qtec">${tec.map(([n, v, c]) => `<div><span>${n}</span><b class="${c}">${v}</b></div>`).join('')}</div>
+    ${fat ? `<div class="qfat"><span>Measured trend · next 40 s</span>${graf}${aviso ? `<em class="${fat.cruce <= 0 ? 'mal' : 'av'}">${aviso}</em>` : `<em>Holding steady</em>`}</div>` : ''}
     <div class="qscore"><span>Quality</span><b>${score != null ? score + '%' : '—'}</b><em>targets: 100–120/min · 5–6 cm · hands on ≥ 80%</em></div>
     ${plan ? `<div class="qplan"><span>Nova plans · simulated</span>${plan.map((o, i) => `<div class="${i === 0 ? 'mejor' : ''}"><b>${o.n}</b><i style="width:${Math.round(Math.min(1, o.costo / plan.at(-1).costo) * 100)}%"></i><em>${o.costo.toFixed(2)}</em></div>`).join('')}</div>` : ''}`;
   if (plan && plan[0].clave !== ultimoPlan && t - tPlan > 20) { ultimoPlan = plan[0].clave; tPlan = t; registrar('decision', `Plan: ${plan[0].n} (lowest predicted cost ${plan[0].costo.toFixed(2)} of ${plan.length} options)`); }
@@ -1429,7 +1528,8 @@ function rotulos(c, aj, W, H, k) {
     if (!grupos[g] || !grupos[g].visible || !centros[g]) continue;
     const p = aPantalla(centros[g], g === 'cerebro' ? aj.C : aj.M, W, H);
     if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) continue;
-    dentro.push({ g, p, d: GRUPOS[g].dato(datos) });
+    if (P.has('anon') && !['corazon', 'pulmones'].includes(g)) continue; // a stranger has no twin data: a few organs, by name only
+    dentro.push({ g, p, d: P.has('anon') ? { v: 'position estimated', nivel: 'sin_dato' } : GRUPOS[g].dato(datos) });
   }
   let mejor = null, dmin = Math.min(W, H) * .2;
   for (const e of dentro) { const d = Math.hypot(e.p.x - W / 2, e.p.y - H / 2); if (d < dmin) { dmin = d; mejor = e; } }
@@ -1561,7 +1661,9 @@ function partir(c, s, ancho, f) { // wrap a sentence to a width, for text drawn 
   if (l) out.push(l); c.restore(); return out.slice(0, 4);
 }
 function hudFino(c, W, H, k, t, hayCuerpo, reg, gA) {
-  const cm = CREW[tripI] || {}, d = tr(), barra = $('barra'), angosto = W / k < 620;
+  if (P.has('video')) return; // ?video: solo la RA, sin la interfaz (para grabar piezas)
+  // ?anon: a person who is not on the crew list (a demo, a visitor): no crew name on them
+  const cm = P.has('anon') ? { nombre: 'Unidentified', rol: 'not on the crew list', corto: 'Person' } : CREW[tripI] || {}, d = tr(), barra = $('barra'), angosto = W / k < 620;
   const m = 20 * k, yPie = H - ((!visor && !barra.hidden ? barra.getBoundingClientRect().height + 14 : 0) + 30) * fCss;
   viñeta(c, W, H);
   if (novaImg) { c.save(); c.globalAlpha = .95; c.drawImage(novaImg, m - 4 * k, m - 6 * k, 34 * k, 28 * k); c.restore(); }
@@ -1608,7 +1710,7 @@ function hudFino(c, W, H, k, t, hayCuerpo, reg, gA) {
     if (!ojos.revision) panelOjos(c, { W, H, k, texto, nombre: cm.corto, angosto, yPie: y });
     if (!ojos.cara && !ojos.revision) texto(c, W / 2, y - (angosto ? 330 : 0) * k, ojos.error ? 'The face model could not start on this device' : ojos.modelo ? 'Bring the face close · eyes level with the camera' : 'Loading the face model…', { f: 16 * k, alin: 'center', col: 'rgba(244,247,250,.85)' });
   } else if (!hayCuerpo) texto(c, W / 2, y, 'Show Nova the torso, shoulders to hips', { f: 16 * k, alin: 'center', col: 'rgba(244,247,250,.85)' });
-  else if (!visor && !proc && !(panelAbajo && ESTILO === 'holo' && capas.has('organos') && !capas.has('rcp'))) {
+  else if (!visor && !proc && !capas.has('vitales') && !P.has('anon') && !(panelAbajo && ESTILO === 'holo' && capas.has('organos') && !capas.has('rcp'))) {
     // live vitals, like a monitor: label above, number below, colored only when out of range
     const cols = [['HEART RATE', `${f1(d?.pulso)}`, 'bpm', 'pulso'], ['SpO₂', `${f1(d?.spo2)}`, '%', 'spo2'], ['BLOOD PRESSURE', `${f1(d?.pa_sis)}/${f1(d?.pa_dia)}`, 'mmHg', 'pa_sis'], ['RESP', `${f1(d?.fr)}`, '/min', 'fr'], ['GLUCOSE', `${f1(d?.glucosa)}`, 'mg/dL', 'glucosa'], ['TEMP', `${f1(d?.temp, 1)}`, '°C', 'temp']];
     const lista = angosto ? cols.slice(0, 3) : cols, paso = Math.min(128 * k, (W - 2 * m) / lista.length), x0 = W / 2 - paso * lista.length / 2;
@@ -1670,13 +1772,17 @@ function cuadro(ahora) {
   const conOjos = sistema === 'ojos';
   if (conOjos) { if (!ojos.modelo) cargarOjos().catch(() => {}); else medirOjos(video, ahora, HFOV); }
   const o = observar(ahora);
+  // NOVA 2: pulse and breathing from the camera, on this device
+  if (capas.has('vitales')) { if (!vit.modelo && !vit.error) cargarVitales(); else { const ok = i => o && o[i] && o[i].v > .5, rt = capas.has('rcp') ? ritmo(ahora / 1000) : null;
+    const ref = ok(23) && ok(24) ? [(o[23].x + o[24].x) / 2, (o[23].y + o[24].y) / 2] : ok(0) ? [o[0].x, o[0].y] : null; // hips, or the head when only the upper body is in view
+    medirVitales(video, ahora, ok(11) && ok(12) && ref ? { y: Math.hypot(((o[11].x + o[12].x) / 2 - ref[0]) * recorte.vw, ((o[11].y + o[12].y) / 2 - ref[1]) * recorte.vh), ancho: Math.hypot((o[11].x - o[12].x) * recorte.vw, (o[11].y - o[12].y) * recorte.vh) } : null, rt ? rt / 60 : null); } }
   const nuevo = o ? (P.has('plano') ? null : calzar3D(o, W, H)) || calzar(o, W, H) : null;
   if (nuevo) { ajuste = nuevo; tAjuste = t; } else if (ajuste && t - tAjuste > .7) { ajuste = null; huesos.suave = null; pacPrev = null; }
   if (ajuste && !hayAntes) barrer(t);
   hayAntes = !!ajuste;
   const gA = gravedadActiva(), reg = regimen(gA.g);
   medirDeriva(ajuste, t);
-  contar(t, ajuste, W, H);
+  if (P.has('demorcp') && capas.has('rcp')) demoRcp(t, ajuste); else contar(t, ajuste, W, H);
 
   const espejar = cx => { if (frente) { cx.translate(W, 0); cx.scale(-1, 1); } };
   ocupados = [];
@@ -1718,13 +1824,14 @@ function cuadro(ahora) {
     }
     mctx.restore();
     ocluirManos(mctx, W, H, k);
+    capaCaraManos(mctx, W, H, k);
     const aj = frente ? espejo(ajuste) : ajuste;
     if (uniComun.barrido.value > 0) {
       const y = uniComun.barrido.value, a = aPantalla(new THREE.Vector3(-.3, y, 0), aj.M, W, H), b = aPantalla(new THREE.Vector3(.3, y, 0), aj.M, W, H);
       const g = mctx.createLinearGradient(a.x, a.y, b.x, b.y); g.addColorStop(0, 'rgba(200,250,255,0)'); g.addColorStop(.5, 'rgba(220,250,255,.8)'); g.addColorStop(1, 'rgba(200,250,255,0)');
       mctx.strokeStyle = g; mctx.lineWidth = 1.2 * k; mctx.beginPath(); mctx.moveTo(a.x, a.y); mctx.lineTo(b.x, b.y); mctx.stroke();
     }
-    if (ESTILO === 'holo' && capas.has('organos') && !proc && !capas.has('rcp')) panelSistema(mctx, aj, W, H, k, t); else rotulos(mctx, aj, W, H, k);
+    if (ESTILO === 'holo' && capas.has('organos') && !proc && !capas.has('rcp') && (!P.has('anon') || P.has('video'))) panelSistema(mctx, aj, W, H, k, t); else rotulos(mctx, aj, W, H, k);
     ultimoObs = o; pasoAR(mctx, aj, o, W, H, k, t, dt);
     pintarQcpr(t, dt, aj);
     if (capas.has('rcp')) rcpFino(mctx, aj, W, H, k, t, reg);
@@ -1737,7 +1844,12 @@ function cuadro(ahora) {
     pintarFijacion(mctx, { W, k, t, texto, frente });
     if (ojos.revision && ahora - ojos.revision.t0 >= 20000) terminarRevision(BASE, TOKEN).then(mostrarRevision);
   }
+  if (capas.has('vitales')) {
+    pintarMalla(mctx, { W, H, k, recorte, frente, t });
+    const wv = Math.min(320 * k, W * .42); pintarVitales(mctx, { x: 16 * k, y: 132 * k, w: wv, k, texto, ahora }); reservar(16 * k, 132 * k, wv, 200 * k);
+  }
   hudFino(mctx, W, H, k, t, !!ajuste, reg, gA);
+  if (P.has('demorcp') && capas.has('rcp')) { const tx = 'SIMULATED COMPRESSIONS  ·  REAL MEASUREMENT AND FORECAST CODE'; mctx.font = `600 ${11 * k}px SG`; const w = mctx.measureText(tx).width + 28 * k; mctx.fillStyle = 'rgba(242,180,87,.16)'; mctx.strokeStyle = 'rgba(242,180,87,.6)'; mctx.beginPath(); mctx.roundRect(W / 2 - w / 2, 18 * k, w, 26 * k, 13 * k); mctx.fill(); mctx.stroke(); texto(mctx, W / 2, 35 * k, tx, { f: 11 * k, w: 600, col: '#f2b457', alin: 'center', esp: 1.2 * k }); }
 
   mostrar();
   enviarEstacion(t, reg);
@@ -1773,6 +1885,14 @@ function mostrar() {
 }
 
 /* ── live to NOVA Station ── */
+function detalleRcp(t) {
+  const aj = ajuste, lateral = P.has('demorcp') || (aj && (aj.frente ?? 1) < .6), fat = fatigaMedida(t, lateral);
+  const rec = comp.serie.filter(x => x.rec != null && t - x.t < 10).map(x => x.rec);
+  const dv = comp.manos && comp.desvio ? Math.hypot(comp.desvio.x, comp.desvio.y) : null;
+  return { prof: lateral && comp.prof > 1 && comp.prof < 10 ? Math.round(comp.prof * 10) / 10 : null, retroceso: rec.length >= 3 ? Math.round(rec.reduce((a, b) => a + b, 0) / rec.length * 100) : null,
+    manos: dv != null && dv < 12 ? Math.round(dv * 10) / 10 : null, codo: comp.codo != null ? Math.round(comp.codo) : null,
+    fatiga: fat ? { cruce: fat.cruce != null ? Math.round(fat.cruce) : null, ahora: Math.round(fat.ahora * 10) / 10, pendiente: fat.b, piso: fat.piso, unidad: fat.unidad, puntos: fat.puntos.map(([a, b]) => [Math.round(a * 10) / 10, Math.round(b * 10) / 10]) } : null };
+}
 const envio = document.createElement('canvas'), ectx = envio.getContext('2d');
 let enviando = false, tEnvio = 0, ultimoEnvioOk = 0;
 async function enviarEstacion(t, reg) {
@@ -1786,9 +1906,10 @@ async function enviarEstacion(t, reg) {
     const b64 = envio.toDataURL('image/jpeg', .6).split(',')[1];
     const cm = CREW[tripI] || {}, mac = fuenteObs === 'mac' && performance.now() - vis.tUlt < 800, rt = ritmo(t);
     const res = await fetch(BASE + '/v1/escaner/cuadro', { method: 'POST', headers: { 'content-type': 'application/json', ...(TOKEN ? { 'x-nova-token': TOKEN } : {}) },
-      body: JSON.stringify({ disp: DISP, trip: cm.id, nombre: cm.nombre, modo: visor ? 'visor' : 'mano', origen: MOVIL ? 'movil' : 'pantalla', foco: capas.has('rcp') ? 'CPR point' : foco ? GRUPOS[foco].n : null,
+      body: JSON.stringify({ disp: DISP, trip: P.has('anon') ? null : cm.id, nombre: P.has('anon') ? 'Unidentified person' : cm.nombre, modo: visor ? 'visor' : 'mano', origen: MOVIL ? 'movil' : 'pantalla', foco: capas.has('rcp') ? 'CPR point' : foco ? GRUPOS[foco].n : null,
         cuerpo: !!ajuste, capas: [...capas], fps: Math.round(fps), vision: mac ? { donde: 'ship', ms: Math.round(vis.rtt), gpu: vis.gpu } : { donde: localListo ? 'phone' : 'none' },
-        gravedad: { regimen: reg, medida: grav.med, fuente: gravedadActiva().de }, rcp: capas.has('rcp') ? { tecnica: guiaRcp(reg).tec, ritmo: rt ? Math.round(rt) : null, cuenta: comp.cuenta, deriva: Math.round(deriva.v * 100) } : null,
+        gravedad: { regimen: reg, medida: grav.med, fuente: gravedadActiva().de }, rcp: capas.has('rcp') ? { tecnica: guiaRcp(reg).tec, ritmo: rt ? Math.round(rt) : null, cuenta: comp.cuenta, deriva: Math.round(deriva.v * 100), ...detalleRcp(t) } : null,
+        vitales: capas.has('vitales') ? (L => ({ pulso: L.pulso ? Math.round(L.pulso) : null, conf: Math.round(L.conf * 100), resp: L.resp ? Math.round(L.resp) : null, cara: L.cara, progreso: L.progreso, onda: (L.onda || []).filter((_, i) => i % 3 === 0).map(v => Math.round(v * 100) / 100) }))(lecturaVitales(performance.now())) : null,
         proc: proc ? { id: proc.p.id, titulo: proc.p.titulo, paso: proc.texto(proc.paso?.texto), tipo: proc.paso?.tipo, restante: proc.restante(),
           botones: botonesProc(), herida: proc.herida === null && !!proc.ar.herida } : null,
         ctl: estadoControl(reg),
@@ -1846,7 +1967,7 @@ function ejecutar(o) {
   switch (o.tipo) {
     case 'trip': { const i = o.id != null ? CREW.findIndex(x => x.id === o.id) : +o.i; if (i >= 0) elegirTrip(i); break; }
     case 'sistema': if (SISTEMAS[o.v]) { sistema = o.v; capas.add('organos'); tHist = 0; barrer(performance.now() / 1000); } break;
-    case 'capa': if (['organos', 'esqueleto', 'rcp'].includes(o.v)) { const on = o.on ?? !capas.has(o.v); on ? capas.add(o.v) : capas.delete(o.v); reiniciarCoach(); } break;
+    case 'capa': if (['organos', 'esqueleto', 'rcp', 'vitales'].includes(o.v)) { const on = o.on ?? !capas.has(o.v); on ? capas.add(o.v) : capas.delete(o.v); reiniciarCoach(); } break;
     case 'g': if (['auto', 'tierra', 'marte', 'micro'].includes(o.v)) { modoG = o.v; reiniciarCoach(); } break;
     case 'tecnica': if (TECNICAS.includes(o.v)) { tecnica = o.v; reiniciarCoach(); } break;
     case 'estilo': cambiarEstilo(o.v); break;
@@ -1913,6 +2034,8 @@ function orbe(t) {
   if (!$('inicio').hidden) requestAnimationFrame(x => orbe(x / 1000));
 }
 async function empezar(conVisor) {
+  if (P.has('video')) { const st = document.createElement('style'); st.textContent = '.barra,#proc,#qcpr,#sugiere,#hoja{display:none!important}'; document.head.appendChild(st); }
+  if (P.has('anon')) { $('gTrip').hidden = true; document.querySelector('.solo-angosto')?.setAttribute('hidden', ''); }
   const est = $('estadoIni'); est.classList.remove('err');
   $('bEmpezar').disabled = $('bEmpezarVisor').disabled = true;
   try {

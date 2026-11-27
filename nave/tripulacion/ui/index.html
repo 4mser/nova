@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NOVA · Crew</title>
 <link rel="icon" href="icono.png">
-<link rel="stylesheet" href="estilo.css?v=18">
+<link rel="stylesheet" href="estilo.css?v=20">
 </head>
 <body>
 <div class="escena" id="escena">
@@ -49,9 +49,11 @@
           <div class="tabsx" id="gQuien"></div>
           <div class="tabsx gcapas" id="gCapas"></div>
           <div class="tabsx" id="gEstilo"><button data-ge="halo">HALO</button><button data-ge="anatomia">Anatomy</button></div>
+          <div class="tabsx"><button id="gEspejo" title="The twin copies your posture with the cameras">Mirror me</button><button id="gCamara" title="Your camera with the anatomy, face mesh and hands fitted on top">Camera view</button><button id="gFoco" title="Hide panels and cards (F)">Focus</button><button id="gPantalla" title="Full screen">Full screen</button></div>
         </div>
         <div class="gnom"><b id="gNombre"></b><span id="gRol"></span><div class="gley"><span><i style="background:#46c8e8"></i>In range</span><span><i style="background:#a898ff"></i>Watch</span><span><i style="background:#f2b457"></i>Attention</span><span><i style="background:#ec6aa8"></i>Tell Earth</span></div></div>
         <div class="getq" id="gEtq" hidden></div>
+        <button class="gfocosal" id="gFocoSal" title="Show panels (F)">Show panels</button>
         <aside class="gpanel" id="gPanel"></aside>
         <div class="gcarga" id="gCarga">Loading anatomy…</div>
         <div class="glinea">
@@ -119,6 +121,8 @@
             <div class="scaja" id="sQuien"><h4>Scanning</h4><div id="sQuienTxt" class="squien">Nobody yet</div></div>
             <div class="scaja sctl" id="sCtl" hidden><h4>Control the viewer<span id="sCtlEstado"></span></h4><div id="sCtlCuerpo"></div></div>
             <div class="scaja"><h4>What Nova sees</h4><div id="sFoco" class="sfoco">—</div><div class="sfilas" id="sVit"></div></div>
+            <div class="scaja s2" id="sRcpCaja" hidden><h4>CPR, measured live<span class="s2tag">NOVA 2</span></h4><div id="sRcp"></div></div>
+            <div class="scaja s2" id="sVitCaja" hidden><h4>Vitals by camera<span class="s2tag">rPPG</span></h4><div id="sVitCam"></div></div>
             <div class="scaja" id="sProcCaja" hidden><h4>Procedure in progress</h4><div id="sProc" class="sproc"></div><div id="sTl" class="stl"></div></div>
             <div class="scaja"><h4>Gravity and procedure</h4><div class="sfilas" id="sGrav"><div><i style="background:var(--t3)"></i>Waiting for a scan<b>—</b></div></div></div>
             <div class="sacc"><button class="btn-reg" id="sAqui"><svg viewBox="0 0 24 24"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/></svg>Scan with this screen's camera</button></div>
@@ -255,7 +259,7 @@
 <script src="plegar.js?v=1"></script>
 <script src="escucha.js?v=1794235709"></script>
 <script src="gemelo-fichas.js?v=4"></script>
-<script type="module" src="gemelo3d.mjs?v=5"></script>
+<script type="module" src="gemelo3d.mjs?v=7"></script>
 <script src="mente.js?v=5"></script>
 <script src="constelaciones.js?v=7"></script>
 <script src="panorama.js?v=6"></script>
@@ -268,6 +272,6 @@
 <script type="module" src="lector.mjs?v=1"></script>
 <script src="sistemas.js?v=2"></script>
 <script src="guia.js?v=1794440003"></script>
-<script type="module" src="escaner-estacion.js?v=5"></script>
+<script type="module" src="escaner-estacion.js?v=8"></script>
 </body>
 </html>
