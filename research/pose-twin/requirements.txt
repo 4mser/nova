@@ -1,0 +1,11 @@
+mediapipe==1.2.3
+opencv-python==5.0.0.93
+numpy==2.5.5
+websockets==17.4
+cryptography==50.0.2
+qrcode==8.2
+matplotlib
+pytest
+# Opcional, solo para `bench` con RTMPose-m. rtmlib pide opencv-contrib-python: instalar con --no-deps
+# rtmlib==0.0.16
+# onnxruntime==1.32.0

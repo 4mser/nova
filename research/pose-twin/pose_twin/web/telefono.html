@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pose-twin · teléfono</title>
+<style>
+  :root { color-scheme: dark; --vidrio: rgba(20,20,24,.55); --borde: rgba(255,255,255,.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #000; color: #f4f4f5;
+    font: 14px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
+  #escena { position: fixed; inset: 0; }
+  video, canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  video.espejo { transform: scaleX(-1); }
+  .vidrio { background: var(--vidrio); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--borde); border-radius: 14px; }
+  #panel { position: fixed; top: max(10px, env(safe-area-inset-top)); left: 10px; padding: 10px 12px;
+    font-variant-numeric: tabular-nums; min-width: 168px; }
+  #panel .fila { display: flex; justify-content: space-between; gap: 12px; }
+  #panel .gris { color: #a1a1aa; }
+  #estado { font-weight: 600; margin-bottom: 4px; }
+  #barra { position: fixed; bottom: max(12px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; padding: 8px; }
+  button { appearance: none; border: 1px solid var(--borde); background: rgba(255,255,255,.08); color: #fff;
+    padding: 10px 12px; border-radius: 10px; font: inherit; font-weight: 600; }
+  button:active { background: rgba(255,255,255,.2); }
+  button.on { background: #e11d48; border-color: #e11d48; }
+  #inicio { position: fixed; inset: 0; display: grid; place-items: center; background: #09090b; z-index: 5; }
+  #inicio div { max-width: 320px; text-align: center; padding: 24px; }
+  #aviso { position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%); padding: 8px 12px; display: none; }
+</style>
+</head>
+<body>
+<div id="escena">
+  <video id="video" playsinline muted autoplay></video>
+  <canvas id="lienzo"></canvas>
+</div>
+<div id="panel" class="vidrio">
+  <div id="estado">Conectando…</div>
+  <div id="datos"></div>
+</div>
+<div id="aviso" class="vidrio"></div>
+<div id="barra" class="vidrio">
+  <button id="bCam">Cámara</button>
+  <button id="bRec">Grabar</button>
+  <button id="bCal">Calibrar</button>
+  <button id="bEnd">Enderezar</button>
+</div>
+<div id="inicio"><div>
+  <h2>Seguimiento corporal</h2>
+  <p class="gris">El video se procesa en tu PC dentro de la red local. No se envía a internet.</p>
+  <button id="bIniciar">Iniciar cámara</button>
+  <p id="err" style="color:#fda4af"></p>
+</div></div>
+<script>
+"use strict";
+const ANCHO_ENVIO = 480, CALIDAD_JPEG = 0.7, VIS = 0.6;
+const CONEX = [[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[24,26],[26,28],
+  [27,29],[29,31],[27,31],[28,30],[30,32],[28,32],[15,17],[15,19],[16,18],[16,20],[0,2],[0,5],[2,7],[5,8]];
+const VERT = {codo_izq:13, codo_der:14, hombro_izq:11, hombro_der:12, cadera_izq:23, cadera_der:24, rodilla_izq:25, rodilla_der:26};
+const NOMBRE = {codo_izq:"Codo izq", codo_der:"Codo der", hombro_izq:"Hombro izq", hombro_der:"Hombro der",
+  cadera_izq:"Cadera izq", cadera_der:"Cadera der", rodilla_izq:"Rodilla izq", rodilla_der:"Rodilla der"};
+const COLOR = {buena:"#4ade80", regular:"#fbbf24", baja:"#f87171", "sin persona":"#a1a1aa"};
+
+const video = document.getElementById("video"), lienzo = document.getElementById("lienzo"), ctx = lienzo.getContext("2d");
+const envio = document.createElement("canvas"), ectx = envio.getContext("2d");
+let ws = null, frontal = true, stream = null, esperando = false, tEnvio = 0, rtt = 0, ultimo = null, tVigilancia = 0;
+
+function esc(t) { return String(t).replace(/[&<>"']/g, c => "&#" + c.charCodeAt(0) + ";"); }
+function wsUrl() { const u = new URL("ws", location.href); u.protocol = "wss:"; return u.href; }
+
+async function abrirCamara() {
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  stream = await navigator.mediaDevices.getUserMedia({ audio: false,
+    video: { facingMode: frontal ? "user" : "environment", width: { ideal: 1280 }, height: { ideal: 720 } } });
+  video.srcObject = stream;
+  video.classList.toggle("espejo", frontal);
+  await video.play();
+}
+
+function conectar() {
+  ws = new WebSocket(wsUrl());
+  ws.binaryType = "arraybuffer";
+  ws.onopen = () => { document.getElementById("estado").textContent = "Conectado"; esperando = false; enviar(); };
+  ws.onclose = (e) => { document.getElementById("estado").textContent = "Desconectado " + (e.reason || "");
+    setTimeout(conectar, 1500); };
+  ws.onmessage = (ev) => { rtt = performance.now() - tEnvio; ultimo = JSON.parse(ev.data); esperando = false;
+    pintarPanel(); enviar(); };
+}
+
+function enviar() {
+  if (!ws || ws.readyState !== 1 || esperando || !video.videoWidth) return;
+  const k = ANCHO_ENVIO / video.videoWidth;
+  envio.width = ANCHO_ENVIO; envio.height = Math.round(video.videoHeight * k);
+  ectx.drawImage(video, 0, 0, envio.width, envio.height);
+  esperando = true;
+  envio.toBlob(b => { if (!b || ws.readyState !== 1) { esperando = false; return; }
+    b.arrayBuffer().then(buf => { tEnvio = performance.now(); tVigilancia = tEnvio; ws.send(buf); }); },
+    "image/jpeg", CALIDAD_JPEG);
+}
+
+// Si una respuesta se pierde, reintenta
+setInterval(() => { if (esperando && tVigilancia && performance.now() - tVigilancia > 2000) { esperando = false; enviar(); } }, 500);
+
+function pintarPanel() {
+  const r = ultimo; if (!r) return;
+  const est = document.getElementById("estado");
+  est.textContent = "Calidad: " + r.calidad; est.style.color = COLOR[r.calidad] || "#fff";
+  let h = `<div class="fila gris"><span>FPS PC</span><span>${r.fps}</span></div>` +
+          `<div class="fila gris"><span>Ida y vuelta</span><span>${rtt.toFixed(0)} ms</span></div>` +
+          `<div class="fila gris"><span>Inferencia</span><span>${r.inf_ms} ms</span></div>`;
+  for (const k in NOMBRE) {
+    const v = r.angulos[k], d = r.dif ? r.dif[k] : null;
+    h += `<div class="fila"><span>${NOMBRE[k]}</span><span>${v === null ? '<span class="gris">abstiene</span>' :
+      v.toFixed(0) + "°" + (d !== null && d !== undefined ? ` <span class="gris">${d >= 0 ? "+" : ""}${d.toFixed(0)}</span>` : "")}</span></div>`;
+  }
+  if (r.perfil) h += `<div class="gris">Perfil: ${esc(r.perfil)}</div>`;
+  if (r.calibrando !== null) h += `<div>Calibrando ${(r.calibrando * 100).toFixed(0)}%</div>`;
+  document.getElementById("datos").innerHTML = h;
+  document.getElementById("bRec").classList.toggle("on", r.grabando);
+  document.getElementById("bEnd").classList.toggle("on", r.enderezar);
+  const av = document.getElementById("aviso");
+  av.style.display = r.aviso ? "block" : "none"; av.textContent = r.aviso || "";
+}
+
+function dibujar() {
+  const dpr = window.devicePixelRatio || 1, cw = lienzo.clientWidth, ch = lienzo.clientHeight;
+  if (lienzo.width !== cw * dpr) { lienzo.width = cw * dpr; lienzo.height = ch * dpr; }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, cw, ch);
+  const r = ultimo;
+  if (r && r.puntos && video.videoWidth) {
+    const s = Math.min(cw / video.videoWidth, ch / video.videoHeight);
+    const w = video.videoWidth * s, hh = video.videoHeight * s, ox = (cw - w) / 2, oy = (ch - hh) / 2;
+    const P = r.puntos.map(([x, y, v]) => [ox + (frontal ? 1 - x : x) * w, oy + y * hh, v]);
+    ctx.lineWidth = 3; ctx.lineCap = "round";
+    for (const [a, b] of CONEX) { if (P[a][2] < .3 || P[b][2] < .3) continue;
+      ctx.strokeStyle = (P[a][2] >= VIS && P[b][2] >= VIS) ? "rgba(255,255,255,.9)" : "rgba(160,160,160,.6)";
+      ctx.beginPath(); ctx.moveTo(P[a][0], P[a][1]); ctx.lineTo(P[b][0], P[b][1]); ctx.stroke(); }
+    for (let i = 11; i < 33; i++) { if (P[i][2] < .3) continue;
+      ctx.fillStyle = P[i][2] >= VIS ? "#4ade80" : "#fb923c";
+      ctx.beginPath(); ctx.arc(P[i][0], P[i][1], 4.5, 0, 6.2832); ctx.fill(); }
+    ctx.font = "600 15px system-ui"; ctx.fillStyle = "#fde047"; ctx.strokeStyle = "rgba(0,0,0,.8)"; ctx.lineWidth = 4;
+    for (const k in VERT) { const v = r.angulos[k]; if (v === null) continue; const p = P[VERT[k]];
+      const t = v.toFixed(0) + "°"; ctx.strokeText(t, p[0] + 8, p[1] - 8); ctx.fillText(t, p[0] + 8, p[1] - 8); }
+  }
+  requestAnimationFrame(dibujar);
+}
+
+function orden(cmd) { if (ws && ws.readyState === 1) ws.send(JSON.stringify({ cmd })); }
+document.getElementById("bCam").onclick = async () => { frontal = !frontal; try { await abrirCamara(); } catch (e) { alert(e); } };
+document.getElementById("bRec").onclick = () => orden("grabar");
+document.getElementById("bCal").onclick = () => orden("calibrar");
+document.getElementById("bEnd").onclick = () => orden("enderezar");
+document.getElementById("bIniciar").onclick = async () => {
+  try { await abrirCamara(); document.getElementById("inicio").style.display = "none"; conectar(); requestAnimationFrame(dibujar); }
+  catch (e) { document.getElementById("err").textContent = "No se pudo abrir la cámara: " + e.message; }
+};
+</script>
+</body>
+</html>
