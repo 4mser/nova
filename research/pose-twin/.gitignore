@@ -1,0 +1,27 @@
+# entorno
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# datos locales: muestras, perfiles, sesiones CSV, grabaciones, certificados, QR
+data/
+
+# nunca subir videos ni fotos de personas
+*.mp4
+*.webm
+*.mov
+*.avi
+*.mkv
+*.jpg
+*.jpeg
+*.heic
+
+# certificados y claves
+*.pem
+*.key
+*.crt
+*.p12
+
+# PDF de terceros: se enlazan, no se redistribuyen
+*.pdf
