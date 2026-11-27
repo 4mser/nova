@@ -60,10 +60,29 @@ python -m pytest -q
 
 Teclas en la ventana: `q`/`Esc` salir, `g` grabar o detener mp4 anotado (en `data\grabaciones\`),
 `c` calibrar el perfil, `e` activar o desactivar el enderezado.
-Opciones útiles: `--modelo full|heavy` (heavy por defecto), `--enderezar`, `--umbral-vis 0.6`, `--delegado cpu`.
+Opciones útiles: `--modelo lite|full|heavy` (heavy por defecto), `--enderezar`, `--umbral-vis 0.6`, `--delegado cpu`.
+
+### Fluidez en vivo
+
+- Para 25 FPS o más en CPU usa `--modelo full` o `lite`: `heavy` tarda unos 57 ms por cuadro (techo de unos 17 FPS).
+- Con poca luz la webcam baja sola a unos 10 FPS (exposición automática larga). El programa lo avisa en
+  consola. Solución: más luz, o `--exposicion -5` (1/32 s, 30 FPS, imagen más oscura; al salir vuelve a automática).
+- `--diagnostico` imprime al salir el tiempo de cada etapa (captura, inferencia, dibujo, pantalla...) con
+  mediana y p95, y guarda un CSV de tiempos. Resultados y causa del caso real en `docs/fluidez.md`.
+- La cámara se lee en un hilo aparte y se usa siempre el último cuadro (`--captura directa` para desactivarlo).
+  Otras opciones de cámara: `--backend dshow|msmf`, `--ancho`, `--alto`, `--fps-camara`, `--fourcc MJPG`.
+- La sesión en vivo se cierra sola tras 5 minutos sin persona, para no dejar la cámara encendida
+  (`--cerrar-sin-persona MIN`, 0 = nunca). `--max-segundos N` la cierra tras N segundos.
+- `lite` no viene en el repo: descárgalo a `data\modelos\`:
+
+```powershell
+New-Item -ItemType Directory -Force data\modelos | Out-Null
+Invoke-WebRequest https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task -OutFile data\modelos\pose_landmarker_lite.task
+```
 
 Cada sesión en vivo guarda un CSV en `data\sesiones\` (tiempo, FPS, latencia, calidad, rotación y los
-8 ángulos; celda vacía cuando hay abstención).
+8 ángulos; celda vacía cuando hay abstención). La latencia va desde que llega el cuadro hasta que está
+dibujado (antes incluía la espera a la cámara).
 
 ### Modo teléfono
 
@@ -124,6 +143,9 @@ cuadro ─► [enderezado opcional] ─► BlazePose (detector ─► red de pun
 - Izquierda y derecha son las de la persona. De espaldas o de lado el modelo puede confundirlas.
 - No validado clínicamente ni en microgravedad. No es un dispositivo médico.
 - En este equipo (Windows 11, MediaPipe 1.2.3) el delegado GPU no está disponible y todo corre en CPU.
+  Vía de GPU posible (no instalada): ONNX Runtime con DirectML o CUDA y RTMPose (ver `docs/fluidez.md`).
+- Con poca luz la webcam limita a unos 10 FPS; los 30 FPS con persona se midieron con una cámara emulada
+  a partir de un video, no con una persona real delante (ver `docs/fluidez.md`).
 
 ## Integración futura (no implementada)
 
@@ -148,11 +170,13 @@ pose_twin/
   motor.py       MediaPipe PoseLandmarker + enderezado
   sesion.py      procesador por cuadro, CSV, grabación
   dibujo.py      esqueleto y panel
-  fuente.py      cámara, archivo, imagen, URL
+  fuente.py      cámara (con hilo de captura y opciones del driver), archivo, imagen, URL
+  diagnostico.py tiempos por etapa y cierre por ausencia de persona
   telefono.py    servidor HTTPS + WebSocket (web/telefono.html)
   vivo.py        bucles live, video y calibrar
   bench.py       bench de rotación
 docs/linea-base.md   resultados medidos del bench
+docs/fluidez.md      diagnóstico de FPS y latencia en vivo
 ```
 
 ## Referencias

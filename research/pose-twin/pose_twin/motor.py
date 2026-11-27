@@ -14,7 +14,11 @@ from .seleccion import Candidata, Seguidor, puntaje_inicial
 
 RAIZ_NOVA = Path(__file__).resolve().parents[3]
 CARPETA_MODELOS = Path(os.environ.get("POSE_TWIN_MODELOS", RAIZ_NOVA / "nave" / "vision" / "modelos"))
-MODELOS = {"full": "pose_landmarker_full.task", "heavy": "pose_landmarker_heavy.task"}
+# Carpeta local (fuera de git) para modelos que no vienen en el repo, como el lite
+CARPETA_MODELOS_LOCAL = Path(__file__).resolve().parents[1] / "data" / "modelos"
+MODELOS = {"lite": "pose_landmarker_lite.task", "full": "pose_landmarker_full.task",
+           "heavy": "pose_landmarker_heavy.task"}
+URL_MODELOS = "https://storage.googleapis.com/mediapipe-models/pose_landmarker/{n}/float16/latest/{n}.task"
 
 # Ángulos que se prueban cuando se pierde a la persona con el enderezado activo
 BUSQUEDA = (0.0, 90.0, 180.0, -90.0)
@@ -45,13 +49,15 @@ class Resultado:
 def ruta_modelo(nombre: str) -> Path:
     if nombre not in MODELOS:
         raise ErrorModelo(f"Modelo desconocido '{nombre}'. Usa: {', '.join(MODELOS)}.")
-    ruta = CARPETA_MODELOS / MODELOS[nombre]
-    if not ruta.exists():
-        raise ErrorModelo(
-            f"No encuentro el modelo {ruta}. Debe estar en nave/vision/modelos/ del repo "
-            f"(o define la variable POSE_TWIN_MODELOS con la carpeta)."
-        )
-    return ruta
+    for carpeta in (CARPETA_MODELOS, CARPETA_MODELOS_LOCAL):
+        ruta = carpeta / MODELOS[nombre]
+        if ruta.exists():
+            return ruta
+    url = URL_MODELOS.format(n=MODELOS[nombre].removesuffix(".task"))
+    raise ErrorModelo(
+        f"No encuentro el modelo {MODELOS[nombre]} en nave/vision/modelos/ ni en data/modelos/ "
+        f"(o define la variable POSE_TWIN_MODELOS con la carpeta). Descárgalo de {url}"
+    )
 
 
 class Motor:
@@ -82,6 +88,7 @@ class Motor:
         self._torso_prev: float | None = None
         self._perdidos = 0
         self._busqueda_i = 0
+        self.tiempos: dict[str, float] = {}
         ruta = str(ruta_modelo(modelo))
         modo_mp = vision.RunningMode.VIDEO if modo == "video" else vision.RunningMode.IMAGE
         orden = {"auto": ("GPU", "CPU"), "gpu": ("GPU",), "cpu": ("CPU",)}[delegado]
@@ -128,12 +135,14 @@ class Motor:
     def _inferir(self, img_bgr: np.ndarray, rot: Rotacion | None, t_ms: int | None):
         import mediapipe as mp
 
+        t0 = time.perf_counter()
         if rot is not None:
             img_bgr = cv2.warpAffine(img_bgr, rot.M, (rot.ancho, rot.alto), flags=cv2.INTER_LINEAR,
                                      borderMode=cv2.BORDER_CONSTANT)
         h, w = img_bgr.shape[:2]
         rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
         imagen = mp.Image(image_format=mp.ImageFormat.SRGB, data=np.ascontiguousarray(rgb))
+        t1 = time.perf_counter()
         if self.modo == "video":
             ts = int(time.monotonic() * 1000) if t_ms is None else int(t_ms)
             ts = max(ts, self._ts + 1)
@@ -141,6 +150,7 @@ class Motor:
             r = self._lm.detect_for_video(imagen, ts)
         else:
             r = self._lm.detect(imagen)
+        t2 = time.perf_counter()
         poses = []
         for i, lms in enumerate(r.pose_landmarks):
             p = np.array([[l.x * w, l.y * h] for l in lms], dtype=float)
@@ -154,6 +164,9 @@ class Motor:
                 if mundo is not None:
                     mundo = desrotar_mundo(mundo, rot)
             poses.append(Pose(p, vis, pres, mundo))
+        t3 = time.perf_counter()
+        # tiempos de la última llamada (ms), para el diagnóstico
+        self.tiempos = {"preparacion": (t1 - t0) * 1000, "inferencia": (t2 - t1) * 1000, "post": (t3 - t2) * 1000}
         return poses
 
     def procesar(self, img_bgr: np.ndarray, t_ms: int | None = None, rot_forzada: float | None = None) -> Resultado:

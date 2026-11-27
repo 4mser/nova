@@ -14,7 +14,7 @@ ETIQUETA = {
 
 
 def _texto(img, txt, org, escala=0.5, color=(255, 255, 255), grosor=1):
-    cv2.putText(img, txt, org, cv2.FONT_HERSHEY_SIMPLEX, escala, (0, 0, 0), grosor + 2, cv2.LINE_AA)
+    cv2.putText(img, txt, (org[0] + 1, org[1] + 1), cv2.FONT_HERSHEY_SIMPLEX, escala, (0, 0, 0), grosor, cv2.LINE_AA)
     cv2.putText(img, txt, org, cv2.FONT_HERSHEY_SIMPLEX, escala, color, grosor, cv2.LINE_AA)
 
 
@@ -78,3 +78,36 @@ def dibujar(img: np.ndarray, estado: dict, umbral_vis: float) -> np.ndarray:
         cv2.rectangle(img, (x0, yb), (x0 + int((x1 - x0) * cal_prog), yb + int(14 * k)), (80, 200, 80), -1)
         _texto(img, "Calibrando: de pie, cuerpo completo", (x0, yb - int(8 * k)), 0.6 * k, grosor=g)
     return img
+
+
+def pasos(estado: dict, umbral_vis: float) -> str:
+    """Instruccion del momento para quien esta frente a la camara."""
+    pose = estado.get("pose")
+    if estado.get("preparando") is not None:
+        return f"Alejate y ponte de pie, brazos algo separados. Empieza en {estado['preparando']:.0f} s"
+    if estado.get("calibrando") is not None:
+        return f"QUIETO: calibrando {100 * estado['calibrando']:.0f}%"
+    if pose is None:
+        return "No te veo: ponte frente a la camara, con luz de frente"
+    if min(pose.visibilidad[i] for i in (25, 26, 27, 28)) < umbral_vis:
+        return "Alejate hasta que se vean rodillas y pies"
+    if estado.get("resultado_calibracion"):
+        return estado["resultado_calibracion"]
+    if estado.get("perfil"):
+        return "Muevete: dobla codos y rodillas. G graba tu prueba"
+    return "Cuerpo completo visible. Pulsa C para calibrar"
+
+
+def guiar(img: np.ndarray, estado: dict, umbral_vis: float) -> np.ndarray:
+    """Franja de instrucciones bajo la imagen (solo para la ventana; no queda en la grabacion)."""
+    w = img.shape[1]
+    k = max(w, 640) / 640
+    franja = np.zeros((int(76 * k), w, 3), dtype=img.dtype)
+    teclas = "C calibrar | G " + ("DETENER grabacion" if estado.get("grabando") else "grabar") + " | E enderezar | Q salir"
+    lineas = ((pasos(estado, umbral_vis), 0.55, (0, 230, 255), 30), (teclas, 0.5, (255, 255, 255), 60))
+    for txt, escala, color, y in lineas:
+        ancho = cv2.getTextSize(txt, cv2.FONT_HERSHEY_SIMPLEX, escala * k, 1)[0][0]
+        escala_k = escala * k * min(1.0, (w - 16) / ancho)
+        _texto(franja, txt, (8, int(y * k)), escala_k, color, 1)
+    return np.vstack([img, franja])
+

@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 
 from . import perfil as perfil_mod
+from .diagnostico import Cronometro
 from .dibujo import dibujar
 from .filtros import FiltroAngulos
 from .geometria import ANGULOS, CUERPO, angulos_articulares
@@ -80,7 +81,10 @@ class Grabador:
 class Procesador:
     def __init__(self, modelo: str = "heavy", enderezar: bool = False, umbral_vis: float = 0.6,
                  nombre_perfil: str | None = None, csv_ruta: Path | None = None, delegado: str = "auto",
-                 segundos_calibracion: float = 4.0):
+                 segundos_calibracion: float = 4.0, segundos_preparacion: float = 0.0):
+        self.segundos_preparacion = segundos_preparacion
+        self._prep_hasta = 0.0
+        self.resultado_calibracion = ""
         self.motor = Motor(modelo=modelo, modo="video", enderezar=enderezar, delegado=delegado)
         self.umbral_vis = umbral_vis
         self.filtro = FiltroAngulos(min_corte=1.0, beta=0.02)
@@ -94,6 +98,7 @@ class Procesador:
         self.aviso = ""
         self._aviso_hasta = 0.0
         self._calib_pendiente = False
+        self.crono = Cronometro(activo=False)
 
     @property
     def enderezar(self) -> bool:
@@ -112,13 +117,19 @@ class Procesador:
         if not self.nombre_perfil:
             self.nombre_perfil = "perfil"
         self._calib_pendiente = True
+        self._prep_hasta = time.monotonic() + self.segundos_preparacion
+        self.resultado_calibracion = ""
         self.decir(f"Calibrando perfil '{self.nombre_perfil}' durante {self.calibrador.segundos:.0f} s")
 
     def paso(self, img: np.ndarray, t_ms: int | None, fps: float, t_captura: float | None = None) -> tuple[np.ndarray, dict]:
         """Procesa un cuadro. Devuelve (imagen anotada, estado)."""
         t_captura = time.perf_counter() if t_captura is None else t_captura
         self.cuadro += 1
+        crono = self.crono
         r = self.motor.procesar(img, t_ms)
+        for k, v in self.motor.tiempos.items():
+            crono.medir(k, v)
+        t_filtro = time.perf_counter()
         t_s = (t_ms / 1000.0) if t_ms is not None else time.monotonic() - self.t0
         pose = r.pose
         if pose is not None:
@@ -131,7 +142,10 @@ class Procesador:
         angulos = self.filtro(crudos, t_s)
 
         calibrando = None
-        if self._calib_pendiente:
+        preparando = None
+        if self._calib_pendiente and time.monotonic() < self._prep_hasta:
+            preparando = self._prep_hasta - time.monotonic()
+        elif self._calib_pendiente:
             self.calibrador.iniciar(t_s)
             self._calib_pendiente = False
         if self.calibrador.activo:
@@ -143,29 +157,37 @@ class Procesador:
                 try:
                     self.perfil = self.calibrador.construir(self.nombre_perfil)
                     ruta = perfil_mod.guardar(self.perfil, CARPETA_PERFILES)
+                    self.resultado_calibracion = "Calibracion guardada. Ya puedes moverte."
                     self.decir(f"Perfil guardado: {ruta.name} ({self.perfil['muestras']} cuadros)", 5)
                 except ValueError as e:
+                    self.resultado_calibracion = "No se pudo calibrar: aparece completo, quieto y con luz. Pulsa C otra vez."
                     self.decir(str(e), 6)
 
         diferencias = None
         if self.perfil is not None:
             diferencias = perfil_mod.diferencias(self.perfil, angulos, pose.mundo if pose is not None else None)
 
+        crono.medir("filtro", (time.perf_counter() - t_filtro) * 1000)
         estado = {
             "t_s": t_s, "cuadro": self.cuadro, "tam": (img.shape[1], img.shape[0]), "fps": fps, "pose": pose, "angulos": angulos,
             "calidad": cal_txt, "vis_media": vis_media, "rot_grados": r.rot_grados, "enderezar": self.enderezar,
             "identidad": r.identidad, "n_candidatas": r.n_candidatas, "inferencia_ms": r.ms_inferencia,
             "diferencias": diferencias, "perfil": self.perfil["nombre"] if self.perfil else None,
             "grabando": self.grabador is not None, "calibrando": calibrando,
+            "preparando": preparando, "resultado_calibracion": self.resultado_calibracion,
             "aviso": self.aviso if time.monotonic() < self._aviso_hasta else "",
         }
-        estado["latencia_ms"] = (time.perf_counter() - t_captura) * 1000  # hasta aquí; el dibujo suma poco
-        anotada = dibujar(img, estado, self.umbral_vis)
+        # latencia: desde que llegó el cuadro (t_captura) hasta tenerlo dibujado
+        estado["latencia_ms"] = (time.perf_counter() - t_captura) * 1000
+        with crono.etapa("dibujo"):
+            anotada = dibujar(img, estado, self.umbral_vis)
         estado["latencia_ms"] = (time.perf_counter() - t_captura) * 1000
         if self.registro:
-            self.registro.escribir(estado)
+            with crono.etapa("csv"):
+                self.registro.escribir(estado)
         if self.grabador:
-            self.grabador.escribir(anotada)
+            with crono.etapa("grabacion"):
+                self.grabador.escribir(anotada)
         return anotada, estado
 
     def alternar_grabacion(self, fps: float, tam: tuple[int, int]) -> None:

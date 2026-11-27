@@ -11,11 +11,26 @@ os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
 
 
 def _comunes(p: argparse.ArgumentParser) -> None:
-    p.add_argument("--modelo", choices=["full", "heavy"], default="heavy", help="modelo MediaPipe (heavy = más preciso)")
+    p.add_argument("--modelo", choices=["lite", "full", "heavy"], default="heavy",
+                   help="modelo MediaPipe (heavy = más preciso, lite = más rápido)")
     p.add_argument("--delegado", choices=["auto", "gpu", "cpu"], default="auto")
     p.add_argument("--umbral-vis", type=float, default=0.6, help="visibilidad mínima para no abstenerse (0-1)")
     p.add_argument("--perfil", default=None, help="nombre del perfil en data/perfiles/ para comparar")
     p.add_argument("--enderezar", action="store_true", help="activa el enderezado por rotación desde el inicio")
+
+
+def _camara(p: argparse.ArgumentParser) -> None:
+    g = p.add_argument_group("cámara")
+    g.add_argument("--captura", choices=["hilo", "directa"], default="hilo",
+                   help="hilo: lee la cámara aparte y usa el último cuadro (por defecto); directa: en el bucle")
+    g.add_argument("--backend", choices=["auto", "dshow", "msmf", "any"], default="auto",
+                   help="backend de OpenCV para la webcam (auto: DSHOW y luego MSMF en Windows)")
+    g.add_argument("--ancho", type=int, default=None, help="ancho pedido a la cámara")
+    g.add_argument("--alto", type=int, default=None, help="alto pedido a la cámara")
+    g.add_argument("--fps-camara", type=float, default=None, help="FPS pedidos a la cámara")
+    g.add_argument("--fourcc", default=None, help="formato pedido a la cámara, p. ej. MJPG o YUY2")
+    g.add_argument("--exposicion", type=float, default=None,
+                   help="exposición manual en log2(s): -5 = 1/32 s permite 30 FPS; al salir vuelve a automática")
 
 
 def construir_parser() -> argparse.ArgumentParser:
@@ -28,6 +43,12 @@ def construir_parser() -> argparse.ArgumentParser:
     lv.add_argument("--puerto", type=int, default=8443, help="(teléfono) puerto HTTPS")
     lv.add_argument("--sin-ventana", action="store_true", help="no abre ventana (útil con el teléfono)")
     lv.add_argument("--sin-csv", action="store_true", help="no guarda el CSV de la sesión")
+    lv.add_argument("--diagnostico", action="store_true",
+                    help="mide el tiempo de cada etapa y al salir imprime mediana y p95 (y guarda un CSV)")
+    lv.add_argument("--cerrar-sin-persona", type=float, default=5.0, metavar="MIN",
+                    help="cierra la sesión en vivo tras MIN minutos sin persona (0 = nunca; por defecto 5)")
+    lv.add_argument("--max-segundos", type=float, default=0, help="cierra la sesión tras N segundos (0 = sin límite)")
+    _camara(lv)
     _comunes(lv)
 
     vd = sub.add_parser("video", help="genera un video anotado sin ventana")
@@ -43,8 +64,9 @@ def construir_parser() -> argparse.ArgumentParser:
     cb.add_argument("--source", required=True)
     cb.add_argument("--nombre", required=True)
     cb.add_argument("--segundos", type=float, default=4.0)
-    cb.add_argument("--modelo", choices=["full", "heavy"], default="heavy")
+    cb.add_argument("--modelo", choices=["lite", "full", "heavy"], default="heavy")
     cb.add_argument("--delegado", choices=["auto", "gpu", "cpu"], default="auto")
+    _camara(cb)
 
     bn = sub.add_parser("bench", help="compara modelos frente a la rotación")
     bn.add_argument("--video", default="data/muestras/sentadilla.webm")
